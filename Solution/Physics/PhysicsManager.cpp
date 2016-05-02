@@ -38,7 +38,7 @@
 
 namespace Prism
 {
-	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer)
+	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
 #ifdef THREAD_PHYSICS
@@ -53,7 +53,6 @@ namespace Prism
 		, myCurrentIndex(0)
 		, myIsSwapping(false)
 		, myIsReading(false)
-		, myIsServer(aIsServer)
 		, myIsOverheated(false)
 		, mySprintEnergy(0.0f)
 	{
@@ -141,24 +140,22 @@ namespace Prism
 #ifdef _DEBUG
 		myScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.f);
 		myScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 1.f);
-		if (aIsServer == true && SERVER_CONNECT_TO_DEBUGGER == true
-			|| aIsServer == false && SERVER_CONNECT_TO_DEBUGGER == false)
+
+		if (myPhysicsSDK->getPvdConnectionManager())
 		{
-			if (myPhysicsSDK->getPvdConnectionManager())
-			{
-				myPhysicsSDK->getPvdConnectionManager()->addHandler(*this);
-			}
-
-			const char* pvdHostIp = "127.0.0.1";
-			int port = 5425;
-			unsigned int timeout = 100;
-			physx::debugger::PxVisualDebuggerConnectionFlags connectionFlags = physx::debugger::PxVisualDebuggerExt::getAllConnectionFlags();
-
-			myDebugConnection = physx::debugger::PxVisualDebuggerExt::createConnection(myPhysicsSDK->getPvdConnectionManager()
-				, pvdHostIp, port, timeout, connectionFlags);
-
-			myPhysicsSDK->getVisualDebugger()->setVisualDebuggerFlag(physx::PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+			myPhysicsSDK->getPvdConnectionManager()->addHandler(*this);
 		}
+
+		const char* pvdHostIp = "127.0.0.1";
+		int port = 5425;
+		unsigned int timeout = 100;
+		physx::debugger::PxVisualDebuggerConnectionFlags connectionFlags = physx::debugger::PxVisualDebuggerExt::getAllConnectionFlags();
+
+		myDebugConnection = physx::debugger::PxVisualDebuggerExt::createConnection(myPhysicsSDK->getPvdConnectionManager()
+			, pvdHostIp, port, timeout, connectionFlags);
+
+		myPhysicsSDK->getVisualDebugger()->setVisualDebuggerFlag(physx::PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+
 #endif
 
 		myDefaultMaterial = myPhysicsSDK->createMaterial(0.5, 0.5, 0.5);
@@ -275,15 +272,15 @@ namespace Prism
 		//std::swap(myMoveJobs[0], myMoveJobs[1]);
 		//std::swap(myForceJobs[0], myForceJobs[1]);
 		//std::swap(myVelocityJobs[0], myVelocityJobs[1]);
-//std::swap(myPositionJobs[0], myPositionJobs[1]);
-//std::swap(myOnTriggerResults[0], myOnTriggerResults[1]);
-//std::swap(myActorsToAdd[0], myActorsToAdd[1]);
-//std::swap(myActorsToRemove[0], myActorsToRemove[1]);
-//std::swap(myActorsToSleep[0], myActorsToSleep[1]);
-//std::swap(myActorsToWakeUp[0], myActorsToWakeUp[1]);
+		//std::swap(myPositionJobs[0], myPositionJobs[1]);
+		//std::swap(myOnTriggerResults[0], myOnTriggerResults[1]);
+		//std::swap(myActorsToAdd[0], myActorsToAdd[1]);
+		//std::swap(myActorsToRemove[0], myActorsToRemove[1]);
+		//std::swap(myActorsToSleep[0], myActorsToSleep[1]);
+		//std::swap(myActorsToWakeUp[0], myActorsToWakeUp[1]);
 
-//myMoveJobs[myCurrentIndex].myId = -1;
-myIsSwapping = false;
+		//myMoveJobs[myCurrentIndex].myId = -1;
+		myIsSwapping = false;
 	}
 
 	void PhysicsManager::Update()
@@ -1008,18 +1005,10 @@ myIsSwapping = false;
 		objPath[aFBXPath.size() - 2] = 'b';
 		objPath[aFBXPath.size() - 1] = 'j';
 
-		if (myIsServer == true)
-		{
-			//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cos");
 
-			cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cos");
-		}
-		else
-		{
-			//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cow");
+		//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cow");
+		cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cow");
 
-			cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cow");
-		}
 
 		physx::PxTriangleMesh* mesh = nullptr;
 		WavefrontObj wfo;

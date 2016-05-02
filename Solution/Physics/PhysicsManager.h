@@ -41,7 +41,7 @@ namespace Prism
 	{
 	public:
 		int physicsFPS;
-		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer);
+		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback);
 		~PhysicsManager();
 
 		bool myMoveForward;
@@ -323,8 +323,6 @@ namespace Prism
 
 		CU::GrowingArray<physx::PxActor*> myActorsToAdd[2];
 		CU::GrowingArray<physx::PxActor*> myActorsToRemove[2];
-
-		bool myIsServer;
 	};
 
 #ifdef THREAD_PHYSICS
