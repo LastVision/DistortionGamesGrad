@@ -18,12 +18,12 @@ TriggerComponent::~TriggerComponent()
 {
 }
 
-void TriggerComponent::Update(float aDelta)
+void TriggerComponent::Update(float)
 {
 	
 }
 
-void TriggerComponent::ReceiveNote(const CollisionNote& aNote)
+void TriggerComponent::ReceiveNote(const CollisionNote&)
 {
 	
 }

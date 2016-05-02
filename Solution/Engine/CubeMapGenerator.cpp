@@ -47,8 +47,6 @@ namespace Prism
 		, const CU::Vector3<float>& aGridSize, const CU::Vector3<float>& aOffset, float aNodeSize
 		, const std::string& aName)
 	{
-		/*
-
 		mySH_GRID_X = int(ceilf(aGridSize.x / aNodeSize));
 		mySH_GRID_Y = int(ceilf(aGridSize.y / aNodeSize));
 		mySH_GRID_Z = int(ceilf(aGridSize.z / aNodeSize));
@@ -174,8 +172,6 @@ namespace Prism
 			SAFE_ARRAY_DELETE(gridNodes[x]);
 		}
 		SAFE_ARRAY_DELETE(gridNodes);
-
-		*/
 	}
 
 	void CubeMapGenerator::OnResize(float aWidth, float aHeight)
@@ -186,7 +182,6 @@ namespace Prism
 	Texture* CubeMapGenerator::GenerateCubeMap(DeferredRenderer* aRenderer, Scene* aScene, const CU::Vector3<float> aCameraPosition
 		, const CU::Vector2<float>& aTextureSize, bool aUseAmbientPass, const std::string& aFileName)
 	{
-		/*
 		const Camera* sceneCamera = aScene->GetCamera();
 		Texture* cubemapTexture = new Texture();
 		cubemapTexture->CreateCubemap(aTextureSize.x, aTextureSize.y);
@@ -230,23 +225,18 @@ namespace Prism
 		}
 		
 		return cubemapTexture;
-		*/
-
-		return nullptr;
 	}
 
 	SHNode CubeMapGenerator::GenerateSHNode(Texture* aTexture, const CU::Vector3<float> aCameraPosition)
 	{
 		SHNode output;
 
-		/*
 		ID3D11Resource* textureResource;
 		aTexture->GetShaderView()->GetResource(&textureResource);
 
 		D3DX11SHProjectCubeMap(Engine::GetInstance()->GetContex(), 3, reinterpret_cast<ID3D11Texture2D*>(textureResource), output.myData[0], output.myData[1], output.myData[2]);
 
 		output.position = CU::Vector4<float>(aCameraPosition.x, aCameraPosition.y, aCameraPosition.z, 1.f);
-		*/
 
 		return output;
 	}
@@ -255,7 +245,6 @@ namespace Prism
 	{
 		SHGridNode gridNode;
 
-		/*
 		CU::Vector4<float> coeff[3];
 
 		static const float s_fSqrtPI = ((float)sqrt(M_PI));
@@ -296,7 +285,6 @@ namespace Prism
 		coeff[0].w = 1.f;
 
 		gridNode.cC = coeff[0];
-		*/
 
 		return gridNode;
 	}

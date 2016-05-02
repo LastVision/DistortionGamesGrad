@@ -120,5 +120,6 @@ void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
 
 void InGameState::OnResize(int aWidth, int aHeight)
 {
-
+	aWidth;
+	aHeight;
 }

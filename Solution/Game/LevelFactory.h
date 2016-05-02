@@ -25,6 +25,8 @@ public:
 	Level* LoadCurrentLevel();
 	Level* LoadNextLevel();
 private:
+	void operator=(LevelFactory&) = delete;
+
 	void ReadLevelList(const std::string& aLevelListPath);
 	void ReadLevel(const std::string& aLevelPath);
 

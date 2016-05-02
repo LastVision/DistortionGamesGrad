@@ -146,7 +146,7 @@ void MainMenuState::OnResize(int aWidth, int aHeight)
 	myGUIManager->OnResize(aWidth, aHeight);
 }
 
-void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
+void MainMenuState::ReceiveMessage(const OnClickMessage&)
 {
 	
 }
