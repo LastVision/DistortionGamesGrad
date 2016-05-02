@@ -53,8 +53,6 @@ namespace Prism
 		, myCurrentIndex(0)
 		, myIsSwapping(false)
 		, myIsReading(false)
-		, myIsOverheated(false)
-		, mySprintEnergy(0.0f)
 	{
 		myRaycastJobs[0].Init(64);
 		myRaycastJobs[1].Init(64);
@@ -285,119 +283,9 @@ namespace Prism
 
 	void PhysicsManager::Update()
 	{
-		if (myIsClientSide == true && GC::PlayerAlive == true)
+		if (GC::PlayerAlive == true)
 		{
 			CU::InputWrapper::GetInstance()->PhysicsUpdate();
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_SPACE, CU::InputWrapper::eType::PHYSICS))
-			{
-				if (GetAllowedToJump(myPlayerCapsule) == true)
-				{
-					myVerticalSpeed = 0.25f;
-				}
-			}
-
-			myVerticalSpeed -= myTimestep;
-			myVerticalSpeed = fmaxf(myVerticalSpeed, -0.5f);
-
-
-			CU::Vector3<float> movement;
-			float magnitude = 0.f;
-			int count = 0;
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.z -= 1.f;
-			//	magnitude += myPlayerInputData->myBackwardMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.z += 1.f;
-			//	magnitude += myPlayerInputData->myForwardMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.x -= 1.f;
-			//	magnitude += myPlayerInputData->mySidewaysMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.x += 1.f;
-			//	magnitude += myPlayerInputData->mySidewaysMultiplier;
-			//	++count;
-			//}
-
-
-			if (count > 0)
-			{
-				magnitude /= count;
-			}
-
-			if (CU::Length(movement) < 0.02f)
-			{
-				if (myState != eEntityState::IDLE)
-				{
-					myState = eEntityState::IDLE;
-				}
-			}
-			else if (myState != eEntityState::WALK)
-			{
-				myState = eEntityState::WALK;
-			}
-
-			bool isSprinting = false;
-			bool shouldDecreaseEnergy = true;
-			bool previousOverheat = myIsOverheated;
-			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS))
-			{
-				//if (mySprintEnergy < myPlayerInputData->myMaxSprintEnergy && myIsOverheated == false)
-				//{
-				//	mySprintEnergy += myPlayerInputData->mySprintIncrease * myTimestep;
-				//	if (mySprintEnergy >= myPlayerInputData->myMaxSprintEnergy)
-				//	{
-				//		myIsOverheated = true;
-				//	}
-				//
-				//	if (movement.z > 0.f)
-				//	{
-				//		movement.z *= myPlayerInputData->mySprintMultiplier;
-				//		isSprinting = true;
-				//	}
-				//
-				//	shouldDecreaseEnergy = false;
-				//}
-			}
-
-			if (shouldDecreaseEnergy == true && CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == false)
-			{
-				//mySprintEnergy -= myPlayerInputData->mySprintDecrease * myTimestep;
-				//mySprintEnergy = fmaxf(mySprintEnergy, 0.f);
-			}
-
-			//if (myIsOverheated == true && mySprintEnergy <= 0.f)
-			//{
-			//	myIsOverheated = false;
-			//}
-
-			/*if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT))
-			{
-			movement *= myPlayerInputData->mySprintMultiplier;
-			}*/
-
-			//movement = movement * (*myPlayerOrientation);
-			//movement.y = 0.f;
-			//CU::Normalize(movement);
-			//movement *= myPlayerInputData->mySpeed * magnitude;
-			//
-			//if (isSprinting == true)
-			//{
-			//	movement *= myPlayerInputData->mySprintMultiplier;
-			//}
-			//movement.y = myVerticalSpeed;
-			//Move(myPlayerCapsule, movement, 0.05f, 1.f / 60.f);
-
 		}
 
 
@@ -1066,30 +954,4 @@ namespace Prism
 
 		myIsReading = false;
 	}
-
-	void PhysicsManager::SetPlayerOrientation(CU::Matrix44<float>* aPlayerOrientation)
-	{
-		myPlayerOrientation = aPlayerOrientation;
-	}
-
-	void PhysicsManager::SetIsClientSide(bool aIsClientSide)
-	{
-		myIsClientSide = aIsClientSide;
-	}
-
-	void PhysicsManager::SetPlayerCapsule(int anID)
-	{
-		myPlayerCapsule = anID;
-	}
-
-	void PhysicsManager::SetInputComponentData(const InputComponentData& aPlayerInputData)
-	{
-		myPlayerInputData = &aPlayerInputData;
-	}
-
-	void PhysicsManager::SetPlayerGID(int anID)
-	{
-		myPlayerGID = anID;
-	}
-
 }
