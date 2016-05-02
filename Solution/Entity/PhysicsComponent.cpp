@@ -40,13 +40,17 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 			shouldAddToPhysicsScene = false;
 		}
 	}
-
+	bool isSphere = true;
+	if (myPhysicsType == ePhysics::STATIC)
+	{
+		isSphere = false;
+	}
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
 		myCallbackStruct = Prism::PhysicsCallbackStruct(myData, std::bind(&PhysicsComponent::SwapOrientations, this)
 			, std::bind(&PhysicsComponent::UpdateOrientation, this));
 		Prism::PhysicsInterface::GetInstance()->Create(this, myCallbackStruct, my4x4Float, aFBXPath, &myDynamicBody
-			, &myStaticBody, &myShapes, shouldAddToPhysicsScene, myEntity.GetType() == eEntityType::GRENADE);
+			, &myStaticBody, &myShapes, shouldAddToPhysicsScene, isSphere);
 	}
 	else if (myPhysicsType == ePhysics::CAPSULE)
 	{
