@@ -11,21 +11,7 @@ TriggerComponent::TriggerComponent(Entity& anEntity, const TriggerComponentData&
 	, myData(someData)
 	, myTriggerType(eTriggerType(someData.myTriggerType))
 	, myHasTriggered(false)
-	, myRespawnValue(-1)
-	, myPlayersInside(0)
-	, myRespawnTime(0.f)
-	, myPickupTextRows(0)
 {
-	if (myData.myPickupText.size() > 0)
-	{
-		for each (char letter in myData.myPickupText)
-		{
-			if (letter == '\n')
-			{
-				myPickupTextRows++;
-			}
-		}
-	}
 }
 
 TriggerComponent::~TriggerComponent()
@@ -51,17 +37,7 @@ int TriggerComponent::GetValue() const
 	return myData.myValue;
 }
 
-bool TriggerComponent::IsClientSide() const
-{
-	return myData.myIsClientSide;
-}
-
 bool TriggerComponent::GetIsActiveFromStart() const
 {
 	return myData.myIsActiveFromStart;
-}
-
-bool TriggerComponent::IsPressable() const
-{
-	return myData.myIsPressable;
 }

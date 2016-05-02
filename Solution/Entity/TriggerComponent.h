@@ -21,13 +21,7 @@ public:
 
 	eTriggerType GetTriggerType() const;
 	int GetValue() const;
-	bool IsClientSide() const;
 	bool GetIsActiveFromStart() const;
-	void SetRespawnValue(int aValue);
-	int GetRespawnValue() const;
-	bool IsPressable() const;
-
-	void SetPlayerRespawnPosition(const CU::Vector3<float>& aPlayerRespawnPosition);
 
 private:
 
@@ -36,12 +30,6 @@ private:
 	eTriggerType myTriggerType;
 
 	bool myHasTriggered;
-	int myPlayersInside;
-	
-	int myRespawnValue;
-	float myRespawnTime;
-	int myLastRespawnValue;
-	int myPickupTextRows;
 };
 
 inline eComponentType TriggerComponent::GetTypeStatic()
@@ -57,19 +45,4 @@ inline eComponentType TriggerComponent::GetType()
 inline eTriggerType TriggerComponent::GetTriggerType() const
 {
 	return myTriggerType;
-}
-
-inline void TriggerComponent::SetRespawnValue(int aValue)
-{
-	myRespawnValue = aValue;
-}
-
-inline int TriggerComponent::GetRespawnValue() const
-{
-	return myRespawnValue;
-}
-
-inline void TriggerComponent::SetPlayerRespawnPosition(const CU::Vector3<float>& aPlayerRespawnPosition)
-{
-	myPlayerRespawnPosition = aPlayerRespawnPosition;
 }

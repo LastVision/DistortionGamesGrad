@@ -10,54 +10,18 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::PROP;
 		}
-		else if (aType == "grenade")
+		else if (aType == "spike")
 		{
-			return eEntityType::GRENADE;
+			return eEntityType::SPIKE;
 		}
-		else if (aType == "unit")
+		else if (aType == "sawBlade")
 		{
-			return eEntityType::UNIT;
-		}
-		else if (aType == "trigger")
-		{
-			return eEntityType::TRIGGER;
-		}
-		else if (aType == "player")
-		{
-			return eEntityType::PLAYER;
-		}
-		else if (aType == "explosion")
-		{
-			return eEntityType::EXPLOSION;
-		}
-		else if (aType == "door")
-		{
-			return eEntityType::PROP;
-		}
-		else if (aType == "bullet")
-		{
-			return eEntityType::BULLET;
-		}
-		else if (aType == "spawnpoint")
-		{
-			return eEntityType::SPAWNPOINT;
-		}
-		else if (aType == "visualexplosion")
-		{
-			return eEntityType::VISUAL_EXPLOSION;
+			return eEntityType::SAW_BLADE;
 		}
 
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;
 	}
-	const ePropType ConvertStringToPropType(const std::string& aType)
-	{
-		aType;
-
-		DL_ASSERT("Not in use. Remove assert when in use.");
-		return ePropType::NOT_A_PROP;
-	}
-
 	const eOwnerType ConvertStringToOwnerType(const std::string& aType)
 	{
 		aType;

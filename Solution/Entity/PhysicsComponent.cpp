@@ -25,34 +25,32 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
 
-	if (myEntity.GetGID() == 502)
-	{
-		int apa = 5;
-		apa;
-	}
-
 	bool shouldAddToPhysicsScene = true;
-	if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
-		|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
-		|| myEntity.GetSubType() == "gundroid")
-	{
-		shouldAddToPhysicsScene = false;
-	}
+	//if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
+	//	|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
+	//	|| myEntity.GetSubType() == "gundroid")
+	//{
+	//	shouldAddToPhysicsScene = false;
+	//}
 
-	if (myEntity.GetIsClient() == false && myEntity.GetComponent<TriggerComponent>() != nullptr)
+	//if (myEntity.GetComponent<TriggerComponent>() != nullptr)
+	//{
+	//	if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
+	//	{
+	//		shouldAddToPhysicsScene = false;
+	//	}
+	//}
+	bool isSphere = true;
+	if (myPhysicsType == ePhysics::STATIC)
 	{
-		if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
-		{
-			shouldAddToPhysicsScene = false;
-		}
+		isSphere = false;
 	}
-
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
 		myCallbackStruct = Prism::PhysicsCallbackStruct(myData, std::bind(&PhysicsComponent::SwapOrientations, this)
 			, std::bind(&PhysicsComponent::UpdateOrientation, this));
 		Prism::PhysicsInterface::GetInstance()->Create(this, myCallbackStruct, my4x4Float, aFBXPath, &myDynamicBody
-			, &myStaticBody, &myShapes, shouldAddToPhysicsScene, myEntity.GetType() == eEntityType::GRENADE);
+			, &myStaticBody, &myShapes, shouldAddToPhysicsScene, isSphere);
 	}
 	else if (myPhysicsType == ePhysics::CAPSULE)
 	{

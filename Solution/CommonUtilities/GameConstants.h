@@ -22,12 +22,7 @@ public:
 
 	static volatile bool PlayerAlive;
 
-	static volatile bool PlayerShouldPlaySprintErrorSound;
-
 	static eMultiplayerMode MultiplayerMode;
-
-	static volatile bool PlayerShouldPlaySprintSound;
-	static volatile bool PlayerShouldStopSprintSound;
 
 	static bool ShouldRenderGUI;
 };
