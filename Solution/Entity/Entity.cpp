@@ -11,13 +11,11 @@
 #include "TriggerComponent.h"
 #include "SoundComponent.h"
 
-Entity::Entity(unsigned int aGID, const EntityData& aEntityData, Prism::Scene* aScene, bool aClientSide, const CU::Vector3<float>& aStartPosition,
+Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
 	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
-	: myGID(aGID)
-	, myScene(aScene)
+	: myScene(aScene)
 	, myEntityData(aEntityData)
 	, myEmitterConnection(nullptr)
-	, myIsClientSide(aClientSide)
 	, mySubType(aSubType)
 	, myIsEnemy(false)
 	, myIsActive(true)

@@ -21,7 +21,7 @@ class Entity
 	friend class EntityFactory;
 
 public:
-	Entity(unsigned int aGID, const EntityData& aEntityData, Prism::Scene* aScene, bool aClientSide, const CU::Vector3<float>& aStartPosition, 
+	Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition, 
 		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType = "");
 	~Entity();
 

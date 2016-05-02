@@ -2,6 +2,8 @@
 
 #include <AudioInterface.h>
 #include "Level.h"
+#include "LevelFactory.h"
+#include <Camera.h>
 #include "Console.h"
 #include <CommonHelper.h>
 #include <GameStateMessage.h>
@@ -22,11 +24,14 @@ InGameState::InGameState(int aLevelID)
 	, myLevelToLoad(aLevelID)
 	, myState(eInGameState::LEVEL)
 	, myLevel(nullptr)
+	, myLevelFactory(nullptr)
 	, myFailedLevelHash(false)
 	, myHasStartedMusicBetweenLevels(false)
 	, myLastLevel(aLevelID)
 {
 	myIsActiveState = false;
+
+	myCamera = new Prism::Camera(myCameraOrientation);
 
 	myLevelCompleteSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
 		"Data/Resource/Texture/Menu/T_background_story01.dds", { 1920.f, 1080.f });
@@ -52,6 +57,7 @@ InGameState::~InGameState()
 	SAFE_DELETE(myRotatingThing);
 	SAFE_DELETE(myPressToStart);
 	SAFE_DELETE(myLevel);
+	SAFE_DELETE(myCamera);
 	SAFE_DELETE(myLevelFactory);
 	SAFE_DELETE(myText);
 }
@@ -63,6 +69,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myStateStatus = eStateStatus::eKeepState;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(false);
+	myLevelFactory = new LevelFactory("Data/Level/LI_level.xml", *myCamera);
+	myLevel = myLevelFactory->LoadLevel(0);
 
 	myIsActiveState = true;
 
