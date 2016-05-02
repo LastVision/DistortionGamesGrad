@@ -83,6 +83,8 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
 
 	LoadProps(reader, levelElement);
+	LoadSpikes(reader, levelElement);
+	LoadSawBlades(reader, levelElement);
 
 	reader.CloseDocument();
 }
@@ -103,6 +105,48 @@ void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 
 		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::PROP, propType, 
 			myCurrentLevel->myScene, propPosition, propRotation, propScale));
+		myCurrentLevel->myEntities.GetLast()->AddToScene();
+		myCurrentLevel->myEntities.GetLast()->Reset();
+	}
+}
+
+void LevelFactory::LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "spike"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "spike"))
+	{
+		std::string spikeType;
+		CU::Vector3f spikePosition;
+		CU::Vector3f spikeRotation;
+		CU::Vector3f spikeScale;
+
+		aReader.ForceReadAttribute(entityElement, "spikeType", spikeType);
+
+		ReadOrientation(aReader, entityElement, spikePosition, spikeRotation, spikeScale);
+
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, spikeType,
+			myCurrentLevel->myScene, spikePosition, spikeRotation, spikeScale));
+		myCurrentLevel->myEntities.GetLast()->AddToScene();
+		myCurrentLevel->myEntities.GetLast()->Reset();
+	}
+}
+
+void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "sawBlade"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "sawBlade"))
+	{
+		std::string sawBladeType;
+		CU::Vector3f sawBladePosition;
+		CU::Vector3f sawBladeRotation;
+		CU::Vector3f sawBladeScale;
+
+		aReader.ForceReadAttribute(entityElement, "sawBladeType", sawBladeType);
+
+		ReadOrientation(aReader, entityElement, sawBladePosition, sawBladeRotation, sawBladeScale);
+
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, sawBladeType,
+			myCurrentLevel->myScene, sawBladePosition, sawBladeRotation, sawBladeScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
 	}

@@ -73,15 +73,9 @@ enum eOwnerType
 enum eEntityType
 {
 	EMPTY = -1,
-	UNIT = 1,
-	PROP = 2,
-	GRENADE = 4,
-	TRIGGER = 8,
-	PLAYER = 16,
-	EXPLOSION = 32,
-	BULLET = 64,
-	SPAWNPOINT = 128,
-	VISUAL_EXPLOSION = 256,
+	PROP = 1,
+	SPIKE = 2,
+	SAW_BLADE = 4,
 	_COUNT,
 };
 

@@ -26,12 +26,12 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
 
 	bool shouldAddToPhysicsScene = true;
-	if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
-		|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
-		|| myEntity.GetSubType() == "gundroid")
-	{
-		shouldAddToPhysicsScene = false;
-	}
+	//if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
+	//	|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
+	//	|| myEntity.GetSubType() == "gundroid")
+	//{
+	//	shouldAddToPhysicsScene = false;
+	//}
 
 	if (myEntity.GetComponent<TriggerComponent>() != nullptr)
 	{

@@ -39,22 +39,22 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 		AddAnimation(loadAnimation.myEntityState, loadAnimation.myAnimationPath, loadAnimation.myLoopFlag, loadAnimation.myResetTimeOnRestart);
 	}
 	
-	if (myEntity.GetType() == eEntityType::UNIT && myEntity.GetSubType() != "player")
-	{
-		myIsEnemy = true;
-		for (int i = 0; i < animations; ++i)
-		{
-			Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myAnimations[i].myFile, "r_hand_wpn_tip12", myEnemyAnimations[i].myWeaponBone);
-		}
-		Prism::ModelProxy* weapon = Prism::ModelLoader::GetInstance()->LoadModelAnimated("Data/Resource/Model/Enemy_weapon/SK_enemy_weapon_rifle.fbx", myComponentData.myEffectPath);
-		myWeapon = new Prism::Instance(*weapon, myWeaponJoint);
-
-		Prism::ModelLoader::GetInstance()->GetHierarchyToBone("Data/Resource/Model/Enemy_weapon/SK_enemy_weapon_rifle.fbx", "weapon_muzzle_tip-1", myMuzzleBone);
-	}
-	else
-	{
-		Prism::ModelLoader::GetInstance()->GetHierarchyToBone("Data/Resource/Model/Player/SK_player_fire.fbx", "r_wrist_jnt11", myMuzzleBone);
-	}
+	//if (myEntity.GetType() == eEntityType::UNIT && myEntity.GetSubType() != "player")
+	//{
+	//	myIsEnemy = true;
+	//	for (int i = 0; i < animations; ++i)
+	//	{
+	//		Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myAnimations[i].myFile, "r_hand_wpn_tip12", myEnemyAnimations[i].myWeaponBone);
+	//	}
+	//	Prism::ModelProxy* weapon = Prism::ModelLoader::GetInstance()->LoadModelAnimated("Data/Resource/Model/Enemy_weapon/SK_enemy_weapon_rifle.fbx", myComponentData.myEffectPath);
+	//	myWeapon = new Prism::Instance(*weapon, myWeaponJoint);
+	//
+	//	Prism::ModelLoader::GetInstance()->GetHierarchyToBone("Data/Resource/Model/Enemy_weapon/SK_enemy_weapon_rifle.fbx", "weapon_muzzle_tip-1", myMuzzleBone);
+	//}
+	//else
+	//{
+	//	Prism::ModelLoader::GetInstance()->GetHierarchyToBone("Data/Resource/Model/Player/SK_player_fire.fbx", "r_wrist_jnt11", myMuzzleBone);
+	//}
 
 	LoadMuzzleFlashes(aScene);
 #endif
