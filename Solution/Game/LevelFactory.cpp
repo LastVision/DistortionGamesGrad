@@ -99,17 +99,22 @@ void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 
 		aReader.ForceReadAttribute(entityElement, "propType", propType);
 
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(entityElement, "position"), "X", "Y", "Z", propPosition);
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(entityElement, "rotation"), "X", "Y", "Z", propRotation);
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(entityElement, "scale"), "X", "Y", "Z", propScale);
-
-		propRotation.x = CU::Math::DegreeToRad(propRotation.x);
-		propRotation.y = CU::Math::DegreeToRad(propRotation.y);
-		propRotation.z = CU::Math::DegreeToRad(propRotation.z);
+		ReadOrientation(aReader, entityElement, propPosition, propRotation, propScale);
 
 		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::PROP, propType, 
 			myCurrentLevel->myScene, propPosition, propRotation, propScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
 	}
+}
+
+void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)
+{
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "position"), "X", "Y", "Z", aPosition);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "rotation"), "X", "Y", "Z", aRotation);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "scale"), "X", "Y", "Z", aScale);
+
+	aRotation.x = CU::Math::DegreeToRad(aRotation.x);
+	aRotation.y = CU::Math::DegreeToRad(aRotation.y);
+	aRotation.z = CU::Math::DegreeToRad(aRotation.z);
 }
