@@ -13,6 +13,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "TextProxy.h"
+#include <ThreadUtilities.h>
 #include <TimerManager.h>
 #include "TextureContainer.h"
 #include <Vector.h>
@@ -311,6 +312,8 @@ namespace Prism
 
 		myModelLoaderThread = new std::thread(&ModelLoader::Run, ModelLoader::GetInstance());
 		myModelLoaderThreadID = myModelLoaderThread->get_id();
+		CU::SetThreadName(myModelLoaderThreadID, "ModelLoader thread");
+
 
 		DebugDrawer::GetInstance();
 		myFadeData.mySprite = new Sprite(myDirectX->GetBackbufferTexture(), { float(myWindowSize.x), float(myWindowSize.y) }, { 0.f, 0.f });

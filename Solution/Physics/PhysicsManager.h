@@ -41,11 +41,8 @@ namespace Prism
 	{
 	public:
 		int physicsFPS;
-		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer);
+		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback);
 		~PhysicsManager();
-
-		bool myMoveForward;
-		bool myMoveBackward;
 
 #ifdef THREAD_PHYSICS
 		void InitThread();
@@ -107,22 +104,7 @@ namespace Prism
 		void Sleep(int aCapsuleID);
 		void Wake(physx::PxRigidDynamic* aDynamic);
 		void Wake(int aCapsuleID);
-
-		void SetPlayerOrientation(CU::Matrix44<float>* aPlayerOrientation);
-		void SetPlayerCapsule(int anID);
-		void SetIsClientSide(bool aIsClientSide);
-		void SetInputComponentData(const InputComponentData& aPlayerInputData);
-		void SetPlayerGID(int anID);
 	private:
-		int myPlayerCapsule;
-		bool myIsClientSide;
-		bool myIsOverheated;
-		float mySprintEnergy;
-		float myVerticalSpeed;
-		int myPlayerGID;
-		eEntityState myState;
-		const InputComponentData* myPlayerInputData;
-		CU::Matrix44<float>* myPlayerOrientation;
 		std::chrono::system_clock::time_point myStartOfTime;
 
 
@@ -323,8 +305,6 @@ namespace Prism
 
 		CU::GrowingArray<physx::PxActor*> myActorsToAdd[2];
 		CU::GrowingArray<physx::PxActor*> myActorsToRemove[2];
-
-		bool myIsServer;
 	};
 
 #ifdef THREAD_PHYSICS

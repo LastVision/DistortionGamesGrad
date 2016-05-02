@@ -175,6 +175,7 @@
     <ClInclude Include="GraphicsComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PollingStation.h" />
+    <ClInclude Include="SawBladeComponent.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
     <ClInclude Include="stdafx.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PollingStation.cpp" />
+    <ClCompile Include="SawBladeComponent.cpp" />
     <ClCompile Include="SoundComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</MultiProcessorCompilation>

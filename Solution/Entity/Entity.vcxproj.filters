@@ -62,6 +62,9 @@
     <ClCompile Include="SoundComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="SawBladeComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -112,6 +115,9 @@
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
     <ClInclude Include="SoundComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SawBladeComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>

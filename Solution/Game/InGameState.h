@@ -4,8 +4,8 @@
 #include <GrowingArray.h>
 #include <Subscriber.h>
 
-class ClientLevel;
-class ClientLevelFactory;
+class Level;
+class LevelFactory;
 class MessageState;
 
 
@@ -16,6 +16,7 @@ namespace CU
 
 namespace Prism
 {
+	class Camera;
 	class Sprite;
 	class TextProxy;
 	class SpriteProxy;
@@ -46,8 +47,11 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
-	ClientLevel* myLevel;
-	ClientLevelFactory* myLevelFactory;
+	Level* myLevel;
+	LevelFactory* myLevelFactory;
+
+	Prism::Camera* myCamera;
+	CU::Matrix44f myCameraOrientation;
 
 	int myLevelToLoad;
 

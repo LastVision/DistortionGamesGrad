@@ -33,7 +33,7 @@ namespace Prism
 	class PhysicsInterface
 	{
 	public:
-		static void Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer);
+		static void Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback);
 		static void Destroy();
 		static PhysicsInterface* GetInstance();
 
@@ -56,9 +56,6 @@ namespace Prism
 
 		int CreatePlayerController(const CU::Vector3<float>& aStartPosition, PhysicsComponent* aComponent, bool aShouldAddToScene);
 		void Move(int aId, const CU::Vector3<float>& aDirection, float aMinDisplacement, float aDeltaTime);
-
-		void MoveForward(bool move);
-		void MoveBackward(bool move);
 
 		void UpdateOrientation(physx::PxRigidDynamic* aDynamicBody, physx::PxShape** aShape, float* aThread4x4);
 		void UpdateOrientation(physx::PxRigidStatic* aStaticBody, physx::PxShape** aShape, float* aThread4x4);
@@ -83,15 +80,10 @@ namespace Prism
 		void Wake(physx::PxRigidDynamic* aDynamic);
 		void Wake(int aCapsuleID);
 		int GetFPS();
-		void SetClientSide(bool aIsClientSide = false);
-		void SetClientID(int anID);
-		void SetPlayerOrientation(CU::Matrix44<float>* anOrientation);
-		void SetPlayerInputData(const InputComponentData& aData);
-		void SetPlayerGID(int anID);
 	private:
 		// Requires PhysX includes!!
 		PhysicsManager* GetManager() const;
-		PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer);
+		PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback);
 		~PhysicsInterface();
 		PhysicsManager* myManager;
 		static PhysicsInterface* myInstance;
