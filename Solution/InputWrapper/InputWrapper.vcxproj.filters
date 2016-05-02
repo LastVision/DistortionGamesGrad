@@ -2,8 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="InputWrapper.cpp" />
+    <ClCompile Include="ControllerInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputWrapper.h" />
+    <ClInclude Include="ControllerInput.h" />
   </ItemGroup>
 </Project>

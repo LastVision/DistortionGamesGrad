@@ -185,9 +185,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ControllerInput.h" />
     <ClInclude Include="InputWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ControllerInput.cpp" />
     <ClCompile Include="InputWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
