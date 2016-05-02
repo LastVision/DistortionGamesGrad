@@ -373,28 +373,6 @@ myIsSwapping = false;
 				//}
 			}
 
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true)
-			{
-				if (GC::PlayerShouldPlaySprintErrorSound != true && myIsOverheated == true)
-				{
-					GC::PlayerShouldPlaySprintErrorSound = true;
-				}
-			}
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true)
-			{
-				if (myIsOverheated == false)
-				{
-					GC::PlayerShouldPlaySprintSound = true;
-				}
-			}
-			if (CU::InputWrapper::GetInstance()->KeyUp(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true
-				|| myIsOverheated == true && previousOverheat == false)
-			{
-				GC::PlayerShouldStopSprintSound = true;
-			}
-
 			if (shouldDecreaseEnergy == true && CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == false)
 			{
 				//mySprintEnergy -= myPlayerInputData->mySprintDecrease * myTimestep;
