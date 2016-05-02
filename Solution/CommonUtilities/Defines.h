@@ -43,8 +43,6 @@
 
 //#define USE_RAW_INPUT
 
-#define SERVER_CONNECT_TO_DEBUGGER true
-
 #define USE_ATMOSPHERE_PARTICLES
 
 #define HEALTH_COLOR { 0.4f, 0.8f, 0.4f, 1.f }

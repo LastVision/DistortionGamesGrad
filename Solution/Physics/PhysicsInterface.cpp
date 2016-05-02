@@ -6,9 +6,9 @@
 namespace Prism
 {
 	PhysicsInterface* PhysicsInterface::myInstance = nullptr;
-	void PhysicsInterface::Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer)
+	void PhysicsInterface::Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback)
 	{
-		myInstance = new PhysicsInterface(anOnTriggerCallback, aIsServer);
+		myInstance = new PhysicsInterface(anOnTriggerCallback);
 	}
 
 	void PhysicsInterface::Destroy()
@@ -112,16 +112,6 @@ namespace Prism
 		myManager->Move(aId, aDirection, aMinDisplacement, aDeltaTime);
 	}
 
-	void PhysicsInterface::MoveForward(bool move)
-	{
-		myManager->myMoveForward = move;
-	}
-
-	void PhysicsInterface::MoveBackward(bool move)
-	{
-		myManager->myMoveBackward = move;
-	}
-
 	void PhysicsInterface::UpdateOrientation(physx::PxRigidDynamic* aDynamicBody, physx::PxShape** aShape, float* aThread4x4)
 	{
 		myManager->UpdateOrientation(aDynamicBody, aShape, aThread4x4);
@@ -216,34 +206,9 @@ namespace Prism
 		return myManager->physicsFPS;
 	}
 
-	void PhysicsInterface::SetClientSide(bool aIsClientSide)
+	PhysicsInterface::PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback)
 	{
-		myManager->SetIsClientSide(aIsClientSide);
-	}
-
-	void PhysicsInterface::SetClientID(int anID)
-	{
-		myManager->SetPlayerCapsule(anID);
-	}
-
-	void PhysicsInterface::SetPlayerOrientation(CU::Matrix44<float>* anOrientation)
-	{
-		myManager->SetPlayerOrientation(anOrientation);
-	}
-
-	void PhysicsInterface::SetPlayerInputData(const InputComponentData& aData)
-	{
-		myManager->SetInputComponentData(aData);
-	}
-
-	void PhysicsInterface::SetPlayerGID(int anID)
-	{
-		myManager->SetPlayerGID(anID);
-	}
-
-	PhysicsInterface::PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer)
-	{
-		myManager = new PhysicsManager(anOnTriggerCallback, aIsServer);
+		myManager = new PhysicsManager(anOnTriggerCallback);
 	}
 
 

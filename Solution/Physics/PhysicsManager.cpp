@@ -38,7 +38,7 @@
 
 namespace Prism
 {
-	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback, bool aIsServer)
+	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
 #ifdef THREAD_PHYSICS
@@ -53,9 +53,6 @@ namespace Prism
 		, myCurrentIndex(0)
 		, myIsSwapping(false)
 		, myIsReading(false)
-		, myIsServer(aIsServer)
-		, myIsOverheated(false)
-		, mySprintEnergy(0.0f)
 	{
 		myRaycastJobs[0].Init(64);
 		myRaycastJobs[1].Init(64);
@@ -141,24 +138,22 @@ namespace Prism
 #ifdef _DEBUG
 		myScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.f);
 		myScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 1.f);
-		if (aIsServer == true && SERVER_CONNECT_TO_DEBUGGER == true
-			|| aIsServer == false && SERVER_CONNECT_TO_DEBUGGER == false)
+
+		if (myPhysicsSDK->getPvdConnectionManager())
 		{
-			if (myPhysicsSDK->getPvdConnectionManager())
-			{
-				myPhysicsSDK->getPvdConnectionManager()->addHandler(*this);
-			}
-
-			const char* pvdHostIp = "127.0.0.1";
-			int port = 5425;
-			unsigned int timeout = 100;
-			physx::debugger::PxVisualDebuggerConnectionFlags connectionFlags = physx::debugger::PxVisualDebuggerExt::getAllConnectionFlags();
-
-			myDebugConnection = physx::debugger::PxVisualDebuggerExt::createConnection(myPhysicsSDK->getPvdConnectionManager()
-				, pvdHostIp, port, timeout, connectionFlags);
-
-			myPhysicsSDK->getVisualDebugger()->setVisualDebuggerFlag(physx::PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+			myPhysicsSDK->getPvdConnectionManager()->addHandler(*this);
 		}
+
+		const char* pvdHostIp = "127.0.0.1";
+		int port = 5425;
+		unsigned int timeout = 100;
+		physx::debugger::PxVisualDebuggerConnectionFlags connectionFlags = physx::debugger::PxVisualDebuggerExt::getAllConnectionFlags();
+
+		myDebugConnection = physx::debugger::PxVisualDebuggerExt::createConnection(myPhysicsSDK->getPvdConnectionManager()
+			, pvdHostIp, port, timeout, connectionFlags);
+
+		myPhysicsSDK->getVisualDebugger()->setVisualDebuggerFlag(physx::PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+
 #endif
 
 		myDefaultMaterial = myPhysicsSDK->createMaterial(0.5, 0.5, 0.5);
@@ -275,154 +270,22 @@ namespace Prism
 		//std::swap(myMoveJobs[0], myMoveJobs[1]);
 		//std::swap(myForceJobs[0], myForceJobs[1]);
 		//std::swap(myVelocityJobs[0], myVelocityJobs[1]);
-//std::swap(myPositionJobs[0], myPositionJobs[1]);
-//std::swap(myOnTriggerResults[0], myOnTriggerResults[1]);
-//std::swap(myActorsToAdd[0], myActorsToAdd[1]);
-//std::swap(myActorsToRemove[0], myActorsToRemove[1]);
-//std::swap(myActorsToSleep[0], myActorsToSleep[1]);
-//std::swap(myActorsToWakeUp[0], myActorsToWakeUp[1]);
+		//std::swap(myPositionJobs[0], myPositionJobs[1]);
+		//std::swap(myOnTriggerResults[0], myOnTriggerResults[1]);
+		//std::swap(myActorsToAdd[0], myActorsToAdd[1]);
+		//std::swap(myActorsToRemove[0], myActorsToRemove[1]);
+		//std::swap(myActorsToSleep[0], myActorsToSleep[1]);
+		//std::swap(myActorsToWakeUp[0], myActorsToWakeUp[1]);
 
-//myMoveJobs[myCurrentIndex].myId = -1;
-myIsSwapping = false;
+		//myMoveJobs[myCurrentIndex].myId = -1;
+		myIsSwapping = false;
 	}
 
 	void PhysicsManager::Update()
 	{
-		if (myIsClientSide == true && GC::PlayerAlive == true)
+		if (GC::PlayerAlive == true)
 		{
 			CU::InputWrapper::GetInstance()->PhysicsUpdate();
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_SPACE, CU::InputWrapper::eType::PHYSICS))
-			{
-				if (GetAllowedToJump(myPlayerCapsule) == true)
-				{
-					myVerticalSpeed = 0.25f;
-				}
-			}
-
-			myVerticalSpeed -= myTimestep;
-			myVerticalSpeed = fmaxf(myVerticalSpeed, -0.5f);
-
-
-			CU::Vector3<float> movement;
-			float magnitude = 0.f;
-			int count = 0;
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.z -= 1.f;
-			//	magnitude += myPlayerInputData->myBackwardMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.z += 1.f;
-			//	magnitude += myPlayerInputData->myForwardMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.x -= 1.f;
-			//	magnitude += myPlayerInputData->mySidewaysMultiplier;
-			//	++count;
-			//}
-			//if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D, CU::InputWrapper::eType::PHYSICS))
-			//{
-			//	movement.x += 1.f;
-			//	magnitude += myPlayerInputData->mySidewaysMultiplier;
-			//	++count;
-			//}
-
-
-			if (count > 0)
-			{
-				magnitude /= count;
-			}
-
-			if (CU::Length(movement) < 0.02f)
-			{
-				if (myState != eEntityState::IDLE)
-				{
-					myState = eEntityState::IDLE;
-				}
-			}
-			else if (myState != eEntityState::WALK)
-			{
-				myState = eEntityState::WALK;
-			}
-
-			bool isSprinting = false;
-			bool shouldDecreaseEnergy = true;
-			bool previousOverheat = myIsOverheated;
-			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS))
-			{
-				//if (mySprintEnergy < myPlayerInputData->myMaxSprintEnergy && myIsOverheated == false)
-				//{
-				//	mySprintEnergy += myPlayerInputData->mySprintIncrease * myTimestep;
-				//	if (mySprintEnergy >= myPlayerInputData->myMaxSprintEnergy)
-				//	{
-				//		myIsOverheated = true;
-				//	}
-				//
-				//	if (movement.z > 0.f)
-				//	{
-				//		movement.z *= myPlayerInputData->mySprintMultiplier;
-				//		isSprinting = true;
-				//	}
-				//
-				//	shouldDecreaseEnergy = false;
-				//}
-			}
-
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true)
-			{
-				if (GC::PlayerShouldPlaySprintErrorSound != true && myIsOverheated == true)
-				{
-					GC::PlayerShouldPlaySprintErrorSound = true;
-				}
-			}
-
-			if (CU::InputWrapper::GetInstance()->KeyDown(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true)
-			{
-				if (myIsOverheated == false)
-				{
-					GC::PlayerShouldPlaySprintSound = true;
-				}
-			}
-			if (CU::InputWrapper::GetInstance()->KeyUp(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == true
-				|| myIsOverheated == true && previousOverheat == false)
-			{
-				GC::PlayerShouldStopSprintSound = true;
-			}
-
-			if (shouldDecreaseEnergy == true && CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT, CU::InputWrapper::eType::PHYSICS) == false)
-			{
-				//mySprintEnergy -= myPlayerInputData->mySprintDecrease * myTimestep;
-				//mySprintEnergy = fmaxf(mySprintEnergy, 0.f);
-			}
-
-			//if (myIsOverheated == true && mySprintEnergy <= 0.f)
-			//{
-			//	myIsOverheated = false;
-			//}
-
-			/*if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LSHIFT))
-			{
-			movement *= myPlayerInputData->mySprintMultiplier;
-			}*/
-
-			//movement = movement * (*myPlayerOrientation);
-			//movement.y = 0.f;
-			//CU::Normalize(movement);
-			//movement *= myPlayerInputData->mySpeed * magnitude;
-			//
-			//if (isSprinting == true)
-			//{
-			//	movement *= myPlayerInputData->mySprintMultiplier;
-			//}
-			//movement.y = myVerticalSpeed;
-			//Move(myPlayerCapsule, movement, 0.05f, 1.f / 60.f);
-
 		}
 
 
@@ -1030,18 +893,10 @@ myIsSwapping = false;
 		objPath[aFBXPath.size() - 2] = 'b';
 		objPath[aFBXPath.size() - 1] = 'j';
 
-		if (myIsServer == true)
-		{
-			//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cos");
 
-			cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cos");
-		}
-		else
-		{
-			//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cow");
+		//cowPath = CU::GetGeneratedDataFolderFilePath(aFBXPath, "cow");
+		cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cow");
 
-			cowPath = CU::GetMyDocumentsDataPath(aFBXPath, "cow");
-		}
 
 		physx::PxTriangleMesh* mesh = nullptr;
 		WavefrontObj wfo;
@@ -1099,30 +954,4 @@ myIsSwapping = false;
 
 		myIsReading = false;
 	}
-
-	void PhysicsManager::SetPlayerOrientation(CU::Matrix44<float>* aPlayerOrientation)
-	{
-		myPlayerOrientation = aPlayerOrientation;
-	}
-
-	void PhysicsManager::SetIsClientSide(bool aIsClientSide)
-	{
-		myIsClientSide = aIsClientSide;
-	}
-
-	void PhysicsManager::SetPlayerCapsule(int anID)
-	{
-		myPlayerCapsule = anID;
-	}
-
-	void PhysicsManager::SetInputComponentData(const InputComponentData& aPlayerInputData)
-	{
-		myPlayerInputData = &aPlayerInputData;
-	}
-
-	void PhysicsManager::SetPlayerGID(int anID)
-	{
-		myPlayerGID = anID;
-	}
-
 }

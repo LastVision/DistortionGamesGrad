@@ -15,11 +15,6 @@ float GC::SpawnIntervalMultiplier[3];
 
 volatile bool GC::PlayerAlive = true;
 
-volatile bool GC::PlayerShouldPlaySprintErrorSound = false;
-
 GC::eMultiplayerMode GC::MultiplayerMode = GC::eMultiplayerMode::HOST;
-
-volatile bool GC::PlayerShouldPlaySprintSound = false;
-volatile bool GC::PlayerShouldStopSprintSound = false;
 
 bool GC::ShouldRenderGUI = true;

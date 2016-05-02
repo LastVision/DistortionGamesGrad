@@ -29,7 +29,7 @@
 #include <XMLReader.h>
 #include "InGameState.h"
 
-
+//Hej
 ClientGame::ClientGame()
 	: myLockMouse(true)
 	, myWindowHandler(nullptr)

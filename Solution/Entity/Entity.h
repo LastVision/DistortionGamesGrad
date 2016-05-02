@@ -53,8 +53,6 @@ public:
 
 	void Kill(bool aRemoveFromPhysics = true);
 
-	bool GetIsClient();
-
 	bool IsAlive() const;
 
 	void SetGID(unsigned int aGID);
@@ -80,7 +78,6 @@ private:
 
 	bool myAlive;
 	bool myIsActive;
-	bool myIsClientSide;
 	bool myIsInScene;
 	std::string mySubType;
 	eEntityState myState;
@@ -148,7 +145,6 @@ inline void Entity::SetRotation(const CU::Vector3<float>& aRotation)
 
 inline Prism::Scene* Entity::GetScene()
 {
-	DL_ASSERT_EXP(myIsClientSide == true, "You can't get the scene on server side.");
 	return myScene;
 }
 

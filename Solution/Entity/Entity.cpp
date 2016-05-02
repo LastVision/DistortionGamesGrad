@@ -11,6 +11,7 @@
 #include "TriggerComponent.h"
 #include "SoundComponent.h"
 
+
 Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
 	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
 	: myScene(aScene)
@@ -61,7 +62,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		}
 	}
 
-	if (aEntityData.mySoundData.myExistsInEntity == true && myIsClientSide == true)
+	if (aEntityData.mySoundData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::SOUND)] = new SoundComponent(*this);
 	}
@@ -80,14 +81,6 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		}
 		else
 		{
-			if (myIsClientSide == true && aEntityData.myTriggerData.myExistsInEntity == true && aEntityData.myTriggerData.myIsClientSide == false)
-			{
-			}
-			else
-			{
-				DL_ASSERT_EXP(myIsClientSide == false, "Can't create PhysicsComponent on client without graphics.");
-			}
-
 			myComponents[static_cast<int>(eComponentType::PHYSICS)] = new PhysicsComponent(*this, aEntityData.myPhysicsData
 				, "no path");
 		}
@@ -145,7 +138,7 @@ void Entity::Update(float aDeltaTime)
 		}
 	}
 
-	if (myIsClientSide == false && myIsActive == false)
+	if (myIsActive == false)
 	{
 		myTimeActiveBeforeKillTimer -= aDeltaTime;
 
@@ -184,9 +177,8 @@ void Entity::RemoveComponent(eComponentType aComponent)
 void Entity::AddToScene()
 {
 	DL_ASSERT_EXP(myIsInScene == false, "Tried to add Entity to scene twice");
-	DL_ASSERT_EXP(myIsClientSide == true, "You can't add Entity to scene on server side.");
 
-	if (myIsInScene == true || myIsClientSide == false)
+	if (myIsInScene == true)
 	{
 		return;
 	}
@@ -207,9 +199,8 @@ void Entity::AddToScene()
 void Entity::RemoveFromScene()
 {
 	DL_ASSERT_EXP(myIsInScene == true, "Tried to remove Entity not in scene");
-	DL_ASSERT_EXP(myIsClientSide == true, "You can't remove Entity to scene on server side.");
 
-	if (myIsInScene == false || myIsClientSide == false)
+	if (myIsInScene == false)
 	{
 		return;
 	}
@@ -258,9 +249,4 @@ void Entity::Kill(bool aRemoveFromPhysics)
 	{
 		GetComponent<PhysicsComponent>()->RemoveFromScene();
 	}
-}
-
-bool Entity::GetIsClient()
-{
-	return myIsClientSide;
 }
