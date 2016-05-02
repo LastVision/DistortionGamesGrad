@@ -10,7 +10,7 @@
 #include <PostMaster.h>
 #include "TriggerComponent.h"
 #include "SoundComponent.h"
-
+#include "InputComponent.h"
 
 Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
 	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
@@ -80,6 +80,15 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 				, "no path");
 		}
 	}
+
+	if (aEntityData.myInputData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::INPUT)] = new InputComponent(*this, aEntityData.myInputData, myOrientation);
+	}
+
+
+
+
 	Reset();
 
 };
@@ -122,14 +131,6 @@ void Entity::Update(float aDeltaTime)
 		if (component != nullptr)
 		{
 			component->Update(aDeltaTime);
-		}
-	}
-
-	if (myEntityData.myPhysicsData.myPhysicsType == ePhysics::DYNAMIC)
-	{
-		if (myComponents[static_cast<int>(eComponentType::NETWORK)] == nullptr)
-		{
-			memcpy(&myOrientation.myMatrix[0], GetComponent<PhysicsComponent>()->GetOrientation(), sizeof(float) * 16);
 		}
 	}
 

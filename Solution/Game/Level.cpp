@@ -3,7 +3,6 @@
 #include "Level.h"
 #include <Scene.h>
 #include <EntityFactory.h>
-
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
@@ -15,6 +14,8 @@ Level::Level(Prism::Camera& aCamera)
 	myPlayer = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 
 	myPlayer->AddToScene();
+
+
 }
 
 Level::~Level()

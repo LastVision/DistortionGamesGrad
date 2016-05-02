@@ -4,7 +4,7 @@
 #include <string>
 #pragma comment(lib,"XInput9_1_0.lib")
 
-namespace CommonUtilities
+namespace CU
 {
 	enum class eXboxButton
 	{
@@ -37,13 +37,13 @@ namespace CommonUtilities
 		void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);
 
 
-		bool ButtonDown(int aKey);
-		bool ButtonUp(int aKey);
-		bool ButtonTap(int aKey);
+		bool ButtonWhileDown(int aKey);
+		bool ButtonOnUp(int aKey);
+		bool ButtonOnDown(int aKey);
 
-		bool ButtonDown(eXboxButton aKey);
-		bool ButtonUp(eXboxButton aKey);
-		bool ButtonTap(eXboxButton aKey);
+		bool ButtonWhileDown(eXboxButton aKey);
+		bool ButtonOnUp(eXboxButton aKey);
+		bool ButtonOnDown(eXboxButton aKey);
 
 		float LeftThumbstickX();
 		float LeftThumbstickY();

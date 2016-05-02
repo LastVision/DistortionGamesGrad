@@ -89,10 +89,7 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float& aDeltaTime)
 {
-	
-
-
-
+	myLevel->Update(aDeltaTime);
 	return myStateStatus;
 }
 
