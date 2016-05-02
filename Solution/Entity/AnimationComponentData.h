@@ -13,7 +13,6 @@ struct AnimationComponentData
 	bool myExistsInEntity = false;
 	std::string myModelPath;
 	std::string myEffectPath;
-	eObjectRoomType myRoomType;
 
 	CU::StaticArray<AnimationLoadData, static_cast<int>(eEntityState::_COUNT)> myAnimations;
 };

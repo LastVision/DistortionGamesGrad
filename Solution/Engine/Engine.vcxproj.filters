@@ -168,9 +168,6 @@
     <ClCompile Include="Room.cpp">
       <Filter>Room</Filter>
     </ClCompile>
-    <ClCompile Include="RoomManager.cpp">
-      <Filter>Room</Filter>
-    </ClCompile>
     <ClCompile Include="DeferredRenderer.cpp">
       <Filter>Rendering\Renderer</Filter>
     </ClCompile>
@@ -397,9 +394,6 @@
       <Filter>Room</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
-      <Filter>Room</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomManager.h">
       <Filter>Room</Filter>
     </ClInclude>
     <ClInclude Include="DeferredRenderer.h">

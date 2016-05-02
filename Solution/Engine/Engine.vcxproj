@@ -298,7 +298,6 @@
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Room.cpp" />
-    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="SpotLightShadow.cpp" />
     <ClCompile Include="SpotLightTextureProjection.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -387,7 +386,6 @@
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Room.h" />
-    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="SpotLightShadow.h" />
     <ClInclude Include="SpotLightTextureProjection.h" />
     <ClInclude Include="Sprite.h" />

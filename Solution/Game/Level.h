@@ -26,6 +26,8 @@ private:
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
 
+	Entity* myPlayer;
+
 	CU::GrowingArray<Entity*> myEntities;
 };
 

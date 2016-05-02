@@ -41,24 +41,19 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		myComponents[static_cast<int>(eComponentType::TRIGGER)] = new TriggerComponent(*this, aEntityData.myTriggerData);
 	}
 
-
-	myRoomType = eObjectRoomType::NOT_USED_ON_SERVER;
 	if (myScene != nullptr)
 	{
-		myRoomType = eObjectRoomType::NONE;
 		if (aEntityData.myAnimationData.myExistsInEntity == true)
 		{
 			myComponents[static_cast<int>(eComponentType::ANIMATION)] = new AnimationComponent(*this, aEntityData.myAnimationData, aScene);
 			//GetComponent<AnimationComponent>()->SetRotation(aRotation);
 			GetComponent<AnimationComponent>()->SetScale(aScale);
-			myRoomType = aEntityData.myAnimationData.myRoomType;
 		}
 		else if (aEntityData.myGraphicsData.myExistsInEntity == true)
 		{
 			myComponents[static_cast<int>(eComponentType::GRAPHICS)] = new GraphicsComponent(*this, aEntityData.myGraphicsData);
 			//GetComponent<GraphicsComponent>()->SetRotation(aRotation);
 			GetComponent<GraphicsComponent>()->SetScale(aScale);
-			myRoomType = aEntityData.myGraphicsData.myRoomType;
 		}
 	}
 
@@ -185,11 +180,11 @@ void Entity::AddToScene()
 
 	if (GetComponent<GraphicsComponent>() != nullptr && GetComponent<GraphicsComponent>()->GetInstance() != nullptr)
 	{
-		myScene->AddInstance(GetComponent<GraphicsComponent>()->GetInstance(), myRoomType);
+		myScene->AddInstance(GetComponent<GraphicsComponent>()->GetInstance());
 	}
 	else if (GetComponent<AnimationComponent>() != nullptr && GetComponent<AnimationComponent>()->GetInstance() != nullptr)
 	{
-		myScene->AddInstance(GetComponent<AnimationComponent>()->GetInstance(), myRoomType);
+		myScene->AddInstance(GetComponent<AnimationComponent>()->GetInstance());
 		GetComponent<AnimationComponent>()->AddWeaponToScene(myScene);
 	}
 

@@ -110,7 +110,6 @@ namespace Prism
 		Texture* GetFinishedTexture();
 		Texture* GetEmissiveTexture();
 		Texture* GetDepthStencilTexture();
-		Texture* GetArmDepthStencilTexture();
 
 	private:
 		struct GBufferData
@@ -150,7 +149,6 @@ namespace Prism
 		CubeMapGenerator* myCubeMapGenerator;
 		SHTextures mySHTextures;
 		Texture* myDepthStencilTexture;
-		Texture* myArmDepthStencilTexture;
 		Texture* myCubemap;
 		Texture* myFinishedTexture;
 		RenderToScreenData myRenderToScreenData;

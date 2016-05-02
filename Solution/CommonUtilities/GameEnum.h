@@ -54,15 +54,6 @@ enum class eServerInGameState
 	LEVEL_WAIT_FOR_OTHER,
 };
 
-enum class eObjectRoomType
-{
-	NONE,
-	NOT_USED_ON_SERVER,
-	ALWAYS_RENDER,
-	DYNAMIC,
-	STATIC,
-};
-
 enum eOwnerType
 {
 	NOT_USED = -1,
@@ -76,6 +67,7 @@ enum eEntityType
 	PROP = 1,
 	SPIKE = 2,
 	SAW_BLADE = 4,
+	PLAYER = 8,
 	_COUNT,
 };
 

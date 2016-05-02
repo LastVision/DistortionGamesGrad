@@ -41,11 +41,7 @@ public:
 	void AddWeaponToScene(Prism::Scene* aScene);
 	void RemoveWeaponFromScene(Prism::Scene* aScene);
 
-	void PlayMuzzleFlash();
-	void StopMuzzleFlash();
-
 private:
-	void LoadMuzzleFlashes(Prism::Scene* aScene);
 	void PlayAnimation(eEntityState aAnimationState);
 	struct AnimationData
 	{
@@ -84,15 +80,6 @@ private:
 		}
 	};
 	CU::StaticArray<EnemyAnimationBone, int(eEntityState::_COUNT)> myEnemyAnimations;
-
-	GUIBone myMuzzleBone;
-	CU::Matrix44<float> myMuzzleBoneCalced;
-	CU::Matrix44<float> myMuzzleOrientation;
-	bool myHasSetCalcedMuzzle;
-
-	Prism::Instance* myMuzzleflash[5];
-	int myCurrentMuzzleflash;
-	float myMuzzleflashTimer;
 };
 
 inline Prism::Instance* AnimationComponent::GetInstance()

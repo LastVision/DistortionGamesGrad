@@ -12,8 +12,6 @@ void ComponentLoader::LoadAnimationComponent(XMLReader& aDocument, tinyxml2::XML
 {
 	aOutputData.myExistsInEntity = true;
 
-	aOutputData.myRoomType = LoadRoomType(aDocument, aSourceElement);
-
 	for (tinyxml2::XMLElement* e = aDocument.FindFirstChild(aSourceElement); e != nullptr; e = aDocument.FindNextElement(e))
 	{
 		std::string elementName = CU::ToLower(e->Name());
@@ -41,8 +39,6 @@ void ComponentLoader::LoadAnimationComponent(XMLReader& aDocument, tinyxml2::XML
 void ComponentLoader::LoadGraphicsComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
-
-	aOutputData.myRoomType = LoadRoomType(aDocument, aSourceElement);
 
 	for (tinyxml2::XMLElement* e = aDocument.FindFirstChild(aSourceElement); e != nullptr; e = aDocument.FindNextElement(e))
 	{
@@ -164,30 +160,6 @@ void ComponentLoader::LoadTriggerComponent(XMLReader& aDocument, tinyxml2::XMLEl
 void ComponentLoader::LoadSoundComponent(XMLReader&, tinyxml2::XMLElement*, SoundComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
-}
-
-eObjectRoomType ComponentLoader::LoadRoomType(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement)
-{
-	std::string typeStr;
-	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "RoomType"), "value", typeStr);
-
-	if (typeStr == "dynamic")
-	{
-		return eObjectRoomType::DYNAMIC;
-	}
-	else if (typeStr == "static")
-	{
-		return eObjectRoomType::STATIC;
-	}
-	else if (typeStr == "alwaysRender")
-	{
-		return eObjectRoomType::ALWAYS_RENDER;
-	}
-	else
-	{
-		DL_ASSERT(CU::Concatenate("Unknown room type: %s", typeStr.c_str()));
-		return eObjectRoomType::STATIC;
-	}
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)
