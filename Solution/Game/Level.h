@@ -6,7 +6,7 @@ public:
 	Level();
 	~Level();
 
-	void Update();
+	void Update(float aDelta);
 	void Render();
 
 private:

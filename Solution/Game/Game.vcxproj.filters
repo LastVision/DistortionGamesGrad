@@ -32,13 +32,13 @@
     <ClCompile Include="MainMenuState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Level</Filter>
-    </ClCompile>
     <ClCompile Include="LevelFactory.cpp">
       <Filter>Level\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Level.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
