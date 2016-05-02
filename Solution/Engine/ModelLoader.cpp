@@ -68,8 +68,7 @@ namespace Prism
 
 	ModelLoader::~ModelLoader()
 	{
-		delete myModelFactory;
-		myModelFactory = nullptr;
+		SAFE_DELETE(myModelFactory);
 		myNonFXBModels.DeleteAll();
 
 		for (auto it = myModelProxies.begin(); it != myModelProxies.end(); ++it)
@@ -140,8 +139,6 @@ namespace Prism
 			WaitUntilCopyIsAllowed();
 			myCanAddToLoadArray = false;
 
-			DEBUG_PRINT("MODELLOADER IS WORKING");
-
 			CopyLoadJobs();
 
 			for (int i = myLoadArray.Size() - 1; i >= 0; --i)
@@ -204,7 +201,7 @@ namespace Prism
 					break;
 				}
 				default:
-					DL_ASSERT("ModelLoader tried to load something that dint have a specified LoadType!!!");
+					DL_ASSERT("ModelLoader tried to load something that dint have a specified LoadType");
 					break;
 				}
 
