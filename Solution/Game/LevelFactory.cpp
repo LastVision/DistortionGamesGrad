@@ -145,7 +145,7 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 		ReadOrientation(aReader, entityElement, sawBladePosition, sawBladeRotation, sawBladeScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, sawBladeType,
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, sawBladeType,
 			myCurrentLevel->myScene, sawBladePosition, sawBladeRotation, sawBladeScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
