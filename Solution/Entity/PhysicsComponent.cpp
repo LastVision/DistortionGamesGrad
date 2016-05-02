@@ -25,12 +25,6 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
 
-	if (myEntity.GetGID() == 502)
-	{
-		int apa = 5;
-		apa;
-	}
-
 	bool shouldAddToPhysicsScene = true;
 	if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
 		|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
