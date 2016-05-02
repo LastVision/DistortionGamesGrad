@@ -89,10 +89,6 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float& aDeltaTime)
 {
-	
-
-
-
 	return myStateStatus;
 }
 
@@ -123,5 +119,6 @@ void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
 
 void InGameState::OnResize(int aWidth, int aHeight)
 {
-
+	aWidth;
+	aHeight;
 }

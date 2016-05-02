@@ -501,9 +501,12 @@ namespace Prism
 		displayModeList = new DXGI_MODE_DESC[numModes];
 		result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
 
+		unsigned int windowWidth = static_cast<unsigned int>(myWindowSize.x);
+		unsigned int windowHeight = static_cast<unsigned int>(myWindowSize.y);
+
 		for (unsigned int i = 0; i < numModes; ++i)
 		{
-			if (displayModeList[i].Width == myWindowSize.x && displayModeList[i].Height == myWindowSize.y)
+			if (displayModeList[i].Width == windowWidth && displayModeList[i].Height == windowHeight)
 			{
 				aNumerator = displayModeList[i].RefreshRate.Numerator;
 				aDenominator = displayModeList[i].RefreshRate.Denominator;

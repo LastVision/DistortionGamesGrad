@@ -202,7 +202,7 @@ namespace Prism
 
 			ModelLoader::GetInstance()->WaitUntilFinished();
 			myCubeMapGenerator->GenerateSHTextures(this, aScene, mySHTextures, myAmbientPass.mySHGridSize
-				, myAmbientPass.mySHGridOffset, GC::SHNodeSize, aName);
+				, myAmbientPass.mySHGridOffset, static_cast<float>(GC::SHNodeSize), aName);
 
 			myAmbientPass.mySHGridOffset *= -1.f;
 		}
@@ -239,7 +239,7 @@ namespace Prism
 	void DeferredRenderer::SetCubeMap(const std::string& aFilePath)
 	{
 		ModelLoader::GetInstance()->Pause();
-		//myCubemap = TextureContainer::GetInstance()->GetTexture("LightData/" + aFilePath + "_cubemap.dds");
+		myCubemap = TextureContainer::GetInstance()->GetTexture("LightData/" + aFilePath + "_cubemap.dds");
 		ModelLoader::GetInstance()->UnPause();
 	}
 
