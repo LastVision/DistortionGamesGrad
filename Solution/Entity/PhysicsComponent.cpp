@@ -33,13 +33,13 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	//	shouldAddToPhysicsScene = false;
 	//}
 
-	if (myEntity.GetComponent<TriggerComponent>() != nullptr)
-	{
-		if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
-		{
-			shouldAddToPhysicsScene = false;
-		}
-	}
+	//if (myEntity.GetComponent<TriggerComponent>() != nullptr)
+	//{
+	//	if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
+	//	{
+	//		shouldAddToPhysicsScene = false;
+	//	}
+	//}
 	bool isSphere = true;
 	if (myPhysicsType == ePhysics::STATIC)
 	{
