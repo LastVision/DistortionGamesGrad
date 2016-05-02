@@ -50,14 +50,6 @@ namespace EntityEnumConverter
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;
 	}
-	const ePropType ConvertStringToPropType(const std::string& aType)
-	{
-		aType;
-
-		DL_ASSERT("Not in use. Remove assert when in use.");
-		return ePropType::NOT_A_PROP;
-	}
-
 	const eOwnerType ConvertStringToOwnerType(const std::string& aType)
 	{
 		aType;
