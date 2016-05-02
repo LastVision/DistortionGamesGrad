@@ -21,7 +21,7 @@ class Entity
 	friend class EntityFactory;
 
 public:
-	Entity(unsigned int aGID, const EntityData& aEntityData, Prism::Scene* aScene, bool aClientSide, const CU::Vector3<float>& aStartPosition, 
+	Entity(unsigned int aGID, const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition, 
 		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType = "");
 	~Entity();
 
@@ -53,8 +53,6 @@ public:
 
 	void Kill(bool aRemoveFromPhysics = true);
 
-	bool GetIsClient();
-
 	bool IsAlive() const;
 
 	void SetGID(unsigned int aGID);
@@ -80,7 +78,6 @@ private:
 
 	bool myAlive;
 	bool myIsActive;
-	bool myIsClientSide;
 	bool myIsInScene;
 	std::string mySubType;
 	eEntityState myState;
@@ -148,7 +145,6 @@ inline void Entity::SetRotation(const CU::Vector3<float>& aRotation)
 
 inline Prism::Scene* Entity::GetScene()
 {
-	DL_ASSERT_EXP(myIsClientSide == true, "You can't get the scene on server side.");
 	return myScene;
 }
 

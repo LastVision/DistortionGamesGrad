@@ -33,7 +33,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 		shouldAddToPhysicsScene = false;
 	}
 
-	if (myEntity.GetIsClient() == false && myEntity.GetComponent<TriggerComponent>() != nullptr)
+	if (myEntity.GetComponent<TriggerComponent>() != nullptr)
 	{
 		if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
 		{
