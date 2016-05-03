@@ -37,16 +37,6 @@ InGameState::InGameState(int aLevelID)
 	myCamera = new Prism::Camera(myCameraOrientation);
 	myCamera->Update(1.f / 30.f);
 
-	myLevelCompleteSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-		"Data/Resource/Texture/Menu/T_background_story01.dds", { 1920.f, 1080.f });
-	myLevelFailedSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-		"Data/Resource/Texture/Menu/T_background_gameover.dds", { 1920.f, 1080.f });
-	myLoadingScreenSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-		"Data/Resource/Texture/Menu/T_background_story01.dds", { 1920.f, 1080.f });
-	myRotatingThing = Prism::ModelLoader::GetInstance()->LoadSprite(
-		"Data/Resource/Texture/Menu/T_rotating_thing.dds", { 128.f, 128.f }, { 64.f, 64.f });
-	myPressToStart = Prism::ModelLoader::GetInstance()->LoadSprite(
-		"Data/Resource/Texture/Menu/T_press_to_start.dds", { 512.f, 64.f });
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 }
@@ -55,11 +45,6 @@ InGameState::~InGameState()
 {
 	PostMaster::GetInstance()->UnSubscribe(eMessageType::GAME_STATE, this);
 	Console::Destroy();
-	SAFE_DELETE(myLevelCompleteSprite);
-	SAFE_DELETE(myLevelFailedSprite);
-	SAFE_DELETE(myLoadingScreenSprite);
-	SAFE_DELETE(myRotatingThing);
-	SAFE_DELETE(myPressToStart);
 	SAFE_DELETE(myLevel);
 	SAFE_DELETE(myCamera);
 	SAFE_DELETE(myLevelFactory);
