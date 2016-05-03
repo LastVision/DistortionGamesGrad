@@ -22,17 +22,22 @@ void InputComponent::Update(float aDeltaTime)
 
 	if (myController->IsConnected() == true)
 	{
-		if (myController->ButtonWhileDown(CU::eXboxButton::A))
+		if (myController->ButtonOnDown(CU::eXboxButton::A))
 		{
 			myOrientation.SetPos(CU::Vector3f(0, 1, 0));
+		}
+		else if (myController->LeftThumbstickX() > 0.5f)
+		{
+			myOrientation.SetPos(CU::Vector3f(1, 0, 0));
+		}
+		else if (myController->LeftThumbstickX() < -0.5f)
+		{
+			myOrientation.SetPos(CU::Vector3f(-1, 0, 0));
 		}
 		else
 		{
 			myOrientation.SetPos(CU::Vector3f(0, 0, 0));
 		}
-
-
-
 
 	}
 

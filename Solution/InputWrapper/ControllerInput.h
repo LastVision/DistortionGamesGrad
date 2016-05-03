@@ -36,11 +36,6 @@ namespace CU
 		
 		void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);
 
-
-		bool ButtonWhileDown(int aKey);
-		bool ButtonOnUp(int aKey);
-		bool ButtonOnDown(int aKey);
-
 		bool ButtonWhileDown(eXboxButton aKey);
 		bool ButtonOnUp(eXboxButton aKey);
 		bool ButtonOnDown(eXboxButton aKey);
@@ -57,7 +52,8 @@ namespace CU
 		const int GetControllerID() const;
 
 	private:
-
+		unsigned int ConvertInput(const eXboxButton& aButton);
+		//float ConvertInput()
 		XINPUT_STATE myControllerState;
 		XINPUT_STATE myPrevControllerState;
 		XINPUT_KEYSTROKE myKey;
