@@ -71,6 +71,9 @@
     <ClCompile Include="MovementComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerGraphicsComponent.cpp">
+      <Filter>Component\Graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -140,6 +143,12 @@
     </ClInclude>
     <ClInclude Include="SawBladeComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGraphicsComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGraphicsComponent.h">
+      <Filter>Component\Graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

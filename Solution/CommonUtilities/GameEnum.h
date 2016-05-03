@@ -136,6 +136,7 @@ enum class eComponentType
 	SOUND,
 	SAW_BLADE,
 	SPIKE,
+	PLAYER_GRAPHICS,
 	_COUNT,
 };
 

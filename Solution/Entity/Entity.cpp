@@ -9,6 +9,7 @@
 #include <Scene.h>
 #include <Instance.h>
 #include <EmitterMessage.h>
+#include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
 #include "TriggerComponent.h"
 #include "SoundComponent.h"
@@ -42,20 +43,19 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		myComponents[static_cast<int>(eComponentType::TRIGGER)] = new TriggerComponent(*this, aEntityData.myTriggerData);
 	}
 
-	if (myScene != nullptr)
+	if (aEntityData.myAnimationData.myExistsInEntity == true)
 	{
-		if (aEntityData.myAnimationData.myExistsInEntity == true)
-		{
-			myComponents[static_cast<int>(eComponentType::ANIMATION)] = new AnimationComponent(*this, aEntityData.myAnimationData, aScene);
-			//GetComponent<AnimationComponent>()->SetRotation(aRotation);
-			GetComponent<AnimationComponent>()->SetScale(aScale);
-		}
-		else if (aEntityData.myGraphicsData.myExistsInEntity == true)
-		{
-			myComponents[static_cast<int>(eComponentType::GRAPHICS)] = new GraphicsComponent(*this, aEntityData.myGraphicsData);
-			//GetComponent<GraphicsComponent>()->SetRotation(aRotation);
-			GetComponent<GraphicsComponent>()->SetScale(aScale);
-		}
+		myComponents[static_cast<int>(eComponentType::ANIMATION)] = new AnimationComponent(*this, aEntityData.myAnimationData, aScene);
+		GetComponent<AnimationComponent>()->SetScale(aScale);
+	}
+	else if (aEntityData.myGraphicsData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::GRAPHICS)] = new GraphicsComponent(*this, aEntityData.myGraphicsData);
+		GetComponent<GraphicsComponent>()->SetScale(aScale);
+	}
+	else if (aEntityData.myPlayerGraphicsData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::PLAYER_GRAPHICS)] = new PlayerGraphicsComponent(*this, aEntityData.myPlayerGraphicsData, myOrientation);
 	}
 
 	if (aEntityData.mySoundData.myExistsInEntity == true)

@@ -9,6 +9,7 @@ struct TriggerComponentData;
 struct SoundComponentData;
 struct InputComponentData;
 struct SawBladeComponentData;
+struct PlayerGraphicsComponentData;
 class XMLReader;
 
 namespace tinyxml2
@@ -27,6 +28,7 @@ public:
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SoundComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SawBladeComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerGraphicsComponentData& aOutputData);
 
 private:
 

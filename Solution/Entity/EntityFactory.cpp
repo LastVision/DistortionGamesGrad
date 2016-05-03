@@ -138,6 +138,10 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.mySawBladeData);
 		}
+		else if (elementName == CU::ToLower("PlayerGraphicsComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myPlayerGraphicsData);
+		}
 		else
 		{
 			std::string errorMessage = "The component " + elementName +
