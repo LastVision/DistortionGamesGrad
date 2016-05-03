@@ -68,6 +68,9 @@
     <ClCompile Include="InputComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -127,6 +130,12 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="InputComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
   </ItemGroup>
