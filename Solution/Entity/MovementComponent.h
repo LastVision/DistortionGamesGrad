@@ -20,6 +20,8 @@ public:
 private:
 	const MovementComponentData& myData;
 
+	void Drag(float aDeltaTime);
+
 	CU::Vector2<float> myVelocity;
 
 	CU::Matrix44f& myOrientation;
