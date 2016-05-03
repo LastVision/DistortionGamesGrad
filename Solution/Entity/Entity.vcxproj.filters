@@ -71,7 +71,9 @@
     <ClCompile Include="MovementComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="SpikeComponent.cpp" />
+    <ClCompile Include="SpikeComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -145,6 +147,8 @@
     <ClInclude Include="SpikeComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
-    <ClInclude Include="SpikeComponent.h" />
+    <ClInclude Include="SpikeComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
