@@ -3,8 +3,10 @@
 #include "Level.h"
 #include <Scene.h>
 #include <EntityFactory.h>
-
+#include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
+
+
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
@@ -48,21 +50,19 @@ void Level::Render()
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)
 {
-	/*Entity& first = aFirst->GetEntity();
+	Entity& first = aFirst->GetEntity();
 	Entity& second = aSecond->GetEntity();
 
-	switch (first.GetType())
+	if (aHasEntered == true && second.GetType() == eEntityType::PLAYER)
 	{
-	case eEntityType::TRIGGER:
-		HandleTrigger(first, second, aHasEntered);
-		break;
-	case eEntityType::EXPLOSION:
-		if (aHasEntered == true)
+		switch (first.GetType())
 		{
-			HandleExplosion(first, second);
+		case eEntityType::SAW_BLADE:
+		case eEntityType::SPIKE:
+			// kill player
+			break;
 		}
-		break;
-	}*/
+	}
 }
 
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond)
