@@ -36,6 +36,11 @@ Level::~Level()
 void Level::Update(float aDelta)
 {
 	myPlayer->Update(aDelta);
+
+	for each(Entity* entity in myEntities)
+	{
+		entity->Update(aDelta);
+	}
 }
 
 void Level::Render()

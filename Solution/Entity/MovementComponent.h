@@ -3,11 +3,6 @@
 
 struct MovementComponentData;
 
-namespace CU
-{
-	class ControllerInput;
-}
-
 class MovementComponent : public Component
 {
 public:
@@ -20,9 +15,9 @@ public:
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
+
 private:
-	const MovementComponentData& myComponentData;
-	CU::ControllerInput* myController;
+	const MovementComponentData& myData;
 
 	CU::Vector2<float> myVelocity;
 
