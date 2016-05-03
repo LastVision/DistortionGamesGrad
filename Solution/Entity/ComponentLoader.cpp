@@ -72,6 +72,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myExistsInEntity = true;
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Gravity"), "value", aOutputData.myGravity);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Impulse"), "value", aOutputData.myImpulse);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "RotationSpeed"), "value", aOutputData.myRotationSpeed);
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)

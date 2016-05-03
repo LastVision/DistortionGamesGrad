@@ -34,5 +34,7 @@ void InputComponent::Update(float aDeltaTime)
 		else
 		{
 		}
+
+		myMovement->Rotate(myController->LeftThumbstickX() * aDeltaTime);
 	}
 }

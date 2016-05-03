@@ -12,6 +12,7 @@ public:
 	void Update(float aDeltaTime) override;
 
 	void Impulse();
+	void Rotate(float aValue);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;

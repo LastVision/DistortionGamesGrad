@@ -33,5 +33,9 @@ void MovementComponent::Update(float aDeltaTime)
 void MovementComponent::Impulse()
 {
 	myVelocity.y += myData.myImpulse;
-	//myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3f(0, 0.001f, 0));
+}
+
+void MovementComponent::Rotate(float aValue)
+{
+	myOrientation = CU::Matrix44<float>::CreateRotateAroundZ(-aValue * myData.myRotationSpeed) * myOrientation;
 }
