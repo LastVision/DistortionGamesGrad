@@ -386,9 +386,6 @@
     <ClInclude Include="DGFXFileFormat.h">
       <Filter>FBX</Filter>
     </ClInclude>
-    <ClInclude Include="BoneName.h">
-      <Filter>Rendering\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="Bar3D.h" />
     <ClInclude Include="Portal.h">
       <Filter>Room</Filter>
@@ -416,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="SpotLightTextureProjection.h">
       <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationJoint.h">
+      <Filter>Rendering\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

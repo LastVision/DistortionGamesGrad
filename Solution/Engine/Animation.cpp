@@ -77,7 +77,7 @@ namespace Prism
 		SetBoneData(myHierarchy);
 	}
 	
-	void Animation::GetHiearchyToBone(const std::string& aBoneName, GUIBone& aBoneOut)
+	void Animation::GetHiearchyToBone(const std::string& aBoneName, AnimationJoint& aBoneOut)
 	{
 		myHierarchy.GetBoneHiearchyByName(aBoneName, aBoneOut);
 		aBoneOut.myJoint = &myCalculatedBones[aBoneOut.myJointID];

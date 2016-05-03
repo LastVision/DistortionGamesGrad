@@ -560,7 +560,7 @@ namespace Prism
 		return animation;
 	}
 
-	void FBXFactory::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, GUIBone& aBoneOut)
+	void FBXFactory::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, AnimationJoint& aBoneOut)
 	{
 		Animation* anim = LoadAnimation(aAnimationPath);
 		anim->GetHiearchyToBone(aBoneName, aBoneOut);

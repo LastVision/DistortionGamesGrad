@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BoneName.h"
+#include "AnimationJoint.h"
 #include <GrowingArray.h>
 #include <atomic>
 #include <unordered_map>
@@ -53,7 +53,7 @@ namespace Prism
 		FontProxy* LoadFont(const std::string& aFilePath, const CU::Vector2<int>& aTextureSize);
 		TextProxy* LoadText(FontProxy* aFontProxy, bool aIs3d = false, bool aShouldFollowCamera = false);
 
-		void GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, GUIBone& aBoneOut);
+		void GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, AnimationJoint& aBoneOut);
 
 	private:
 		enum class eLoadType
@@ -75,7 +75,7 @@ namespace Prism
 				ModelProxy* myModelProxy;
 				AnimationProxy* myAnimationProxy;
 				SpriteProxy* mySpriteProxy;
-				GUIBone* myGUIBone;
+				AnimationJoint* myGUIBone;
 				FontProxy* myFontProxy;
 				TextProxy* myTextProxy;
 			};

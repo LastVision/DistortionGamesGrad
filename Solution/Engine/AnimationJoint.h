@@ -2,12 +2,12 @@
 #include "Matrix.h"
 #include <string>
 
-struct GUIBone
+struct AnimationJoint
 {
-	GUIBone()
+	AnimationJoint()
 		: myIsValid(false)
 	{}
-	GUIBone(CU::Matrix44<float>* aBindMatrix, CU::Matrix44<float>* aJointMatrix, int aJointID)
+	AnimationJoint(CU::Matrix44<float>* aBindMatrix, CU::Matrix44<float>* aJointMatrix, int aJointID)
 		: myBind(aBindMatrix)
 		, myJoint(aJointMatrix)
 		, myJointID(aJointID)

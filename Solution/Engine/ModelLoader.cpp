@@ -513,7 +513,7 @@ namespace Prism
 		return proxy;
 	}
 
-	void ModelLoader::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, GUIBone& aBoneOut)
+	void ModelLoader::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, AnimationJoint& aBoneOut)
 	{
 #ifdef THREADED_LOADING
 		WaitUntilAddIsAllowed();

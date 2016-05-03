@@ -61,7 +61,7 @@ namespace Prism
 		}
 	}
 
-	bool HierarchyBone::GetBoneHiearchyByName(const std::string& aName, GUIBone& aOutBone)
+	bool HierarchyBone::GetBoneHiearchyByName(const std::string& aName, AnimationJoint& aOutBone)
 	{
 		if (myBoneName.compare(aName) == 0)
 		{

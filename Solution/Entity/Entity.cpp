@@ -55,7 +55,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	}
 	else if (aEntityData.myPlayerGraphicsData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::PLAYER_GRAPHICS)] = new PlayerGraphicsComponent(*this, aEntityData.myPlayerGraphicsData, myOrientation);
+		myComponents[static_cast<int>(eComponentType::PLAYER_GRAPHICS)] = new PlayerGraphicsComponent(*this, aEntityData.myPlayerGraphicsData, myOrientation, aScene);
 	}
 
 	if (aEntityData.mySoundData.myExistsInEntity == true)

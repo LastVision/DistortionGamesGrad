@@ -6,6 +6,7 @@ struct PlayerGraphicsComponentData
 	bool myExistsInEntity = false;
 
 	std::string myShader;
+	std::string myAnimationShader;
 
 	std::string myBody;
 	std::string myHead;

@@ -191,7 +191,7 @@ namespace Prism
 		return animation;
 	}
 
-	void DGFXLoader::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, GUIBone& aBoneOut)
+	void DGFXLoader::GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, AnimationJoint& aBoneOut)
 	{
 		Animation* anim = LoadAnimation(aAnimationPath);
 		anim->GetHiearchyToBone(aBoneName, aBoneOut);

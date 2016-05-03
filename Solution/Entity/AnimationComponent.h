@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "BoneName.h"
+#include "AnimationJoint.h"
 
 namespace Prism
 {
@@ -72,7 +72,7 @@ private:
 	CU::Matrix44<float> myWeaponJoint;
 	struct EnemyAnimationBone
 	{
-		GUIBone myWeaponBone;
+		AnimationJoint myWeaponBone;
 
 		bool IsValid()
 		{
