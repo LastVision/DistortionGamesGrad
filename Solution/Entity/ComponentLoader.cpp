@@ -73,6 +73,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Gravity"), "value", aOutputData.myGravity);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Impulse"), "value", aOutputData.myImpulse);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "RotationSpeed"), "value", aOutputData.myRotationSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Drag"), "x", aOutputData.myDrag.x);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Drag"), "y", aOutputData.myDrag.y);
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
