@@ -2,6 +2,8 @@
 
 #include "AnimationComponent.h"
 #include "GraphicsComponent.h"
+#include "InputComponent.h"
+#include "MovementComponent.h"
 #include "PhysicsComponent.h"
 #include "PollingStation.h"
 #include <Scene.h>
@@ -10,7 +12,6 @@
 #include <PostMaster.h>
 #include "TriggerComponent.h"
 #include "SoundComponent.h"
-#include "InputComponent.h"
 
 Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
 	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
@@ -83,11 +84,23 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myInputData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::INPUT)] = new InputComponent(*this, aEntityData.myInputData, myOrientation);
+		myComponents[static_cast<int>(eComponentType::INPUT)] = new InputComponent(*this, aEntityData.myInputData);
+	}
+
+	if (aEntityData.myMovementData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::MOVEMENT)] = new MovementComponent(*this, aEntityData.myMovementData, myOrientation);
 	}
 
 
 
+	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
+	{
+		if (myComponents[i] != nullptr)
+		{
+			myComponents[i]->Init();
+		}
+	}
 
 	Reset();
 

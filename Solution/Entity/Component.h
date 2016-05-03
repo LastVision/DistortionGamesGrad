@@ -26,7 +26,6 @@ public:
 	virtual void ReceiveNote(const CollisionNote&) {}
 	virtual void ReceiveNote(const UpgradeNote&) {}
 
-	//TODO: remove?
 	virtual void Init();
 
 	virtual void Update(float aDeltaTime);

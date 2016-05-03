@@ -62,6 +62,16 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	}
 }
 
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, InputComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, MovementComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
 {
 	std::string physicsType;
@@ -159,11 +169,6 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 }
 
 void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SoundComponentData& aOutputData)
-{
-	aOutputData.myExistsInEntity = true;
-}
-
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, InputComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
