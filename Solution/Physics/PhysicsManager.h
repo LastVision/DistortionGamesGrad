@@ -41,7 +41,8 @@ namespace Prism
 	{
 	public:
 		int physicsFPS;
-		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback);
+		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
+			, std::function<void(PhysicsComponent*, PhysicsComponent*)> aOnContactCallback);
 		~PhysicsManager();
 
 #ifdef THREAD_PHYSICS
@@ -106,7 +107,13 @@ namespace Prism
 		void Wake(int aCapsuleID);
 	private:
 		std::chrono::system_clock::time_point myStartOfTime;
-
+		
+		enum
+		{
+			CCD_FLAG = 1 << 29,
+			KINEMATIC_FLAG = 1 << 30,
+			OTHER_FLAG = 1 << 31
+		};
 
 
 #ifdef THREAD_PHYSICS
@@ -180,6 +187,7 @@ namespace Prism
 		CU::GrowingArray<OnTriggerResult> myOnTriggerResults[2];
 
 		std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> myOnTriggerCallback;
+		std::function<void(PhysicsComponent*, PhysicsComponent*)> myOnContactCallback;
 
 		struct MoveJob
 		{

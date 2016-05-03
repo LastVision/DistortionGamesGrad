@@ -37,6 +37,7 @@
 #include <CommonHelper.h>
 #include "DGFXReader.h"
 #include <DL_Debug.h>
+#include "EntityReader.h"
 #include <Engine.h>
 #include "LevelReader.h"
 #include "TerrainReader.h"
@@ -58,6 +59,8 @@ int main(int argC,      // Number of strings in array argv
 	bool convertDGFX = false;
 	bool calcCollisionRadius = false;
 	bool readLevel = false;
+	bool readEntities = false;
+
 	for (int i = 0; i < argC; ++i)
 	{
 		std::string command(argV[i]);
@@ -74,6 +77,10 @@ int main(int argC,      // Number of strings in array argv
 		{
 			readLevel = true;
 		}
+		else if (command == "-readentities")
+		{
+			readEntities = true;
+		}
 	}
 
 	DL_Debug::Debug::Create();
@@ -81,7 +88,7 @@ int main(int argC,      // Number of strings in array argv
 	
 	IReader* reader;
 
-	if (calcCollisionRadius)
+	if (calcCollisionRadius == true)
 	{
 		system("CLS");
 		std::cout << "---| Calculating CollisionRadius |---\n" << std::endl;
@@ -110,7 +117,7 @@ int main(int argC,      // Number of strings in array argv
 		system("CLS");
 	}
 
-	if (readLevel)
+	if (readLevel == true)
 	{
 		system("CLS");
 		std::cout << "\n---| Reading Level |---\n" << std::endl;
@@ -120,6 +127,20 @@ int main(int argC,      // Number of strings in array argv
 		delete reader;
 
 		std::cout << "\n---| Level Reading Done |---\n" << std::endl;
+		system("CLS");
+	}
+
+	if (readEntities == true)
+	{
+		system("CLS");
+		std::cout << "\n---| Reading Entities |---\n" << std::endl;
+
+		reader = new EntityReader();
+		find_directory("Data/Resource/Entity", *reader);
+
+		delete reader;
+
+		std::cout << "\n---| Entities Reading Done |---\n" << std::endl;
 		system("CLS");
 	}
 	

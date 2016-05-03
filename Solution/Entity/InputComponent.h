@@ -1,18 +1,23 @@
 #pragma once
 #include "Component.h"
 
-struct InputComponentData;
-
 namespace CU
 {
 	class ControllerInput;
 }
 
+class MovementComponent;
+
+struct InputComponentData;
+
+
 class InputComponent : public Component
 {
 public:
-	InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44f& anOrientation);
+	InputComponent(Entity& aEntity, const InputComponentData& aInputData);
 	~InputComponent();
+
+	void Init() override;
 
 	void Update(float aDeltaTime) override;
 
@@ -22,7 +27,8 @@ private:
 	const InputComponentData& myComponentData;
 	CU::ControllerInput* myController;
 
-	CU::Matrix44f& myOrientation;
+	MovementComponent* myMovement;
+
 };
 
 inline eComponentType InputComponent::GetTypeStatic()

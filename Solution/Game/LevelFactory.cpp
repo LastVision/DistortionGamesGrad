@@ -5,6 +5,7 @@
 #include <EntityFactory.h>
 #include "Level.h"
 #include "LevelFactory.h"
+#include <SawBladeComponent.h>
 #include <XMLReader.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
@@ -149,6 +150,23 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 			myCurrentLevel->myScene, sawBladePosition, sawBladeRotation, sawBladeScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
+
+		tinyxml2::XMLElement* patrolElement = aReader.FindFirstChild(entityElement, "patrols");
+
+		if (patrolElement != nullptr)
+		{
+			CU::GrowingArray<CU::Vector3<float>> patrolPositions(8);
+
+			for (tinyxml2::XMLElement* patrolPositionElement = aReader.FindFirstChild(patrolElement, "patrolLocation"); patrolPositionElement != nullptr;
+				patrolPositionElement = aReader.FindNextElement(patrolPositionElement, "patrolLocation"))
+			{
+				CU::Vector3<float> position;
+				aReader.ForceReadAttribute(patrolPositionElement, "X", "Y", "Z", position);
+				patrolPositions.Add(position);
+			}
+
+			myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
+		}
 	}
 }
 

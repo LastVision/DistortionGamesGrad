@@ -60,7 +60,7 @@ namespace GUI
 		myGUITutorialAmmoTotal = new Prism::Bar3D({ 1.f, 1.f }, 1, myEffect, eBarPosition::PISTOL_ICON, "Data/Resource/Texture/UI/T_tutorial_GUI_ammo_total.dds");
 		myGUITutorialAmmoTotal->SetValue(1.f);
 
-		myAmmoTotalText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::DIALOGUE), true);
+		myAmmoTotalText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE), true);
 		myAmmoTotalText->Rotate3dText(-0.8f);
 		myAmmoTotalText->SetOffset({ 0.1f, 0.f, 0.f });
 

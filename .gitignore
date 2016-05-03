@@ -60,6 +60,7 @@ Workbed/Application_Debug.ilk
 Workbed/bin/*
 !Workbed/bin/DataExporter.exe
 Solution/Launcher/obj/
+Solution/Launcher/bin/
 
 Tools/LogReader/LogReader/LogReader/obj/
 Tools/LogReader/LogReader_temp/obj/

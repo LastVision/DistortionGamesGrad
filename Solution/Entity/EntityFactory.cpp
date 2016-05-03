@@ -114,6 +114,14 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 
 			myComponentLoader->Load(entityDocument, e, newData.myGraphicsData);
 		}
+		else if (elementName == CU::ToLower("InputComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myInputData);
+		}
+		else if (elementName == CU::ToLower("MovementComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myMovementData);
+		}
 		else if (elementName == CU::ToLower("TriggerComponent"))
 		{
 			myComponentLoader->Load(entityDocument, e, newData.myTriggerData);
@@ -126,9 +134,9 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.mySoundData);
 		}
-		else if (elementName == CU::ToLower("InputComponent"))
+		else if (elementName == CU::ToLower("SawBladeComponent"))
 		{
-			myComponentLoader->Load(entityDocument, e, newData.myInputData);
+			myComponentLoader->Load(entityDocument, e, newData.mySawBladeData);
 		}
 		else
 		{

@@ -10,7 +10,7 @@ namespace Prism
 	class Scene;
 };
 
-
+class PhysicsComponent;
 
 class Level : public Subscriber
 {
@@ -21,6 +21,9 @@ public:
 
 	void Update(float aDelta);
 	void Render();
+
+	void CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered);
+	void ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond);
 
 private:
 	void operator=(Level&) = delete;

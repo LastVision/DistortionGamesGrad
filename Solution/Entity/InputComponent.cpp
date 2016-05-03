@@ -1,15 +1,14 @@
 #include "stdafx.h"
-#include "InputComponent.h"
 #include <ControllerInput.h>
+#include "InputComponent.h"
+#include "MovementComponent.h"
 
-
-InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44f& anOrientation)
+InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData)
 	: Component(aEntity)
 	, myComponentData(aInputData)
-	, myOrientation(anOrientation)
+	, myMovement(nullptr)
+	, myController(new CU::ControllerInput(0))
 {
-	myController = new CU::ControllerInput(0);
-
 }
 
 InputComponent::~InputComponent()
@@ -17,32 +16,23 @@ InputComponent::~InputComponent()
 	SAFE_DELETE(myController);
 }
 
+void InputComponent::Init()
+{
+	myMovement = myEntity.GetComponent<MovementComponent>();
+	DL_ASSERT_EXP(myMovement != nullptr, "Input component needs movement component to work correctly.");
+}
+
 void InputComponent::Update(float aDeltaTime)
 {
 
 	if (myController->IsConnected() == true)
 	{
-		if (myController->ButtonOnDown(CU::eXboxButton::A))
+		if (myController->ButtonWhileDown(CU::eXboxButton::A))
 		{
-			myOrientation.SetPos(CU::Vector3f(0, 1, 0));
-		}
-		else if (myController->LeftThumbstickX() > 0.5f)
-		{
-			myOrientation.SetPos(CU::Vector3f(1, 0, 0));
-		}
-		else if (myController->LeftThumbstickX() < -0.5f)
-		{
-			myOrientation.SetPos(CU::Vector3f(-1, 0, 0));
+			myMovement->Impulse();
 		}
 		else
 		{
-			myOrientation.SetPos(CU::Vector3f(0, 0, 0));
 		}
-
 	}
-
-
-
-
-
 }
