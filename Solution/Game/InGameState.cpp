@@ -8,6 +8,7 @@
 #include <CommonHelper.h>
 #include <GameStateMessage.h>
 #include <EffectContainer.h>
+#include <EntityFactory.h>
 #include "InGameState.h"
 #include <InputWrapper.h>
 #include <ModelLoader.h>
@@ -72,6 +73,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myStateStatus = eStateStatus::eKeepState;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(false);
+
+	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
 	myLevelFactory = new LevelFactory("Data/Level/LI_level.xml", *myCamera);
 	myLevel = myLevelFactory->LoadLevel(0);
 

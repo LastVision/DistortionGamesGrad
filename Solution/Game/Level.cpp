@@ -15,11 +15,8 @@ Level::Level(Prism::Camera& aCamera)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 
-	EntityFactory::GetInstance()->LoadEntities("Data/Resource/Entity/LI_entity.xml");
 	myPlayer = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 	myPlayer->AddToScene();
-
-
 }
 
 Level::~Level()
