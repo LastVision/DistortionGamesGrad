@@ -71,6 +71,9 @@
     <ClCompile Include="MovementComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="SpikeComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -137,6 +140,15 @@
     </ClInclude>
     <ClInclude Include="MovementComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="SawBladeComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="SpikeComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="SpikeComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

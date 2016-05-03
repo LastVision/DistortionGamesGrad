@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="CalcRadiusReader.cpp" />
     <ClCompile Include="DGFXReader.cpp" />
+    <ClCompile Include="EntityReader.cpp" />
     <ClCompile Include="IReader.cpp" />
     <ClCompile Include="LevelReader.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="CalcRadiusReader.h" />
     <ClInclude Include="DGFXReader.h" />
     <ClInclude Include="dirent.h" />
+    <ClInclude Include="EntityReader.h" />
     <ClInclude Include="IReader.h" />
     <ClInclude Include="LevelReader.h" />
     <ClInclude Include="TerrainReader.h" />

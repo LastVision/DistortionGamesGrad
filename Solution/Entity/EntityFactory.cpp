@@ -134,6 +134,14 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.mySoundData);
 		}
+		else if (elementName == CU::ToLower("SawBladeComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.mySawBladeData);
+		}
+		else if (elementName == CU::ToLower("SpikeComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.mySpikeData);
+		}
 		else
 		{
 			std::string errorMessage = "The component " + elementName +

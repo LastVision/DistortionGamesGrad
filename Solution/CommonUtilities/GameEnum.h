@@ -74,15 +74,9 @@ enum eEntityType
 enum class eTriggerType : int
 {
 	EMPTY = -1,
-	LEVEL_CHANGE,
-	HEALTH_PACK,
-	UPGRADE,
-	UNLOCK,
-	LOCK,
-	MISSION,
-	RESPAWN,
-	ENEMY_SPAWN,
-	MARKER,
+	SPIKE,
+	SAW_BLADE,
+	
 	_COUNT,
 };
 
@@ -142,6 +136,7 @@ enum class eComponentType
 	PHYSICS,
 	SOUND,
 	SAW_BLADE,
+	SPIKE,
 	_COUNT,
 };
 

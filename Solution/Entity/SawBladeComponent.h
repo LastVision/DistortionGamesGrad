@@ -7,6 +7,8 @@ public:
 	SawBladeComponent(Entity& anEntity);
 	~SawBladeComponent();
 
+	void Update(float aDeltaTime) override;
+
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 

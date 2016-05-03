@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application_Client", "Application\Application.vcxproj", "{7F3313DC-157F-4FD3-81F1-F918848BBCEE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Application\Application.vcxproj", "{7F3313DC-157F-4FD3-81F1-F918848BBCEE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{25945336-03D1-42A6-8764-7EF11DBC42E6} = {25945336-03D1-42A6-8764-7EF11DBC42E6}
 	EndProjectSection
@@ -20,7 +20,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Timer", "Timer\Timer.vcxpro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{A6FF485B-C021-486E-BEA3-2CB4E4CBB0A1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game_Client", "Game\Game.vcxproj", "{040C55CC-94AC-4543-A75B-B121AC5AF085}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{040C55CC-94AC-4543-A75B-B121AC5AF085}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Audio\Audio.vcxproj", "{B5915C8F-2AEF-4137-BCBE-152F819860CD}"
 EndProject
