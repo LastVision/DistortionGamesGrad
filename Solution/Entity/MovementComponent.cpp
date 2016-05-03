@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ContactNote.h"
 #include "MovementComponent.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aInputData, CU::Matrix44f& anOrientation)
@@ -22,6 +23,20 @@ void MovementComponent::Update(float aDeltaTime)
 	Translate();
 
 	DEBUG_PRINT(myOrientation.GetPos());
+}
+
+void MovementComponent::ReceiveNote(const ContactNote& aNote)
+{
+	CU::Vector2<float> toContact(aNote.myContactPoint.GetVector2() - myOrientation.GetPos().GetVector2());
+
+	if (fabs(toContact.x) > fabs(toContact.y))
+	{
+		myVelocity.x = 0;
+	}
+	else
+	{
+		myVelocity.y = 0;
+	}
 }
 
 void MovementComponent::Impulse()

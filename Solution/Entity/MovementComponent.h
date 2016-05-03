@@ -10,6 +10,7 @@ public:
 	~MovementComponent();
 
 	void Update(float aDeltaTime) override;
+	void ReceiveNote(const ContactNote& aNote) override;
 
 	void Impulse();
 	void SetUpTarget(const CU::Vector2<float>& anUp);

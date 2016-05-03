@@ -55,6 +55,7 @@ physx::PxFilterFlags GraduationFilter(
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 	{
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	}
 
 	return physx::PxFilterFlag::eDEFAULT;
@@ -63,7 +64,7 @@ physx::PxFilterFlags GraduationFilter(
 namespace Prism
 {
 	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-		, std::function<void(PhysicsComponent*, PhysicsComponent*)> aOnContactCallback)
+		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>)> aOnContactCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
 		, myOnContactCallback(aOnContactCallback)
@@ -440,6 +441,29 @@ namespace Prism
 		, const CU::Vector3<float>&, const CU::Vector3<float>&) > aFunctionToCall, const PhysicsComponent* aComponent)
 	{
 		myRaycastJobs[myCurrentIndex].Add(RaycastJob(aOrigin, aNormalizedDirection, aMaxRayDistance, aFunctionToCall, aComponent));
+	}
+
+	void PhysicsManager::onContact(const physx::PxContactPairHeader& aHeader, const physx::PxContactPair* somePairs, physx::PxU32 aCount)
+	{
+		for (physx::PxU32 i = 0; i < aCount; i++)
+		{
+			const physx::PxContactPair& pairs = somePairs[i];
+
+			if (pairs.events == physx::PxPairFlag::Enum::eNOTIFY_TOUCH_FOUND)
+			{
+				
+				physx::PxContactPairPoint point;
+				pairs.extractContacts(&point, aCount);
+				point.position;
+
+				myOnContactCallback(static_cast<PhysicsComponent*>(aHeader.actors[0]->userData)
+					, static_cast<PhysicsComponent*>(aHeader.actors[1]->userData)
+					, CU::Vector3<float>(point.position.x, point.position.y, point.position.z));
+				
+			}
+
+
+		}
 	}
 
 	void PhysicsManager::onTrigger(physx::PxTriggerPair* somePairs, physx::PxU32 aCount)

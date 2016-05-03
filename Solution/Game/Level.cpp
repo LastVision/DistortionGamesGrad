@@ -1,18 +1,19 @@
 #include "stdafx.h"
 
-#include "Level.h"
-#include <Scene.h>
+#include <ContactNote.h>
 #include <EntityFactory.h>
+#include <InputComponent.h>
+#include "Level.h"
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
-#include <InputComponent.h>
+#include <Scene.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
-		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2));
+		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
@@ -75,28 +76,14 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 	}
 }
 
-void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond)
+void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint)
 {
-	//Entity& first = aFirst->GetEntity();
-	//Entity& second = aSecond->GetEntity();
+	Entity* first = &aFirst->GetEntity();
+	Entity* second = &aSecond->GetEntity();
+	bool aHasEntered = true;
+	if (first->GetType() == eEntityType::PLAYER)
+	{
+		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aHasEntered));
+	}
 
-	//if (aFirst->GetPhysicsType() == ePhysics::DYNAMIC)
-	//{
-	//	if (first.GetComponent<SoundComponent>() != nullptr)
-	//	{
-	//		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_PropBounce", first.GetComponent<SoundComponent>()->GetAudioSFXID());
-	//	}
-	//}
-	//else if (aSecond->GetPhysicsType() == ePhysics::DYNAMIC)
-	//{
-	//	if (second.GetComponent<SoundComponent>() != nullptr)
-	//	{
-	//		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_PropBounce", second.GetComponent<SoundComponent>()->GetAudioSFXID());
-	//	}
-	//}
-	//else
-	//{
-	//	int whatIsCollidingHere = 15;
-	//	whatIsCollidingHere;
-	//}
 }

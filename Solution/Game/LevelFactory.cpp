@@ -5,6 +5,7 @@
 #include <EntityFactory.h>
 #include "Level.h"
 #include "LevelFactory.h"
+#include <PhysicsInterface.h>
 #include <SawBladeComponent.h>
 #include <XMLReader.h>
 
@@ -35,6 +36,10 @@ Level* LevelFactory::LoadCurrentLevel()
 	myCurrentLevel = new Level(myCamera);
 
 	ReadLevel(myLevelPaths[myCurrentLevelID]);
+
+#ifdef THREAD_PHYSICS
+	Prism::PhysicsInterface::GetInstance()->InitThread();
+#endif
 
 	return myCurrentLevel;
 }
