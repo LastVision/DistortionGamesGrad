@@ -48,7 +48,6 @@ namespace Prism
 		SAFE_DELETE(myFadeData.mySprite);
 		SAFE_DELETE(myModelFactory);
 
-		SAFE_DELETE(myDialogueFont);
 		SAFE_DELETE(myConsoleFont);
 
 		SAFE_DELETE(myText);
@@ -271,9 +270,6 @@ namespace Prism
 	{
 		switch (aFont)
 		{
-		case Prism::eFont::DIALOGUE:
-			return myDialogueFont;
-			break;
 		case Prism::eFont::CONSOLE:
 			return myConsoleFont;
 			break;
@@ -282,7 +278,7 @@ namespace Prism
 			break;
 		}
 
-		return myDialogueFont;
+		return myConsoleFont;
 	}
 
 	void Engine::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName)
@@ -324,21 +320,15 @@ namespace Prism
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
 
+		myConsoleFont = ModelLoader::GetInstance()->LoadFont("Data/Resource/Font/debugText.txt", { 256, 256 });
 
-		myDialogueFont = ModelLoader::GetInstance()->LoadFont("Data/Resource/Font/debugText.txt", { 256, 256 });
-		myConsoleFont = ModelLoader::GetInstance()->LoadFont("Data/Resource/Font/consolab.ttf_sdf.txt", { 256, 256 });
 
-		//myDialogueFont = new Font("Data/Resource/Font/debugText.txt", { 256, 256 });
-		//myConsoleFont = new Font("Data/Resource/Font/consolab.ttf_sdf.txt", { 256, 256 });
-		//myText = new Text(*myDialogueFont);
-
-		myText = ModelLoader::GetInstance()->LoadText(myDialogueFont);
+		myText = ModelLoader::GetInstance()->LoadText(myConsoleFont);
 		myText->SetPosition({ 800.f, -300.f });
 		myText->SetText("едц");
 		myText->SetScale({ 1.f, 1.f });
 
-		//myDebugText = new Text(*myDialogueFont);
-		myDebugText = ModelLoader::GetInstance()->LoadText(myDialogueFont);
+		myDebugText = ModelLoader::GetInstance()->LoadText(myConsoleFont);
 		myDebugText->SetPosition({ 800.f, -300.f });
 		myDebugText->SetText("едц");
 		myDebugText->SetScale({ 1.f, 1.f });

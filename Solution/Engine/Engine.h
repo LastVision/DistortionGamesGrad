@@ -126,7 +126,6 @@ namespace Prism
 		DirectX* myDirectX;
 		SetupInfo* mySetupInfo;
 		FBXFactory* myModelFactory;
-		FontProxy* myDialogueFont;
 		FontProxy* myConsoleFont;
 		TextProxy* myText;
 		TextProxy* myDebugText;
