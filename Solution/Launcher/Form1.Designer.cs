@@ -37,7 +37,6 @@
             this.myQualityList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.myResolutionList = new System.Windows.Forms.ComboBox();
-            this.JoinMultiplayer = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
@@ -77,7 +76,6 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.JoinMultiplayer);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.myQualityList);
             this.panel3.Controls.Add(this.label1);
@@ -123,16 +121,6 @@
             this.myResolutionList.Size = new System.Drawing.Size(121, 21);
             this.myResolutionList.TabIndex = 1;
             // 
-            // JoinMultiplayer
-            // 
-            this.JoinMultiplayer.Location = new System.Drawing.Point(269, 3);
-            this.JoinMultiplayer.Name = "JoinMultiplayer";
-            this.JoinMultiplayer.Size = new System.Drawing.Size(153, 62);
-            this.JoinMultiplayer.TabIndex = 5;
-            this.JoinMultiplayer.Text = "Join Multiplayer";
-            this.JoinMultiplayer.UseVisualStyleBackColor = true;
-            this.JoinMultiplayer.Click += new System.EventHandler(this.JoinMultiplayer_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,7 +152,6 @@
         private System.Windows.Forms.ComboBox myResolutionList;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox myQualityList;
-        private System.Windows.Forms.Button JoinMultiplayer;
     }
 }
 

@@ -140,6 +140,7 @@ enum class eComponentType
 	INPUT,
 	PHYSICS,
 	SOUND,
+	SAW_BLADE,
 	_COUNT,
 };
 

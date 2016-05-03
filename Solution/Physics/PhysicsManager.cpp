@@ -36,11 +36,37 @@
 #define GENERATE_COW
 //#endif
 
+physx::PxFilterFlags GraduationFilter(
+	physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+	physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+	physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+{
+	// let triggers through
+	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
+		return physx::PxFilterFlag::eDEFAULT;
+	}
+	// generate contacts for all that were not filtered above
+	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+
+	// trigger the contact callback for pairs (A,B) where
+	// the filtermask of A contains the ID of B and vice versa.
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
+		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+	}
+
+	return physx::PxFilterFlag::eDEFAULT;
+}
+
 namespace Prism
 {
-	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback)
+	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
+		, std::function<void(PhysicsComponent*, PhysicsComponent*)> aOnContactCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
+		, myOnContactCallback(aOnContactCallback)
 #ifdef THREAD_PHYSICS
 		, myQuit(false)
 		, myLogicDone(false)
@@ -119,7 +145,8 @@ namespace Prism
 
 		if (!sceneDesc.filterShader)
 		{
-			sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+			//sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+			sceneDesc.filterShader = GraduationFilter;
 		}
 
 		myScene = myPhysicsSDK->createScene(sceneDesc);
@@ -715,6 +742,18 @@ namespace Prism
 			{
 				GetScene()->addActor(*(*aStaticBodyOut));
 			}
+			
+			physx::PxU32 nShapes = (*aStaticBodyOut)->getNbShapes();
+
+			*someShapesOut = new physx::PxShape*[nShapes];
+
+			physx::PxShape** statShape = new physx::PxShape*;
+			(*aStaticBodyOut)->getShapes(statShape, nShapes);
+
+			physx::PxFilterData fd = (*statShape)->getSimulationFilterData();
+			fd.word0 = physx::PxU32(OTHER_FLAG);
+			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
+			(*statShape)->setSimulationFilterData(fd);
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::DYNAMIC)
 		{
@@ -767,6 +806,14 @@ namespace Prism
 			physx::PxU32 nShapes = (*aDynamicBodyOut)->getNbShapes();
 
 			*someShapesOut = new physx::PxShape*[nShapes];
+
+			physx::PxShape** dynShape = new physx::PxShape*;
+			(*aDynamicBodyOut)->getShapes(dynShape, nShapes);
+
+			physx::PxFilterData fd = (*dynShape)->getSimulationFilterData();
+			fd.word0 = physx::PxU32(KINEMATIC_FLAG);
+			fd.word1 = physx::PxU32(OTHER_FLAG);
+			(*dynShape)->setSimulationFilterData(fd);
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::PHANTOM)
 		{

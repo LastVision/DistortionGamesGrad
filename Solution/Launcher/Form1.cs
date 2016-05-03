@@ -17,8 +17,7 @@ namespace Launcher
 	{
 		private string myDocumentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		private string myConfigPath = "Data\\Setting\\SET_config.bin";
-		private string myExePath = "Machina_Client.exe";
-		private string myServerPath = "Machina_Server.exe";
+		private string myExePath = "Application_Release.exe";
 		private string myLogo = "bin\\Data\\Resource\\Texture\\Logo\\T_launcher_logo.png";
 		private string myGameName = "Machina";
 
@@ -136,21 +135,6 @@ namespace Launcher
 				WriteQualityToFile(writer);
                 WriteJoinServer(writer, 0);
 			}
-
-            myServer.StartInfo.FileName = myServerPath;
-            myServer.StartInfo.WorkingDirectory = "bin\\";
-            myServer.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-            if (File.Exists("bin\\" + myServerPath) == true)
-            {
-                if (IsProcessOpen(myServer.StartInfo.FileName) == false)
-                {
-                    myServer.Start();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Could not find " + myServerPath + ".");
-            }
 
 			ProcessStartInfo processInfo = new ProcessStartInfo();
 			processInfo.WorkingDirectory = "bin\\";
@@ -312,56 +296,5 @@ namespace Launcher
 			//    resolutionDropdown.Enabled = false;
 			//}
 		}
-
-        private void JoinMultiplayer_Click(object sender, EventArgs e)
-        {
-            using (BinaryWriter writer = new BinaryWriter(File.Open(myConfigPath, FileMode.Create)))
-            {
-                WriteResolutionToFile(writer);
-                WriteMSAAToFile(writer);
-                WriterWindowedToFile(writer);
-                WriteQualityToFile(writer);
-                WriteJoinServer(writer, 1);
-            }
-            myServer.StartInfo.FileName = myServerPath;
-            myServer.StartInfo.WorkingDirectory = "bin\\";
-            myServer.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-            if (File.Exists("bin\\" + myServerPath) == true)
-            {
-                if (IsProcessOpen(myServer.StartInfo.FileName) == false)
-                {
-                    myServer.Start();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Could not find " + myServerPath + ".");
-            }
-
-            ProcessStartInfo processInfo = new ProcessStartInfo();
-            processInfo.WorkingDirectory = "bin\\";
-            processInfo.FileName = myExePath;
-
-            if (File.Exists("bin\\" + myExePath) == true)
-            {
-                if (IsProcessOpen("Application_Release") == true)
-                {
-                    MessageBox.Show("A instance of the game " + myGameName + " is already running.");
-                }
-                else
-                {
-                    myGame.StartInfo.FileName = myExePath;
-                    myGame.StartInfo.WorkingDirectory = "bin\\";
-                    myGame.Start();
-                    myGame.WaitForInputIdle();
-
-                    Application.Exit();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Could not find " + myExePath + ".");
-            }
-        }
 	}
 }
