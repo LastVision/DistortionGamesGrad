@@ -5,7 +5,7 @@
 #include <EntityFactory.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
-
+#include <InputComponent.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -16,16 +16,23 @@ Level::Level(Prism::Camera& aCamera)
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
+	myPlayers.Init(2);
+	int playerCount = 2;
 
-	myPlayer = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
-	myPlayer->AddToScene();
+	for (int i = 0; i < playerCount; ++i)
+	{
+		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
+		player->GetComponent<InputComponent>()->AddController(myPlayers.Size());
+		player->AddToScene();
+		myPlayers.Add(player);
+	}
 }
 
 Level::~Level()
 {
 	SAFE_DELETE(myScene);
-	SAFE_DELETE(myPlayer);
 	myEntities.DeleteAll();
+	myPlayers.DeleteAll();
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
@@ -35,7 +42,10 @@ Level::~Level()
 
 void Level::Update(float aDelta)
 {
-	myPlayer->Update(aDelta);
+	for each(Entity* player in myPlayers)
+	{
+		player->Update(aDelta);
+	}
 
 	for each(Entity* entity in myEntities)
 	{

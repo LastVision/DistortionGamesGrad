@@ -346,7 +346,7 @@
     <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Bar3D.h" />
     <ClInclude Include="BaseModel.h" />
-    <ClInclude Include="BoneName.h" />
+    <ClInclude Include="AnimationJoint.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterData.h" />
     <ClInclude Include="Cube3D.h" />

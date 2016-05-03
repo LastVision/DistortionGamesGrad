@@ -200,6 +200,22 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myExistsInEntity = true;
 }
 
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerGraphicsComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Shader"), "path", aOutputData.myShader);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "AnimationShader"), "path", aOutputData.myAnimationShader);
+
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Body"), "path", aOutputData.myBody);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Head"), "path", aOutputData.myHead);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LeftLeg"), "path", aOutputData.myLeftLeg);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "RightLeg"), "path", aOutputData.myRightLeg);
+
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Idleanimation"), "path", aOutputData.myIdleAnimation);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Walkanimation"), "path", aOutputData.myWalkAnimation);
+}
+
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)
 {
 	if (aName == "hazard")

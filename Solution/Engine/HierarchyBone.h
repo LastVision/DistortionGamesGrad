@@ -1,5 +1,5 @@
 #pragma once
-#include "BoneName.h"
+#include "AnimationJoint.h"
 
 namespace Prism
 {
@@ -16,7 +16,7 @@ namespace Prism
 
 		void Update(const CU::Matrix44<float>& aParentMatrix, float aCurrentTime);
 		void GetBoneMatrix(const std::string& aBoneName, CU::Matrix44<float>& aOutMatrix) const;
-		bool GetBoneHiearchyByName(const std::string& aName, GUIBone& aOutBone);
+		bool GetBoneHiearchyByName(const std::string& aName, AnimationJoint& aOutBone);
 
 	private:
 		HierarchyBone* myParent;
