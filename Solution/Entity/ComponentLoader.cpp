@@ -5,6 +5,8 @@
 #include "EntityEnumConverter.h"
 #include "PhysicsComponentData.h"
 #include "TriggerComponentData.h"
+#include "SpikeComponentData.h"
+#include "SawBladeComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
 
@@ -167,43 +169,25 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myExistsInEntity = true;
 }
 
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SawBladeComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SpikeComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)
 {
-	if (aName == "healthPack")
+	if (aName == "spike")
 	{
-		return static_cast<int>(eTriggerType::HEALTH_PACK);
+		return static_cast<int>(eTriggerType::SPIKE);
 	}
-	else if (aName == "changeLevel")
+	else if (aName == "saw_blade")
 	{
-		return static_cast<int>(eTriggerType::LEVEL_CHANGE);
-	}
-	else if (aName == "upgrade")
-	{
-		return static_cast<int>(eTriggerType::UPGRADE);
-	}
-	else if (aName == "unlock")
-	{
-		return static_cast<int>(eTriggerType::UNLOCK);
-	}
-	else if (aName == "lock")
-	{
-		return static_cast<int>(eTriggerType::LOCK);
-	}
-	else if (aName == "startMission")
-	{
-		return static_cast<int>(eTriggerType::MISSION);
-	}
-	else if (aName == "respawn")
-	{
-		return static_cast<int>(eTriggerType::RESPAWN);
-	}
-	else if (aName == "spawntrigger")
-	{
-		return static_cast<int>(eTriggerType::ENEMY_SPAWN);
-	}
-	else if (aName == "marker")
-	{
-		return static_cast<int>(eTriggerType::MARKER);
+		return static_cast<int>(eTriggerType::SAW_BLADE);
 	}
 
 	DL_ASSERT("[ComponentLoader] No trigger type in trigger component named " + aName);

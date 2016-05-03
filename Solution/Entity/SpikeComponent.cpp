@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "SpikeComponent.h"
 
-
-SpikeComponent::SpikeComponent()
+SpikeComponent::SpikeComponent(Entity& anEntity)
+	: Component(anEntity)
 {
 }
-
 
 SpikeComponent::~SpikeComponent()
 {

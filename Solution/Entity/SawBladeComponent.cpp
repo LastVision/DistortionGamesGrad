@@ -10,4 +10,10 @@ SawBladeComponent::SawBladeComponent(Entity& anEntity)
 
 SawBladeComponent::~SawBladeComponent()
 {
+	myPositions.RemoveAll();
+}
+
+void SawBladeComponent::Update(float aDeltaTime)
+{
+
 }
