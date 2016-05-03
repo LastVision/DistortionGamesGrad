@@ -18,6 +18,10 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::SAW_BLADE;
 		}
+		else if (aType == "spike")
+		{
+			return eEntityType::SPIKE;
+		}
 		else if (aType == "player")
 		{
 			return eEntityType::PLAYER;

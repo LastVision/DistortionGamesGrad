@@ -175,11 +175,16 @@
     <ClInclude Include="GraphicsComponentData.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputComponentData.h" />
+    <ClInclude Include="MovementComponent.h" />
+    <ClInclude Include="MovementComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PollingStation.h" />
     <ClInclude Include="SawBladeComponent.h" />
+    <ClInclude Include="SawBladeComponentData.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
+    <ClInclude Include="SpikeComponent.h" />
+    <ClInclude Include="SpikeComponentData.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
@@ -193,10 +198,12 @@
     <ClCompile Include="EntityFactory.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="SawBladeComponent.cpp" />
     <ClCompile Include="SoundComponent.cpp" />
+    <ClCompile Include="SpikeComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DataExporter|Win32'">false</MultiProcessorCompilation>
