@@ -7,7 +7,6 @@
 #include "SoundComponentData.h"
 #include "InputComponentData.h"
 #include "SawBladeComponentData.h"
-#include "SpikeComponentData.h"
 
 struct EntityData
 {
@@ -19,6 +18,5 @@ struct EntityData
 	SoundComponentData mySoundData;
 	InputComponentData myInputData;
 	SawBladeComponentData mySawBladeData;
-	SpikeComponentData mySpikeData;
 	std::string mySubType;
 };

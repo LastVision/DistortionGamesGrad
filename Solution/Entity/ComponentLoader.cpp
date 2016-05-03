@@ -5,7 +5,6 @@
 #include "EntityEnumConverter.h"
 #include "PhysicsComponentData.h"
 #include "TriggerComponentData.h"
-#include "SpikeComponentData.h"
 #include "SawBladeComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
@@ -174,20 +173,11 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SpikeComponentData& aOutputData)
-{
-	aOutputData.myExistsInEntity = true;
-}
-
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)
 {
-	if (aName == "spike")
+	if (aName == "hazard")
 	{
-		return static_cast<int>(eTriggerType::SPIKE);
-	}
-	else if (aName == "saw_blade")
-	{
-		return static_cast<int>(eTriggerType::SAW_BLADE);
+		return static_cast<int>(eTriggerType::HAZARD);
 	}
 
 	DL_ASSERT("[ComponentLoader] No trigger type in trigger component named " + aName);
