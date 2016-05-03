@@ -42,7 +42,6 @@ namespace Prism
 
 	enum class eFont
 	{
-		DIALOGUE,
 		CONSOLE
 	};
 }
