@@ -817,7 +817,7 @@ namespace Prism
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::PHANTOM)
 		{
-			if (aShouldAddToScene == true)
+			if (aShouldBeSphere == false)
 			{
 				physx::PxVec3 dimensions(
 					aPhysData.myData->myPhysicsMax.x - aPhysData.myData->myPhysicsMin.x

@@ -77,6 +77,19 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	std::string physicsType;
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "type"), "value", physicsType);
 
+	tinyxml2::XMLElement* sphereElement = aDocument.FindFirstChild(aSourceElement, "isSphere");
+	tinyxml2::XMLElement* activeFromStartElement = aDocument.FindFirstChild(aSourceElement, "isActiveFromStart");
+	
+	if (sphereElement != nullptr)
+	{
+		aDocument.ForceReadAttribute(sphereElement, "value", aOutputData.myIsSphere);
+	}
+
+	if (activeFromStartElement != nullptr)
+	{
+		aDocument.ForceReadAttribute(activeFromStartElement, "value", aOutputData.myIsActiveFromStart);
+	}
+
 	aOutputData.myExistsInEntity = true;
 
 	if (CU::ToLower(physicsType) == "static")

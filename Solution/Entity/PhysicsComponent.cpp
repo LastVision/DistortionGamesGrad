@@ -25,39 +25,19 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
 
-	bool shouldAddToPhysicsScene = true;
-	//if (myEntity.GetType() == eEntityType::EXPLOSION || myEntity.GetSubType() == "respawn"
-	//	|| myEntity.GetType() == eEntityType::BULLET || myEntity.GetSubType() == CU::ToLower("gunDroidServer")
-	//	|| myEntity.GetSubType() == "gundroid")
-	//{
-	//	shouldAddToPhysicsScene = false;
-	//}
-
-	//if (myEntity.GetComponent<TriggerComponent>() != nullptr)
-	//{
-	//	if (myEntity.GetComponent<TriggerComponent>()->IsClientSide() == true)
-	//	{
-	//		shouldAddToPhysicsScene = false;
-	//	}
-	//}
-	bool isSphere = true;
-	if (myPhysicsType == ePhysics::STATIC)
-	{
-		isSphere = false;
-	}
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
 		myCallbackStruct = Prism::PhysicsCallbackStruct(myData, std::bind(&PhysicsComponent::SwapOrientations, this)
 			, std::bind(&PhysicsComponent::UpdateOrientation, this));
 		Prism::PhysicsInterface::GetInstance()->Create(this, myCallbackStruct, my4x4Float, aFBXPath, &myDynamicBody
-			, &myStaticBody, &myShapes, shouldAddToPhysicsScene, isSphere);
+			, &myStaticBody, &myShapes, myData.myIsActiveFromStart, myData.myIsSphere);
 	}
 	else if (myPhysicsType == ePhysics::CAPSULE)
 	{
-		myCapsuleControllerId = Prism::PhysicsInterface::GetInstance()->CreatePlayerController(myEntity.GetOrientation().GetPos(), this, shouldAddToPhysicsScene);
+		myCapsuleControllerId = Prism::PhysicsInterface::GetInstance()->CreatePlayerController(myEntity.GetOrientation().GetPos(), this, myData.myIsActiveFromStart);
 	}
 
-	myIsInScene = shouldAddToPhysicsScene;
+	myIsInScene = myData.myIsActiveFromStart;
 }
 
 
@@ -138,12 +118,6 @@ float* PhysicsComponent::GetOrientation()
 void PhysicsComponent::UpdateOrientation()
 {
 	DL_ASSERT_EXP(myPhysicsType == ePhysics::DYNAMIC, "Cant update Orientation on STATIC PhysEntities");
-
-	if (myEntity.GetGID() == 60000)
-	{
-		int apa = 5;
-		apa;
-	}
 
 	if (myIsAwake == true)
 	{
