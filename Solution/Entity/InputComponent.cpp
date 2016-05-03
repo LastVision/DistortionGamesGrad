@@ -7,7 +7,6 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	: Component(aEntity)
 	, myComponentData(aInputData)
 	, myMovement(nullptr)
-	, myController(new CU::ControllerInput(0))
 {
 }
 
@@ -20,6 +19,11 @@ void InputComponent::Init()
 {
 	myMovement = myEntity.GetComponent<MovementComponent>();
 	DL_ASSERT_EXP(myMovement != nullptr, "Input component needs movement component to work correctly.");
+}
+
+void InputComponent::AddController(int anID)
+{
+	myController = new CU::ControllerInput(anID);
 }
 
 void InputComponent::Update(float aDeltaTime)

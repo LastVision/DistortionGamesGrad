@@ -18,6 +18,7 @@ public:
 	~InputComponent();
 
 	void Init() override;
+	void AddController(int anID);
 
 	void Update(float aDeltaTime) override;
 
@@ -33,7 +34,7 @@ private:
 
 inline eComponentType InputComponent::GetTypeStatic()
 {
-	return eComponentType::GRAPHICS;
+	return eComponentType::INPUT;
 }
 
 inline eComponentType InputComponent::GetType()
