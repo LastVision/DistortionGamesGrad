@@ -138,6 +138,7 @@ enum class eComponentType
 	GRAPHICS,
 	TRIGGER,
 	INPUT,
+	MOVEMENT,
 	PHYSICS,
 	SOUND,
 	SAW_BLADE,
