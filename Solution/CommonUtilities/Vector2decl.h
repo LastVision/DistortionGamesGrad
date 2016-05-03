@@ -1,5 +1,4 @@
 #pragma once
-#include "Vector3decl.h"
 
 namespace CU
 {
@@ -10,7 +9,6 @@ namespace CU
 	public:
 		Vector2();
 		Vector2(T aX, T aY);
-		//Vector2(Vector3<T> aVector);
 		~Vector2();
 
 		Vector2<T> operator-()
