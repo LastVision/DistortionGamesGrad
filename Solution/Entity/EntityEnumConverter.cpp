@@ -14,7 +14,7 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::SPIKE;
 		}
-		else if (aType == "sawBlade")
+		else if (aType == "sawblade")
 		{
 			return eEntityType::SAW_BLADE;
 		}
