@@ -24,6 +24,14 @@ namespace CU
 	}
 
 	template <typename T>
+	Vector3<T>::Vector3(Vector2<T> aVector, T aZ)
+	{
+		x = aVector.x;
+		y = aVector.y;
+		z = aZ;
+	}
+
+	template <typename T>
 	Vector3<T>::~Vector3()
 	{
 	}

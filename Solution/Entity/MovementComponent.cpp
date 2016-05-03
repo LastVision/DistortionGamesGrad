@@ -1,39 +1,37 @@
 #include "stdafx.h"
 #include "MovementComponent.h"
-#include <ControllerInput.h>
-
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aInputData, CU::Matrix44f& anOrientation)
 	: Component(aEntity)
-	, myComponentData(aInputData)
+	, myData(aInputData)
 	, myOrientation(anOrientation)
 {
-	myController = new CU::ControllerInput(0);
-
 }
 
 MovementComponent::~MovementComponent()
 {
-	SAFE_DELETE(myController);
 }
 
 void MovementComponent::Update(float aDeltaTime)
 {
+	myVelocity.y += myData.myGravity * aDeltaTime;
 
-	if (myController->IsConnected() == true)
+	CU::Vector3<float> position();
+
+	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
+
+	myOrientation.SetPos(CU::Vector3<float>(myOrientation.GetPos().x, fmaxf(myOrientation.GetPos().y, 0), myOrientation.GetPos().z));
+
+	if (myOrientation.GetPos().y == 0)
 	{
-		if (myController->ButtonWhileDown(CU::eXboxButton::A))
-		{
-			//myOrientation.SetPos(CU::Vector3f(0, 1, 0));
-		}
-		else
-		{
-			//myOrientation.SetPos(CU::Vector3f(0, 0, 0));
-		}
+		myVelocity.y = 0;
 	}
+
+	DEBUG_PRINT(myOrientation.GetPos());
 }
 
 void MovementComponent::Impulse()
 {
-	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3f(0, 0.001f, 0));
+	myVelocity.y += myData.myImpulse;
+	//myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3f(0, 0.001f, 0));
 }
