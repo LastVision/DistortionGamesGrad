@@ -734,6 +734,8 @@ namespace Prism
 		{
 			physx::PxTriangleMesh* mesh = GetPhysMesh(aFBXPath);
 
+			DL_ASSERT_EXP(mesh != nullptr, "No PhysMesh (.obj) found for " + aFBXPath);
+
 			*aStaticBodyOut = core->createRigidStatic(transform);
 			(*aStaticBodyOut)->createShape(physx::PxTriangleMeshGeometry(mesh), *myDefaultMaterial);
 			(*aStaticBodyOut)->setName(aFBXPath.c_str());

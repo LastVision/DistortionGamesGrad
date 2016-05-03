@@ -6,5 +6,7 @@ struct MovementComponentData
 	float myGravity;
 	float myImpulse;
 	float myRotationSpeed;
+	float myDeadZone;
+	float myAngleEpsilon;
 	CU::Vector2<float> myDrag;
 };
