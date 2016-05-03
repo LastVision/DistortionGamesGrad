@@ -122,7 +122,21 @@ namespace CU
 
 	float ControllerInput::LeftThumbstickY()
 	{
-		return static_cast<float>(myControllerState.Gamepad.sThumbLY) / SHRT_MAX;
+		if (myControllerID >= 0)
+			return static_cast<float>(myControllerState.Gamepad.sThumbLY) / SHRT_MAX;
+		else
+		{
+			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+			{
+				return -1.f;
+			}
+			else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+			{
+				return 1.f;
+			}
+		}
+
+		return 0.f;
 	}
 
 	float ControllerInput::RightThumbstickX()

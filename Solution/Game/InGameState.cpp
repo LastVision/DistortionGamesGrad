@@ -32,7 +32,7 @@ InGameState::InGameState(int aLevelID)
 {
 	myIsActiveState = false;
 
-	myCameraOrientation.SetPos(CU::Vector3<float>(0, 2, -5.f));
+	myCameraOrientation.SetPos(CU::Vector3<float>(0, 10, -20.f));
 
 	myCamera = new Prism::Camera(myCameraOrientation);
 	myCamera->Update(1.f / 30.f);
