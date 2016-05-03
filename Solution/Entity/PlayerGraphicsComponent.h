@@ -26,6 +26,7 @@ public:
 	eComponentType GetType() override;
 
 private:
+
 	struct BodyPart
 	{
 		~BodyPart();
@@ -58,6 +59,9 @@ private:
 	BodyPart myHead;
 
 	BodyJoints myIdleJoints;
+
+	BodyJoints* myCurrentAnimationJoints;
+	Prism::Instance* myCurrentAnimation;
 };
 
 inline eComponentType PlayerGraphicsComponent::GetTypeStatic()
