@@ -81,7 +81,6 @@ private:
 	bool myIsInScene;
 	std::string mySubType;
 	eEntityState myState;
-	eObjectRoomType myRoomType;
 
 	Prism::Scene* myScene;
 

@@ -5,6 +5,7 @@ struct GraphicsComponentData;
 struct PhysicsComponentData;
 struct TriggerComponentData;
 struct SoundComponentData;
+struct InputComponentData;
 class XMLReader;
 
 namespace tinyxml2
@@ -15,14 +16,14 @@ namespace tinyxml2
 class ComponentLoader
 {
 public:
-	void LoadAnimationComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData);
-	void LoadGraphicsComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData);
-	void LoadPhysicsComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData);
-	void LoadTriggerComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData);
-	void LoadSoundComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SoundComponentData& aOutputData);
-private:
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SoundComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, InputComponentData& aOutputData);
 
-	eObjectRoomType LoadRoomType(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement);
+private:
 
 	int ConvertToTriggerEnum(std::string aName);
 };

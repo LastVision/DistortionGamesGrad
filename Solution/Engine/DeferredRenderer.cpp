@@ -94,8 +94,6 @@ namespace Prism
 
 		myDepthStencilTexture = new Texture();
 		myDepthStencilTexture->InitAsDepthBuffer(windowSize.x, windowSize.y);
-		myArmDepthStencilTexture = new Texture();
-		myArmDepthStencilTexture->InitAsDepthBuffer(windowSize.x, windowSize.y);
 
 		myClearColor[0] = 0.f;
 		myClearColor[1] = 0.f;
@@ -147,17 +145,11 @@ namespace Prism
 		ClearGBuffer();
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myDepthStencilTexture->GetDepthStencilView()
 			, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myArmDepthStencilTexture->GetDepthStencilView()
-			, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+		
 		Engine::GetInstance()->GetContex()->RSSetViewports(1, myViewPort);
 
 		SetGBufferAsTarget(myDepthStencilTexture);
 		aScene->Render();
-		aScene->RenderArmAndWeaponOnlyDepth();
-
-		SetGBufferAsTarget(myArmDepthStencilTexture);
-		aScene->RenderArmAndWeapon();
 
 		ActivateBuffers();
 
@@ -171,11 +163,9 @@ namespace Prism
 		ClearGBuffer();
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myDepthStencilTexture->GetDepthStencilView()
 			, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myArmDepthStencilTexture->GetDepthStencilView()
-			, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		SetGBufferAsTarget(myDepthStencilTexture);
 
-		aScene->RenderWithoutRoomManager();
+		aScene->Render();
 
 		ActivateBuffers();
 
@@ -189,7 +179,6 @@ namespace Prism
 		myGBufferData.myEmissiveTexture->Resize(aWidth, aHeight);
 		myGBufferData.myDepthTexture->Resize(aWidth, aHeight);
 		myDepthStencilTexture->Resize(aWidth, aHeight);
-		myArmDepthStencilTexture->Resize(aWidth, aHeight);
 		myFinishedTexture->Resize(aWidth, aHeight);
 	}
 
@@ -213,7 +202,7 @@ namespace Prism
 
 			ModelLoader::GetInstance()->WaitUntilFinished();
 			myCubeMapGenerator->GenerateSHTextures(this, aScene, mySHTextures, myAmbientPass.mySHGridSize
-				, myAmbientPass.mySHGridOffset, GC::SHNodeSize, aName);
+				, myAmbientPass.mySHGridOffset, static_cast<float>(GC::SHNodeSize), aName);
 
 			myAmbientPass.mySHGridOffset *= -1.f;
 		}
@@ -250,7 +239,7 @@ namespace Prism
 	void DeferredRenderer::SetCubeMap(const std::string& aFilePath)
 	{
 		ModelLoader::GetInstance()->Pause();
-		//myCubemap = TextureContainer::GetInstance()->GetTexture("LightData/" + aFilePath + "_cubemap.dds");
+		myCubemap = TextureContainer::GetInstance()->GetTexture("LightData/" + aFilePath + "_cubemap.dds");
 		ModelLoader::GetInstance()->UnPause();
 	}
 
@@ -267,11 +256,6 @@ namespace Prism
 	Prism::Texture* DeferredRenderer::GetDepthStencilTexture()
 	{
 		return myDepthStencilTexture;
-	}
-
-	Prism::Texture* DeferredRenderer::GetArmDepthStencilTexture()
-	{
-		return myArmDepthStencilTexture;
 	}
 
 	void DeferredRenderer::InitFullscreenQuad()

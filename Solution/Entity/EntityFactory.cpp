@@ -105,26 +105,30 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 			if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You have a GraphicsComponent so you can't have a AnimationComponent");
 			if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You already have a AnimationComponent");
 
-			myComponentLoader->LoadAnimationComponent(entityDocument, e, newData.myAnimationData);
+			myComponentLoader->Load(entityDocument, e, newData.myAnimationData);
 		}
 		else if (elementName == CU::ToLower("GraphicsComponent"))
 		{
 			if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You have a AnimationComponent so you can't have a GraphicsComponent");
 			if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You already have a GraphicsComponent");
 
-			myComponentLoader->LoadGraphicsComponent(entityDocument, e, newData.myGraphicsData);
+			myComponentLoader->Load(entityDocument, e, newData.myGraphicsData);
 		}
 		else if (elementName == CU::ToLower("TriggerComponent"))
 		{
-			myComponentLoader->LoadTriggerComponent(entityDocument, e, newData.myTriggerData);
+			myComponentLoader->Load(entityDocument, e, newData.myTriggerData);
 		}
 		else if (elementName == CU::ToLower("PhysicsComponent"))
 		{
-			myComponentLoader->LoadPhysicsComponent(entityDocument, e, newData.myPhysicsData);
+			myComponentLoader->Load(entityDocument, e, newData.myPhysicsData);
 		}
 		else if (elementName == CU::ToLower("SoundComponent"))
 		{
-			myComponentLoader->LoadSoundComponent(entityDocument, e, newData.mySoundData);
+			myComponentLoader->Load(entityDocument, e, newData.mySoundData);
+		}
+		else if (elementName == CU::ToLower("InputComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myInputData);
 		}
 		else
 		{

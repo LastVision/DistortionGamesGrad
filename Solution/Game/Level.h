@@ -10,6 +10,8 @@ namespace Prism
 	class Scene;
 };
 
+
+
 class Level : public Subscriber
 {
 	friend class LevelFactory;
@@ -23,8 +25,12 @@ public:
 private:
 	void operator=(Level&) = delete;
 
+
+
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
+
+	Entity* myPlayer;
 
 	CU::GrowingArray<Entity*> myEntities;
 };

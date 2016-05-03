@@ -25,13 +25,9 @@ namespace Prism
 		~Scene();
 
 		void Render();
-		void RenderArmAndWeapon();
-		void RenderArmAndWeaponOnlyDepth();
-		void RenderWithoutRoomManager();
 		void UpdateLights();
 
-		void AddRoom(Room* aRoom);
-		void AddInstance(Instance* aInstance, eObjectRoomType aRoomType);
+		void AddInstance(Instance* aInstance);
 		void AddLight(DirectionalLight* aLight);
 		void AddLight(PointLight* aLight);
 		void AddLight(SpotLight* aLight);
@@ -41,14 +37,10 @@ namespace Prism
 
 		void SetCamera(const Camera& aCamera);
 		const Camera* GetCamera() const;
-		RoomManager* GetRoomManager() const;
 
 		const CU::GrowingArray<PointLight*>& GetPointLights(bool aUseRoomManager) const;
 		const CU::GrowingArray<SpotLight*>& GetSpotLights(bool aUseRoomManager) const;
 		const CU::GrowingArray<SpotLightTextureProjection*>& GetSpotLightsTextureProjection(bool aUseRoomManager) const;
-
-		void SetArmInstance(Instance* aInstance);
-		void SetWeaponInstance(Instance* aInstance);
 
 	private:
 		void operator=(Scene&) = delete;
@@ -58,24 +50,15 @@ namespace Prism
 		CU::GrowingArray<PointLight*> myAmbientPointLights;
 		CU::GrowingArray<SpotLight*> mySpotLights;
 		CU::GrowingArray<SpotLightTextureProjection*> mySpotLightsTextureProjection;
+		CU::GrowingArray<Instance*> myInstances;
+		
 		InstancingHelper* myInstancingHelper;
 
 		const Camera* myCamera;
-		RoomManager* myRoomManager;
-		Instance* myArmInstance;
-		Instance* myWeaponInstance;
 	};
-
-
 
 	inline const Camera* Scene::GetCamera() const
 	{
 		return myCamera;
-	}
-
-
-	inline RoomManager* Scene::GetRoomManager() const
-	{
-		return myRoomManager;
 	}
 }

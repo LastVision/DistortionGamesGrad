@@ -19,7 +19,7 @@ public:
 
 	void InitDLL(const char* aModelPath, const char* aEffectPath);
 	void InitCube(float aWidth, float aHeight, float aDepth);
-	void Update(float aDeltaTime);
+	void Update(float aDeltaTime) override;
 	Prism::Instance* GetInstance();
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;

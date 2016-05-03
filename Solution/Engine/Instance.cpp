@@ -55,7 +55,7 @@ namespace Prism
 		}
 	}
 
-	void Instance::Render(const Camera& aCamera, bool aOnlyDepth)
+	void Instance::Render(const Camera& aCamera)
 	{
 		if (myShouldRender == true && myProxy.IsLoaded())
 		{

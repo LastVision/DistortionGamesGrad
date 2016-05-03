@@ -107,9 +107,9 @@ namespace Prism
 		return myManager->CreatePlayerController(aStartPosition, aComponent, aShouldAddToScene);
 	}
 
-	void PhysicsInterface::Move(int aId, const CU::Vector3<float>& aDirection, float aMinDisplacement, float aDeltaTime)
+	void PhysicsInterface::Move(int aId, const CU::Vector3<float>& aDirection, float aMinDisplacement)
 	{
-		myManager->Move(aId, aDirection, aMinDisplacement, aDeltaTime);
+		myManager->Move(aId, aDirection, aMinDisplacement);
 	}
 
 	void PhysicsInterface::UpdateOrientation(physx::PxRigidDynamic* aDynamicBody, physx::PxShape** aShape, float* aThread4x4)

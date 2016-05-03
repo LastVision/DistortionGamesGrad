@@ -1,5 +1,5 @@
 #include "ControllerInput.h"
-namespace CommonUtilities
+namespace CU
 {
 	ControllerInput::ControllerInput(int aPlayer)
 	{
@@ -51,33 +51,33 @@ namespace CommonUtilities
 		myLeftMotorValue = aLeftVal;
 	}
 
-	bool ControllerInput::ButtonDown(eXboxButton aKey)
+	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)
 	{
 		return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
 	}
 
-	bool ControllerInput::ButtonUp(eXboxButton aKey)
+	bool ControllerInput::ButtonOnUp(eXboxButton aKey)
 	{
 		return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
 	}
 
-	bool ControllerInput::ButtonTap(eXboxButton aKey)
+	bool ControllerInput::ButtonOnDown(eXboxButton aKey)
 	{
 		return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
 	}
 
-	bool ControllerInput::ButtonDown(int aKey)
+	bool ControllerInput::ButtonWhileDown(int aKey)
 	{
 
 		return (myControllerState.Gamepad.wButtons & (aKey)) != 0;
 	}
 
-	bool ControllerInput::ButtonUp(int aKey)
+	bool ControllerInput::ButtonOnUp(int aKey)
 	{
 		return (((myControllerState.Gamepad.wButtons & (aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) != 0));
 	}
 
-	bool ControllerInput::ButtonTap(int aKey)
+	bool ControllerInput::ButtonOnDown(int aKey)
 	{
 		return (((myControllerState.Gamepad.wButtons & (aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) == 0));
 	}

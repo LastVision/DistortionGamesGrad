@@ -584,7 +584,7 @@ namespace Prism
 		return myControllerManager->getNbControllers() - 1;
 	}
 
-	void PhysicsManager::Move(int aId, const CU::Vector3<float>& aDirection, float aMinDisplacement, float aDeltaTime)
+	void PhysicsManager::Move(int aId, const CU::Vector3<float>& aDirection, float aMinDisplacement)
 	{
 		myMoveJobs[myCurrentIndex][aId] = MoveJob(aId, aDirection, aMinDisplacement, myTimestep);
 	}

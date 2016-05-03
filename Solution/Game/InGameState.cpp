@@ -31,7 +31,10 @@ InGameState::InGameState(int aLevelID)
 {
 	myIsActiveState = false;
 
+	myCameraOrientation.SetPos(CU::Vector3<float>(0, 0, -2.5f));
+
 	myCamera = new Prism::Camera(myCameraOrientation);
+	myCamera->Update(1.f / 30.f);
 
 	myLevelCompleteSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
 		"Data/Resource/Texture/Menu/T_background_story01.dds", { 1920.f, 1080.f });
@@ -86,16 +89,13 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float& aDeltaTime)
 {
-	
-
-
-
+	myLevel->Update(aDeltaTime);
 	return myStateStatus;
 }
 
 void InGameState::Render()
 {
-
+	myLevel->Render();
 }
 
 void InGameState::ResumeState()
@@ -120,5 +120,6 @@ void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
 
 void InGameState::OnResize(int aWidth, int aHeight)
 {
-
+	aWidth;
+	aHeight;
 }

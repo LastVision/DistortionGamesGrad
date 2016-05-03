@@ -8,11 +8,9 @@
 #include "XMLReader.h"
 #include "GameEnum.h"
 
-void ComponentLoader::LoadAnimationComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
-
-	aOutputData.myRoomType = LoadRoomType(aDocument, aSourceElement);
 
 	for (tinyxml2::XMLElement* e = aDocument.FindFirstChild(aSourceElement); e != nullptr; e = aDocument.FindNextElement(e))
 	{
@@ -38,11 +36,9 @@ void ComponentLoader::LoadAnimationComponent(XMLReader& aDocument, tinyxml2::XML
 	}
 }
 
-void ComponentLoader::LoadGraphicsComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
-
-	aOutputData.myRoomType = LoadRoomType(aDocument, aSourceElement);
 
 	for (tinyxml2::XMLElement* e = aDocument.FindFirstChild(aSourceElement); e != nullptr; e = aDocument.FindNextElement(e))
 	{
@@ -65,7 +61,7 @@ void ComponentLoader::LoadGraphicsComponent(XMLReader& aDocument, tinyxml2::XMLE
 	}
 }
 
-void ComponentLoader::LoadPhysicsComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
 {
 	std::string physicsType;
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "type"), "value", physicsType);
@@ -123,7 +119,7 @@ void ComponentLoader::LoadPhysicsComponent(XMLReader& aDocument, tinyxml2::XMLEl
 	}
 }
 
-void ComponentLoader::LoadTriggerComponent(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 	aOutputData.myIsOneTime = false; 
@@ -161,33 +157,14 @@ void ComponentLoader::LoadTriggerComponent(XMLReader& aDocument, tinyxml2::XMLEl
 	}
 }
 
-void ComponentLoader::LoadSoundComponent(XMLReader&, tinyxml2::XMLElement*, SoundComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SoundComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
 
-eObjectRoomType ComponentLoader::LoadRoomType(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, InputComponentData& aOutputData)
 {
-	std::string typeStr;
-	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "RoomType"), "value", typeStr);
-
-	if (typeStr == "dynamic")
-	{
-		return eObjectRoomType::DYNAMIC;
-	}
-	else if (typeStr == "static")
-	{
-		return eObjectRoomType::STATIC;
-	}
-	else if (typeStr == "alwaysRender")
-	{
-		return eObjectRoomType::ALWAYS_RENDER;
-	}
-	else
-	{
-		DL_ASSERT(CU::Concatenate("Unknown room type: %s", typeStr.c_str()));
-		return eObjectRoomType::STATIC;
-	}
+	aOutputData.myExistsInEntity = true;
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

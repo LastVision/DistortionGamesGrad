@@ -18,6 +18,10 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::SAW_BLADE;
 		}
+		else if (aType == "player")
+		{
+			return eEntityType::PLAYER;
+		}
 
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;
