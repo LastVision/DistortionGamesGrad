@@ -63,9 +63,4 @@ private:
 
 	bool myHasStartedMusicBetweenLevels;
 	int myLastLevel;
-	Prism::SpriteProxy* myLevelCompleteSprite;
-	Prism::SpriteProxy* myLevelFailedSprite;
-	Prism::SpriteProxy* myLoadingScreenSprite;
-	Prism::SpriteProxy* myRotatingThing;
-	Prism::SpriteProxy* myPressToStart;
 };

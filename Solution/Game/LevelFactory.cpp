@@ -104,7 +104,7 @@ void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 
 		ReadOrientation(aReader, entityElement, propPosition, propRotation, propScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::PROP, propType, 
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::PROP, CU::ToLower(propType),
 			myCurrentLevel->myScene, propPosition, propRotation, propScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
@@ -125,7 +125,7 @@ void LevelFactory::LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement
 
 		ReadOrientation(aReader, entityElement, spikePosition, spikeRotation, spikeScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, spikeType,
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, CU::ToLower(spikeType),
 			myCurrentLevel->myScene, spikePosition, spikeRotation, spikeScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
@@ -146,7 +146,7 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 		ReadOrientation(aReader, entityElement, sawBladePosition, sawBladeRotation, sawBladeScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, sawBladeType,
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, CU::ToLower(sawBladeType),
 			myCurrentLevel->myScene, sawBladePosition, sawBladeRotation, sawBladeScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
@@ -165,7 +165,7 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 				patrolPositions.Add(position);
 			}
 
-			myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
+			//myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
 		}
 	}
 }
