@@ -1,4 +1,5 @@
 #include "ControllerInput.h"
+#include "InputWrapper.h"
 namespace CU
 {
 	ControllerInput::ControllerInput(int aPlayer)
@@ -21,6 +22,9 @@ namespace CU
 
 	bool ControllerInput::IsConnected()
 	{
+		if (myControllerID < 0)
+			return true;
+
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
 		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
 
@@ -38,6 +42,24 @@ namespace CU
 		return myControllerID;
 	}
 
+	unsigned int ControllerInput::ConvertInput(const eXboxButton& aButton)
+	{
+		switch (aButton)
+		{
+		case eXboxButton::A:
+			return DIK_SPACE;
+			break;
+
+
+
+
+		default:
+			break;
+		}
+		DL_ASSERT("Tried to convert to unknown button.");
+		return -1;
+	}
+
 	void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)
 	{
 		XINPUT_VIBRATION vibration;
@@ -53,38 +75,49 @@ namespace CU
 
 	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)
 	{
-		return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
+		if (myControllerID >= 0)
+			return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
+		else
+			return CU::InputWrapper::GetInstance()->KeyIsPressed(ConvertInput(aKey));
+
+		return false;
 	}
 
 	bool ControllerInput::ButtonOnUp(eXboxButton aKey)
 	{
-		return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
+		if (myControllerID >= 0)
+			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
+		else
+			return CU::InputWrapper::GetInstance()->KeyUp(ConvertInput(aKey));
+		return false;
 	}
 
 	bool ControllerInput::ButtonOnDown(eXboxButton aKey)
 	{
-		return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
-	}
-
-	bool ControllerInput::ButtonWhileDown(int aKey)
-	{
-
-		return (myControllerState.Gamepad.wButtons & (aKey)) != 0;
-	}
-
-	bool ControllerInput::ButtonOnUp(int aKey)
-	{
-		return (((myControllerState.Gamepad.wButtons & (aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) != 0));
-	}
-
-	bool ControllerInput::ButtonOnDown(int aKey)
-	{
-		return (((myControllerState.Gamepad.wButtons & (aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) == 0));
+		if (myControllerID >= 0)
+			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
+		else
+			return CU::InputWrapper::GetInstance()->KeyDown(ConvertInput(aKey));
+		return false;
 	}
 
 	float ControllerInput::LeftThumbstickX()
 	{
-		return static_cast<float>(myControllerState.Gamepad.sThumbLX) / SHRT_MAX;
+		if (myControllerID >= 0)
+			return static_cast<float>(myControllerState.Gamepad.sThumbLX) / SHRT_MAX;
+		else
+		{
+			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+			{
+				return -1.f;
+			}
+			else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+			{
+				return 1.f;
+			}
+		}
+
+		return 0.f;
 	}
 
 	float ControllerInput::LeftThumbstickY()
