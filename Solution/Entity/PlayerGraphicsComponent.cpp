@@ -55,6 +55,14 @@ void PlayerGraphicsComponent::Init()
 	myCurrentAnimation = &myIdleAnimation;
 }
 
+void PlayerGraphicsComponent::Reset()
+{
+	myBody.SetActive(true);
+	myLeftLeg.SetActive(true);
+	myRightLeg.SetActive(true);
+	myHead.SetActive(true);
+}
+
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
@@ -72,19 +80,19 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
-		myBody.Toggle();
+		myBody.SetActive(false);
 	}
 	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_W))
 	{
-		myLeftLeg.Toggle();
+		myLeftLeg.SetActive(false);
 	}
 	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_E))
 	{
-		myRightLeg.Toggle();
+		myRightLeg.SetActive(false);
 	}
 	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_R))
 	{
-		myHead.Toggle();
+		myHead.SetActive(false);
 	}
 
 	myCurrentAnimation->myAnimation->Update(aDeltaTime);

@@ -70,6 +70,8 @@ enum eEntityType
 	PLAYER = 8,
 	STEAM = 16,
 	BOUNCER = 32,
+	SPAWN_POINT = 64,
+	GOAL_POINT = 128,
 	_COUNT,
 };
 

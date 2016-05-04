@@ -92,7 +92,12 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 	newData.myType = EntityEnumConverter::ConvertStringToEntityType(CU::ToLower(entityType));
 
 	entityDocument.ReadAttribute(entityElement, "subType", entitySubType);
-		newData.mySubType = CU::ToLower(entitySubType);
+	if (entitySubType == "")
+	{
+		int apa;
+		apa = 5;
+	}
+	newData.mySubType = CU::ToLower(entitySubType);
 
 
 	for (tinyxml2::XMLElement* e = entityDocument.FindFirstChild(entityElement); e != nullptr;

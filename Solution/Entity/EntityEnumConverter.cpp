@@ -34,6 +34,14 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::PLAYER;
 		}
+		else if (aType == "spawnpoint")
+		{
+			return eEntityType::SPAWN_POINT;
+		}
+		else if (aType == "goalpoint")
+		{
+			return eEntityType::GOAL_POINT;
+		}
 
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;
