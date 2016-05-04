@@ -3,12 +3,8 @@
 
 class Entity;
 
-struct BehaviorNote;
-struct ShootNote;
-struct DamageNote;
-struct HealthNote;
+struct ContactNote;
 struct CollisionNote;
-struct UpgradeNote;
 
 class Component
 {
@@ -19,12 +15,8 @@ public:
 	//TODO: Make = 0 ?
 	virtual void Reset();
 
-	virtual void ReceiveNote(const BehaviorNote&) {}
-	virtual void ReceiveNote(const ShootNote&) {}
-	virtual void ReceiveNote(const DamageNote&) {}
-	virtual void ReceiveNote(const HealthNote&) {}
 	virtual void ReceiveNote(const CollisionNote&) {}
-	virtual void ReceiveNote(const UpgradeNote&) {}
+	virtual void ReceiveNote(const ContactNote&) {}
 
 	virtual void Init();
 

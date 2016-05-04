@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AnimationSystem.h>
 #include <ModelLoader.h>
 #include <Instance.h>
 #include "PlayerGraphicsComponent.h"
@@ -44,15 +45,15 @@ void PlayerGraphicsComponent::Init()
 	myScene->AddInstance(myRightLeg.myInstance);
 	myScene->AddInstance(myHead.myInstance);
 
-
+	myCurrentAnimation = myBindPose;
+	myCurrentAnimationJoints = &myIdleJoints;
 }
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-	myIdleJoints.myAnimation->Update(aDeltaTime);
-
-	myBody.UpdateOrientation(myEntityOrientation, myIdleJoints.myBody);
-	myLeftLeg.UpdateOrientation(myEntityOrientation, myIdleJoints.myLeftLeg);
-	myRightLeg.UpdateOrientation(myEntityOrientation, myIdleJoints.myRightLeg);
-	myHead.UpdateOrientation(myEntityOrientation, myIdleJoints.myHead);
+	myCurrentAnimation->Update(aDeltaTime);
+	myBody.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myBody);
+	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myLeftLeg);
+	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myRightLeg);
+	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myHead);
 }

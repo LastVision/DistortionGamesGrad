@@ -55,6 +55,7 @@ physx::PxFilterFlags GraduationFilter(
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 	{
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	}
 
 	return physx::PxFilterFlag::eDEFAULT;
@@ -63,7 +64,7 @@ physx::PxFilterFlags GraduationFilter(
 namespace Prism
 {
 	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-		, std::function<void(PhysicsComponent*, PhysicsComponent*)> aOnContactCallback)
+		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
 		, myOnContactCallback(aOnContactCallback)
@@ -442,6 +443,28 @@ namespace Prism
 		myRaycastJobs[myCurrentIndex].Add(RaycastJob(aOrigin, aNormalizedDirection, aMaxRayDistance, aFunctionToCall, aComponent));
 	}
 
+	void PhysicsManager::onContact(const physx::PxContactPairHeader& aHeader, const physx::PxContactPair* somePairs, physx::PxU32 aCount)
+	{
+		for (physx::PxU32 i = 0; i < aCount; i++)
+		{
+			const physx::PxContactPair& pairs = somePairs[i];
+
+			if (pairs.events == physx::PxPairFlag::Enum::eNOTIFY_TOUCH_FOUND)
+			{
+				
+				physx::PxContactPairPoint point;
+				pairs.extractContacts(&point, aCount);
+
+				myOnContactCallback(static_cast<PhysicsComponent*>(aHeader.actors[0]->userData)
+					, static_cast<PhysicsComponent*>(aHeader.actors[1]->userData)
+					, CU::Vector3<float>(point.position.x, point.position.y, point.position.z)
+					, CU::Vector3<float>(point.normal.x, point.normal.y, point.normal.z));
+			}
+
+
+		}
+	}
+
 	void PhysicsManager::onTrigger(physx::PxTriggerPair* somePairs, physx::PxU32 aCount)
 	{
 		for (physx::PxU32 i = 0; i < aCount; i++)
@@ -734,6 +757,8 @@ namespace Prism
 		{
 			physx::PxTriangleMesh* mesh = GetPhysMesh(aFBXPath);
 
+			DL_ASSERT_EXP(mesh != nullptr, "No PhysMesh (.obj) found for " + aFBXPath);
+
 			*aStaticBodyOut = core->createRigidStatic(transform);
 			(*aStaticBodyOut)->createShape(physx::PxTriangleMeshGeometry(mesh), *myDefaultMaterial);
 			(*aStaticBodyOut)->setName(aFBXPath.c_str());
@@ -787,12 +812,21 @@ namespace Prism
 		else if (aPhysData.myData->myPhysicsType == ePhysics::KINEMATIC)
 		{
 			//insane flip to make enemy kinematic objects correct on client side (flip X and Y values)
-			physx::PxVec3 dimensions(
-				aPhysData.myData->myPhysicsMax.y - aPhysData.myData->myPhysicsMin.y
-				, aPhysData.myData->myPhysicsMax.x - aPhysData.myData->myPhysicsMin.x
-				, aPhysData.myData->myPhysicsMax.z - aPhysData.myData->myPhysicsMin.z);
-			physx::PxBoxGeometry geometry(dimensions / 2.f);
-			*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
+			if (aShouldBeSphere == true)
+			{
+				physx::PxSphereGeometry geometry;
+				geometry.radius = aPhysData.myData->myPhysicsMax.x;
+				*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
+			}
+			else
+			{
+				physx::PxVec3 dimensions(
+					aPhysData.myData->myPhysicsMax.y - aPhysData.myData->myPhysicsMin.y
+					, aPhysData.myData->myPhysicsMax.x - aPhysData.myData->myPhysicsMin.x
+					, aPhysData.myData->myPhysicsMax.z - aPhysData.myData->myPhysicsMin.z);
+				physx::PxBoxGeometry geometry(dimensions / 2.f);
+				*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
+			}
 			(*aDynamicBodyOut)->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
 			(*aDynamicBodyOut)->setGlobalPose(transform);
 			//(*aDynamicBodyOut)->setAngularDamping(0.75);

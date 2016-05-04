@@ -10,9 +10,10 @@ public:
 	~MovementComponent();
 
 	void Update(float aDeltaTime) override;
+	void ReceiveNote(const ContactNote& aNote) override;
 
 	void Impulse();
-	void Rotate(float aValue);
+	void SetUpTarget(const CU::Vector2<float>& anUp);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
@@ -21,8 +22,12 @@ private:
 	const MovementComponentData& myData;
 
 	void Drag(float aDeltaTime);
+	void Rotate(float aDeltaTime);
+	void Translate();
 
 	CU::Vector2<float> myVelocity;
+
+	CU::Vector2<float> myUpTarget;
 
 	CU::Matrix44f& myOrientation;
 };
@@ -35,4 +40,9 @@ inline eComponentType MovementComponent::GetTypeStatic()
 inline eComponentType MovementComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline void MovementComponent::SetUpTarget(const CU::Vector2<float>& anUp)
+{
+	myUpTarget = anUp;
 }

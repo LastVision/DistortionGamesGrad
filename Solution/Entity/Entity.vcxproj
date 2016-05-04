@@ -165,6 +165,7 @@
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationComponentData.h" />
     <ClInclude Include="CollisionNote.h" />
+    <ClInclude Include="ContactNote.h" />
     <ClInclude Include="EntityEnumConverter.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentLoader.h" />

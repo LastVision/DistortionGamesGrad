@@ -42,7 +42,7 @@ namespace Prism
 	public:
 		int physicsFPS;
 		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-			, std::function<void(PhysicsComponent*, PhysicsComponent*)> aOnContactCallback);
+			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback);
 		~PhysicsManager();
 
 #ifdef THREAD_PHYSICS
@@ -76,7 +76,7 @@ namespace Prism
 		void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override {};
 		void onWake(physx::PxActor**, physx::PxU32) override {};
 		void onSleep(physx::PxActor**, physx::PxU32) override {};
-		void onContact(const physx::PxContactPairHeader&, const physx::PxContactPair*, physx::PxU32) override {};
+		void onContact(const physx::PxContactPairHeader&, const physx::PxContactPair*, physx::PxU32) override;
 		void onTrigger(physx::PxTriggerPair*, physx::PxU32) override;
 
 		physx::PxPhysics* GetCore(){ return myPhysicsSDK; }
@@ -187,7 +187,7 @@ namespace Prism
 		CU::GrowingArray<OnTriggerResult> myOnTriggerResults[2];
 
 		std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> myOnTriggerCallback;
-		std::function<void(PhysicsComponent*, PhysicsComponent*)> myOnContactCallback;
+		std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> myOnContactCallback;
 
 		struct MoveJob
 		{

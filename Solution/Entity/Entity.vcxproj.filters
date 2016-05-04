@@ -156,5 +156,8 @@
     <ClInclude Include="PlayerBody.h">
       <Filter>Component\Graphic</Filter>
     </ClInclude>
+    <ClInclude Include="ContactNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

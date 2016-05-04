@@ -19,7 +19,7 @@ namespace Launcher
 		private string myConfigPath = "Data\\Setting\\SET_config.bin";
 		private string myExePath = "Application_Release.exe";
 		private string myLogo = "bin\\Data\\Resource\\Texture\\Logo\\T_launcher_logo.png";
-		private string myGameName = "Machina";
+		private string myGameName = "Graduation";
 
 		private Process myServer = new Process();
 		private Process myGame = new Process();

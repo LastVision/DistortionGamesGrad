@@ -37,6 +37,10 @@ private:
 	BodyPart myRightLeg;
 	BodyPart myHead;
 
+	BodyJoints myIdleJoints;
+
+	BodyJoints* myCurrentAnimationJoints;
+	Prism::Instance* myCurrentAnimation;
 	BodyAnimation myIdleJoints;
 };
 
