@@ -4,10 +4,12 @@
 
 struct MovementComponentData;
 
+class Movement;
+
 class MovementComponent : public Component
 {
 public:
-	MovementComponent(Entity& aEntity, const MovementComponentData& aInputData, CU::Matrix44f& anOrientation);
+	MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation);
 	~MovementComponent();
 
 	void Reset() override;
@@ -16,35 +18,28 @@ public:
 	void ReceiveNote(const ContactNote& aNote) override;
 
 	void Impulse();
-	void SetUpTarget(const CU::Vector2<float>& anUp);
+	void SetDirectionTarget(const CU::Vector2<float>& aDirection);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
 private:
-	const MovementComponentData& myData;
-	
-	void HandleContact();
-	void Drag(float aDeltaTime);
-	void Rotate(float aDeltaTime);
-	void Translate();
 
-	CU::Vector2<float> myVelocity;
-
-	CU::Vector2<float> myUpTarget;
-
-	CU::Matrix44f& myOrientation;
-	CU::Vector2<float> myPreviousPosition;
-
-	struct Contact
+	enum eMovementType
 	{
-		Contact() : myActive(false), myOther(nullptr){};
-		bool myActive;
-		Entity* myOther;
-		CU::Vector2<float> myContactPoint;
-		CU::Vector2<float> myContactNormal;
+		FLY,
+		WALK,
+		DASH_AIM,
+		DASH_FLY,
+		_COUNT,
 	};
-	volatile Contact myContact;
+
+	const MovementComponentData& myData;
+
+	eMovementType myCurrentMovement;
+
+	CU::StaticArray<Movement*, eMovementType::_COUNT> myMovements;
+
 };
 
 inline eComponentType MovementComponent::GetTypeStatic()
@@ -57,7 +52,3 @@ inline eComponentType MovementComponent::GetType()
 	return GetTypeStatic();
 }
 
-inline void MovementComponent::SetUpTarget(const CU::Vector2<float>& anUp)
-{
-	myUpTarget = anUp;
-}

@@ -166,7 +166,7 @@
     <ClInclude Include="AnimationComponentData.h" />
     <ClInclude Include="CollisionNote.h" />
     <ClInclude Include="ContactNote.h" />
-    <ClInclude Include="DashChargeMovement.h" />
+    <ClInclude Include="DashAimMovement.h" />
     <ClInclude Include="DashFlyMovement.h" />
     <ClInclude Include="EntityEnumConverter.h" />
     <ClInclude Include="Component.h" />
@@ -198,7 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
-    <ClCompile Include="DashChargeMovement.cpp" />
+    <ClCompile Include="DashAimMovement.cpp" />
     <ClCompile Include="DashFlyMovement.cpp" />
     <ClCompile Include="EntityEnumConverter.cpp" />
     <ClCompile Include="Component.cpp" />

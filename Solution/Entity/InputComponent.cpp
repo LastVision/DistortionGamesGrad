@@ -39,6 +39,6 @@ void InputComponent::Update(float aDeltaTime)
 		{
 		}
 
-		myMovement->SetUpTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
+		myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
 	}
 }
