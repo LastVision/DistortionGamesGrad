@@ -17,7 +17,6 @@ void SmartCamera::Update(float aDeltaTime)
 {
 	myCamera.Update(aDeltaTime);
 	myCamera.SetPosition({ myPlayerOrientations[0]->GetPos().x, myPlayerOrientations[0]->GetPos().y, myCamera.GetOrientation().GetPos().z });
-		//myCamera.SetOrientation(*myPlayerOrientations[0]);
 }
 
 void SmartCamera::AddOrientation(const CU::Matrix44f* aPlayerOrientation)
