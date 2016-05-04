@@ -36,6 +36,8 @@ private:
 	void LoadSteam(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 
+	void LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement);
+
 	void ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale);
 
 	Prism::Camera& myCamera;

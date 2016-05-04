@@ -88,6 +88,7 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(levelElement, "cubemap"), "source", cubeMap);
 	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
 
+	LoadStartAndGoal(reader, levelElement);
 	LoadProps(reader, levelElement);
 	LoadSpikes(reader, levelElement);
 	LoadSawBlades(reader, levelElement);
@@ -95,6 +96,8 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadBouncers(reader, levelElement);
 
 	reader.CloseDocument();
+
+	myCurrentLevel->CreatePlayers();
 }
 
 void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
@@ -217,6 +220,12 @@ void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aEleme
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
 	}
+}
+
+void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "playerStartLocation"), "X", "Y", "Z", myCurrentLevel->myStartPosition);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "goalLocation"), "X", "Y", "Z", myCurrentLevel->myGoalPosition);
 }
 
 void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)
