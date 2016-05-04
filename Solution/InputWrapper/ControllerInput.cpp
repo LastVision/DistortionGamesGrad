@@ -22,8 +22,7 @@ namespace CU
 
 	bool ControllerInput::IsConnected()
 	{
-		if (myControllerID < 0)
-			return true;
+		return true;
 
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
 		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
@@ -42,13 +41,34 @@ namespace CU
 		return myControllerID;
 	}
 
+	bool ControllerInput::CheckConnection()
+	{
+		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
+		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
+
+		//Gets the state and saves in the stateResult DWORD.
+		DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
+
+		if (stateResult == ERROR_SUCCESS)
+			return true;
+		else
+			return false;
+	}
+
 	unsigned int ControllerInput::ConvertInput(const eXboxButton& aButton)
 	{
 		switch (aButton)
 		{
 		case eXboxButton::A:
+		{
+			if (eControllerID::Controller2)
+			{
+				return DIK_NUMPAD0;
+			}
 			return DIK_SPACE;
+
 			break;
+		}
 
 
 
@@ -75,7 +95,7 @@ namespace CU
 
 	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)
 	{
-		if (myControllerID >= 0)
+		if (CheckConnection() == true)
 			return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
 		else
 			return CU::InputWrapper::GetInstance()->KeyIsPressed(ConvertInput(aKey));
@@ -85,7 +105,7 @@ namespace CU
 
 	bool ControllerInput::ButtonOnUp(eXboxButton aKey)
 	{
-		if (myControllerID >= 0)
+		if (CheckConnection() == true)
 			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
 		else
 			return CU::InputWrapper::GetInstance()->KeyUp(ConvertInput(aKey));
@@ -94,7 +114,7 @@ namespace CU
 
 	bool ControllerInput::ButtonOnDown(eXboxButton aKey)
 	{
-		if (myControllerID >= 0)
+		if (CheckConnection() == true)
 			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
 		else
 			return CU::InputWrapper::GetInstance()->KeyDown(ConvertInput(aKey));
@@ -103,17 +123,31 @@ namespace CU
 
 	float ControllerInput::LeftThumbstickX()
 	{
-		if (myControllerID >= 0)
+		if (CheckConnection() == true)
 			return static_cast<float>(myControllerState.Gamepad.sThumbLX) / SHRT_MAX;
 		else
 		{
-			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+			if (myControllerID == eControllerID::Controller1)
 			{
-				return -1.f;
+				if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+				{
+					return -1.f;
+				}
+				else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+				{
+					return 1.f;
+				}
 			}
-			else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+			else if (myControllerID == eControllerID::Controller2)
 			{
-				return 1.f;
+				if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LEFTARROW))
+				{
+					return -1.f;
+				}
+				else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_RIGHTARROW))
+				{
+					return 1.f;
+				}
 			}
 		}
 
@@ -122,17 +156,31 @@ namespace CU
 
 	float ControllerInput::LeftThumbstickY()
 	{
-		if (myControllerID >= 0)
+		if (CheckConnection() == true)
 			return static_cast<float>(myControllerState.Gamepad.sThumbLY) / SHRT_MAX;
 		else
 		{
-			if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+			if (myControllerID == eControllerID::Controller1)
 			{
-				return -1.f;
+				if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+				{
+					return -1.f;
+				}
+				else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+				{
+					return 1.f;
+				}
 			}
-			else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+			else if (myControllerID == eControllerID::Controller2)
 			{
-				return 1.f;
+				if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_DOWNARROW))
+				{
+					return -1.f;
+				}
+				else if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UPARROW))
+				{
+					return 1.f;
+				}
 			}
 		}
 

@@ -4,25 +4,35 @@
 #include <string>
 #pragma comment(lib,"XInput9_1_0.lib")
 
+enum eControllerID
+{
+	Controller1,
+	Controller2,
+	Controller3,
+	Controller4,
+};
+
+
+enum class eXboxButton
+{
+	A = XINPUT_GAMEPAD_A,
+	B = XINPUT_GAMEPAD_B,
+	Y = XINPUT_GAMEPAD_Y,
+	X = XINPUT_GAMEPAD_X,
+	LB = XINPUT_GAMEPAD_LEFT_SHOULDER,
+	RB = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+	DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
+	UP = XINPUT_GAMEPAD_DPAD_UP,
+	RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
+	LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
+	LT = XINPUT_GAMEPAD_LEFT_THUMB,
+	RT = XINPUT_GAMEPAD_RIGHT_THUMB,
+	START = XINPUT_GAMEPAD_START,
+	BACK = XINPUT_GAMEPAD_BACK
+};
+
 namespace CU
 {
-	enum class eXboxButton
-	{
-		A = XINPUT_GAMEPAD_A,
-		B = XINPUT_GAMEPAD_B,
-		Y = XINPUT_GAMEPAD_Y,
-		X = XINPUT_GAMEPAD_X,
-		LB = XINPUT_GAMEPAD_LEFT_SHOULDER,
-		RB = XINPUT_GAMEPAD_RIGHT_SHOULDER,
-		DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
-		UP = XINPUT_GAMEPAD_DPAD_UP,
-		RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
-		LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
-		LT = XINPUT_GAMEPAD_LEFT_THUMB,
-		RT = XINPUT_GAMEPAD_RIGHT_THUMB,
-		START = XINPUT_GAMEPAD_START,
-		BACK = XINPUT_GAMEPAD_BACK
-	};
 
 	class ControllerInput
 	{
@@ -52,6 +62,8 @@ namespace CU
 		const int GetControllerID() const;
 
 	private:
+		bool CheckConnection();
+
 		unsigned int ConvertInput(const eXboxButton& aButton);
 		//float ConvertInput()
 		XINPUT_STATE myControllerState;
