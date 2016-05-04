@@ -10,6 +10,8 @@ public:
 	MovementComponent(Entity& aEntity, const MovementComponentData& aInputData, CU::Matrix44f& anOrientation);
 	~MovementComponent();
 
+	void Reset() override;
+
 	void Update(float aDeltaTime) override;
 	void ReceiveNote(const ContactNote& aNote) override;
 

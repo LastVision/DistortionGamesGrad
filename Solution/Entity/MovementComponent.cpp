@@ -12,6 +12,11 @@ MovementComponent::~MovementComponent()
 {
 }
 
+void MovementComponent::Reset()
+{
+	myVelocity = CU::Vector2<float>();
+}
+
 void MovementComponent::Update(float aDeltaTime)
 {
 	HandleContact();
