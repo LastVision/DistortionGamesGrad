@@ -9,21 +9,25 @@
 #include <Scene.h>
 #include <ControllerInput.h>
 #include <TriggerComponent.h>
-
+#include "SmartCamera.h"
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
+	, myPlayers(2)
+	, mySmartCamera(new SmartCamera(myCamera))
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
-	myPlayers.Init(2);
+
+
 }
 
 Level::~Level()
 {
+	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
@@ -36,6 +40,7 @@ Level::~Level()
 
 void Level::Update(float aDelta)
 {
+	mySmartCamera->Update(aDelta);
 	for each(Entity* player in myPlayers)
 	{
 		player->Update(aDelta);
@@ -91,6 +96,8 @@ void Level::CreatePlayers()
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->AddToScene();
 	myPlayers.Add(player);
+
+	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
