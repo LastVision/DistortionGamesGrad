@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "ContactNote.h"
 #include "MovementComponent.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aInputData, CU::Matrix44f& anOrientation)
@@ -15,6 +14,8 @@ MovementComponent::~MovementComponent()
 
 void MovementComponent::Update(float aDeltaTime)
 {
+	HandleContact();
+
 	myVelocity.y += myData.myGravity * aDeltaTime;
 
 	Drag(aDeltaTime);
@@ -23,25 +24,41 @@ void MovementComponent::Update(float aDeltaTime)
 	Translate();
 
 	DEBUG_PRINT(myOrientation.GetPos());
+	myPreviousPosition = myOrientation.GetPos().GetVector2();
 }
 
 void MovementComponent::ReceiveNote(const ContactNote& aNote)
 {
-	CU::Vector2<float> toContact(aNote.myContactPoint.GetVector2() - myOrientation.GetPos().GetVector2());
+	//CU::Vector2<float> toContact(aNote.myContactPoint.GetVector2() - myOrientation.GetPos().GetVector2());
+	//if (aNote.myContactPoint.GetVector2().x > 0 || aNote.myContactPoint.GetVector2().x < 0)
+	//{
+	//	myVelocity.x = 0;
+	//}
+	//if (aNote.myContactPoint.GetVector2().y > 0 || aNote.myContactPoint.GetVector2().y < 0)
+	//{
+	//	myVelocity.y = 0;
+	//}
 
-	if (aNote.myContactPoint.GetVector2().x > 0 || aNote.myContactPoint.GetVector2().x < 0)
-	{
-		myVelocity.x = 0;
-	}
-	if (aNote.myContactPoint.GetVector2().y > 0 || aNote.myContactPoint.GetVector2().y < 0)
-	{
-		myVelocity.y = 0;
-	}
+	myContact.myOther = aNote.myOther;
+	myContact.myContactPoint.x = aNote.myContactPoint.x;
+	myContact.myContactPoint.y = aNote.myContactPoint.y;
+	myContact.myContactNormal.x = aNote.myContactNormal.x;
+	myContact.myContactNormal.y = aNote.myContactNormal.y;
+	myContact.myActive = true;
 }
 
 void MovementComponent::Impulse()
 {
 	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+}
+
+void MovementComponent::HandleContact()
+{
+	if (myContact.myActive == true)
+	{
+		//CU::Vector3<float> moveAmount;
+		//myOrientation.SetPos()
+	}
 }
 
 void MovementComponent::Drag(float aDeltaTime)

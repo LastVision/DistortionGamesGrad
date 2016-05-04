@@ -7,6 +7,7 @@
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <Scene.h>
+#include <ControllerInput.h>
 #include <TriggerComponent.h>
 
 Level::Level(Prism::Camera& aCamera)
@@ -19,15 +20,20 @@ Level::Level(Prism::Camera& aCamera)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myPlayers.Init(2);
-	int playerCount = 2;
 
-	for (int i = 0; i < playerCount; ++i)
-	{
+
 		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
-		player->GetComponent<InputComponent>()->AddController(-1);
+	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
+	player->AddToScene();
+	myPlayers.Add(player);
+
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
+	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 		player->AddToScene();
 		myPlayers.Add(player);
-	}
+
+
+
 }
 
 Level::~Level()

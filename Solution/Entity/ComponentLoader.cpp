@@ -194,6 +194,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Idleanimation"), "path", aOutputData.myIdleAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Walkanimation"), "path", aOutputData.myWalkAnimation);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Flyanimation"), "path", aOutputData.myFlyAnimation);
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

@@ -31,7 +31,7 @@ void InputComponent::Update(float aDeltaTime)
 
 	if (myController->IsConnected() == true)
 	{
-		if (myController->ButtonOnDown(CU::eXboxButton::A))
+		if (myController->ButtonOnDown(eXboxButton::A))
 		{
 			myMovement->Impulse();
 		}

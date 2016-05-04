@@ -179,6 +179,7 @@
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="MovementComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="PlayerBody.h" />
     <ClInclude Include="PlayerGraphicsComponent.h" />
     <ClInclude Include="PlayerGraphicsComponentData.h" />
     <ClInclude Include="PollingStation.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="PlayerBody.cpp" />
     <ClCompile Include="PlayerGraphicsComponent.cpp" />
     <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="SawBladeComponent.cpp" />
