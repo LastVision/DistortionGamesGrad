@@ -5,24 +5,6 @@
 #include "PlayerGraphicsComponent.h"
 #include <Scene.h>
 
-PlayerGraphicsComponent::BodyPart::~BodyPart()
-{
-	SAFE_DELETE(myInstance);
-}
-
-void PlayerGraphicsComponent::BodyPart::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint)
-{
-	if (aJoint.IsValid() == true)
-	{
-		myOrientation = CU::InverseSimple(*aJoint.myBind) * (*aJoint.myJoint) * aEntityOrientation;
-	}
-	else
-	{
-		myOrientation = aEntityOrientation;
-	}
-}
-
-
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
@@ -39,9 +21,7 @@ PlayerGraphicsComponent::~PlayerGraphicsComponent()
 
 void PlayerGraphicsComponent::Init()
 {
-	myBindPose = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModelAnimated(myData.myIdleAnimation, myData.myAnimationShader)
-		, myEntityOrientation);
+	myIdleJoints.CreateAnimation(myData.myIdleAnimation, myData.myShader, myEntityOrientation);
 
 	myBody.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myBody, myData.myShader), myBody.myOrientation);
@@ -57,21 +37,20 @@ void PlayerGraphicsComponent::Init()
 		;
 
 
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "root_jnt-01", myIdleJoints.myBody);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "head_jnt0", myIdleJoints.myHead);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "l_leg_jnt0", myIdleJoints.myLeftLeg);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "r_leg_jnt0", myIdleJoints.myRightLeg);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "jetpack_jnt0", myIdleJoints.myJetPack);
+	myIdleJoints.CreateJoints(myData.myIdleAnimation);
 
 	myScene->AddInstance(myBody.myInstance);
 	myScene->AddInstance(myLeftLeg.myInstance);
 	myScene->AddInstance(myRightLeg.myInstance);
 	myScene->AddInstance(myHead.myInstance);
+
+
 }
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-	myBindPose->Update(aDeltaTime);
+	myIdleJoints.myAnimation->Update(aDeltaTime);
+
 	myBody.UpdateOrientation(myEntityOrientation, myIdleJoints.myBody);
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myIdleJoints.myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myIdleJoints.myRightLeg);
