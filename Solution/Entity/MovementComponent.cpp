@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MovementComponent.h"
 #include "FlyMovement.h"
+#include "WalkMovement.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation)
 	: Component(aEntity)
@@ -8,7 +9,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myCurrentMovement(eMovementType::FLY)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation);
-	myMovements[eMovementType::WALK] = new FlyMovement(aData, anOrientation);
+	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation);
 	myMovements[eMovementType::DASH_AIM] = new FlyMovement(aData, anOrientation);
 	myMovements[eMovementType::DASH_FLY] = new FlyMovement(aData, anOrientation);
 }

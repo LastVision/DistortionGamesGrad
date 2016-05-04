@@ -79,6 +79,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	float angleEpsilonDegree;
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "AngleEpsilon"), "value", angleEpsilonDegree);
 	aOutputData.myAngleEpsilon = CU::Math::DegreeToRad(angleEpsilonDegree);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkSpeed"), "value", aOutputData.myWalkSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkDrag"), "value", aOutputData.myWalkDrag);
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
