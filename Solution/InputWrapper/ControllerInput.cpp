@@ -61,7 +61,7 @@ namespace CU
 		{
 		case eXboxButton::A:
 		{
-			if (eControllerID::Controller2)
+			if (myControllerID == eControllerID::Controller2)
 			{
 				return DIK_NUMPAD0;
 			}
