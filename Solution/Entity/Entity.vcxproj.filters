@@ -74,6 +74,9 @@
     <ClCompile Include="PlayerGraphicsComponent.cpp">
       <Filter>Component\Graphic</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerBody.cpp">
+      <Filter>Component\Graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -148,6 +151,9 @@
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
     <ClInclude Include="PlayerGraphicsComponent.h">
+      <Filter>Component\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerBody.h">
       <Filter>Component\Graphic</Filter>
     </ClInclude>
     <ClInclude Include="ContactNote.h">

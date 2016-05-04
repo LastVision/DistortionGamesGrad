@@ -6,23 +6,8 @@
 #include "PlayerGraphicsComponent.h"
 #include <Scene.h>
 
-PlayerGraphicsComponent::BodyPart::~BodyPart()
-{
-	SAFE_DELETE(myInstance);
-}
 
-void PlayerGraphicsComponent::BodyPart::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint)
-{
-	if (aJoint.IsValid() == true)
-	{
-		myOrientation = CU::InverseSimple(*aJoint.myBind) * (*aJoint.myJoint) * aEntityOrientation;
-	}
-	else
-	{
-		myOrientation = aEntityOrientation;
-	}
-}
-
+#include <InputWrapper.h>
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene)
@@ -40,9 +25,9 @@ PlayerGraphicsComponent::~PlayerGraphicsComponent()
 
 void PlayerGraphicsComponent::Init()
 {
-	myBindPose = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModelAnimated(myData.myIdleAnimation, myData.myAnimationShader)
-		, myEntityOrientation);
+	myIdleAnimation.CreateAnimation(myData.myIdleAnimation, myData.myAnimationShader, myEntityOrientation);
+	myWalkAnimation.CreateAnimation(myData.myWalkAnimation, myData.myAnimationShader, myEntityOrientation);
+	myFlyAnimation.CreateAnimation(myData.myFlyAnimation, myData.myAnimationShader, myEntityOrientation);
 
 	myBody.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myBody, myData.myShader), myBody.myOrientation);
@@ -58,26 +43,37 @@ void PlayerGraphicsComponent::Init()
 		;
 
 
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "root_jnt-01", myIdleJoints.myBody);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "head_jnt0", myIdleJoints.myHead);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "l_leg_jnt0", myIdleJoints.myLeftLeg);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "r_leg_jnt0", myIdleJoints.myRightLeg);
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(myData.myIdleAnimation, "jetpack_jnt0", myIdleJoints.myJetPack);
+	myIdleAnimation.CreateJoints(myData.myIdleAnimation);
+	myWalkAnimation.CreateJoints(myData.myWalkAnimation);
+	myFlyAnimation.CreateJoints(myData.myFlyAnimation);
 
 	myScene->AddInstance(myBody.myInstance);
 	myScene->AddInstance(myLeftLeg.myInstance);
 	myScene->AddInstance(myRightLeg.myInstance);
 	myScene->AddInstance(myHead.myInstance);
 
-	myCurrentAnimation = myBindPose;
-	myCurrentAnimationJoints = &myIdleJoints;
+	myCurrentAnimation = &myIdleAnimation;
 }
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-	myCurrentAnimation->Update(aDeltaTime);
-	myBody.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myBody);
-	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myLeftLeg);
-	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myRightLeg);
-	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimationJoints->myHead);
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
+	{
+		myCurrentAnimation = &myIdleAnimation;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_2))
+	{
+		myCurrentAnimation = &myWalkAnimation;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_3))
+	{
+		myCurrentAnimation = &myFlyAnimation;
+	}
+
+	myCurrentAnimation->myAnimation->Update(aDeltaTime);
+	myBody.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myBody);
+	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
+	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
+	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 }
