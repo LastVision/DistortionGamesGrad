@@ -15,7 +15,7 @@ struct BodyPart
 
 	void UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint);
 
-	void Toggle();
+	void SetActive(bool aValue);
 
 	Prism::Instance* myInstance;
 	CU::Matrix44<float> myOrientation;

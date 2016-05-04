@@ -20,6 +20,7 @@ public:
 	~PlayerGraphicsComponent();
 
 	void Init() override;
+	void Reset() override;
 
 	void Update(float aDeltaTime) override;
 

@@ -81,6 +81,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 	if (first->GetType() == eEntityType::PLAYER)
 	{
 		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
+		first->Reset();
+		first->SetPosition(myStartPosition);
 	}
 
 }
@@ -92,8 +94,8 @@ void Level::CreatePlayers()
 	player->AddToScene();
 	myPlayers.Add(player);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
-	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
-	player->AddToScene();
-	myPlayers.Add(player);
+	//player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	//player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
+	//player->AddToScene();
+	//myPlayers.Add(player);
 }

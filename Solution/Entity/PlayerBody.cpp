@@ -20,9 +20,9 @@ void BodyPart::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, 
 	}
 }
 
-void BodyPart::Toggle()
+void BodyPart::SetActive(bool aValue)
 {
-	myInstance->SetShouldRender(!myInstance->GetShouldRender());
+	myInstance->SetShouldRender(aValue);
 }
 
 BodyAnimation::~BodyAnimation()

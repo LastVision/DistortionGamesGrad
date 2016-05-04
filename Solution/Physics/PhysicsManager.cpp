@@ -849,8 +849,8 @@ namespace Prism
 			(*aDynamicBodyOut)->getShapes(*someShapesOut, nShapes);
 
 			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
-			fd.word0 = physx::PxU32(OTHER_FLAG);
-			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
+			fd.word0 = physx::PxU32(KINEMATIC_FLAG);
+			fd.word1 = physx::PxU32(OTHER_FLAG);
 			(*someShapesOut[0])->setSimulationFilterData(fd);
 
 			/*
