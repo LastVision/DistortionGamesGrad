@@ -42,7 +42,7 @@ namespace Prism
 	public:
 		int physicsFPS;
 		PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>)> aOnContactCallback);
+			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback);
 		~PhysicsManager();
 
 #ifdef THREAD_PHYSICS
@@ -187,7 +187,7 @@ namespace Prism
 		CU::GrowingArray<OnTriggerResult> myOnTriggerResults[2];
 
 		std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> myOnTriggerCallback;
-		std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>)> myOnContactCallback;
+		std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> myOnContactCallback;
 
 		struct MoveJob
 		{

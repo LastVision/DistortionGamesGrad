@@ -7,7 +7,7 @@ namespace Prism
 {
 	PhysicsInterface* PhysicsInterface::myInstance = nullptr;
 	void PhysicsInterface::Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>)> aOnContactCallback)
+		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback)
 	{
 		myInstance = new PhysicsInterface(anOnTriggerCallback, aOnContactCallback);
 	}
@@ -208,7 +208,7 @@ namespace Prism
 	}
 
 	PhysicsInterface::PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>)> aOnContactCallback)
+		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback)
 	{
 		myManager = new PhysicsManager(anOnTriggerCallback, aOnContactCallback);
 	}

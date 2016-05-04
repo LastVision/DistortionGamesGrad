@@ -13,7 +13,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myEntities(1024)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
-		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
@@ -23,7 +23,7 @@ Level::Level(Prism::Camera& aCamera)
 	for (int i = 0; i < playerCount; ++i)
 	{
 		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
-		player->GetComponent<InputComponent>()->AddController(myPlayers.Size());
+		player->GetComponent<InputComponent>()->AddController(-1);
 		player->AddToScene();
 		myPlayers.Add(player);
 	}
@@ -76,14 +76,14 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 	}
 }
 
-void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint)
+void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint, CU::Vector3<float> aContactNormal)
 {
 	Entity* first = &aFirst->GetEntity();
 	Entity* second = &aSecond->GetEntity();
 	bool aHasEntered = true;
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aHasEntered));
+		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
 	}
 
 }
