@@ -25,6 +25,8 @@ public:
 	void CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered);
 	void ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint, CU::Vector3<float> aContactNormal);
 
+	void CreatePlayers();
+
 private:
 	void operator=(Level&) = delete;
 
@@ -36,5 +38,8 @@ private:
 	CU::GrowingArray<Entity*> myPlayers;
 
 	CU::GrowingArray<Entity*> myEntities;
+
+	CU::Vector3<float> myStartPosition;
+	CU::Vector3<float> myGoalPosition;
 };
 

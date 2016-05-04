@@ -20,20 +20,6 @@ Level::Level(Prism::Camera& aCamera)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myPlayers.Init(2);
-
-
-		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
-	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
-	player->AddToScene();
-	myPlayers.Add(player);
-
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
-	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
-		player->AddToScene();
-		myPlayers.Add(player);
-
-
-
 }
 
 Level::~Level()
@@ -97,4 +83,17 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
 	}
 
+}
+
+void Level::CreatePlayers()
+{
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
+	player->AddToScene();
+	myPlayers.Add(player);
+
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
+	player->AddToScene();
+	myPlayers.Add(player);
 }
