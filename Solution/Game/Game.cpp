@@ -56,6 +56,7 @@ ClientGame::ClientGame()
 
 ClientGame::~ClientGame()
 {
+	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(eMessageType::FADE, this);
 	SAFE_DELETE(myCursor);
 	Prism::Audio::AudioInterface::Destroy();
