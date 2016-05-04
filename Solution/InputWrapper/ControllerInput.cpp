@@ -25,15 +25,15 @@ namespace CU
 		return true;
 
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
-		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
+		//memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
 
-		//Gets the state and saves in the stateResult DWORD.
-		DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
+		////Gets the state and saves in the stateResult DWORD.
+		//DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
 
-		if (stateResult == ERROR_SUCCESS)
-			return true;
-		else
-			return false;
+		//if (stateResult == ERROR_SUCCESS)
+		//	return true;
+		//else
+		//	return false;
 	}
 
 	const int ControllerInput::GetControllerID() const //Get the controllerID, required to controll a player (as an example)
@@ -77,7 +77,7 @@ namespace CU
 			break;
 		}
 		DL_ASSERT("Tried to convert to unknown button.");
-		return -1;
+		return 0;
 	}
 
 	void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)
@@ -96,29 +96,30 @@ namespace CU
 	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)
 	{
 		if (CheckConnection() == true)
+		{
 			return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
-		else
-			return CU::InputWrapper::GetInstance()->KeyIsPressed(ConvertInput(aKey));
-
-		return false;
+		}
+		return CU::InputWrapper::GetInstance()->KeyIsPressed(ConvertInput(aKey));
 	}
 
 	bool ControllerInput::ButtonOnUp(eXboxButton aKey)
 	{
 		if (CheckConnection() == true)
+		{
 			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
-		else
-			return CU::InputWrapper::GetInstance()->KeyUp(ConvertInput(aKey));
-		return false;
+		}
+
+		return CU::InputWrapper::GetInstance()->KeyUp(ConvertInput(aKey));
 	}
 
 	bool ControllerInput::ButtonOnDown(eXboxButton aKey)
 	{
 		if (CheckConnection() == true)
+		{
 			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
-		else
-			return CU::InputWrapper::GetInstance()->KeyDown(ConvertInput(aKey));
-		return false;
+		}
+
+		return CU::InputWrapper::GetInstance()->KeyDown(ConvertInput(aKey));
 	}
 
 	float ControllerInput::LeftThumbstickX()
