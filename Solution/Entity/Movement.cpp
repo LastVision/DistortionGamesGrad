@@ -2,7 +2,9 @@
 #include "Movement.h"
 
 
-Movement::Movement()
+Movement::Movement(const MovementComponentData& aData, CU::Matrix44f& anOrientation)
+	: myData(aData)
+	, myOrientation(anOrientation)
 {
 }
 

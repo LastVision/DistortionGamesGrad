@@ -14,10 +14,13 @@
     <ClCompile Include="TerrainReader.cpp">
       <Filter>Reader</Filter>
     </ClCompile>
-    <ClCompile Include="LevelReader.cpp">
+    <ClCompile Include="EntityReader.cpp">
       <Filter>Reader</Filter>
     </ClCompile>
-    <ClCompile Include="EntityReader.cpp">
+    <ClCompile Include="ModelCountReader.cpp">
+      <Filter>Reader</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelReader.cpp">
       <Filter>Reader</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +38,13 @@
     <ClInclude Include="TerrainReader.h">
       <Filter>Reader</Filter>
     </ClInclude>
-    <ClInclude Include="LevelReader.h">
+    <ClInclude Include="EntityReader.h">
       <Filter>Reader</Filter>
     </ClInclude>
-    <ClInclude Include="EntityReader.h">
+    <ClInclude Include="ModelCountReader.h">
+      <Filter>Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelReader.h">
       <Filter>Reader</Filter>
     </ClInclude>
   </ItemGroup>

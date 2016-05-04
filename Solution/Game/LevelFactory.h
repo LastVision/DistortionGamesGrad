@@ -30,6 +30,7 @@ private:
 	void ReadLevelList(const std::string& aLevelListPath);
 	void ReadLevel(const std::string& aLevelPath);
 
+	void LoadLevelData(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElement);

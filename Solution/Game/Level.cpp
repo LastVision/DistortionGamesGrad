@@ -4,12 +4,14 @@
 #include <EntityFactory.h>
 #include <InputComponent.h>
 #include "Level.h"
+#include <MovementComponent.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <Scene.h>
 #include <ControllerInput.h>
 #include <TriggerComponent.h>
 #include "SmartCamera.h"
+
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
@@ -86,8 +88,22 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 	if (first->GetType() == eEntityType::PLAYER)
 	{
 		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
-		first->Reset();
-		first->SetPosition(myStartPosition);
+
+		if (second->GetType() == eEntityType::SAW_BLADE || second->GetType() == eEntityType::SPIKE)
+		{
+			first->Reset();
+			first->SetPosition(myStartPosition);
+		}
+		else if (second->GetType() == eEntityType::PROP)
+		{
+			if (aContactNormal.y == 1.f)
+			{
+				CU::Vector3<float> pos = first->GetOrientation().GetPos();
+				pos.y = aContactPoint.y + 0.5f;
+				first->SetPosition(pos);
+				first->GetComponent<MovementComponent>()->Reset();
+			}
+		}
 	}
 
 }

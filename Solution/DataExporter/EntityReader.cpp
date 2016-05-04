@@ -1,6 +1,5 @@
 #include "EntityReader.h"
 #include <fstream>
-#include <sstream>
 
 EntityReader::EntityReader()
 {

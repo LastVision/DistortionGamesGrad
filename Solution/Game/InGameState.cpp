@@ -60,8 +60,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myCursor->SetShouldRender(false);
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
-	myLevelFactory = new LevelFactory("Data/Level/LI_level.xml", *myCamera);
-	myLevel = myLevelFactory->LoadLevel(0);
+	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera);
+	myLevel = myLevelFactory->LoadLevel(1);
 
 	myIsActiveState = true;
 

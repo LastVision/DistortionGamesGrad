@@ -124,6 +124,7 @@
     <ClCompile Include="EntityReader.cpp" />
     <ClCompile Include="IReader.cpp" />
     <ClCompile Include="LevelReader.cpp" />
+    <ClCompile Include="ModelCountReader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="TerrainReader.cpp" />
   </ItemGroup>
@@ -134,6 +135,7 @@
     <ClInclude Include="EntityReader.h" />
     <ClInclude Include="IReader.h" />
     <ClInclude Include="LevelReader.h" />
+    <ClInclude Include="ModelCountReader.h" />
     <ClInclude Include="TerrainReader.h" />
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,7 @@
 #include "EntityReader.h"
 #include <Engine.h>
 #include "LevelReader.h"
+#include "ModelCountReader.h"
 #include "TerrainReader.h"
 #include "IReader.h"
 #include <TimerManager.h>
@@ -56,10 +57,11 @@ int main(int argC,      // Number of strings in array argv
 	char *argV[],   // Array of command-line argument strings
 	char *envP[])
 {
-	bool convertDGFX = true;
+	bool convertDGFX = false;
 	bool calcCollisionRadius = false;
-	bool readLevel = false;
+	bool readModelCount = false;
 	bool readEntities = false;
+	bool readLevel = false;
 
 	for (int i = 0; i < argC; ++i)
 	{
@@ -73,13 +75,17 @@ int main(int argC,      // Number of strings in array argv
 		{
 			calcCollisionRadius = true;
 		}
-		else if (command == "-readlevel")
+		else if (command == "-readmodelcount")
 		{
-			readLevel = true;
+			readModelCount = true;
 		}
 		else if (command == "-readentities")
 		{
 			readEntities = true;
+		}
+		else if (command == "-readlevel")
+		{
+			readLevel = true;
 		}
 	}
 
@@ -123,10 +129,24 @@ int main(int argC,      // Number of strings in array argv
 		std::cout << "\n---| Reading Level |---\n" << std::endl;
 
 		reader = new LevelReader();
-		reader->ReadFile("Data/Level/LI_level.xml");
+		find_directory("Data/Level", *reader);
 		delete reader;
 
 		std::cout << "\n---| Level Reading Done |---\n" << std::endl;
+		system("CLS");
+	}
+
+
+	if (readModelCount == true)
+	{
+		system("CLS");
+		std::cout << "\n---| Reading ModelCount |---\n" << std::endl;
+
+		reader = new ModelCountReader();
+		reader->ReadFile("GeneratedData/LI_level.xml");
+		delete reader;
+
+		std::cout << "\n---| ModelCount Reading Done |---\n" << std::endl;
 		system("CLS");
 	}
 
