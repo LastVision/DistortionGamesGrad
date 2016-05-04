@@ -1,156 +1,54 @@
+
 #include <CommonHelper.h>
-#include <Defines.h>
-#include <MathHelper.h>
 #include "LevelReader.h"
+#include <fstream>
 #include <XMLReader.h>
-#include <Vertices.h>
-#include <iostream>
-#include <MemoryMacros.h>
 
 LevelReader::LevelReader()
+	: myUsedIDs(64)
 {
+	myBuffer.open("GeneratedData/LI_level.xml", std::ios::out);
+	myOutputStream = new std::ostream(&myBuffer);
+
+	*myOutputStream << "<root>";
 }
 
 
 LevelReader::~LevelReader()
 {
+	*myOutputStream << "\n</root>";
+	myBuffer.close();
+	delete myOutputStream;
+	myOutputStream = nullptr;
 }
 
-void LevelReader::ReadFile(const std::string& aFilePath)
+void LevelReader::ReadFile(const std::string& aFile)
 {
-	XMLReader reader;
-	reader.OpenDocument(aFilePath);
-	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
-
-	levelElement = reader.ForceFindFirstChild(levelElement, "level");
-
-	while (levelElement != nullptr)
+	if (aFile.compare(aFile.size() - 4, 4, ".xml") == 0
+		|| aFile.compare(aFile.size() - 4, 4, ".XML") == 0)
 	{
-		std::string path;
-		reader.ForceReadAttribute(levelElement, "path", path);
 
-		ReadLevel(path);
+		XMLReader reader;
+		reader.OpenDocument(aFile);
 
-		levelElement = reader.FindNextElement(levelElement, "level");
-	}
+		tinyxml2::XMLElement* element = reader.ForceFindFirstChild("root");
+		element = reader.ForceFindFirstChild(element, "scene");
+		element = reader.ForceFindFirstChild(element, "levelData");
+		element = reader.ForceFindFirstChild(element, "id");
 
-	reader.CloseDocument();
+		int levelID = -1;
+		reader.ForceReadAttribute(element, "value", levelID);
+		reader.CloseDocument();
 
-
-	SaveLevel();
-}
-
-void LevelReader::ReadLevel(const std::string& aFilePath)
-{
-	XMLReader reader;
-	reader.OpenDocument(aFilePath);
-	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
-	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
-
-	LoadProps(reader, levelElement);
-
-	SyncLevels();
-
-	reader.CloseDocument();
-}
-
-void LevelReader::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aLevelElement)
-{
-	tinyxml2::XMLElement* propElement = aReader.FindFirstChild(aLevelElement, "prop");
-	for (; propElement != nullptr; propElement = aReader.FindNextElement(propElement, "prop"))
-	{
-		std::string propType;
-		aReader.ForceReadAttribute(propElement, "propType", propType);
-
-		if (myProps.find(propType) == myProps.end())
+		if (myUsedIDs.Find(levelID) != myUsedIDs.FoundNone)
 		{
-			myProps[propType] = 0;
+			DL_MESSAGE_BOX(CU::Concatenate("LevelID %i (%s) was found more than one time", levelID, aFile.c_str()).c_str(), "ERROR", MB_ICONWARNING);
 		}
-		++myProps[propType];
-	}
-
-	tinyxml2::XMLElement* artifactElement = aReader.FindFirstChild(aLevelElement, "artifact");
-	for (; artifactElement != nullptr; artifactElement = aReader.FindNextElement(artifactElement, "artifact"))
-	{
-		std::string type;
-		aReader.ForceReadAttribute(artifactElement, "type", type);
-
-		if (myProps.find(type) == myProps.end())
+		else
 		{
-			myProps[type] = 0;
-		}
-		++myProps[type];
-	}
+			myUsedIDs.Add(levelID);
 
-	AddUnique("SM_flag_a", 20);
-	AddUnique("SM_Victory_Point_Indicator", 20);
-	AddUnique("SM_Resource_Point_Indicator", 20);
-	AddUnique("totem", 2);
-	AddUnique("SM_totem", 2);
-
-	AddUnique("SM_muzzleflash", 64 * 3);
-	AddUnique("SM_muzzleflash2", 64 * 3);
-	AddUnique("SM_muzzleflash3", 64 * 3);
-	AddUnique("SM_muzzleflash4", 64 * 3);
-	AddUnique("SM_muzzleflash5", 64 * 3);
-
-	AddUnique("SM_selectionRing", 64 * 3);
-	AddUnique("SM_selectionRing_Hovered", 64 * 3);
-	AddUnique("SM_selectionRingBase", 2);
-	AddUnique("SM_selectionRingBase_Hovered", 2);
-	AddUnique("SM_shadowBlob", 64 * 3);
-
-	AddUnique("SM_capture_point_pole", 32);
-	AddUnique("SM_minefield_flag_a", 128);
-	AddUnique("SM_rallypoint", 2);
-}
-
-void LevelReader::AddUnique(const std::string& aName, int aCount)
-{
-	if (myProps.find(aName) == myProps.end())
-	{
-		myProps[aName] = aCount;
-	}
-	else
-	{
-		myProps[aName] += aCount;
-	}
-}
-
-void LevelReader::SyncLevels()
-{
-	for (auto it = myProps.begin(); it != myProps.end(); ++it)
-	{
-		if (myFinalProps.find(it->first) == myFinalProps.end())
-		{
-			myFinalProps[it->first] = 0;
-		}
-
-		int current = it->second;
-		int finalCount = myFinalProps[it->first];
-
-		if (current > finalCount)
-		{
-			myFinalProps[it->first] = current;
+			*myOutputStream << "\n\t<level ID=\"" << levelID << "\" path=\"" << aFile << "\"/>";
 		}
 	}
-
-	myProps.clear();
-}
-
-void LevelReader::SaveLevel()
-{
-	std::string outputPath = "GeneratedData/modelcount.bin";
-	CU::BuildFoldersInPath(outputPath);
-
-
-	std::fstream file;
-	file.open(outputPath, std::ios::out);
-	
-	for (auto it = myFinalProps.begin(); it != myFinalProps.end(); ++it)
-	{
-		file << it->first << " " << it->second << std::endl;
-	}
-
-	file.close();
 }
