@@ -460,8 +460,6 @@ namespace Prism
 					, CU::Vector3<float>(point.position.x, point.position.y, point.position.z)
 					, CU::Vector3<float>(point.normal.x, point.normal.y, point.normal.z));
 			}
-
-
 		}
 	}
 

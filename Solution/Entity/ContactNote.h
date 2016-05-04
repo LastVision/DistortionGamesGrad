@@ -4,6 +4,7 @@ class Entity;
 
 struct ContactNote
 {
+	ContactNote() : myOther(nullptr), myHasEntered(false){}
 	ContactNote(Entity* anOther, const CU::Vector3<float>& aContactPoint
 		, const CU::Vector3<float>& aContactNormal, bool aHasEntered)
 		: myOther(anOther)
@@ -11,7 +12,8 @@ struct ContactNote
 		, myContactNormal(aContactNormal)
 		, myHasEntered(aHasEntered) {}
 
-	void operator=(ContactNote&) = delete;
+	void operator=(const ContactNote&) = delete;
+
 
 
 	Entity* myOther;
