@@ -166,16 +166,20 @@
     <ClInclude Include="AnimationComponentData.h" />
     <ClInclude Include="CollisionNote.h" />
     <ClInclude Include="ContactNote.h" />
+    <ClInclude Include="DashChargeMovement.h" />
+    <ClInclude Include="DashFlyMovement.h" />
     <ClInclude Include="EntityEnumConverter.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentLoader.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityData.h" />
     <ClInclude Include="EntityFactory.h" />
+    <ClInclude Include="FlyMovement.h" />
     <ClInclude Include="GraphicsComponent.h" />
     <ClInclude Include="GraphicsComponentData.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputComponentData.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="MovementComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
@@ -190,16 +194,21 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
+    <ClInclude Include="WalkMovement.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="DashChargeMovement.cpp" />
+    <ClCompile Include="DashFlyMovement.cpp" />
     <ClCompile Include="EntityEnumConverter.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentLoader.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityFactory.cpp" />
+    <ClCompile Include="FlyMovement.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PlayerBody.cpp" />
@@ -218,6 +227,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TriggerComponent.cpp" />
+    <ClCompile Include="WalkMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Audio\Audio.vcxproj">
