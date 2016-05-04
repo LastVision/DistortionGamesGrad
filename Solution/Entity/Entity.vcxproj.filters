@@ -28,6 +28,9 @@
     <Filter Include="EntityFactory\Component">
       <UniqueIdentifier>{d78471a9-14e8-41c7-8352-3d64f1f6778b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Movement">
+      <UniqueIdentifier>{94f6479b-a35c-4e8f-96e9-2d79cb23a4e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -76,6 +79,21 @@
     </ClCompile>
     <ClCompile Include="PlayerBody.cpp">
       <Filter>Component\Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkMovement.cpp">
+      <Filter>Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyMovement.cpp">
+      <Filter>Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="DashFlyMovement.cpp">
+      <Filter>Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="DashChargeMovement.cpp">
+      <Filter>Movement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +176,21 @@
     </ClInclude>
     <ClInclude Include="ContactNote.h">
       <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkMovement.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyMovement.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="DashFlyMovement.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="DashChargeMovement.h">
+      <Filter>Movement</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
