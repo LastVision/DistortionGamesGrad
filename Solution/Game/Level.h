@@ -11,6 +11,7 @@ namespace Prism
 };
 
 class PhysicsComponent;
+class SmartCamera;
 
 class Level : public Subscriber
 {
@@ -34,6 +35,7 @@ private:
 
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
+	SmartCamera* mySmartCamera;
 
 	CU::GrowingArray<Entity*> myPlayers;
 

@@ -10,17 +10,17 @@ namespace Prism
 class SmartCamera
 {
 public:
-	SmartCamera();
+	SmartCamera(Prism::Camera& aCamera);
 	~SmartCamera();
 
 	void Update(float aDeltaTime);
-
+	void AddOrientation(const CU::Matrix44f* aPlayerOrientation);
 
 private:
-
+	void operator=(SmartCamera&) = delete;
 	CU::Matrix44f myOrientation;
-	Prism::Camera* myCamera;
-
+	Prism::Camera& myCamera;
+	CU::GrowingArray<const CU::Matrix44f*> myPlayerOrientations;
 
 
 };
