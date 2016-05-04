@@ -7,6 +7,7 @@
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <Scene.h>
+#include <TriggerComponent.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -64,13 +65,17 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 	Entity& first = aFirst->GetEntity();
 	Entity& second = aSecond->GetEntity();
 
-	if (aHasEntered == true && second.GetType() == eEntityType::PLAYER)
+	TriggerComponent* firstTrigger = first.GetComponent<TriggerComponent>();
+
+	if (aHasEntered == true && firstTrigger != nullptr && second.GetType() == eEntityType::PLAYER)
 	{
-		switch (first.GetType())
+		switch (firstTrigger->GetTriggerType())
 		{
-		case eEntityType::SAW_BLADE:
-		case eEntityType::SPIKE:
+		case eTriggerType::HAZARD:
 			// kill player
+			break;
+		case eTriggerType::FORCE:
+			// push player
 			break;
 		}
 	}

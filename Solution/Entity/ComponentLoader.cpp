@@ -155,11 +155,6 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
-	aOutputData.myIsOneTime = false; 
-	aOutputData.myIsPressable = false;
-	aOutputData.myTriggerType = -1;
-	aOutputData.myPickupText = "";
-	aOutputData.myPickupTextTime = 0.f;
 
 	for (tinyxml2::XMLElement* e = aDocument.FindFirstChild(aSourceElement); e != nullptr; e = aDocument.FindNextElement(e))
 	{
@@ -169,23 +164,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 			std::string name = "";
 
 			aDocument.ForceReadAttribute(e, "type", name);
-			aDocument.ReadAttribute(e, "value", aOutputData.myValue);
-			aDocument.ReadAttribute(e, "oneTimeTrigger", aOutputData.myIsOneTime);
-			aDocument.ForceReadAttribute(e, "isClientSide", aOutputData.myIsClientSide);
-			aDocument.ReadAttribute(e, "activeFromStart", aOutputData.myIsActiveFromStart);
-			aDocument.ReadAttribute(e, "isPressable", aOutputData.myIsPressable);
-			aDocument.ReadAttribute(e, "pickupText", aOutputData.myPickupText);
-			aDocument.ReadAttribute(e, "pickupTextTime", aOutputData.myPickupTextTime);
 
 			aOutputData.myTriggerType = ConvertToTriggerEnum(name);
-
-		}
-		else if (elementName == CU::ToLower("Marker"))
-		{
-				aDocument.ReadAttribute(e, "positionx", aOutputData.myPosition.x);
-				aDocument.ReadAttribute(e, "positiony", aOutputData.myPosition.y);
-				aDocument.ReadAttribute(e, "positionz", aOutputData.myPosition.z);
-				aDocument.ForceReadAttribute(e, "show", aOutputData.myShowMarker);
 		}		
 	}
 }
@@ -221,6 +201,10 @@ int ComponentLoader::ConvertToTriggerEnum(std::string aName)
 	if (aName == "hazard")
 	{
 		return static_cast<int>(eTriggerType::HAZARD);
+	}
+	else if (aName == "force")
+	{
+		return static_cast<int>(eTriggerType::FORCE);
 	}
 
 	DL_ASSERT("[ComponentLoader] No trigger type in trigger component named " + aName);

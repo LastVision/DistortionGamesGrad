@@ -10,7 +10,6 @@ TriggerComponent::TriggerComponent(Entity& anEntity, const TriggerComponentData&
 	: Component(anEntity)
 	, myData(someData)
 	, myTriggerType(eTriggerType(someData.myTriggerType))
-	, myHasTriggered(false)
 {
 }
 
@@ -30,14 +29,4 @@ void TriggerComponent::ReceiveNote(const CollisionNote&)
 
 void TriggerComponent::Activate()
 {
-}
-
-int TriggerComponent::GetValue() const
-{
-	return myData.myValue;
-}
-
-bool TriggerComponent::GetIsActiveFromStart() const
-{
-	return myData.myIsActiveFromStart;
 }

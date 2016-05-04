@@ -22,6 +22,14 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::SPIKE;
 		}
+		else if (aType == "steam")
+		{
+			return eEntityType::STEAM;
+		}
+		else if (aType == "bouncer")
+		{
+			return eEntityType::BOUNCER;
+		}
 		else if (aType == "player")
 		{
 			return eEntityType::PLAYER;
