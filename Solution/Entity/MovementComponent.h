@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "ContactNote.h"
 
 struct MovementComponentData;
 
@@ -20,7 +21,8 @@ public:
 
 private:
 	const MovementComponentData& myData;
-
+	
+	void HandleContact();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
@@ -30,6 +32,17 @@ private:
 	CU::Vector2<float> myUpTarget;
 
 	CU::Matrix44f& myOrientation;
+	CU::Vector2<float> myPreviousPosition;
+
+	struct Contact
+	{
+		Contact() : myActive(false), myOther(nullptr){};
+		bool myActive;
+		Entity* myOther;
+		CU::Vector2<float> myContactPoint;
+		CU::Vector2<float> myContactNormal;
+	};
+	volatile Contact myContact;
 };
 
 inline eComponentType MovementComponent::GetTypeStatic()
