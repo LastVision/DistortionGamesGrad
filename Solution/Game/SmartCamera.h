@@ -21,7 +21,8 @@ private:
 	CU::Matrix44f myOrientation;
 	Prism::Camera& myCamera;
 	CU::GrowingArray<const CU::Matrix44f*> myPlayerOrientations;
-
+	float myMinZoom;
+	float myMaxZoom;
 
 };
 

@@ -105,4 +105,5 @@ void Level::CreatePlayers()
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->AddToScene();
 	myPlayers.Add(player);
+	mySmartCamera->AddOrientation(&player->GetOrientation());
 }
