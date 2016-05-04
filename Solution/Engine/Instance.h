@@ -46,6 +46,7 @@ namespace Prism
 		const CU::Matrix44f& GetOrientation() const;
 
 		void SetShouldRender(bool aValue);
+		bool GetShouldRender() const;
 
 		bool GetExistInMultipleRooms() const;
 		void SetExistInMultipleRooms(bool aValue);
@@ -84,6 +85,11 @@ namespace Prism
 	inline void Instance::SetShouldRender(bool aValue)
 	{
 		myShouldRender = aValue;
+	}
+
+	inline bool Instance::GetShouldRender() const
+	{
+		return myShouldRender;
 	}
 
 	inline bool Instance::GetExistInMultipleRooms() const

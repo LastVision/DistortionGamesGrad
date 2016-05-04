@@ -68,6 +68,8 @@ enum eEntityType
 	SPIKE = 2,
 	SAW_BLADE = 4,
 	PLAYER = 8,
+	STEAM = 16,
+	BOUNCER = 32,
 	_COUNT,
 };
 
@@ -75,6 +77,7 @@ enum class eTriggerType : int
 {
 	EMPTY = -1,
 	HAZARD,
+	FORCE,
 	
 	_COUNT,
 };

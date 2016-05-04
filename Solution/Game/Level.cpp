@@ -8,6 +8,7 @@
 #include <PhysicsInterface.h>
 #include <Scene.h>
 #include <ControllerInput.h>
+#include <TriggerComponent.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -21,15 +22,15 @@ Level::Level(Prism::Camera& aCamera)
 	myPlayers.Init(2);
 
 
-	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
+		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->AddToScene();
 	myPlayers.Add(player);
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
-	player->AddToScene();
-	myPlayers.Add(player);
+		player->AddToScene();
+		myPlayers.Add(player);
 
 
 
@@ -70,13 +71,17 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 	Entity& first = aFirst->GetEntity();
 	Entity& second = aSecond->GetEntity();
 
-	if (aHasEntered == true && second.GetType() == eEntityType::PLAYER)
+	TriggerComponent* firstTrigger = first.GetComponent<TriggerComponent>();
+
+	if (aHasEntered == true && firstTrigger != nullptr && second.GetType() == eEntityType::PLAYER)
 	{
-		switch (first.GetType())
+		switch (firstTrigger->GetTriggerType())
 		{
-		case eEntityType::SAW_BLADE:
-		case eEntityType::SPIKE:
+		case eTriggerType::HAZARD:
 			// kill player
+			break;
+		case eTriggerType::FORCE:
+			// push player
 			break;
 		}
 	}

@@ -91,6 +91,8 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadProps(reader, levelElement);
 	LoadSpikes(reader, levelElement);
 	LoadSawBlades(reader, levelElement);
+	LoadSteam(reader, levelElement);
+	LoadBouncers(reader, levelElement);
 
 	reader.CloseDocument();
 }
@@ -172,6 +174,48 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 			//myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
 		}
+	}
+}
+
+void LevelFactory::LoadSteam(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "steam"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "steam"))
+	{
+		std::string steamType;
+		CU::Vector3f steamPosition;
+		CU::Vector3f steamRotation;
+		CU::Vector3f steamScale;
+
+		aReader.ForceReadAttribute(entityElement, "steamType", steamType);
+
+		ReadOrientation(aReader, entityElement, steamPosition, steamRotation, steamScale);
+
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::STEAM, CU::ToLower(steamType),
+			myCurrentLevel->myScene, steamPosition, steamRotation, steamScale));
+		myCurrentLevel->myEntities.GetLast()->AddToScene();
+		myCurrentLevel->myEntities.GetLast()->Reset();
+	}
+}
+
+void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "bouncer"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "bouncer"))
+	{
+		std::string bouncerType;
+		CU::Vector3f bouncerPosition;
+		CU::Vector3f bouncerRotation;
+		CU::Vector3f bouncerScale;
+
+		aReader.ForceReadAttribute(entityElement, "bouncerType", bouncerType);
+
+		ReadOrientation(aReader, entityElement, bouncerPosition, bouncerRotation, bouncerScale);
+
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
+			myCurrentLevel->myScene, bouncerPosition, bouncerRotation, bouncerScale));
+		myCurrentLevel->myEntities.GetLast()->AddToScene();
+		myCurrentLevel->myEntities.GetLast()->Reset();
 	}
 }
 

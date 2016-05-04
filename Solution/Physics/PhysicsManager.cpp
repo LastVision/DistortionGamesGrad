@@ -770,6 +770,13 @@ namespace Prism
 
 			*someShapesOut = new physx::PxShape*[nShapes];
 
+			(*aStaticBodyOut)->getShapes(*someShapesOut, nShapes);
+
+			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
+			fd.word0 = physx::PxU32(OTHER_FLAG);
+			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
+			(*someShapesOut[0])->setSimulationFilterData(fd);
+			/*
 			physx::PxShape** statShape = new physx::PxShape*;
 			(*aStaticBodyOut)->getShapes(statShape, nShapes);
 
@@ -777,6 +784,7 @@ namespace Prism
 			fd.word0 = physx::PxU32(OTHER_FLAG);
 			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
 			(*statShape)->setSimulationFilterData(fd);
+			*/
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::DYNAMIC)
 		{
@@ -835,10 +843,17 @@ namespace Prism
 			{
 				GetScene()->addActor(*(*aDynamicBodyOut));
 			}
+
 			physx::PxU32 nShapes = (*aDynamicBodyOut)->getNbShapes();
-
 			*someShapesOut = new physx::PxShape*[nShapes];
+			(*aDynamicBodyOut)->getShapes(*someShapesOut, nShapes);
 
+			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
+			fd.word0 = physx::PxU32(OTHER_FLAG);
+			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
+			(*someShapesOut[0])->setSimulationFilterData(fd);
+
+			/*
 			physx::PxShape** dynShape = new physx::PxShape*;
 			(*aDynamicBodyOut)->getShapes(dynShape, nShapes);
 
@@ -846,6 +861,7 @@ namespace Prism
 			fd.word0 = physx::PxU32(KINEMATIC_FLAG);
 			fd.word1 = physx::PxU32(OTHER_FLAG);
 			(*dynShape)->setSimulationFilterData(fd);
+			*/
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::PHANTOM)
 		{

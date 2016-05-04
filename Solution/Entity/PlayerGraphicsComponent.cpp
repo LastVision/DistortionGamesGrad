@@ -57,7 +57,6 @@ void PlayerGraphicsComponent::Init()
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
 	{
 		myCurrentAnimation = &myIdleAnimation;
@@ -69,6 +68,23 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_3))
 	{
 		myCurrentAnimation = &myFlyAnimation;
+	}
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
+	{
+		myBody.Toggle();
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_W))
+	{
+		myLeftLeg.Toggle();
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_E))
+	{
+		myRightLeg.Toggle();
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_R))
+	{
+		myHead.Toggle();
 	}
 
 	myCurrentAnimation->myAnimation->Update(aDeltaTime);

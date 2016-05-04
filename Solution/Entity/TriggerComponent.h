@@ -20,16 +20,11 @@ public:
 	eComponentType GetType() override;
 
 	eTriggerType GetTriggerType() const;
-	int GetValue() const;
-	bool GetIsActiveFromStart() const;
 
 private:
 
-	CU::Vector3<float> myPlayerRespawnPosition;
 	const TriggerComponentData& myData;
 	eTriggerType myTriggerType;
-
-	bool myHasTriggered;
 };
 
 inline eComponentType TriggerComponent::GetTypeStatic()
