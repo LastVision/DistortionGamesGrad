@@ -213,6 +213,7 @@
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="ScriptInterface.h" />
+    <ClInclude Include="SmartCamera.h" />
     <ClInclude Include="StateEnums.h" />
     <ClInclude Include="StateStack.h" />
     <ClInclude Include="StateStackProxy.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="ScriptInterface.cpp" />
+    <ClCompile Include="SmartCamera.cpp" />
     <ClCompile Include="StateStack.cpp" />
     <ClCompile Include="StateStackProxy.cpp" />
     <ClCompile Include="stdafx.cpp">

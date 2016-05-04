@@ -39,6 +39,7 @@
     <ClCompile Include="Level.cpp">
       <Filter>Level</Filter>
     </ClCompile>
+    <ClCompile Include="SmartCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -85,6 +86,7 @@
       <Filter>Level\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="SmartCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

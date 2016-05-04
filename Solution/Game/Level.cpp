@@ -22,15 +22,15 @@ Level::Level(Prism::Camera& aCamera)
 	myPlayers.Init(2);
 
 
-		Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->AddToScene();
 	myPlayers.Add(player);
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, CU::Vector3<float>());
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
-		player->AddToScene();
-		myPlayers.Add(player);
+	player->AddToScene();
+	myPlayers.Add(player);
 
 
 
