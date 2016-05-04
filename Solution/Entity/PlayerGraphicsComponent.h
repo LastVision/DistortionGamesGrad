@@ -37,11 +37,11 @@ private:
 	BodyPart myRightLeg;
 	BodyPart myHead;
 
-	BodyJoints myIdleJoints;
+	BodyAnimation myIdleAnimation;
+	BodyAnimation myWalkAnimation;
+	BodyAnimation myFlyAnimation;
 
-	BodyJoints* myCurrentAnimationJoints;
-	Prism::Instance* myCurrentAnimation;
-	BodyAnimation myIdleJoints;
+	BodyAnimation* myCurrentAnimation;
 };
 
 inline eComponentType PlayerGraphicsComponent::GetTypeStatic()

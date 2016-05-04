@@ -15,4 +15,5 @@ struct PlayerGraphicsComponentData
 
 	std::string myIdleAnimation;
 	std::string myWalkAnimation;
+	std::string myFlyAnimation;
 };
