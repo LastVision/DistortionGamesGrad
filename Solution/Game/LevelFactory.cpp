@@ -224,8 +224,28 @@ void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aEleme
 
 void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
-	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "playerStartLocation"), "X", "Y", "Z", myCurrentLevel->myStartPosition);
-	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "goalLocation"), "X", "Y", "Z", myCurrentLevel->myGoalPosition);
+	tinyxml2::XMLElement* spawnElement = aReader.ForceFindFirstChild(aElement, "spawnPoint");
+	tinyxml2::XMLElement* goalElement = aReader.ForceFindFirstChild(aElement, "goalPoint");
+
+	CU::Vector3f position;
+	CU::Vector3f rotation;
+	CU::Vector3f scale;
+
+	ReadOrientation(aReader, spawnElement, position, rotation, scale);
+
+	myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPAWN_POINT,
+		myCurrentLevel->myScene, position, rotation, scale));
+	myCurrentLevel->myEntities.GetLast()->AddToScene();
+	myCurrentLevel->myEntities.GetLast()->Reset();
+	myCurrentLevel->myStartPosition = myCurrentLevel->myEntities.GetLast()->GetOrientation().GetPos();
+
+	ReadOrientation(aReader, goalElement, position, rotation, scale);
+
+	myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
+		myCurrentLevel->myScene, position, rotation, scale));
+	myCurrentLevel->myEntities.GetLast()->AddToScene();
+	myCurrentLevel->myEntities.GetLast()->Reset();
+
 }
 
 void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)
