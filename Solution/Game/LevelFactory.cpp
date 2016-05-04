@@ -59,18 +59,12 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 
 	std::string levelPath = "";
 	int ID = -1;
-	int lastID = ID - 1;
 
 	tinyxml2::XMLElement* rootElement = reader.ForceFindFirstChild("root");
 	for (tinyxml2::XMLElement* element = reader.FindFirstChild(rootElement); element != nullptr; element = reader.FindNextElement(element))
 	{
-		lastID = ID;
-
 		reader.ForceReadAttribute(element, "ID", ID);
 		reader.ForceReadAttribute(element, "path", levelPath);
-
-		DL_ASSERT_EXP(ID - 1 == lastID, "[LevelFactory]: Wrong ID-number in LI_level.xml! The numbers should be counting up, in order.");
-
 		myLevelPaths[ID] = levelPath;
 	}
 	reader.CloseDocument();
@@ -84,10 +78,7 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
-	std::string cubeMap;
-	reader.ForceReadAttribute(reader.ForceFindFirstChild(levelElement, "cubemap"), "source", cubeMap);
-	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
-
+	LoadLevelData(reader, levelElement);
 	LoadStartAndGoal(reader, levelElement);
 	LoadProps(reader, levelElement);
 	LoadSpikes(reader, levelElement);
@@ -98,6 +89,15 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	reader.CloseDocument();
 
 	myCurrentLevel->CreatePlayers();
+}
+
+void LevelFactory::LoadLevelData(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	tinyxml2::XMLElement* levelDataElement = aReader.ForceFindFirstChild(aElement, "levelData");
+
+	std::string cubeMap;
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "cubemap"), "source", cubeMap);
+	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
 }
 
 void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)

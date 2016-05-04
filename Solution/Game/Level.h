@@ -42,6 +42,5 @@ private:
 	CU::GrowingArray<Entity*> myEntities;
 
 	CU::Vector3<float> myStartPosition;
-	CU::Vector3<float> myGoalPosition;
 };
 

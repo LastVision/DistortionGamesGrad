@@ -32,7 +32,7 @@ InGameState::InGameState(int aLevelID)
 {
 	myIsActiveState = false;
 
-	myCameraOrientation.SetPos(CU::Vector3<float>(0, 10, -20.f));
+	myCameraOrientation.SetPos(CU::Vector3<float>(0, 10, -7.f));
 
 	myCamera = new Prism::Camera(myCameraOrientation);
 	myCamera->Update(1.f / 30.f);
@@ -60,8 +60,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myCursor->SetShouldRender(false);
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
-	myLevelFactory = new LevelFactory("Data/Level/LI_level.xml", *myCamera);
-	myLevel = myLevelFactory->LoadLevel(0);
+	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera);
+	myLevel = myLevelFactory->LoadLevel(1);
 
 	myIsActiveState = true;
 
