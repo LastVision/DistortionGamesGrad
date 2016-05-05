@@ -11,12 +11,14 @@
 #include <ControllerInput.h>
 #include <TriggerComponent.h>
 #include "SmartCamera.h"
-
+#include <FinishLevelMessage.h>
+#include <PostMaster.h>
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
 	, mySmartCamera(new SmartCamera(myCamera))
+	, myShouldChangeLevel(false)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
@@ -52,6 +54,11 @@ void Level::Update(float aDelta)
 	{
 		entity->Update(aDelta);
 	}
+
+	if (myShouldChangeLevel == true)
+	{
+		PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+	}
 }
 
 void Level::Render()
@@ -75,6 +82,9 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 			break;
 		case eTriggerType::FORCE:
 			// push player
+			break;
+		case eTriggerType::FINISH:
+			//finish the level
 			break;
 		}
 	}
@@ -104,8 +114,27 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				first->GetComponent<MovementComponent>()->Reset();
 			}
 		}
-	}
 
+		TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
+
+		if (aHasEntered == true && firstTrigger != nullptr)
+		{
+			switch (firstTrigger->GetTriggerType())
+			{
+			case eTriggerType::HAZARD:
+				// kill player
+				break;
+			case eTriggerType::FORCE:
+				// push player
+				break;
+			case eTriggerType::FINISH:
+				//finish the level
+				myShouldChangeLevel = true;
+				myLevelToChangeToID = firstTrigger->GetLevelID();
+				break;
+			}
+		}
+	}
 }
 
 void Level::CreatePlayers()

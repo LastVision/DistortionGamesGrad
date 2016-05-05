@@ -42,6 +42,7 @@ public:
 	void ResumeState() override;
 
 	void ReceiveMessage(const GameStateMessage& aMessage) override;
+	void ReceiveMessage(const FinishLevelMessage& aMessage) override;
 
 	void OnResize(int aWidth, int aHeight) override;
 
@@ -58,6 +59,7 @@ private:
 	eInGameState myState;
 
 	bool myFailedLevelHash;
+	bool myLevelIsFinished;
 
 	Prism::TextProxy* myText;
 

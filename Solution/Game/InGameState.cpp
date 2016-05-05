@@ -19,6 +19,7 @@
 #include <TextProxy.h>
 #include <SpriteProxy.h>
 #include <Cursor.h>
+#include <FinishLevelMessage.h>
 
 InGameState::InGameState(int aLevelID)
 	: myGUIManager(nullptr)
@@ -39,10 +40,12 @@ InGameState::InGameState(int aLevelID)
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
+	PostMaster::GetInstance()->Subscribe(eMessageType::LEVEL_FINISHED, this);
 }
 
 InGameState::~InGameState()
 {
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::LEVEL_FINISHED, this);
 	PostMaster::GetInstance()->UnSubscribe(eMessageType::GAME_STATE, this);
 	Console::Destroy();
 	SAFE_DELETE(myLevel);
@@ -77,7 +80,11 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float& aDeltaTime)
 {
-	myLevel->Update(aDeltaTime);
+	if (myLevel != nullptr)
+	{
+		myLevel->Update(aDeltaTime);
+	}
+
 	return myStateStatus;
 }
 
@@ -104,6 +111,14 @@ void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
 			break;
 		}
 	}
+}
+
+
+void InGameState::ReceiveMessage(const FinishLevelMessage& aMessage)
+{
+	SET_RUNTIME(false);
+	myLevel = myLevelFactory->LoadLevel(aMessage.myLevelID);
+	SET_RUNTIME(true);
 }
 
 void InGameState::OnResize(int aWidth, int aHeight)

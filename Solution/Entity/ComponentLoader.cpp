@@ -172,7 +172,11 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 			aDocument.ForceReadAttribute(e, "type", name);
 
 			aOutputData.myTriggerType = ConvertToTriggerEnum(name);
-		}		
+		}	
+		else if (elementName == CU::ToLower("LevelID"))
+		{
+			aDocument.ReadAttribute(e, "id", aOutputData.myLevelID);
+		}
 	}
 }
 
@@ -212,6 +216,10 @@ int ComponentLoader::ConvertToTriggerEnum(std::string aName)
 	else if (aName == "force")
 	{
 		return static_cast<int>(eTriggerType::FORCE);
+	}
+	else if (aName == "finish")
+	{
+		return static_cast<int>(eTriggerType::FINISH);
 	}
 
 	DL_ASSERT("[ComponentLoader] No trigger type in trigger component named " + aName);

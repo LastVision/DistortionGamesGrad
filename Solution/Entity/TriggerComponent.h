@@ -20,11 +20,13 @@ public:
 	eComponentType GetType() override;
 
 	eTriggerType GetTriggerType() const;
+	int GetLevelID();
 
 private:
 
 	const TriggerComponentData& myData;
 	eTriggerType myTriggerType;
+
 };
 
 inline eComponentType TriggerComponent::GetTypeStatic()

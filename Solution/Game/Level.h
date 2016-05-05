@@ -42,5 +42,7 @@ private:
 	CU::GrowingArray<Entity*> myEntities;
 
 	CU::Vector3<float> myStartPosition;
+	int myLevelToChangeToID;
+	bool myShouldChangeLevel;
 };
 

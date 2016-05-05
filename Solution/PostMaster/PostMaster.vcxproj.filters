@@ -48,5 +48,8 @@
     <ClInclude Include="EmitterMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="FinishLevelMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

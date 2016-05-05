@@ -30,3 +30,8 @@ void TriggerComponent::ReceiveNote(const CollisionNote&)
 void TriggerComponent::Activate()
 {
 }
+
+int TriggerComponent::GetLevelID()
+{
+	return myData.myLevelID;
+}
