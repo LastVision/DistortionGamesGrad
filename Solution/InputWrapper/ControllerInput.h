@@ -28,7 +28,9 @@ enum class eXboxButton
 	LT = XINPUT_GAMEPAD_LEFT_THUMB,
 	RT = XINPUT_GAMEPAD_RIGHT_THUMB,
 	START = XINPUT_GAMEPAD_START,
-	BACK = XINPUT_GAMEPAD_BACK
+	BACK = XINPUT_GAMEPAD_BACK,
+	LTRIGGER,
+	RTRIGGER,
 };
 
 namespace CU
@@ -43,12 +45,13 @@ namespace CU
 		bool IsConnected();
 
 		
-		
+		void Update(float aDeltaTime);
 		void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);
 
 		bool ButtonWhileDown(eXboxButton aKey);
 		bool ButtonOnUp(eXboxButton aKey);
 		bool ButtonOnDown(eXboxButton aKey);
+
 
 		float LeftThumbstickX();
 		float LeftThumbstickY();
@@ -75,6 +78,9 @@ namespace CU
 		float myVibrationTime;
 		unsigned short myLeftMotorValue;
 		unsigned short myRightMotorValue;
+		bool myIsConnected;
 
+		float myPrevLeftTrigger;
+		float myPrevRightTrigger;
 	};
 }

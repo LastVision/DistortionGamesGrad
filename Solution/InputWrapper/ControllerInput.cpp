@@ -3,6 +3,9 @@
 namespace CU
 {
 	ControllerInput::ControllerInput(int aPlayer)
+		: myIsConnected(false)
+		, myPrevLeftTrigger(0.f)
+		, myPrevRightTrigger(0.f)
 	{
 		//Set the controller ID (0 -> 3) 
 		myControllerID = aPlayer;
@@ -36,6 +39,23 @@ namespace CU
 		//	return false;
 	}
 
+	void ControllerInput::Update(float aDeltaTime)
+	{
+		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
+		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
+
+		myPrevLeftTrigger = LeftTrigger();
+		myPrevRightTrigger = RightTrigger();
+
+		//Gets the state and saves in the stateResult DWORD.
+		DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
+
+		if (stateResult == ERROR_SUCCESS)
+			myIsConnected = true;
+		else
+			myIsConnected = false;
+	}
+
 	const int ControllerInput::GetControllerID() const //Get the controllerID, required to controll a player (as an example)
 	{
 		return myControllerID;
@@ -43,16 +63,7 @@ namespace CU
 
 	bool ControllerInput::CheckConnection()
 	{
-		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
-		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
-
-		//Gets the state and saves in the stateResult DWORD.
-		DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
-
-		if (stateResult == ERROR_SUCCESS)
-			return true;
-		else
-			return false;
+		return myIsConnected;
 	}
 
 	unsigned int ControllerInput::ConvertInput(const eXboxButton& aButton)
@@ -69,9 +80,16 @@ namespace CU
 
 			break;
 		}
+		case eXboxButton::RT:
+		{
+			if (myControllerID == eControllerID::Controller2)
+			{
+				return DIK_NUMPAD1;
+			}
+			return DIK_LSHIFT;
 
-
-
+			break;
+		}
 
 		default:
 			break;
@@ -97,7 +115,18 @@ namespace CU
 	{
 		if (CheckConnection() == true)
 		{
-			return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
+			if (aKey == eXboxButton::LTRIGGER)
+			{
+				return (LeftTrigger() > 0.5f) && (myPrevLeftTrigger > 0.5f);
+			}
+			else if (aKey == eXboxButton::RTRIGGER)
+			{
+				return (RightTrigger() > 0.5f) && (myPrevRightTrigger> 0.5f);
+			}
+			else
+			{
+				return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
+			}
 		}
 		return CU::InputWrapper::GetInstance()->KeyIsPressed(ConvertInput(aKey));
 	}
@@ -106,7 +135,18 @@ namespace CU
 	{
 		if (CheckConnection() == true)
 		{
-			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
+			if (aKey == eXboxButton::LTRIGGER)
+			{
+				return (LeftTrigger() < 0.5f) && (myPrevLeftTrigger > 0.5f);
+			}
+			else if (aKey == eXboxButton::RTRIGGER)
+			{
+				return (RightTrigger() < 0.5f) && (myPrevRightTrigger > 0.5f);
+			}
+			else
+			{
+				return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
+			}
 		}
 
 		return CU::InputWrapper::GetInstance()->KeyUp(ConvertInput(aKey));
@@ -116,7 +156,18 @@ namespace CU
 	{
 		if (CheckConnection() == true)
 		{
-			return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
+			if (aKey == eXboxButton::LTRIGGER)
+			{
+				return (LeftTrigger() > 0.5f) && (myPrevLeftTrigger < 0.5f);
+			}
+			else if (aKey == eXboxButton::RTRIGGER)
+			{
+				return (RightTrigger() > 0.5f) && (myPrevRightTrigger < 0.5f);
+			}
+			else
+			{
+				return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
+			}
 		}
 
 		return CU::InputWrapper::GetInstance()->KeyDown(ConvertInput(aKey));
