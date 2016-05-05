@@ -9,7 +9,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	: Component(aEntity)
 	, myData(aData)
 	, myCurrentMovement(eMovementType::FLY)
-	, myDashCooldown(myData.myDashCooldown)
+	, myDashCooldown(0.f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
@@ -19,6 +19,10 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 
 MovementComponent::~MovementComponent()
 {
+	for (int i = 0; i < eMovementType::_COUNT; ++i)
+	{
+		SAFE_DELETE(myMovements[i]);
+	}
 }
 
 void MovementComponent::Reset()
@@ -27,6 +31,8 @@ void MovementComponent::Reset()
 	{
 		myMovements[i]->Reset();
 	}
+
+	myDashCooldown = 0.f;
 }
 
 void MovementComponent::Update(float aDeltaTime)
