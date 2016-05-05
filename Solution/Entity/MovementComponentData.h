@@ -12,7 +12,8 @@ struct MovementComponentData
 	float myWalkDrag;
 	float myDashAimTime;
 	float myDashFlyTime;
-	float myDashSpeed;
+	float myDashDistance;
 	float myDashCooldown;
+	float myDashSpeed;
 	CU::Vector2<float> myDrag;
 };
