@@ -28,6 +28,7 @@ void InputComponent::AddController(int anID)
 
 void InputComponent::Update(float aDeltaTime)
 {
+	myController->Update(aDeltaTime);
 
 	if (myController->IsConnected() == true)
 	{
@@ -37,6 +38,15 @@ void InputComponent::Update(float aDeltaTime)
 		}
 		else
 		{
+		}
+
+		if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
+		{
+			myMovement->RightTriggerDown();
+		}
+		else if (myController->ButtonOnUp(eXboxButton::RTRIGGER))
+		{
+			myMovement->RightTriggerUp();
 		}
 
 		myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));

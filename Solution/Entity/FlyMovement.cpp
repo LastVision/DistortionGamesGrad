@@ -2,8 +2,8 @@
 #include "FlyMovement.h"
 #include "ContactNote.h"
 
-FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation)
-	: Movement(aData, anOrientation)
+FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
+	: Movement(aData, anOrientation, aMovementComponent)
 {
 }
 
@@ -39,6 +39,12 @@ void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 void FlyMovement::Impulse()
 {
 	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+}
+
+void FlyMovement::Activate()
+{
+	myVelocity.x = 0.f;
+	myVelocity.y = 0.f;
 }
 
 void FlyMovement::ReceiveNote(const ContactNote& aNote)

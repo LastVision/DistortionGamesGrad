@@ -2,8 +2,8 @@
 #include "WalkMovement.h"
 #include "ContactNote.h"
 
-WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation)
-	: Movement(aData, anOrientation)
+WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
+	: Movement(aData, anOrientation, aMovementComponent)
 {
 }
 
@@ -14,7 +14,8 @@ WalkMovement::~WalkMovement()
 
 void WalkMovement::Reset()
 {
-	myVelocity = CU::Vector2<float>();
+	myVelocity.x = 0.f;
+	myVelocity.y = 0.f;
 }
 
 void WalkMovement::Update(float aDeltaTime)
@@ -40,6 +41,12 @@ void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 void WalkMovement::Impulse()
 {
 	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+}
+
+void WalkMovement::Activate()
+{
+	myVelocity.x = 0.f;
+	myVelocity.y = 0.f;
 }
 
 void WalkMovement::ReceiveNote(const ContactNote& aNote)

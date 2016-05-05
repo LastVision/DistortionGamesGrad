@@ -81,6 +81,10 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myAngleEpsilon = CU::Math::DegreeToRad(angleEpsilonDegree);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkSpeed"), "value", aOutputData.myWalkSpeed);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkDrag"), "value", aOutputData.myWalkDrag);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashAimTime"), "value", aOutputData.myDashAimTime);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashFlyTime"), "value", aOutputData.myDashFlyTime);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashSpeed"), "value", aOutputData.myDashSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashCooldown"), "value", aOutputData.myDashCooldown);
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)

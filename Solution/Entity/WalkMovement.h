@@ -4,7 +4,7 @@
 class WalkMovement : public Movement
 {
 public:
-	WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation);
+	WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent);
 	~WalkMovement();
 
 	void Reset() override;
@@ -12,6 +12,7 @@ public:
 	void Update(float aDeltaTime) override;
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
+	void Activate() override;
 
 	void ReceiveNote(const ContactNote& aNote) override;
 

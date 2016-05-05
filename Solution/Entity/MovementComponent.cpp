@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "DashAimMovement.h"
+#include "DashFlyMovement.h"
 #include "MovementComponent.h"
 #include "FlyMovement.h"
 #include "WalkMovement.h"
@@ -7,11 +9,12 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	: Component(aEntity)
 	, myData(aData)
 	, myCurrentMovement(eMovementType::FLY)
+	, myDashCooldown(myData.myDashCooldown)
 {
-	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation);
-	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation);
-	myMovements[eMovementType::DASH_AIM] = new FlyMovement(aData, anOrientation);
-	myMovements[eMovementType::DASH_FLY] = new FlyMovement(aData, anOrientation);
+	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
+	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
+	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this);
+	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 }
 
 MovementComponent::~MovementComponent()
@@ -28,6 +31,7 @@ void MovementComponent::Reset()
 
 void MovementComponent::Update(float aDeltaTime)
 {
+	myDashCooldown -= aDeltaTime;
 	myMovements[myCurrentMovement]->Update(aDeltaTime);
 }
 
@@ -42,8 +46,6 @@ void MovementComponent::ReceiveNote(const ContactNote& aNote)
 	//{
 	//	myVelocity.y = 0;
 	//}
-
-
 }
 
 void MovementComponent::Impulse()
@@ -55,5 +57,32 @@ void MovementComponent::Impulse()
 void MovementComponent::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 {
 	myMovements[myCurrentMovement]->SetDirectionTarget(aDirection);
+}
+
+void MovementComponent::RightTriggerDown()
+{
+	if (myDashCooldown <= 0.f)
+	{
+		SetState(eMovementType::DASH_AIM);
+	}
+}
+
+void MovementComponent::RightTriggerUp()
+{
+	if (myCurrentMovement == eMovementType::DASH_AIM)
+	{
+		SetState(eMovementType::DASH_FLY);
+	}
+}
+
+void MovementComponent::SetState(eMovementType aState)
+{
+	if (myCurrentMovement == eMovementType::DASH_AIM)
+	{
+		myDashCooldown = myData.myDashCooldown;
+	}
+
+	myCurrentMovement = aState;
+	myMovements[myCurrentMovement]->Activate();
 }
 
