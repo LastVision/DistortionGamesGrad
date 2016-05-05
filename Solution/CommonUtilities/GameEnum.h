@@ -78,6 +78,7 @@ enum eEntityType
 enum class eTriggerType : int
 {
 	EMPTY = -1,
+	FINISH,
 	HAZARD,
 	FORCE,
 	

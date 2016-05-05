@@ -80,7 +80,7 @@ namespace CU
 
 			break;
 		}
-		case eXboxButton::RT:
+		case eXboxButton::RTRIGGER:
 		{
 			if (myControllerID == eControllerID::Controller2)
 			{
