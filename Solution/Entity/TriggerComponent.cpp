@@ -33,5 +33,10 @@ void TriggerComponent::Activate()
 
 int TriggerComponent::GetLevelID()
 {
-	return myData.myLevelID;
+	return myLevelToChangeToID;
+}
+
+void TriggerComponent::SetLevelChangeID(int anID)
+{
+	myLevelToChangeToID = anID;
 }

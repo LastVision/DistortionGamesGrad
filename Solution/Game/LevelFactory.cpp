@@ -8,6 +8,8 @@
 #include <PhysicsInterface.h>
 #include <SawBladeComponent.h>
 #include <XMLReader.h>
+#include <TriggerComponent.h>
+#include <Entity.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -240,9 +242,14 @@ void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aE
 	myCurrentLevel->myStartPosition = myCurrentLevel->myEntities.GetLast()->GetOrientation().GetPos();
 
 	ReadOrientation(aReader, goalElement, position, rotation, scale);
+	int levelID = 0;
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(goalElement, "levelid"), "id", levelID);
 
-	myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
-		myCurrentLevel->myScene, position, rotation, scale));
+	Entity* entity = EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
+		myCurrentLevel->myScene, position, rotation, scale);
+	entity->GetComponent<TriggerComponent>()->SetLevelChangeID(levelID);
+
+	myCurrentLevel->myEntities.Add(entity);
 	myCurrentLevel->myEntities.GetLast()->AddToScene();
 	myCurrentLevel->myEntities.GetLast()->Reset();
 

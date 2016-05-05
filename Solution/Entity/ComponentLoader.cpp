@@ -173,10 +173,6 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 
 			aOutputData.myTriggerType = ConvertToTriggerEnum(name);
 		}	
-		else if (elementName == CU::ToLower("LevelID"))
-		{
-			aDocument.ReadAttribute(e, "id", aOutputData.myLevelID);
-		}
 	}
 }
 

@@ -22,11 +22,14 @@ public:
 	eTriggerType GetTriggerType() const;
 	int GetLevelID();
 
+	void SetLevelChangeID(int anID);
+
+
 private:
 
 	const TriggerComponentData& myData;
 	eTriggerType myTriggerType;
-
+	int myLevelToChangeToID;
 };
 
 inline eComponentType TriggerComponent::GetTypeStatic()
