@@ -25,7 +25,7 @@ void DashAimMovement::Update(float aDeltaTime)
 	myTimer -= aDeltaTime;
 	if (myTimer <= 0.f)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		myMovementComponent.SetState(MovementComponent::eMovementType::DASH_FLY);
 	}
 }
 

@@ -83,8 +83,10 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkDrag"), "value", aOutputData.myWalkDrag);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashAimTime"), "value", aOutputData.myDashAimTime);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashFlyTime"), "value", aOutputData.myDashFlyTime);
-	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashSpeed"), "value", aOutputData.myDashSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashDistance"), "value", aOutputData.myDashDistance);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashCooldown"), "value", aOutputData.myDashCooldown);
+
+	aOutputData.myDashSpeed = aOutputData.myDashDistance / aOutputData.myDashFlyTime;
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PhysicsComponentData& aOutputData)
