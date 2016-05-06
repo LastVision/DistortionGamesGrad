@@ -3,13 +3,14 @@
 #include <EffectContainer.h>
 #include <Engine.h>
 #include <EntityFactory.h>
+#include <Entity.h>
 #include "Level.h"
 #include "LevelFactory.h"
 #include <PhysicsInterface.h>
 #include <SawBladeComponent.h>
 #include <XMLReader.h>
+#include <SteamComponent.h>
 #include <TriggerComponent.h>
-#include <Entity.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -85,7 +86,7 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadProps(reader, levelElement);
 	LoadSpikes(reader, levelElement);
 	LoadSawBlades(reader, levelElement);
-	LoadSteam(reader, levelElement);
+	LoadSteamVents(reader, levelElement);
 	LoadBouncers(reader, levelElement);
 
 	reader.CloseDocument();
@@ -199,24 +200,47 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 	}
 }
 
-void LevelFactory::LoadSteam(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
-	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "steam"); entityElement != nullptr;
-		entityElement = aReader.FindNextElement(entityElement, "steam"))
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "steamVent"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "steamVent"))
 	{
-		std::string steamType;
-		CU::Vector3f steamPosition;
-		CU::Vector3f steamRotation;
-		CU::Vector3f steamScale;
+		std::string steamVentType;
+		CU::Vector3f steamVentPosition;
+		CU::Vector3f steamVentRotation;
+		CU::Vector3f steamVentScale;
 
-		aReader.ForceReadAttribute(entityElement, "steamType", steamType);
+		aReader.ForceReadAttribute(entityElement, "steamVentType", steamVentType);
 
-		ReadOrientation(aReader, entityElement, steamPosition, steamRotation, steamScale);
+		ReadOrientation(aReader, entityElement, steamVentPosition, steamVentRotation, steamVentScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::STEAM, CU::ToLower(steamType),
-			myCurrentLevel->myScene, steamPosition, steamRotation, steamScale));
+		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::STEAM_VENT, CU::ToLower(steamVentType),
+			myCurrentLevel->myScene, steamVentPosition, steamVentRotation, steamVentScale));
 		myCurrentLevel->myEntities.GetLast()->AddToScene();
 		myCurrentLevel->myEntities.GetLast()->Reset();
+
+		DL_ASSERT_EXP(myCurrentLevel->myEntities.GetLast()->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
+
+		tinyxml2::XMLElement* steamTimeElement = aReader.FindFirstChild(entityElement, "steamTime");
+		tinyxml2::XMLElement* steamIntervalElement = aReader.FindFirstChild(entityElement, "steamInterval");
+		tinyxml2::XMLElement* steamDelayElement = aReader.FindFirstChild(entityElement, "steamDelay");
+
+		if (steamTimeElement != nullptr && steamIntervalElement != nullptr)
+		{
+			float steamTime = 0.f;
+			float steamInterval = 0.f;
+			float steamDelay = 0.f;
+
+			aReader.ForceReadAttribute(steamTimeElement, "value", steamTime);
+			aReader.ForceReadAttribute(steamIntervalElement, "value", steamInterval);
+
+			if (steamDelayElement != nullptr)
+			{
+				aReader.ForceReadAttribute(steamDelayElement, "value", steamDelay);
+			}
+
+			myCurrentLevel->myEntities.GetLast()->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
+		}
 	}
 }
 

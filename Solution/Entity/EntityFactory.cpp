@@ -143,6 +143,10 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.myPlayerGraphicsData);
 		}
+		else if (elementName == CU::ToLower("SteamComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.mySteamData);
+		}
 		else
 		{
 			std::string errorMessage = "The component " + elementName +

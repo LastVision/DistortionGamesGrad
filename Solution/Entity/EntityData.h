@@ -8,6 +8,7 @@
 #include "TriggerComponentData.h"
 #include "SoundComponentData.h"
 #include "SawBladeComponentData.h"
+#include "SteamComponentData.h"
 #include "PlayerGraphicsComponentData.h"
 
 struct EntityData
@@ -22,5 +23,6 @@ struct EntityData
 	SoundComponentData mySoundData;
 	SawBladeComponentData mySawBladeData;
 	PlayerGraphicsComponentData myPlayerGraphicsData;
+	SteamComponentData mySteamData;
 	std::string mySubType;
 };

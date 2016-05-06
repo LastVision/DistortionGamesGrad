@@ -12,6 +12,7 @@
 #include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
 #include "SawBladeComponent.h"
+#include "SteamComponent.h"
 #include "SoundComponent.h"
 #include "TriggerComponent.h"
 
@@ -94,6 +95,11 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.mySawBladeData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::SAW_BLADE)] = new SawBladeComponent(*this);
+	}
+
+	if (aEntityData.mySteamData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

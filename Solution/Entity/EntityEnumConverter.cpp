@@ -26,6 +26,10 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::STEAM;
 		}
+		else if (aType == "steamvent")
+		{
+			return eEntityType::STEAM_VENT;
+		}
 		else if (aType == "bouncer")
 		{
 			return eEntityType::BOUNCER;
