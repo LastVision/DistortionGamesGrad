@@ -6,6 +6,7 @@
 #include "PhysicsComponentData.h"
 #include "TriggerComponentData.h"
 #include "SawBladeComponentData.h"
+#include "SteamComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
 
@@ -203,6 +204,11 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Idleanimation"), "path", aOutputData.myIdleAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Walkanimation"), "path", aOutputData.myWalkAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Flyanimation"), "path", aOutputData.myFlyAnimation);
+}
+
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

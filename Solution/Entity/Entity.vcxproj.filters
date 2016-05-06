@@ -198,5 +198,8 @@
     <ClInclude Include="SteamComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
+    <ClInclude Include="SteamComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

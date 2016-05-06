@@ -34,7 +34,7 @@ private:
 	void LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadSteam(XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aElement);
 
 	void LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement);
