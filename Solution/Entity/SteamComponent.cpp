@@ -70,6 +70,11 @@ void SteamComponent::SetSteamVariables(float aSteamInterval, float aSteamTime, f
 	myDelayBeforeSteam = aDelayBeforeSteam;
 	myIsConstant = false;
 
+	if (mySteamInterval == 0.f && mySteamTime == 0.f)
+	{
+		myIsConstant = true;
+	}
+
 	myCurrentSteamTime = mySteamTime;
 	myCurrentSteamInterval = 0.f;
 
