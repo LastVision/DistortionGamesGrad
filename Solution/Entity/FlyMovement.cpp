@@ -48,6 +48,10 @@ void FlyMovement::Activate()
 	myVelocity.y = 0.f;
 }
 
+void FlyMovement::DeActivate()
+{
+}
+
 void FlyMovement::ReceiveNote(const ContactNote& aNote)
 {
 	myContact.myOther = aNote.myOther;

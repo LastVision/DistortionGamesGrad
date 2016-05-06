@@ -55,6 +55,10 @@ void WalkMovement::Activate()
 	myHasContact = true;
 }
 
+void WalkMovement::DeActivate()
+{
+}
+
 void WalkMovement::ReceiveNote(const ContactNote& aNote)
 {
 	//memcpy(&myPreviousContact, &myCurrentContact, sizeof(Contact));

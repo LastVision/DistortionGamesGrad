@@ -14,6 +14,7 @@ public:
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
 	void Activate() override;
+	void DeActivate() override;
 
 private:
 	float myTimer;

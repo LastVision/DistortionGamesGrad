@@ -18,7 +18,7 @@ public:
 		_COUNT,
 	};
 
-	MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation);
+	MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene);
 	~MovementComponent();
 
 	void Reset() override;
