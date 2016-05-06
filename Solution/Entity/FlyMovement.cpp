@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "FlyMovement.h"
 #include "ContactNote.h"
+#include "FlyMovement.h"
+#include "MovementComponent.h"
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -54,15 +55,19 @@ void FlyMovement::ReceiveNote(const ContactNote& aNote)
 	myContact.myContactPoint.y = aNote.myContactPoint.y;
 	myContact.myContactNormal.x = aNote.myContactNormal.x;
 	myContact.myContactNormal.y = aNote.myContactNormal.y;
-	myContact.myActive = true;
+	myContact.myFoundTouch = aNote.myHasEntered;
 }
 
 void FlyMovement::HandleContact()
 {
-	if (myContact.myActive == true)
+	if (myContact.myFoundTouch == true)
 	{
-		//CU::Vector3<float> moveAmount;
-		//myOrientation.SetPos()
+		if (myContact.myContactNormal.y > 0.9f)
+		{
+			myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+			//myMovementComponent.ReceiveNote(ContactNote(myContact.myOther, myContact.myContactPoint, myContact.myContactNormal, myContact.myFoundTouch));
+			myContact.myFoundTouch = false;
+		}
 	}
 }
 

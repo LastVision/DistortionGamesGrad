@@ -34,7 +34,7 @@ namespace Prism
 	{
 	public:
 		static void Create(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback);
+			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>, bool)> aOnContactCallback);
 		static void Destroy();
 		static PhysicsInterface* GetInstance();
 
@@ -85,7 +85,7 @@ namespace Prism
 		// Requires PhysX includes!!
 		PhysicsManager* GetManager() const;
 		PhysicsInterface(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback);
+			, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>, bool)> aOnContactCallback);
 		~PhysicsInterface();
 		PhysicsManager* myManager;
 		static PhysicsInterface* myInstance;

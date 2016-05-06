@@ -28,8 +28,8 @@ private:
 
 	struct Contact
 	{
-		Contact() : myActive(false), myOther(nullptr){};
-		bool myActive;
+		Contact() : myFoundTouch(false), myOther(nullptr){};
+		bool myFoundTouch;
 		Entity* myOther;
 		CU::Vector2<float> myContactPoint;
 		CU::Vector2<float> myContactNormal;

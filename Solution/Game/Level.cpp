@@ -21,7 +21,8 @@ Level::Level(Prism::Camera& aCamera)
 	, myShouldChangeLevel(false)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
-		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
+		, std::placeholders::_4, std::placeholders::_5));
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
@@ -87,11 +88,11 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 	}
 }
 
-void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint, CU::Vector3<float> aContactNormal)
+void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
+	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
 	Entity* first = &aFirst->GetEntity();
 	Entity* second = &aSecond->GetEntity();
-	bool aHasEntered = true;
 	if (first->GetType() == eEntityType::PLAYER)
 	{
 		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
@@ -103,7 +104,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			first->Reset();
 			first->SetPosition(myStartPosition);
 			break;
-		case eEntityType::PROP:
+		/*case eEntityType::PROP:
 			if (aContactNormal.y == 1.f)
 			{
 				CU::Vector3<float> pos = first->GetOrientation().GetPos();
@@ -111,7 +112,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				first->SetPosition(pos);
 				first->GetComponent<MovementComponent>()->Reset();
 			}
-			break;
+			break;*/
 		case eEntityType::GOAL_POINT:
  			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");

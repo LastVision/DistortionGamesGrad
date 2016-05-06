@@ -26,12 +26,14 @@ private:
 
 	struct Contact
 	{
-		Contact() : myActive(false), myOther(nullptr){};
-		bool myActive;
+		Contact() : myLostTouch(false), myOther(nullptr){};
+		bool myLostTouch;
 		Entity* myOther;
 		CU::Vector2<float> myContactPoint;
 		CU::Vector2<float> myContactNormal;
 	};
-	volatile Contact myContact;
+	volatile Contact myCurrentContact;
+	volatile Contact myPreviousContact;
+	bool myHasContact;
 };
 

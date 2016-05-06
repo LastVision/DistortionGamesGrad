@@ -43,15 +43,7 @@ void MovementComponent::Update(float aDeltaTime)
 
 void MovementComponent::ReceiveNote(const ContactNote& aNote)
 {
-	//CU::Vector2<float> toContact(aNote.myContactPoint.GetVector2() - myOrientation.GetPos().GetVector2());
-	//if (aNote.myContactPoint.GetVector2().x > 0 || aNote.myContactPoint.GetVector2().x < 0)
-	//{
-	//	myVelocity.x = 0;
-	//}
-	//if (aNote.myContactPoint.GetVector2().y > 0 || aNote.myContactPoint.GetVector2().y < 0)
-	//{
-	//	myVelocity.y = 0;
-	//}
+	myMovements[myCurrentMovement]->ReceiveNote(aNote);
 }
 
 void MovementComponent::Impulse()

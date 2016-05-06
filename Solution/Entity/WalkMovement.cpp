@@ -1,9 +1,11 @@
 #include "stdafx.h"
-#include "WalkMovement.h"
 #include "ContactNote.h"
+#include "WalkMovement.h"
+#include "MovementComponent.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
+	, myHasContact(true)
 {
 }
 
@@ -16,6 +18,7 @@ void WalkMovement::Reset()
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
+	myHasContact = true;
 }
 
 void WalkMovement::Update(float aDeltaTime)
@@ -40,31 +43,56 @@ void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 
 void WalkMovement::Impulse()
 {
-	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+	//myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.Impulse();
 }
 
 void WalkMovement::Activate()
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
+	myHasContact = true;
 }
 
 void WalkMovement::ReceiveNote(const ContactNote& aNote)
 {
-	myContact.myOther = aNote.myOther;
-	myContact.myContactPoint.x = aNote.myContactPoint.x;
-	myContact.myContactPoint.y = aNote.myContactPoint.y;
-	myContact.myContactNormal.x = aNote.myContactNormal.x;
-	myContact.myContactNormal.y = aNote.myContactNormal.y;
-	myContact.myActive = true;
+	//memcpy(&myPreviousContact, &myCurrentContact, sizeof(Contact));
+	myPreviousContact.myContactNormal.x = myCurrentContact.myContactNormal.x;
+	myPreviousContact.myContactNormal.y = myCurrentContact.myContactNormal.y;
+	myPreviousContact.myContactPoint.x = myCurrentContact.myContactPoint.x;
+	myPreviousContact.myContactPoint.y = myCurrentContact.myContactPoint.y;
+	myPreviousContact.myLostTouch = myCurrentContact.myLostTouch;
+	myPreviousContact.myOther = myCurrentContact.myOther;
+
+	if (aNote.myHasEntered == false)
+	{
+		myCurrentContact.myOther = nullptr;
+	}
+	else
+	{
+		myCurrentContact.myOther = aNote.myOther;
+	}
+
+	myCurrentContact.myContactPoint.x = aNote.myContactPoint.x;
+	myCurrentContact.myContactPoint.y = aNote.myContactPoint.y;
+	myCurrentContact.myContactNormal.x = aNote.myContactNormal.x;
+	myCurrentContact.myContactNormal.y = aNote.myContactNormal.y;
+	myCurrentContact.myLostTouch = !aNote.myHasEntered;
+
+	if (myCurrentContact.myOther == nullptr && myPreviousContact.myOther == nullptr)
+	{
+		myHasContact = false;
+	}
 }
 
 void WalkMovement::HandleContact()
 {
-	if (myContact.myActive == true)
+	//if (myCurrentContact.myOther == nullptr && myPreviousContact.myOther == nullptr)
+	if (myHasContact == false)
 	{
-		//CU::Vector3<float> moveAmount;
-		//myOrientation.SetPos()
+		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		myCurrentContact.myLostTouch = false;
 	}
 }
 

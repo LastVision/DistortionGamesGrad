@@ -54,6 +54,7 @@ physx::PxFilterFlags GraduationFilter(
 	// the filtermask of A contains the ID of B and vice versa.
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 	{
+		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	}
@@ -64,7 +65,7 @@ physx::PxFilterFlags GraduationFilter(
 namespace Prism
 {
 	PhysicsManager::PhysicsManager(std::function<void(PhysicsComponent*, PhysicsComponent*, bool)> anOnTriggerCallback
-		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>)> aOnContactCallback)
+		, std::function<void(PhysicsComponent*, PhysicsComponent*, CU::Vector3<float>, CU::Vector3<float>, bool)> aOnContactCallback)
 		: myPhysicsComponentCallbacks(4096)
 		, myOnTriggerCallback(anOnTriggerCallback)
 		, myOnContactCallback(aOnContactCallback)
@@ -449,6 +450,16 @@ namespace Prism
 		{
 			const physx::PxContactPair& pairs = somePairs[i];
 
+			if (pairs.events == physx::PxPairFlag::Enum::eNOTIFY_TOUCH_LOST)
+			{
+				physx::PxContactPairPoint point;
+				pairs.extractContacts(&point, aCount);
+
+				myOnContactCallback(static_cast<PhysicsComponent*>(aHeader.actors[0]->userData)
+					, static_cast<PhysicsComponent*>(aHeader.actors[1]->userData)
+					, CU::Vector3<float>(point.position.x, point.position.y, point.position.z)
+					, CU::Vector3<float>(point.normal.x, point.normal.y, point.normal.z), false);
+			}
 			if (pairs.events == physx::PxPairFlag::Enum::eNOTIFY_TOUCH_FOUND)
 			{
 				
@@ -458,7 +469,7 @@ namespace Prism
 				myOnContactCallback(static_cast<PhysicsComponent*>(aHeader.actors[0]->userData)
 					, static_cast<PhysicsComponent*>(aHeader.actors[1]->userData)
 					, CU::Vector3<float>(point.position.x, point.position.y, point.position.z)
-					, CU::Vector3<float>(point.normal.x, point.normal.y, point.normal.z));
+					, CU::Vector3<float>(point.normal.x, point.normal.y, point.normal.z), true);
 			}
 		}
 	}

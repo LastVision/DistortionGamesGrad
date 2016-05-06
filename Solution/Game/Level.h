@@ -24,7 +24,8 @@ public:
 	void Render();
 
 	void CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered);
-	void ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint, CU::Vector3<float> aContactNormal);
+	void ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
+		, CU::Vector3<float> aContactNormal, bool aHasEntered);
 
 	void CreatePlayers();
 
