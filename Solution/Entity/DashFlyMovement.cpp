@@ -57,3 +57,7 @@ void DashFlyMovement::Activate()
 void DashFlyMovement::DeActivate()
 {
 }
+
+void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
+{
+}

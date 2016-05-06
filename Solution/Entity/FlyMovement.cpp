@@ -20,7 +20,7 @@ void FlyMovement::Reset()
 
 void FlyMovement::Update(float aDeltaTime)
 {
-	HandleContact();
+ 	HandleContact();
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
 
@@ -57,6 +57,11 @@ void FlyMovement::DeActivate()
 {
 }
 
+void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
+{ 
+	myVelocity = aVelocity;
+}
+
 void FlyMovement::ReceiveNote(const ContactNote& aNote)
 {
 	myContact.myOther = aNote.myOther;
@@ -69,7 +74,7 @@ void FlyMovement::ReceiveNote(const ContactNote& aNote)
 
 void FlyMovement::HandleContact()
 {
-	if (myContact.myFoundTouch == true)
+	if (myContact.myFoundTouch == true && myContact.myOther->GetType() != eEntityType::BOUNCER)
 	{
 		if (myContact.myContactNormal.y > 0.9f)
 		{

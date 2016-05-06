@@ -93,3 +93,7 @@ void MovementComponent::SetState(eMovementType aState)
 	myMovements[myCurrentMovement]->Activate();
 }
 
+void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
+{
+	myMovements[myCurrentMovement]->SetVelocity(aVelocity);
+}

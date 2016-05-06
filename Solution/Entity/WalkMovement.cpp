@@ -65,6 +65,12 @@ void WalkMovement::DeActivate()
 {
 }
 
+void WalkMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
+{
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.SetVelocity(aVelocity);
+}
+
 void WalkMovement::ReceiveNote(const ContactNote& aNote)
 {
 	//memcpy(&myPreviousContact, &myCurrentContact, sizeof(Contact));

@@ -84,8 +84,8 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				// kill player
 				break;
 			case eTriggerType::FORCE:
-				// push player
-				second.GetComponent<MovementComponent>()->SetInSteam(true, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
+				second.GetComponent<MovementComponent>()->SetInSteam(true
+					, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
 				break;
 			}
 		}
@@ -121,12 +121,20 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				first->GetComponent<MovementComponent>()->Reset();
 				}
 				break;*/
+		case eEntityType::BOUNCER:
+			if (aHasEntered == true)
+			{
+				first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
+					, second->GetOrientation().GetUp().y * 0.1f });
+			}
+			break;
 		case eEntityType::GOAL_POINT:
 			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 			myShouldChangeLevel = true;
 			myLevelToChangeToID = firstTrigger->GetLevelID();
 			break;
+
 		}
 	}
 }

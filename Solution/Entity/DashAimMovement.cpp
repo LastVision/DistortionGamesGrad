@@ -64,6 +64,10 @@ void DashAimMovement::DeActivate()
 	myArrow->SetShouldRender(false);
 }
 
+void DashAimMovement::SetVelocity(const CU::Vector2<float>&)
+{
+}
+
 void DashAimMovement::ReceiveNote(const ContactNote&)
 {
 	//Not needed here?

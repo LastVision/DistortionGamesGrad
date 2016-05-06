@@ -34,6 +34,7 @@ public:
 
 	void SetState(eMovementType aState);
 	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
+	void SetVelocity(const CU::Vector2<float>& aVelocity);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;

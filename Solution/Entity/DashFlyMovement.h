@@ -16,6 +16,7 @@ public:
 	void Impulse(const CU::Vector2<float>& aVelocity) override;
 	void Activate() override;
 	void DeActivate() override;
+	void SetVelocity(const CU::Vector2<float>& aVelocity) override;
 
 private:
 	float myTimer;
