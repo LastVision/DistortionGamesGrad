@@ -167,6 +167,11 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 		if (patrolElement != nullptr)
 		{
+			float speed = 0.f;
+			float delay = 0.f;
+
+			aReader.ForceReadAttribute(entityElement, "sawBladeType", sawBladeType);
+
 			CU::GrowingArray<CU::Vector3<float>> patrolPositions(8);
 
 			for (tinyxml2::XMLElement* patrolPositionElement = aReader.FindFirstChild(patrolElement, "patrolLocation"); patrolPositionElement != nullptr;
@@ -176,8 +181,20 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 				aReader.ForceReadAttribute(patrolPositionElement, "X", "Y", "Z", position);
 				patrolPositions.Add(position);
 			}
+			tinyxml2::XMLElement* patrolSpeedElement = aReader.FindFirstChild(entityElement, "patrolSpeed");
+			tinyxml2::XMLElement* patrolDelayElement = aReader.FindFirstChild(entityElement, "patrolDelay");
+			
+			DL_ASSERT_EXP(myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>() != nullptr, "Saw blades have to have saw blade components to be able to patrol");
+			DL_ASSERT_EXP(patrolSpeedElement != nullptr, "SawBlade has to have a patrolSpeed in level XML");
 
-			//myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
+			aReader.ForceReadAttribute(patrolSpeedElement, "value", speed);
+
+			if (patrolDelayElement != nullptr)
+			{
+				aReader.ForceReadAttribute(patrolDelayElement, "value", delay);
+			}
+
+			myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions, speed, delay);
 		}
 	}
 }
