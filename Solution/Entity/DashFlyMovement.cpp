@@ -29,7 +29,7 @@ void DashFlyMovement::Update(float aDeltaTime)
 	}
 }
 
-void DashFlyMovement::ReceiveNote(const ContactNote& aNote)
+void DashFlyMovement::ReceiveNote(const ContactNote&)
 {
 }
 

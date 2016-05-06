@@ -59,10 +59,14 @@ void WalkMovement::Activate()
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
 	myHasContact = true;
+	myPreviousContact.myOther = nullptr;
+	myCurrentContact.myOther = nullptr;
 }
 
 void WalkMovement::DeActivate()
 {
+	myPreviousContact.myOther = nullptr;
+	myCurrentContact.myOther = nullptr;
 }
 
 void WalkMovement::SetVelocity(const CU::Vector2<float>& aVelocity)

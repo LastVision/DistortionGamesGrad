@@ -12,7 +12,7 @@ struct ContactNote
 		, myContactNormal(aContactNormal)
 		, myHasEntered(aHasEntered) {}
 
-	void operator=(const ContactNote&) = delete;
+	//void operator=(const ContactNote&) = delete;
 
 
 
