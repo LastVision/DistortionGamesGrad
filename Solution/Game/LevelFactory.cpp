@@ -176,8 +176,9 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 				aReader.ForceReadAttribute(patrolPositionElement, "X", "Y", "Z", position);
 				patrolPositions.Add(position);
 			}
+			DL_ASSERT_EXP(myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>() != nullptr, "Saw blades have to have saw blade components to be able to patrol");
 
-			//myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
+			myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions);
 		}
 	}
 }

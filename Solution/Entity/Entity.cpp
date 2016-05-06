@@ -11,8 +11,9 @@
 #include <EmitterMessage.h>
 #include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
-#include "TriggerComponent.h"
+#include "SawBladeComponent.h"
 #include "SoundComponent.h"
+#include "TriggerComponent.h"
 
 Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
 	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
@@ -36,8 +37,6 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	SetRotation(aRotation);
 
-
-	//has to be here fro press E-text
 	if (aEntityData.myTriggerData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::TRIGGER)] = new TriggerComponent(*this, aEntityData.myTriggerData);
@@ -92,7 +91,10 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		myComponents[static_cast<int>(eComponentType::MOVEMENT)] = new MovementComponent(*this, aEntityData.myMovementData, myOrientation);
 	}
 
-
+	if (aEntityData.mySawBladeData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::SAW_BLADE)] = new SawBladeComponent(*this);
+	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{

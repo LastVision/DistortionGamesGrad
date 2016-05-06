@@ -16,8 +16,8 @@ public:
 private:
 
 	CU::GrowingArray<CU::Vector3<float>> myPositions;
-	bool myIsPatrolling;
-
+	bool myIsLoopingForward;
+	int myCurrentIndex;
 };
 
 inline eComponentType SawBladeComponent::GetTypeStatic()
@@ -32,6 +32,5 @@ inline eComponentType SawBladeComponent::GetType()
 
 inline void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& somePositions)
 {
-	myIsPatrolling = true;
 	myPositions = somePositions;
 }

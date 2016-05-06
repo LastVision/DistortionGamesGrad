@@ -92,11 +92,7 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 	newData.myType = EntityEnumConverter::ConvertStringToEntityType(CU::ToLower(entityType));
 
 	entityDocument.ReadAttribute(entityElement, "subType", entitySubType);
-	if (entitySubType == "")
-	{
-		int apa;
-		apa = 5;
-	}
+
 	newData.mySubType = CU::ToLower(entitySubType);
 
 
