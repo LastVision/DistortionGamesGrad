@@ -43,9 +43,8 @@ void DashFlyMovement::Impulse()
 	//Not needed here?
 }
 
-void DashFlyMovement::Impulse(const CU::Vector2<float>& aVelocity)
+void DashFlyMovement::Impulse(const CU::Vector2<float>&)
 {
-
 }
 
 void DashFlyMovement::Activate()

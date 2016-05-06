@@ -49,7 +49,7 @@ void DashAimMovement::Impulse()
 {
 }
 
-void DashAimMovement::Impulse(const CU::Vector2<float>& aVelocity)
+void DashAimMovement::Impulse(const CU::Vector2<float>&)
 {
 }
 
