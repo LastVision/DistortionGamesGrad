@@ -42,6 +42,11 @@ void FlyMovement::Impulse()
 	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
 }
 
+void FlyMovement::Impulse(const CU::Vector2<float>& aVelocity)
+{
+	myVelocity += aVelocity;
+}
+
 void FlyMovement::Activate()
 {
 	myVelocity.x = 0.f;

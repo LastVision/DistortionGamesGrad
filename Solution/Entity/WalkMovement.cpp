@@ -48,6 +48,12 @@ void WalkMovement::Impulse()
 	myMovementComponent.Impulse();
 }
 
+void WalkMovement::Impulse(const CU::Vector2<float>& aVelocity)
+{
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.Impulse(aVelocity);
+}
+
 void WalkMovement::Activate()
 {
 	myVelocity.x = 0.f;

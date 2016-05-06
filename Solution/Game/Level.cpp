@@ -74,16 +74,24 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 
 	TriggerComponent* firstTrigger = first.GetComponent<TriggerComponent>();
 
-	if (aHasEntered == true && firstTrigger != nullptr && second.GetType() == eEntityType::PLAYER)
+	if (firstTrigger != nullptr && second.GetType() == eEntityType::PLAYER)
 	{
-		switch (firstTrigger->GetTriggerType())
+		if (aHasEntered == true)
 		{
-		case eTriggerType::HAZARD:
-			// kill player
-			break;
-		case eTriggerType::FORCE:
-			// push player
-			break;
+			switch (firstTrigger->GetTriggerType())
+			{
+			case eTriggerType::HAZARD:
+				// kill player
+				break;
+			case eTriggerType::FORCE:
+				// push player
+				second.GetComponent<MovementComponent>()->SetInSteam(true, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
+				break;
+			}
+		}
+		else if (firstTrigger->GetTriggerType() == eTriggerType::FORCE)
+		{
+			second.GetComponent<MovementComponent>()->SetInSteam(false);
 		}
 	}
 }
@@ -104,17 +112,17 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			first->Reset();
 			first->SetPosition(myStartPosition);
 			break;
-		/*case eEntityType::PROP:
-			if (aContactNormal.y == 1.f)
-			{
+			/*case eEntityType::PROP:
+				if (aContactNormal.y == 1.f)
+				{
 				CU::Vector3<float> pos = first->GetOrientation().GetPos();
 				pos.y = aContactPoint.y + 0.5f;
 				first->SetPosition(pos);
 				first->GetComponent<MovementComponent>()->Reset();
-			}
-			break;*/
+				}
+				break;*/
 		case eEntityType::GOAL_POINT:
- 			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
+			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 			myShouldChangeLevel = true;
 			myLevelToChangeToID = firstTrigger->GetLevelID();

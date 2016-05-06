@@ -27,11 +27,13 @@ public:
 	void ReceiveNote(const ContactNote& aNote) override;
 
 	void Impulse();
+	void Impulse(const CU::Vector2<float>& aVelocity);
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection);
 	void RightTriggerDown();
 	void RightTriggerUp();
 
 	void SetState(eMovementType aState);
+	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
@@ -43,6 +45,9 @@ private:
 
 	CU::StaticArray<Movement*, eMovementType::_COUNT> myMovements;
 	float myDashCooldown;
+
+	bool myIsInSteam;
+	CU::Vector2<float> mySteamVelocity;
 };
 
 inline eComponentType MovementComponent::GetTypeStatic()
@@ -55,3 +60,8 @@ inline eComponentType MovementComponent::GetType()
 	return GetTypeStatic();
 }
 
+inline void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)
+{
+	myIsInSteam = aIsInSteam;
+	mySteamVelocity = aVelocity;
+}
