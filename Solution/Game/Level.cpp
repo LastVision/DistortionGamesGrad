@@ -83,9 +83,6 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 		case eTriggerType::FORCE:
 			// push player
 			break;
-		case eTriggerType::FINISH:
-			//finish the level
-			break;
 		}
 	}
 }
@@ -99,13 +96,14 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 	{
 		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
 
-		if (second->GetType() == eEntityType::SAW_BLADE || second->GetType() == eEntityType::SPIKE)
+		switch (second->GetType())
 		{
+		case eEntityType::SAW_BLADE:
+		case eEntityType::SPIKE:
 			first->Reset();
 			first->SetPosition(myStartPosition);
-		}
-		else if (second->GetType() == eEntityType::PROP)
-		{
+			break;
+		case eEntityType::PROP:
 			if (aContactNormal.y == 1.f)
 			{
 				CU::Vector3<float> pos = first->GetOrientation().GetPos();
@@ -113,26 +111,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				first->SetPosition(pos);
 				first->GetComponent<MovementComponent>()->Reset();
 			}
-		}
-
-		TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
-
-		if (aHasEntered == true && firstTrigger != nullptr)
-		{
-			switch (firstTrigger->GetTriggerType())
-			{
-			case eTriggerType::HAZARD:
-				// kill player
-				break;
-			case eTriggerType::FORCE:
-				// push player
-				break;
-			case eTriggerType::FINISH:
-				//finish the level
-				myShouldChangeLevel = true;
-				myLevelToChangeToID = firstTrigger->GetLevelID();
-				break;
-			}
+			break;
+		case eEntityType::GOAL_POINT:
+ 			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
+			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
+			myShouldChangeLevel = true;
+			myLevelToChangeToID = firstTrigger->GetLevelID();
+			break;
 		}
 	}
 }
