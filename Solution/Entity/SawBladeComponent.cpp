@@ -4,6 +4,8 @@
 
 SawBladeComponent::SawBladeComponent(Entity& anEntity)
 	: Component(anEntity)
+	, myPatrolSpeed(0.f)
+	, myDelayBeforePatrol(0.f)
 	, myIsLoopingForward(true)
 	, myPositions(8)
 	, myCurrentIndex(0)
@@ -17,13 +19,19 @@ SawBladeComponent::~SawBladeComponent()
 
 void SawBladeComponent::Update(float aDeltaTime)
 {
+	if (myDelayBeforePatrol > 0.f)
+	{
+		myDelayBeforePatrol -= aDeltaTime;
+		return;
+	}
+
 	if (myPositions.Size() > 0)
 	{
 		CU::Vector3<float> position = myEntity.GetOrientation().GetPos();
 		CU::Vector3<float> direction = (myPositions[myCurrentIndex] - position);
 		CU::Normalize(direction);
 
-		position += direction * aDeltaTime * 0.5f;
+		position += direction * aDeltaTime * myPatrolSpeed;
 
 		myEntity.SetPosition(position);
 
