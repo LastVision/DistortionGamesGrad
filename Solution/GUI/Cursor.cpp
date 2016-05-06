@@ -8,14 +8,14 @@ namespace GUI
 	Cursor::Cursor(const CU::Vector2<int>& aWindowSize)
 		: myCurrentType(eCursorType::NORMAL)
 		, mySprites(8)
-		, myShouldRender(true)
+		, myShouldRender(false)
 	{
 		myWindowSize.x = float(aWindowSize.x);
 		myWindowSize.y = float(aWindowSize.y);
 
-		Prism::SpriteProxy* normalSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-			"Data/Resource/Texture/UI/T_cursor.dds", { 70.f, 70.f }, { 35.f, 35.f });
-		mySprites.Add(normalSprite);
+		//Prism::SpriteProxy* normalSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
+		//	"Data/Resource/Texture/UI/T_cursor.dds", { 70.f, 70.f }, { 35.f, 35.f });
+		//mySprites.Add(normalSprite);
 
 		myPosition = myWindowSize / 2.f;
 
