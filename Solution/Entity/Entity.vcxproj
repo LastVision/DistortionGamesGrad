@@ -193,6 +193,7 @@
     <ClInclude Include="SoundComponentData.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SteamComponent.h" />
+    <ClInclude Include="SteamComponentData.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
     <ClInclude Include="WalkMovement.h" />

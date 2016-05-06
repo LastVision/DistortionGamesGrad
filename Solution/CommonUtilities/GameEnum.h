@@ -72,6 +72,7 @@ enum eEntityType
 	BOUNCER = 32,
 	SPAWN_POINT = 64,
 	GOAL_POINT = 128,
+	STEAM_VENT = 256,
 	_COUNT,
 };
 
@@ -142,6 +143,7 @@ enum class eComponentType
 	SOUND,
 	SAW_BLADE,
 	SPIKE,
+	STEAM,
 	PLAYER_GRAPHICS,
 	_COUNT,
 };
