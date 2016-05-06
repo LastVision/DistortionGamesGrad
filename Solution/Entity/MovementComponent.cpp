@@ -5,7 +5,7 @@
 #include "FlyMovement.h"
 #include "WalkMovement.h"
 
-MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation)
+MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
 	, myData(aData)
 	, myCurrentMovement(eMovementType::FLY)
@@ -13,7 +13,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
-	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this);
+	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 }
 
@@ -88,7 +88,7 @@ void MovementComponent::SetState(eMovementType aState)
 	{
 		myDashCooldown = myData.myDashCooldown;
 	}
-
+	myMovements[myCurrentMovement]->DeActivate();
 	myCurrentMovement = aState;
 	myMovements[myCurrentMovement]->Activate();
 }

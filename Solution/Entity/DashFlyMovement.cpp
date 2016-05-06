@@ -53,3 +53,7 @@ void DashFlyMovement::Activate()
 	myVelocity = myOrientation.GetRight().GetVector2() * myData.myDashSpeed;
 	myTimer = myData.myDashFlyTime;
 }
+
+void DashFlyMovement::DeActivate()
+{
+}

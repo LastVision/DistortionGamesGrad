@@ -15,6 +15,7 @@ public:
 	virtual void Impulse() = 0;
 	virtual void Impulse(const CU::Vector2<float>& aVelocity) = 0;
 	virtual void Activate() = 0;
+	virtual void DeActivate() = 0;
 
 
 protected:

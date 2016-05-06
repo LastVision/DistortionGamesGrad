@@ -89,7 +89,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myMovementData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::MOVEMENT)] = new MovementComponent(*this, aEntityData.myMovementData, myOrientation);
+		myComponents[static_cast<int>(eComponentType::MOVEMENT)] = new MovementComponent(*this, aEntityData.myMovementData, myOrientation, aScene);
 	}
 
 	if (aEntityData.mySawBladeData.myExistsInEntity == true)
