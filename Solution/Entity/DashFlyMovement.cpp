@@ -43,6 +43,11 @@ void DashFlyMovement::Impulse()
 	//Not needed here?
 }
 
+void DashFlyMovement::Impulse(const CU::Vector2<float>& aVelocity)
+{
+
+}
+
 void DashFlyMovement::Activate()
 {
 	myVelocity = myOrientation.GetRight().GetVector2() * myData.myDashSpeed;

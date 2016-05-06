@@ -19,6 +19,7 @@ public:
 	void Update(float aDeltaTime) override;
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
+	void Impulse(const CU::Vector2<float>& aVelocity) override;
 	void Activate() override;
 	void DeActivate() override;
 

@@ -39,6 +39,11 @@ void MovementComponent::Update(float aDeltaTime)
 {
 	myDashCooldown -= aDeltaTime;
 	myMovements[myCurrentMovement]->Update(aDeltaTime);
+
+	if (myIsInSteam == true)
+	{
+		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime);
+	}
 }
 
 void MovementComponent::ReceiveNote(const ContactNote& aNote)
@@ -51,6 +56,10 @@ void MovementComponent::Impulse()
 	myMovements[myCurrentMovement]->Impulse();
 }
 
+void MovementComponent::Impulse(const CU::Vector2<float>& aVelocity)
+{
+	myMovements[myCurrentMovement]->Impulse(aVelocity);
+}
 
 void MovementComponent::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 {
