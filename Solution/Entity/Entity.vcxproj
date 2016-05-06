@@ -192,6 +192,7 @@
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SteamComponent.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
     <ClInclude Include="WalkMovement.h" />
@@ -226,6 +227,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SteamComponent.cpp" />
     <ClCompile Include="TriggerComponent.cpp" />
     <ClCompile Include="WalkMovement.cpp" />
   </ItemGroup>

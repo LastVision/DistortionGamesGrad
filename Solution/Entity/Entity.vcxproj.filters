@@ -95,6 +95,9 @@
     <ClCompile Include="DashAimMovement.cpp">
       <Filter>Movement</Filter>
     </ClCompile>
+    <ClCompile Include="SteamComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="DashAimMovement.h">
       <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="SteamComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
