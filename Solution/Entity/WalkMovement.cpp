@@ -57,6 +57,8 @@ void WalkMovement::Activate()
 
 void WalkMovement::DeActivate()
 {
+	int apa = 5;
+	apa;
 }
 
 void WalkMovement::ReceiveNote(const ContactNote& aNote)

@@ -20,7 +20,7 @@ public:
 private:
 	void operator=(FlyMovement&) = delete;
 
-	void HandleContact();
+	bool HandleContact();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
@@ -36,5 +36,6 @@ private:
 		CU::Vector2<float> myContactNormal;
 	};
 	volatile Contact myContact;
+	ContactNote myContactNote;
 };
 

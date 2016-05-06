@@ -20,10 +20,9 @@ void FlyMovement::Reset()
 
 void FlyMovement::Update(float aDeltaTime)
 {
-	HandleContact();
+	if (HandleContact() == true) return;
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
-
 	Drag(aDeltaTime);
 	Rotate(aDeltaTime);
 
@@ -54,25 +53,37 @@ void FlyMovement::DeActivate()
 
 void FlyMovement::ReceiveNote(const ContactNote& aNote)
 {
+	myContactNote = aNote;
+
 	myContact.myOther = aNote.myOther;
 	myContact.myContactPoint.x = aNote.myContactPoint.x;
 	myContact.myContactPoint.y = aNote.myContactPoint.y;
 	myContact.myContactNormal.x = aNote.myContactNormal.x;
 	myContact.myContactNormal.y = aNote.myContactNormal.y;
 	myContact.myFoundTouch = aNote.myHasEntered;
+	
+
 }
 
-void FlyMovement::HandleContact()
+bool FlyMovement::HandleContact()
 {
 	if (myContact.myFoundTouch == true)
 	{
 		if (myContact.myContactNormal.y > 0.9f)
 		{
 			myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+			myMovementComponent.ReceiveNote(myContactNote);
 			//myMovementComponent.ReceiveNote(ContactNote(myContact.myOther, myContact.myContactPoint, myContact.myContactNormal, myContact.myFoundTouch));
 			myContact.myFoundTouch = false;
+
+
+			CU::Vector3<float> vector(myOrientation.GetPos().x, myContact.myContactPoint.y + 0.5f, 0.f);
+
+			myOrientation.SetPos(vector);
+			return true;
 		}
 	}
+	return false;
 }
 
 void FlyMovement::Drag(float aDeltaTime)
