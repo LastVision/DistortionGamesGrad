@@ -791,7 +791,7 @@ namespace Prism
 			if (aShouldBeSphere == true)
 			{
 				physx::PxSphereGeometry geometry;
-				geometry.radius = aPhysData.myData->myPhysicsMax.x;
+				geometry.radius = aPhysData.myData->myPhysicsMax.x * 0.5f;
 				*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
 			}
 			else
@@ -821,14 +821,14 @@ namespace Prism
 			if (aShouldBeSphere == true)
 			{
 				physx::PxSphereGeometry geometry;
-				geometry.radius = aPhysData.myData->myPhysicsMax.x;
+				geometry.radius = aPhysData.myData->myPhysicsMax.x * 0.5f;
 				*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
 			}
 			else
 			{
 				physx::PxVec3 dimensions(
-					aPhysData.myData->myPhysicsMax.y - aPhysData.myData->myPhysicsMin.y
-					, aPhysData.myData->myPhysicsMax.x - aPhysData.myData->myPhysicsMin.x
+					aPhysData.myData->myPhysicsMax.x - aPhysData.myData->myPhysicsMin.x
+					, aPhysData.myData->myPhysicsMax.y - aPhysData.myData->myPhysicsMin.y
 					, aPhysData.myData->myPhysicsMax.z - aPhysData.myData->myPhysicsMin.z);
 				physx::PxBoxGeometry geometry(dimensions / 2.f);
 				*aDynamicBodyOut = physx::PxCreateDynamic(*core, transform, geometry, *myDefaultMaterial, density);
@@ -877,7 +877,7 @@ namespace Prism
 			else
 			{
 				physx::PxSphereGeometry geometry;
-				geometry.radius = aPhysData.myData->myPhysicsMax.x;
+				geometry.radius = aPhysData.myData->myPhysicsMax.x * 0.5f;
 				*aStaticBodyOut = physx::PxCreateStatic(*core, transform, geometry, *myDefaultMaterial);
 			}
 
