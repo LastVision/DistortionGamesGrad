@@ -90,6 +90,16 @@ namespace CU
 
 			break;
 		}
+		case eXboxButton::LTRIGGER:
+		{
+			if (myControllerID == eControllerID::Controller2)
+			{
+				return DIK_NUMPAD3;
+			}
+			return DIK_LALT;
+
+			break;
+		}
 
 		default:
 			break;

@@ -5,10 +5,12 @@
 #include <PostMaster.h>
 #include <PlayerActiveMessage.h>
 #include <OnDeathMessage.h>
-InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData)
+InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
 	, myComponentData(aInputData)
 	, myMovement(nullptr)
+	, myOrientation(aOrientation)
+	, myIsFlipped(false)
 {
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
 
@@ -56,6 +58,16 @@ void InputComponent::Update(float aDeltaTime)
 				myMovement->RightTriggerUp();
 			}
 
+			if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
+			{
+				CU::Vector3<float> pos = myOrientation.GetPos();
+				myOrientation.SetPos(CU::Vector3<float>());
+				myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI) * myOrientation;
+				myOrientation.SetPos(pos);
+
+				myIsFlipped = !myIsFlipped;
+			}
+
 			myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
 		}
 		else if (myIsActive == false)
@@ -78,6 +90,11 @@ void InputComponent::SetPlayerID(int aPlayerID)
 int InputComponent::GetPlayerID()
 {
 	return myPlayerID;
+}
+
+bool InputComponent::GetIsFlipped() const
+{
+	return myIsFlipped;
 }
 
 void InputComponent::ReceiveMessage(const OnDeathMessage& aMessage)

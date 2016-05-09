@@ -3,6 +3,8 @@
 #include <ModelLoader.h>
 #include "MovementComponent.h"
 #include <Instance.h>
+#include "InputComponent.h"
+#include "Entity.h"
 #include <Scene.h>
 
 DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation
@@ -94,6 +96,11 @@ void DashAimMovement::Rotate(float aDeltaTime)
 			float perpDot = right.x * target.y - right.y * target.x;
 
 			float signedAngle = atan2f(perpDot, dot);
+
+			if (myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetIsFlipped())
+			{
+				signedAngle *= -1.f;
+			}
 
 			if (signedAngle < 0)
 			{

@@ -86,7 +86,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myInputData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::INPUT)] = new InputComponent(*this, aEntityData.myInputData);
+		myComponents[static_cast<int>(eComponentType::INPUT)] = new InputComponent(*this, aEntityData.myInputData, myOrientation);
 	}
 
 	if (aEntityData.myMovementData.myExistsInEntity == true)

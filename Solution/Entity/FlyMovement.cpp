@@ -2,6 +2,8 @@
 #include "ContactNote.h"
 #include "FlyMovement.h"
 #include "MovementComponent.h"
+#include "InputComponent.h"
+#include "Entity.h"
 #include <PhysicsInterface.h>
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -178,6 +180,11 @@ void FlyMovement::Rotate(float aDeltaTime)
 			float perpDot = up.x * target.y - up.y * target.x;
 
 			float signedAngle = atan2f(perpDot, dot);
+
+			if (myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetIsFlipped())
+			{
+				signedAngle *= -1.f;
+			}
 
 			if (signedAngle < 0)
 			{
