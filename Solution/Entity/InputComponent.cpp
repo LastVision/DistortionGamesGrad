@@ -65,12 +65,7 @@ void InputComponent::Update(float aDeltaTime)
 
 			if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
 			{
-				CU::Vector3<float> pos = myOrientation.GetPos();
-				myOrientation.SetPos(CU::Vector3<float>());
-				myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI) * myOrientation;
-				myOrientation.SetPos(pos);
-
-				myIsFlipped = !myIsFlipped;
+				SetIsFlipped(!myIsFlipped);
 			}
 
 			myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
