@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "DashFlyMovement.h"
+#include "InputComponent.h"
 #include "MovementComponent.h"
+#include "OnDeathMessage.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
+#include "PostMaster.h"
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -74,33 +77,41 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 	if (aComponent != nullptr)
 	{
 		myHasContact = true;
+		if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+		{
+			PostMaster::GetInstance()->SendMessage<OnDeathMessage>(
+			OnDeathMessage(myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetPlayerID()));
+		}
+		else
+		{
+			myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		}
+		//CU::Vector3<float> resetPos(myOrientation.GetPos());
+		//resetPos.z = 0.f;
 
-		CU::Vector3<float> resetPos(myOrientation.GetPos());
-		resetPos.z = 0.f;
-
-		if (aHitNormal.y > 0.f)
-		{
-			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
-			{
-				myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
-			}
-		}
-		else if (aHitNormal.y < 0.f)
-		{
-			resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
-			myVelocity.y = 0;
-		}
-		else if (aDirection.x > 0)
-		{
-			resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
-			myVelocity.x = 0;
-		}
-		else if (aDirection.x < 0)
-		{
-			resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
-			myVelocity.x = 0;
-		}
-		myOrientation.SetPos(resetPos);
+		//if (aHitNormal.y > 0.f)
+		//{
+		//	if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+		//	{
+		//		myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+		//	}
+		//}
+		//else if (aHitNormal.y < 0.f)
+		//{
+		//	resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
+		//	myVelocity.y = 0;
+		//}
+		//else if (aDirection.x > 0)
+		//{
+		//	resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
+		//	myVelocity.x = 0;
+		//}
+		//else if (aDirection.x < 0)
+		//{
+		//	resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
+		//	myVelocity.x = 0;
+		//}
+		//myOrientation.SetPos(resetPos);
 	}
 }
 
