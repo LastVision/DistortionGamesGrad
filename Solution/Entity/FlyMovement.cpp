@@ -83,14 +83,27 @@ bool FlyMovement::HandleContact()
 		{
 			myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
 			myMovementComponent.ReceiveNote(myContactNote);
-			//myMovementComponent.ReceiveNote(ContactNote(myContact.myOther, myContact.myContactPoint, myContact.myContactNormal, myContact.myFoundTouch));
 			myContact.myFoundTouch = false;
-
 
 			CU::Vector3<float> vector(myOrientation.GetPos().x, myContact.myContactPoint.y + 0.5f, 0.f);
 
 			myOrientation.SetPos(vector);
 			return true;
+		}
+		if (abs(myContact.myContactNormal.x) > 0.9f)
+		{
+			CU::Vector3<float> vector(myContact.myContactPoint.x, myOrientation.GetPos().y, 0.f);
+			vector.x += myContact.myContactNormal.x * 0.5f;
+			myOrientation.SetPos(vector);
+			myVelocity.x = 0;
+			return false;
+		}
+		if (myContact.myContactNormal.y < -0.9f)
+		{
+			CU::Vector3<float> vector(myOrientation.GetPos().x, myContact.myContactPoint.y - 0.5f, 0.f);
+			myVelocity.y = 0;
+			myOrientation.SetPos(vector);
+			return false;
 		}
 	}
 	return false;

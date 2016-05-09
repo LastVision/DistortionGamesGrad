@@ -43,6 +43,11 @@ namespace Prism
 		return myManager->GetInitDone();
 	}
 
+	void PhysicsInterface::FrameUpdate()
+	{
+		myManager->FrameUpdate();
+	}
+
 	void PhysicsInterface::EndFrame()
 	{
 #ifndef THREAD_PHYSICS

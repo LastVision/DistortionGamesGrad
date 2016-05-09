@@ -255,15 +255,7 @@ namespace Prism
 			if (totalTime >= (1.0f / 60.0f))
 			{
 				totalTime = 0;
-				Update();
-
-
-				Swap();
-				if (myLogicDone == true)
-				{
-					SetPhysicsDone();
-					//WaitForSwap();
-				}
+				FrameUpdate();
 			}
 
 			std::this_thread::yield();
@@ -437,6 +429,20 @@ namespace Prism
 		myActorsToRemove[myCurrentIndex ^ 1].RemoveAll();
 	}
 
+	void PhysicsManager::FrameUpdate()
+	{
+		Update();
+
+		Swap();
+#ifdef THREAD_PHYSICS
+		if (myLogicDone == true)
+		{
+			SetPhysicsDone();
+			//WaitForSwap();
+		}
+#endif
+	}
+
 	void PhysicsManager::RayCast(const CU::Vector3<float>& aOrigin, const CU::Vector3<float>& aNormalizedDirection
 		, float aMaxRayDistance, std::function < void(PhysicsComponent*, const CU::Vector3<float>&
 		, const CU::Vector3<float>&, const CU::Vector3<float>&) > aFunctionToCall, const PhysicsComponent* aComponent)
@@ -462,7 +468,7 @@ namespace Prism
 			}
 			if (pairs.events == physx::PxPairFlag::Enum::eNOTIFY_TOUCH_FOUND)
 			{
-				
+
 				physx::PxContactPairPoint point;
 				pairs.extractContacts(&point, aCount);
 
@@ -745,11 +751,12 @@ namespace Prism
 		, physx::PxRigidDynamic** aDynamicBodyOut, physx::PxRigidStatic** aStaticBodyOut
 		, physx::PxShape*** someShapesOut, bool aShouldAddToScene, bool aShouldBeSphere)
 	{
+#ifdef THREAD_PHYSICS
 		if (myPhysicsThread != nullptr)
 		{
 			bool changeLaterToAssert = true;
 		}
-
+#endif
 
 		physx::PxPhysics* core = GetCore();
 
@@ -776,7 +783,7 @@ namespace Prism
 			{
 				GetScene()->addActor(*(*aStaticBodyOut));
 			}
-			
+
 			physx::PxU32 nShapes = (*aStaticBodyOut)->getNbShapes();
 
 			*someShapesOut = new physx::PxShape*[nShapes];

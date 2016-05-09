@@ -45,6 +45,9 @@ Level::~Level()
 
 void Level::Update(float aDelta)
 {
+#ifndef THREAD_PHYSICS
+	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
+#endif
 	mySmartCamera->Update(aDelta);
 	for each(Entity* player in myPlayers)
 	{

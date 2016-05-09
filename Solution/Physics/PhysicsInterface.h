@@ -43,6 +43,7 @@ namespace Prism
 		void ShutdownThread();
 #endif
 		bool GetInitDone() const;
+		void FrameUpdate();
 		
 		void EndFrame();
 
