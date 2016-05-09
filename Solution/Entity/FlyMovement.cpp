@@ -78,14 +78,14 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
 		resetPos.z = 0.f;
 
-		if (aHitNormal.y > 0.f)
+		if (aHitNormal.y > 0.5f)
 		{
 			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 			{
 				myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
 			}
 		}
-		else if (aHitNormal.y < 0.f)
+		else if (aHitNormal.y < -0.5f)
 		{
 			resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
 			myVelocity.y = 0;

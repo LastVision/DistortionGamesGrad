@@ -136,9 +136,9 @@ void WalkMovement::HandleContact()
 
 	CU::Vector3<float> down(0.f, -1.f, 0.f);
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs+0.01f, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
-	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs + 0.01f, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
 	CU::Vector3<float> left(-1.f, 0.f, 0.f);
