@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "DashAimMovement.h"
 #include "DashFlyMovement.h"
-#include "MovementComponent.h"
 #include "FlyMovement.h"
+#include "InputComponent.h"
+#include "MovementComponent.h"
+#include "OnDeathMessage.h"
+#include "PostMaster.h"
+#include "PlayerActiveMessage.h"
 #include "WalkMovement.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
@@ -16,6 +20,9 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 	myMovements[myCurrentMovement]->Activate();
+
+	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
 }
 
 MovementComponent::~MovementComponent()
@@ -24,6 +31,9 @@ MovementComponent::~MovementComponent()
 	{
 		SAFE_DELETE(myMovements[i]);
 	}
+
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
 }
 
 void MovementComponent::Reset()
@@ -31,10 +41,7 @@ void MovementComponent::Reset()
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
 		myMovements[i]->Reset();
-		myMovements[i]->DeActivate();
 	}
-	myCurrentMovement = eMovementType::FLY;
-	myMovements[myCurrentMovement]->Activate();
 	myDashCooldown = 0.f;
 }
 
@@ -99,4 +106,21 @@ void MovementComponent::SetState(eMovementType aState)
 void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
 {
 	myMovements[myCurrentMovement]->SetVelocity(aVelocity);
+}
+
+void MovementComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+{
+	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
+	for (int i = 0; i < eMovementType::_COUNT; ++i)
+	{
+		myMovements[i]->DeActivate();
+	}
+}
+
+void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+{
+	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
+	myCurrentMovement = eMovementType::FLY;
+	myMovements[myCurrentMovement]->Activate();
+	myEntity.ResetPosition();
 }

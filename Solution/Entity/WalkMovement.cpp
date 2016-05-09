@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "ContactNote.h"
-#include "WalkMovement.h"
+#include "InputComponent.h"
 #include "MovementComponent.h"
+#include "OnDeathMessage.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
+#include "PostMaster.h"
+#include "WalkMovement.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -74,7 +77,8 @@ void WalkMovement::Activate()
 	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
 	if (dir < 0.85f)
 	{
-		myMovementComponent.GetEntity().Reset();
+		PostMaster::GetInstance()->SendMessage<OnDeathMessage>(
+			OnDeathMessage(myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetPlayerID()));
 	}
 }
 

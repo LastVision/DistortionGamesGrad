@@ -146,9 +146,7 @@ void Entity::Reset()
 	myDelayAddToSceneTimer = 0.f;
 	myDelayedAddToScene = false;
 
-	myOrientation = CU::Matrix44<float>();
-	myOrientation.SetPos(myStartPosition);
-	SetRotation(myStartRotation);
+	ResetPosition();
 }
 
 void Entity::Update(float aDeltaTime)

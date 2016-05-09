@@ -42,6 +42,7 @@ public:
 	float* GetOrientationAsFloatPtr();
 	void SetRotation(const CU::Vector3<float>& aRotation);
 	void SetPosition(const CU::Vector3<float>& aPosition);
+	void ResetPosition();
 
 	Prism::Scene* GetScene();
 	eEntityType GetType() const;
@@ -152,6 +153,12 @@ inline void Entity::SetPosition(const CU::Vector3<float>& aPosition)
 	myOrientation.SetPos(aPosition);
 }
 
+inline void Entity::ResetPosition()
+{
+	myOrientation = CU::Matrix44<float>();
+	myOrientation.SetPos(myStartPosition);
+	SetRotation(myStartRotation);
+}
 
 inline Prism::Scene* Entity::GetScene()
 {

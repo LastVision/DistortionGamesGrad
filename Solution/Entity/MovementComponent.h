@@ -1,12 +1,13 @@
 #pragma once
 #include "Component.h"
 #include "ContactNote.h"
+#include "Subscriber.h"
 
 struct MovementComponentData;
 
 class Movement;
 
-class MovementComponent : public Component
+class MovementComponent : public Component, public Subscriber
 {
 public:
 	enum eMovementType
@@ -35,6 +36,9 @@ public:
 	void SetState(eMovementType aState);
 	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
 	void SetVelocity(const CU::Vector2<float>& aVelocity);
+
+	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
