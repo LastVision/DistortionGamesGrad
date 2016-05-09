@@ -211,7 +211,9 @@
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelFactory.h" />
+    <ClInclude Include="LevelSelectState.h" />
     <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="ScoreState.h" />
     <ClInclude Include="ScriptInterface.h" />
     <ClInclude Include="SmartCamera.h" />
     <ClInclude Include="StateEnums.h" />
@@ -229,7 +231,9 @@
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
+    <ClCompile Include="LevelSelectState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="ScoreState.cpp" />
     <ClCompile Include="ScriptInterface.cpp" />
     <ClCompile Include="SmartCamera.cpp" />
     <ClCompile Include="StateStack.cpp" />
