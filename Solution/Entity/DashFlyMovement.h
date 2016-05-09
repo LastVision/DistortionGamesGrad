@@ -22,6 +22,8 @@ public:
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
 
 private:
+	void HandleContact();
+	bool myHasContact;
 	float myTimer;
 };
 
