@@ -1645,7 +1645,7 @@ FbxModelData* FBXLoader::loadModel(const char* aFile, CU::GrowingArray<std::stri
 			lStatus;
 
 			std::string str = lFileTexture->GetFileName();
-			str = CU::GetSubString(str, "Data", true, 1);
+			str = CU::GetSubString(str, "Data", false);
 
 			TextureInfo info;
 			info.myFileName = str;

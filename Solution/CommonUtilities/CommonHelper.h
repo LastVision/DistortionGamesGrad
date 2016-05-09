@@ -144,14 +144,14 @@ namespace CU
 	inline std::string GetSubString(const std::string& aStringToReadFrom, const std::string& aToFind, bool aReadCharactersBeforeToFind
 		, int someCharsToSkip = 0)
 	{
-		if (aStringToReadFrom.find(aToFind) != std::string::npos)
+		if (aStringToReadFrom.rfind(aToFind) != std::string::npos)
 		{
 			if (aReadCharactersBeforeToFind == true)
 			{
-				return aStringToReadFrom.substr(0, aStringToReadFrom.find(aToFind));
+				return aStringToReadFrom.substr(0, aStringToReadFrom.rfind(aToFind));
 			}
 
-			return aStringToReadFrom.substr(aStringToReadFrom.find(aToFind) + someCharsToSkip);
+			return aStringToReadFrom.substr(aStringToReadFrom.rfind(aToFind) + someCharsToSkip);
 
 		}
 
