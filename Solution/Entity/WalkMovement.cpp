@@ -39,8 +39,6 @@ void WalkMovement::Update(float aDeltaTime)
 	Walk(aDeltaTime);
 
 	Translate();
-
-	myPreviousPosition = myOrientation.GetPos();
 }
 
 void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -96,6 +94,8 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		const eEntityType& type = aComponent->GetEntity().GetType();
+		if (type == eEntityType::BOUNCER && type == eEntityType::SAW_BLADE && type == eEntityType::SPIKE && type == eEntityType::STEAM_VENT) return;
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
 		resetPos.z = 0.f;

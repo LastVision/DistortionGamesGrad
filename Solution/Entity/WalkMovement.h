@@ -23,7 +23,6 @@ public:
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
 
 private:
-	CU::Vector3<float> myPreviousPosition;
 	void HandleContact();
 	void Drag(float aDeltaTime);
 	void Walk(float aDeltaTime);
