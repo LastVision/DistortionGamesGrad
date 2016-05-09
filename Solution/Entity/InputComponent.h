@@ -20,6 +20,8 @@ public:
 	void Init() override;
 	void AddController(int anID);
 
+	void Reset() override;
+
 	void Update(float aDeltaTime) override;
 
 	static eComponentType GetTypeStatic();
@@ -27,7 +29,7 @@ public:
 	void SetPlayerID(int aPlayerID);
 	int GetPlayerID();
 	bool GetIsFlipped() const;
-
+	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 
 

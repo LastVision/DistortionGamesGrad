@@ -122,5 +122,5 @@ void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
 	myCurrentMovement = eMovementType::FLY;
 	myMovements[myCurrentMovement]->Activate();
-	myEntity.ResetPosition();
+	//myEntity.ResetPosition();
 }

@@ -33,6 +33,11 @@ void InputComponent::AddController(int anID)
 	myController = new CU::ControllerInput(anID);
 }
 
+void InputComponent::Reset()
+{
+	myIsFlipped = false;
+}
+
 void InputComponent::Update(float aDeltaTime)
 {
 	myController->Update(aDeltaTime);
@@ -75,6 +80,7 @@ void InputComponent::Update(float aDeltaTime)
 			if (myController->ButtonOnDown(eXboxButton::A))
 			{
 				PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
+				myEntity.Reset();
 				myIsActive = true;
 				myMovement->Impulse();
 			}
@@ -95,6 +101,17 @@ int InputComponent::GetPlayerID()
 bool InputComponent::GetIsFlipped() const
 {
 	return myIsFlipped;
+}
+
+void InputComponent::SetIsFlipped(bool aIsFlipped)
+{
+	myIsFlipped = aIsFlipped;
+
+	CU::Vector3<float> pos = myOrientation.GetPos();
+	myOrientation.SetPos(CU::Vector3<float>());
+	myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI) * myOrientation;
+	myOrientation.SetPos(pos);
+
 }
 
 void InputComponent::ReceiveMessage(const OnDeathMessage& aMessage)

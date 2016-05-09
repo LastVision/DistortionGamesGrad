@@ -189,6 +189,17 @@ void WalkMovement::Walk(float aDeltaTime)
 
 		myVelocity.x = myDirectionTarget.x * myData.myWalkSpeed * aDeltaTime;
 	}
+
+	if (myVelocity.x < 0
+		&& myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetIsFlipped() == false)
+	{
+		myMovementComponent.GetEntity().GetComponent<InputComponent>()->SetIsFlipped(true);
+	}
+	else if (myVelocity.x > 0
+		&& myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetIsFlipped() == true)
+	{
+		myMovementComponent.GetEntity().GetComponent<InputComponent>()->SetIsFlipped(false);
+	}
 }
 
 void WalkMovement::Translate()
