@@ -7,5 +7,7 @@ enum class eMessageType
 	FADE,
 	PARTICLE,
 	LEVEL_FINISHED,
+	PLAYER_ACTIVE,
+	ON_DEATH,
 	COUNT,
 };

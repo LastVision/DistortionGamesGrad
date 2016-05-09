@@ -31,8 +31,10 @@ void MovementComponent::Reset()
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
 		myMovements[i]->Reset();
+		myMovements[i]->DeActivate();
 	}
-
+	myCurrentMovement = eMovementType::FLY;
+	myMovements[myCurrentMovement]->Activate();
 	myDashCooldown = 0.f;
 }
 

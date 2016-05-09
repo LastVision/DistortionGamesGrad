@@ -70,6 +70,12 @@ void WalkMovement::Activate()
 	myHasContact = true;
 
 	myIsActive = true;
+
+	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
+	if (dir < 0.85f)
+	{
+		myMovementComponent.GetEntity().Reset();
+	}
 }
 
 void WalkMovement::DeActivate()
@@ -92,28 +98,59 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 {
 	if (myIsActive == false) return;
-	if (aComponent != nullptr && aHitNormal.y > 0.f)
+	if (aComponent != nullptr)
 	{
+		const eEntityType& type = aComponent->GetEntity().GetType();
+		if (type == eEntityType::BOUNCER && type == eEntityType::SAW_BLADE && type == eEntityType::SPIKE && type == eEntityType::STEAM_VENT) return;
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
-		resetPos.y = aHitPosition.y + GC::PlayerHeightWithLegs;
 		resetPos.z = 0.f;
+		if (aHitNormal.y > 0.f)
+		{
+			resetPos.y = aHitPosition.y + GC::PlayerHeightWithLegs;
+		}
+		else if (aDirection.x > 0)
+		{
+			resetPos.x = aHitPosition.x - GC::PlayerRadius;
+			myVelocity.x = 0;
+		}
+		else if (aDirection.x < 0)
+		{
+			resetPos.x = aHitPosition.x + GC::PlayerRadius;
+			myVelocity.x = 0;
+		}
+
 		myOrientation.SetPos(resetPos);
 	}
 }
 
 void WalkMovement::HandleContact()
 {
-	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - 0.5f, myOrientation.GetPos().y, 0.f);
-	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + 0.5f, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> centerPosition(myOrientation.GetPos());
 
-	CU::Vector3<float> dir(0.f, -1.f, 0.f);
+	CU::Vector3<float> down(0.f, -1.f, 0.f);
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
-		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	CU::Vector3<float> left(-1.f, 0.f, 0.f);
+	CU::Vector3<float> right(1.f, 0.f, 0.f);
+
+	if (myVelocity.x < 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, left, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+	else if (myVelocity.x > 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, right, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+
 
 	myHasContact = false;
 }

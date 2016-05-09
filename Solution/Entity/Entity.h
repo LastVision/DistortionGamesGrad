@@ -95,6 +95,9 @@ private:
 
 	float myDelayAddToSceneTimer;
 	bool myDelayedAddToScene;
+
+	CU::Vector3<float> myStartPosition;
+	CU::Vector3<float> myStartRotation;
 };
 
 template <typename T>

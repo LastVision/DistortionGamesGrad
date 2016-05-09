@@ -37,6 +37,7 @@ private:
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
 	SmartCamera* mySmartCamera;
+	CU::Matrix44<float> dummyMatrix;
 
 	CU::GrowingArray<Entity*> myPlayers;
 

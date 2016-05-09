@@ -27,4 +27,5 @@ public:
 	static bool ShouldRenderGUI;
 
 	static float PlayerHeightWithLegs;
+	static float PlayerRadius;
 };

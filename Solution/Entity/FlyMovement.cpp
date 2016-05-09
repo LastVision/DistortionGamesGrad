@@ -22,7 +22,7 @@ void FlyMovement::Reset()
 
 void FlyMovement::Update(float aDeltaTime)
 {
-	if (HandleContact() == true) return;
+	HandleContact();
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
 	Drag(aDeltaTime);
@@ -71,30 +71,76 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 {
 	if (myIsActive == false) return;
-	if (aComponent != nullptr && aHitNormal.y > 0.f)
+	if (aComponent != nullptr)
 	{
 		myHasContact = true;
-		myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+		
+		CU::Vector3<float> resetPos(myOrientation.GetPos());
+		resetPos.z = 0.f;
+
+		if (aHitNormal.y > 0.f)
+		{
+			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+			{
+				myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+			}
+		}
+		else if (aHitNormal.y < 0.f)
+		{
+			resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
+			myVelocity.y = 0;
+		}
+		else if (aDirection.x > 0)
+		{
+			resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
+			myVelocity.x = 0;
+		}
+		else if (aDirection.x < 0)
+		{
+			resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
+			myVelocity.x = 0;
+		}
+		myOrientation.SetPos(resetPos);
 	}
 }
 
-bool FlyMovement::HandleContact()
+void FlyMovement::HandleContact()
 {
-	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - 0.5f, myOrientation.GetPos().y, 0.f);
-	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + 0.5f, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> centerPosition(myOrientation.GetPos());
 
-	CU::Vector3<float> dir(0.f, -1.f, 0.f);
+	CU::Vector3<float> down(0.f, -1.f, 0.f);
+	CU::Vector3<float> up(0.f, 1.f, 0.f);
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
-		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+	CU::Vector3<float> left(-1.f, 0.f, 0.f);
+	CU::Vector3<float> right(1.f, 0.f, 0.f);
+
+	if (myVelocity.x < 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, left, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+	else if (myVelocity.x > 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, right, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+
 
 	myHasContact = false;
-
-	return false;
 }
 
 void FlyMovement::Drag(float aDeltaTime)

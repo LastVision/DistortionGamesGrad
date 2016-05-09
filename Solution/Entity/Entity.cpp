@@ -28,15 +28,17 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myTimeActiveBeforeKillTimer(10.f)
 	, myDelayAddToSceneTimer(0.f)
 	, myDelayedAddToScene(false)
+	, myStartPosition(aStartPosition)
+	, myStartRotation(aRotation)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
 		myComponents[i] = nullptr;
 	}
 
-	myOrientation.SetPos(aStartPosition);
+	myOrientation.SetPos(myStartPosition);
+	SetRotation(myStartRotation);
 
-	SetRotation(aRotation);
 
 	if (aEntityData.myTriggerData.myExistsInEntity == true)
 	{
@@ -143,6 +145,10 @@ void Entity::Reset()
 	
 	myDelayAddToSceneTimer = 0.f;
 	myDelayedAddToScene = false;
+
+	myOrientation = CU::Matrix44<float>();
+	myOrientation.SetPos(myStartPosition);
+	SetRotation(myStartRotation);
 }
 
 void Entity::Update(float aDeltaTime)

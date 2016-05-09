@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "DashFlyMovement.h"
 #include "MovementComponent.h"
+#include "PhysicsComponent.h"
+#include <PhysicsInterface.h>
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myTimer(aData.myDashFlyTime)
+	, myHasContact(false)
 {
 }
 
@@ -20,6 +23,7 @@ void DashFlyMovement::Reset()
 
 void DashFlyMovement::Update(float aDeltaTime)
 {
+	HandleContact();
 	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity*aDeltaTime, 0));
 
 	myTimer -= aDeltaTime;
@@ -66,5 +70,75 @@ void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
 void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 {
+	if (myIsActive == false) return;
+	if (aComponent != nullptr)
+	{
+		myHasContact = true;
 
+		CU::Vector3<float> resetPos(myOrientation.GetPos());
+		resetPos.z = 0.f;
+
+		if (aHitNormal.y > 0.f)
+		{
+			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+			{
+				myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+			}
+		}
+		else if (aHitNormal.y < 0.f)
+		{
+			resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
+			myVelocity.y = 0;
+		}
+		else if (aDirection.x > 0)
+		{
+			resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
+			myVelocity.x = 0;
+		}
+		else if (aDirection.x < 0)
+		{
+			resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
+			myVelocity.x = 0;
+		}
+		myOrientation.SetPos(resetPos);
+	}
+}
+
+void DashFlyMovement::HandleContact()
+{
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> centerPosition(myOrientation.GetPos());
+
+	CU::Vector3<float> down(0.f, -1.f, 0.f);
+	CU::Vector3<float> up(0.f, 1.f, 0.f);
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+
+
+	CU::Vector3<float> left(-1.f, 0.f, 0.f);
+	CU::Vector3<float> right(1.f, 0.f, 0.f);
+
+	if (myVelocity.x < 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, left, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+	else if (myVelocity.x > 0)
+	{
+		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, right, GC::PlayerRadius, myRaycastHandler
+			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+	}
+
+
+	myHasContact = false;
 }
