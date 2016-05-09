@@ -20,3 +20,5 @@ GC::eMultiplayerMode GC::MultiplayerMode = GC::eMultiplayerMode::HOST;
 bool GC::ShouldRenderGUI = true;
 
 float GC::PlayerHeightWithLegs = 0.5f;
+
+float GC::PlayerRadius = 0.5f;

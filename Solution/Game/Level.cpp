@@ -150,6 +150,7 @@ void Level::CreatePlayers()
 	myPlayers.Add(player);
 
 	mySmartCamera->AddOrientation(&player->GetOrientation());
+	//mySmartCamera->AddOrientation(&dummyMatrix);
 
 	/*player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
