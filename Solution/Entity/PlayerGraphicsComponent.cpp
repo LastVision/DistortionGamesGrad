@@ -5,9 +5,11 @@
 #include <Instance.h>
 #include "PlayerGraphicsComponent.h"
 #include <Scene.h>
-
-
+#include <PostMaster.h>
+#include <PlayerActiveMessage.h>
 #include <InputWrapper.h>
+#include "InputComponent.h"
+#include <OnDeathMessage.h>
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene)
@@ -16,11 +18,17 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
 {
+	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+
 }
 
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+
 }
 
 void PlayerGraphicsComponent::Init()
@@ -100,4 +108,30 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
+}
+
+void PlayerGraphicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+{
+	if (myEntity.GetComponent<InputComponent>() != nullptr)
+	{
+		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			Reset();			
+		}
+	}
+
+}
+
+void PlayerGraphicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+{
+	if (myEntity.GetComponent<InputComponent>() != nullptr)
+	{
+		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			myBody.SetActive(false);
+			myLeftLeg.SetActive(false);
+			myRightLeg.SetActive(false);
+			myHead.SetActive(false);
+		}
+	}
 }

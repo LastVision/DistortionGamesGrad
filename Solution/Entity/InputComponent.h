@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-
+#include <Subscriber.h>
 namespace CU
 {
 	class ControllerInput;
@@ -11,7 +11,7 @@ class MovementComponent;
 struct InputComponentData;
 
 
-class InputComponent : public Component
+class InputComponent : public Component, public Subscriber
 {
 public:
 	InputComponent(Entity& aEntity, const InputComponentData& aInputData);
@@ -24,11 +24,19 @@ public:
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
+	void SetPlayerID(int aPlayerID);
+	int GetPlayerID();
+	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+
+
 private:
+
 	const InputComponentData& myComponentData;
 	CU::ControllerInput* myController;
 
 	MovementComponent* myMovement;
+	int myPlayerID;
+	bool myIsActive;
 
 };
 
