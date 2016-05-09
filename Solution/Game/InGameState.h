@@ -60,6 +60,7 @@ private:
 
 	bool myFailedLevelHash;
 	bool myLevelIsFinished;
+	int myNextLevel;
 
 	Prism::TextProxy* myText;
 

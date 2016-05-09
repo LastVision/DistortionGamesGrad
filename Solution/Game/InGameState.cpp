@@ -30,6 +30,7 @@ InGameState::InGameState(int aLevelID)
 	, myFailedLevelHash(false)
 	, myHasStartedMusicBetweenLevels(false)
 	, myLastLevel(aLevelID)
+	, myNextLevel(-1)
 {
 	myIsActiveState = false;
 
@@ -90,7 +91,10 @@ const eStateStatus InGameState::Update(const float& aDeltaTime)
 
 void InGameState::Render()
 {
-	myLevel->Render();
+	if (myLevel != nullptr)
+	{
+		myLevel->Render();
+	}
 }
 
 void InGameState::ResumeState()
@@ -117,6 +121,8 @@ void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
 void InGameState::ReceiveMessage(const FinishLevelMessage& aMessage)
 {
 	SET_RUNTIME(false);
+	myNextLevel = aMessage.myLevelID;
+	//myState = eInGameState::SCORE;
 	myLevel = myLevelFactory->LoadLevel(aMessage.myLevelID);
 	SET_RUNTIME(true);
 }
