@@ -38,7 +38,7 @@ void BodyAnimation::CreateAnimation(const std::string& aAnimationPath, const std
 
 void BodyAnimation::CreateJoints(const std::string& aAnimationPath)
 {
-	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "root_jnt-01", myBody);
+	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "root_jnt-1", myBody);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "head_jnt0", myHead);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "l_leg_jnt0", myLeftLeg);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "r_leg_jnt0", myRightLeg);
