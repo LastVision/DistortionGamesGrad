@@ -16,7 +16,7 @@ public:
 	virtual void SetDirectionTarget(const CU::Vector2<float>& aDirection) = 0;
 	virtual void Impulse() = 0;
 	virtual void Impulse(const CU::Vector2<float>& aVelocity) = 0;
-	virtual void Activate() = 0;
+	virtual void Activate(const CU::Vector2<float>& aVelocity) = 0;
 	virtual void DeActivate() = 0;
 	virtual void SetVelocity(const CU::Vector2<float>& aVelocity) = 0;
 

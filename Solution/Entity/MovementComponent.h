@@ -33,7 +33,7 @@ public:
 	void RightTriggerDown();
 	void RightTriggerUp();
 
-	void SetState(eMovementType aState);
+	void SetState(eMovementType aState, const CU::Vector2<float>& aVelocity);
 	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
 	void SetVelocity(const CU::Vector2<float>& aVelocity);
 
@@ -53,6 +53,8 @@ private:
 
 	bool myIsInSteam;
 	CU::Vector2<float> mySteamVelocity;
+
+	float myDeltaTime;
 };
 
 inline eComponentType MovementComponent::GetTypeStatic()

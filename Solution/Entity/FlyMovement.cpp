@@ -48,10 +48,9 @@ void FlyMovement::Impulse(const CU::Vector2<float>& aVelocity)
 	myVelocity += aVelocity;
 }
 
-void FlyMovement::Activate()
+void FlyMovement::Activate(const CU::Vector2<float>& aVelocity)
 {
-	myVelocity.x = 0.f;
-	myVelocity.y = 0.f;
+	myVelocity = aVelocity;
 	myIsActive = true;
 }
 
@@ -84,7 +83,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		{
 			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 			{
-				myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+				myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 			}
 		}
 		else if (aHitNormal.y < -0.5f)

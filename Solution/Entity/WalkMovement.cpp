@@ -30,7 +30,7 @@ void WalkMovement::Update(float aDeltaTime)
 {
 	if (myHasContact == false)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity);
 		return;
 	}
 	HandleContact();
@@ -52,7 +52,7 @@ void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 void WalkMovement::Impulse()
 {
 	//myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
-	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity);
 	CU::Vector3<float> offset(myOrientation.GetPos());
 	offset.y += 0.1f;
 	offset.z = 0.f;
@@ -62,11 +62,11 @@ void WalkMovement::Impulse()
 
 void WalkMovement::Impulse(const CU::Vector2<float>& aVelocity)
 {
-	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity);
 	myMovementComponent.Impulse(aVelocity);
 }
 
-void WalkMovement::Activate()
+void WalkMovement::Activate(const CU::Vector2<float>&)
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
@@ -104,7 +104,7 @@ void WalkMovement::DeActivate()
 
 void WalkMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
 {
-	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity);
 	myMovementComponent.SetVelocity(aVelocity);
 }
 

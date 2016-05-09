@@ -13,7 +13,7 @@ public:
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
 	void Impulse(const CU::Vector2<float>& aVelocity) override;
-	void Activate() override;
+	void Activate(const CU::Vector2<float>& aVelocity) override;
 	void DeActivate() override;
 	void SetVelocity(const CU::Vector2<float>& aVelocity) override;
 

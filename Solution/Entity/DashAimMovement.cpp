@@ -38,7 +38,7 @@ void DashAimMovement::Update(float aDeltaTime)
 	myTimer -= aDeltaTime;
 	if (myTimer <= 0.f)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::DASH_FLY);
+		myMovementComponent.SetState(MovementComponent::eMovementType::DASH_FLY, myVelocity);
 	}
 }
 
@@ -55,7 +55,7 @@ void DashAimMovement::Impulse(const CU::Vector2<float>&)
 {
 }
 
-void DashAimMovement::Activate()
+void DashAimMovement::Activate(const CU::Vector2<float>&)
 {
 	myTimer = myData.myDashAimTime;
 	myArrow->SetShouldRender(true);

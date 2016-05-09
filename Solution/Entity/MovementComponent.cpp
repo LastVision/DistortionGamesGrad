@@ -14,12 +14,13 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myData(aData)
 	, myCurrentMovement(eMovementType::FLY)
 	, myDashCooldown(0.f)
+	, myDeltaTime(0.f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
-	myMovements[myCurrentMovement]->Activate();
+	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
 	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
@@ -47,6 +48,7 @@ void MovementComponent::Reset()
 
 void MovementComponent::Update(float aDeltaTime)
 {
+	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
 	myMovements[myCurrentMovement]->Update(aDeltaTime);
 
@@ -80,7 +82,7 @@ void MovementComponent::RightTriggerDown()
 {
 	if (myDashCooldown <= 0.f)
 	{
-		SetState(eMovementType::DASH_AIM);
+		SetState(eMovementType::DASH_AIM, { 0.f, 0.f });
 	}
 }
 
@@ -88,19 +90,24 @@ void MovementComponent::RightTriggerUp()
 {
 	if (myCurrentMovement == eMovementType::DASH_AIM)
 	{
-		SetState(eMovementType::DASH_FLY);
+		SetState(eMovementType::DASH_FLY, { 0.f, 0.f });
 	}
 }
 
-void MovementComponent::SetState(eMovementType aState)
+void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>& aVelocity)
 {
 	if (myCurrentMovement == eMovementType::DASH_AIM)
 	{
 		myDashCooldown = myData.myDashCooldown;
 	}
 	myMovements[myCurrentMovement]->DeActivate();
+	CU::Vector2<float> velocityToState(aVelocity);
+	if (myCurrentMovement != eMovementType::WALK)
+	{
+		velocityToState *= myDeltaTime;
+	}
 	myCurrentMovement = aState;
-	myMovements[myCurrentMovement]->Activate();
+	myMovements[myCurrentMovement]->Activate(velocityToState);
 }
 
 void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
@@ -121,6 +128,6 @@ void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 {
 	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
 	myCurrentMovement = eMovementType::FLY;
-	myMovements[myCurrentMovement]->Activate();
+	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 	//myEntity.ResetPosition();
 }

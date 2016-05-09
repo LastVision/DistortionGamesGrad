@@ -32,7 +32,7 @@ void DashFlyMovement::Update(float aDeltaTime)
 	myTimer -= aDeltaTime;
 	if (myTimer <= 0.f)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));
 	}
 }
 
@@ -54,7 +54,7 @@ void DashFlyMovement::Impulse(const CU::Vector2<float>&)
 {
 }
 
-void DashFlyMovement::Activate()
+void DashFlyMovement::Activate(const CU::Vector2<float>&)
 {
 	myVelocity = myOrientation.GetRight().GetVector2() * myData.myDashSpeed;
 	myTimer = myData.myDashFlyTime;
@@ -84,7 +84,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		}
 		else
 		{
-			myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));
 		}
 		//CU::Vector3<float> resetPos(myOrientation.GetPos());
 		//resetPos.z = 0.f;
