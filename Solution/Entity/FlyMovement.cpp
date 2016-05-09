@@ -2,9 +2,11 @@
 #include "ContactNote.h"
 #include "FlyMovement.h"
 #include "MovementComponent.h"
+#include <PhysicsInterface.h>
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
+	, myHasContact(false)
 {
 }
 
@@ -27,8 +29,6 @@ void FlyMovement::Update(float aDeltaTime)
 	Rotate(aDeltaTime);
 
 	Translate();
-
-	myPreviousPosition = myOrientation.GetPos().GetVector2();
 }
 
 void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -50,10 +50,12 @@ void FlyMovement::Activate()
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
+	myIsActive = true;
 }
 
 void FlyMovement::DeActivate()
 {
+	myIsActive = false;
 }
 
 void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
@@ -61,38 +63,37 @@ void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
 	myVelocity = aVelocity;
 }
 
-void FlyMovement::ReceiveNote(const ContactNote& aNote)
+void FlyMovement::ReceiveNote(const ContactNote&)
 {
-	myContactNote = aNote;
+}
 
-	myContact.myOther = aNote.myOther;
-	myContact.myContactPoint.x = aNote.myContactPoint.x;
-	myContact.myContactPoint.y = aNote.myContactPoint.y;
-	myContact.myContactNormal.x = aNote.myContactNormal.x;
-	myContact.myContactNormal.y = aNote.myContactNormal.y;
-	myContact.myFoundTouch = aNote.myHasEntered;
-	
-
+void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+{
+	if (myIsActive == false) return;
+	if (aComponent != nullptr && aHitNormal.y > 0.f)
+	{
+		myHasContact = true;
+		myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
+	}
 }
 
 bool FlyMovement::HandleContact()
 {
-	if (myContact.myFoundTouch == true && myContact.myOther->GetType() != eEntityType::BOUNCER)
-	{
-		if (myContact.myContactNormal.y > 0.9f)
-		{
-			myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
-			myMovementComponent.ReceiveNote(myContactNote);
-			//myMovementComponent.ReceiveNote(ContactNote(myContact.myOther, myContact.myContactPoint, myContact.myContactNormal, myContact.myFoundTouch));
-			myContact.myFoundTouch = false;
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - 0.5f, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + 0.5f, myOrientation.GetPos().y, 0.f);
+
+	CU::Vector3<float> dir(0.f, -1.f, 0.f);
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
 
-			CU::Vector3<float> vector(myOrientation.GetPos().x, myContact.myContactPoint.y + 0.5f, 0.f);
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
-			myOrientation.SetPos(vector);
-			return true;
-		}
-	}
+	myHasContact = false;
+
 	return false;
 }
 

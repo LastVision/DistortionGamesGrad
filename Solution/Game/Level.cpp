@@ -48,6 +48,9 @@ Level::~Level()
 
 void Level::Update(float aDelta)
 {
+#ifndef THREAD_PHYSICS
+	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
+#endif
 	mySmartCamera->Update(aDelta);
 	for each(Entity* player in myPlayers)
 	{
@@ -152,6 +155,7 @@ void Level::CreatePlayers()
 	player->AddToScene();
 	myPlayers.Add(player);
 	mySmartCamera->AddOrientation(&player->GetOrientation());
+	//mySmartCamera->AddOrientation(&dummyMatrix);
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);

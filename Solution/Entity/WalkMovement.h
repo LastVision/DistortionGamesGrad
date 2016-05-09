@@ -19,24 +19,15 @@ public:
 
 	void ReceiveNote(const ContactNote& aNote) override;
 
+	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
+
 private:
 	void HandleContact();
 	void Drag(float aDeltaTime);
 	void Walk(float aDeltaTime);
 	void Translate();
 
-	CU::Vector2<float> myPreviousPosition;
-
-	struct Contact
-	{
-		Contact() : myLostTouch(false), myOther(nullptr){};
-		bool myLostTouch;
-		Entity* myOther;
-		CU::Vector2<float> myContactPoint;
-		CU::Vector2<float> myContactNormal;
-	};
-	volatile Contact myCurrentContact;
-	volatile Contact myPreviousContact;
 	bool myHasContact;
 };
 

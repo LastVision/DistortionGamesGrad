@@ -40,6 +40,12 @@
       <Filter>Level</Filter>
     </ClCompile>
     <ClCompile Include="SmartCamera.cpp" />
+    <ClCompile Include="LevelSelectState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -87,6 +93,12 @@
     </ClInclude>
     <ClInclude Include="Game.h" />
     <ClInclude Include="SmartCamera.h" />
+    <ClInclude Include="LevelSelectState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

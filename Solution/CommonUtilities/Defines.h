@@ -37,7 +37,7 @@
 
 #define USE_LIGHT
 
-#define THREAD_PHYSICS
+//#define THREAD_PHYSICS
 
 #define NETWORK_UPDATE_INTERVAL 1.f / 30.f
 

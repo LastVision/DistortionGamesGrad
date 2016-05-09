@@ -1,5 +1,8 @@
 #pragma once
 #include "Movement.h"
+#include "PhysicsComponent.h"
+
+class PhysicsComponent;
 
 class FlyMovement : public Movement
 {
@@ -18,26 +21,19 @@ public:
 	void SetVelocity(const CU::Vector2<float>& aVelocity) override;
 
 	void ReceiveNote(const ContactNote& aNote) override;
+	
+	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
+
 
 private:
 	void operator=(FlyMovement&) = delete;
+
+	bool myHasContact;
 
 	bool HandleContact();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
-
-	CU::Vector2<float> myPreviousPosition;
-
-	struct Contact
-	{
-		Contact() : myFoundTouch(false), myOther(nullptr){};
-		bool myFoundTouch;
-		Entity* myOther;
-		CU::Vector2<float> myContactPoint;
-		CU::Vector2<float> myContactNormal;
-	};
-	volatile Contact myContact;
-	ContactNote myContactNote;
 };
 

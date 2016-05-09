@@ -1,6 +1,8 @@
 #pragma once
 
 class MovementComponent;
+class PhysicsComponent;
+
 class Movement
 {
 public:
@@ -18,8 +20,15 @@ public:
 	virtual void DeActivate() = 0;
 	virtual void SetVelocity(const CU::Vector2<float>& aVelocity) = 0;
 
+	virtual void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) = 0;
+
+
 protected:
 	void operator=(Movement&) = delete;
+	bool myIsActive;
+	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
+		, const CU::Vector3<float>&)> myRaycastHandler;
 
 	const MovementComponentData& myData;
 	MovementComponent& myMovementComponent;
