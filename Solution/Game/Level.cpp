@@ -13,6 +13,9 @@
 #include "SmartCamera.h"
 #include <FinishLevelMessage.h>
 #include <PostMaster.h>
+#include <InputComponent.h>
+#include <PlayerActiveMessage.h>
+#include <OnDeathMessage.h>
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
@@ -26,7 +29,7 @@ Level::Level(Prism::Camera& aCamera)
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
-
+	mySmartCamera->SetStartPosition(myStartPosition);
 
 }
 
@@ -112,7 +115,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		{
 		case eEntityType::SAW_BLADE:
 		case eEntityType::SPIKE:
-			first->Reset();
+			//first->Reset();
+			PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
 			first->SetPosition(myStartPosition);
 			break;
 			/*case eEntityType::PROP:
@@ -146,15 +150,20 @@ void Level::CreatePlayers()
 {
 	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
+	player->GetComponent<InputComponent>()->SetPlayerID(1);
+
 	player->AddToScene();
 	myPlayers.Add(player);
-
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	/*player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
+	player->GetComponent<InputComponent>()->SetPlayerID(2);
+
 	player->AddToScene();
 	myPlayers.Add(player);
-	mySmartCamera->AddOrientation(&player->GetOrientation());*/
+	mySmartCamera->AddOrientation(&player->GetOrientation());
+
+	mySmartCamera->SetActivePlayerCount(0);
 }

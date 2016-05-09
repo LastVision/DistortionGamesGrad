@@ -51,5 +51,11 @@
     <ClInclude Include="FinishLevelMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerActiveMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="OnDeathMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

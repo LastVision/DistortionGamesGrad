@@ -3,7 +3,7 @@
 #include "Component.h"
 #include <Matrix.h>
 #include "PlayerBody.h"
-
+#include <Subscriber.h>
 struct PlayerGraphicsComponentData;
 
 namespace Prism
@@ -12,7 +12,7 @@ namespace Prism
 	class Scene;
 }
 
-class PlayerGraphicsComponent : public Component
+class PlayerGraphicsComponent : public Component, public Subscriber
 {
 public:
 	PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
@@ -26,6 +26,8 @@ public:
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
+	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
+	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 
 private:
 	const PlayerGraphicsComponentData& myData;

@@ -164,6 +164,8 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
     <ClInclude Include="OnClickMessage.h" />
+    <ClInclude Include="OnDeathMessage.h" />
+    <ClInclude Include="PlayerActiveMessage.h" />
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="ResizeMessage.h" />
     <ClInclude Include="stdafx.h" />
