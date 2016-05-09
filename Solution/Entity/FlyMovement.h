@@ -31,7 +31,7 @@ private:
 
 	bool myHasContact;
 
-	bool HandleContact();
+	void HandleContact();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
