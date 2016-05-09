@@ -80,6 +80,20 @@ void WalkMovement::Activate()
 		PostMaster::GetInstance()->SendMessage<OnDeathMessage>(
 			OnDeathMessage(myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetPlayerID()));
 	}
+	else
+	{
+		CU::Vector3<float> right(myOrientation.GetRight());
+		CU::Vector3<float> oldPos(myOrientation.GetPos());
+		myOrientation = CU::Matrix44<float>();
+
+		if (right.x < 0)
+		{
+			myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI);
+			myOrientation.SetPos(oldPos);
+		}
+		
+
+	}
 }
 
 void WalkMovement::DeActivate()
