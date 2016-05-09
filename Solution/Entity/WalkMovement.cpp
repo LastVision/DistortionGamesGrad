@@ -70,6 +70,12 @@ void WalkMovement::Activate()
 	myHasContact = true;
 
 	myIsActive = true;
+
+	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
+	if (dir < 0.85f)
+	{
+		myMovementComponent.GetEntity().Reset();
+	}
 }
 
 void WalkMovement::DeActivate()
