@@ -46,6 +46,7 @@ namespace Prism
 	void PhysicsInterface::FrameUpdate()
 	{
 		myManager->FrameUpdate();
+		myManager->EndFrame();
 	}
 
 	void PhysicsInterface::EndFrame()

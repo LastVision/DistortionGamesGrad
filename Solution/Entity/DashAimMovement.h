@@ -25,6 +25,9 @@ public:
 	void SetVelocity(const CU::Vector2<float>& aVelocity) override;
 
 	void ReceiveNote(const ContactNote& aNote) override;
+
+	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
 	
 private:
 	void operator=(DashAimMovement&) = delete;

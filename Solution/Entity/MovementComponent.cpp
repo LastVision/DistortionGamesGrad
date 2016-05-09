@@ -15,6 +15,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
+	myMovements[myCurrentMovement]->Activate();
 }
 
 MovementComponent::~MovementComponent()

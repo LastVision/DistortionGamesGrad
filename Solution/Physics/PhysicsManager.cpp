@@ -447,7 +447,11 @@ namespace Prism
 		, float aMaxRayDistance, std::function < void(PhysicsComponent*, const CU::Vector3<float>&
 		, const CU::Vector3<float>&, const CU::Vector3<float>&) > aFunctionToCall, const PhysicsComponent* aComponent)
 	{
+#ifdef THREAD_PHYSICS
 		myRaycastJobs[myCurrentIndex].Add(RaycastJob(aOrigin, aNormalizedDirection, aMaxRayDistance, aFunctionToCall, aComponent));
+#else
+		RayCast(RaycastJob(aOrigin, aNormalizedDirection, aMaxRayDistance, aFunctionToCall, aComponent));
+#endif
 	}
 
 	void PhysicsManager::onContact(const physx::PxContactPairHeader& aHeader, const physx::PxContactPair* somePairs, physx::PxU32 aCount)

@@ -2,6 +2,8 @@
 #include "ContactNote.h"
 #include "WalkMovement.h"
 #include "MovementComponent.h"
+#include "PhysicsComponent.h"
+#include <PhysicsInterface.h>
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -23,6 +25,11 @@ void WalkMovement::Reset()
 
 void WalkMovement::Update(float aDeltaTime)
 {
+	if (myHasContact == false)
+	{
+		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+		return;
+	}
 	HandleContact();
 
 	//myVelocity.y += myData.myGravity * aDeltaTime;
@@ -32,8 +39,6 @@ void WalkMovement::Update(float aDeltaTime)
 	Walk(aDeltaTime);
 
 	Translate();
-
-	myPreviousPosition = myOrientation.GetPos().GetVector2();
 }
 
 void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -45,6 +50,10 @@ void WalkMovement::Impulse()
 {
 	//myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
 	myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
+	CU::Vector3<float> offset(myOrientation.GetPos());
+	offset.y += 0.1f;
+	offset.z = 0.f;
+	myOrientation.SetPos(offset);
 	myMovementComponent.Impulse();
 }
 
@@ -59,14 +68,14 @@ void WalkMovement::Activate()
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
 	myHasContact = true;
-	myPreviousContact.myOther = nullptr;
-	myCurrentContact.myOther = nullptr;
+
+	myIsActive = true;
 }
 
 void WalkMovement::DeActivate()
 {
-	myPreviousContact.myOther = nullptr;
-	myCurrentContact.myOther = nullptr;
+	myHasContact = false;
+	myIsActive = false;
 }
 
 void WalkMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
@@ -75,45 +84,38 @@ void WalkMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
 	myMovementComponent.SetVelocity(aVelocity);
 }
 
-void WalkMovement::ReceiveNote(const ContactNote& aNote)
+void WalkMovement::ReceiveNote(const ContactNote&)
 {
-	//memcpy(&myPreviousContact, &myCurrentContact, sizeof(Contact));
-	myPreviousContact.myContactNormal.x = myCurrentContact.myContactNormal.x;
-	myPreviousContact.myContactNormal.y = myCurrentContact.myContactNormal.y;
-	myPreviousContact.myContactPoint.x = myCurrentContact.myContactPoint.x;
-	myPreviousContact.myContactPoint.y = myCurrentContact.myContactPoint.y;
-	myPreviousContact.myLostTouch = myCurrentContact.myLostTouch;
-	myPreviousContact.myOther = myCurrentContact.myOther;
+}
 
-	if (aNote.myHasEntered == false)
+void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+{
+	if (myIsActive == false) return;
+	if (aComponent != nullptr && aHitNormal.y > 0.f)
 	{
-		myCurrentContact.myOther = nullptr;
-	}
-	else
-	{
-		myCurrentContact.myOther = aNote.myOther;
-	}
-
-	myCurrentContact.myContactPoint.x = aNote.myContactPoint.x;
-	myCurrentContact.myContactPoint.y = aNote.myContactPoint.y;
-	myCurrentContact.myContactNormal.x = aNote.myContactNormal.x;
-	myCurrentContact.myContactNormal.y = aNote.myContactNormal.y;
-	myCurrentContact.myLostTouch = !aNote.myHasEntered;
-
-	if (myCurrentContact.myOther == nullptr && myPreviousContact.myOther == nullptr)
-	{
-		myHasContact = false;
+		myHasContact = true;
+		CU::Vector3<float> resetPos(myOrientation.GetPos());
+		resetPos.y = aHitPosition.y + GC::PlayerHeightWithLegs;
+		resetPos.z = 0.f;
+		myOrientation.SetPos(resetPos);
 	}
 }
 
 void WalkMovement::HandleContact()
 {
-	//if (myCurrentContact.myOther == nullptr && myPreviousContact.myOther == nullptr)
-	if (myHasContact == false)
-	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY);
-		myCurrentContact.myLostTouch = false;
-	}
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - 0.5f, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + 0.5f, myOrientation.GetPos().y, 0.f);
+
+	CU::Vector3<float> dir(0.f, -1.f, 0.f);
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, dir, GC::PlayerHeightWithLegs, myRaycastHandler
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
+
+	myHasContact = false;
 }
 
 void WalkMovement::Drag(float aDeltaTime)

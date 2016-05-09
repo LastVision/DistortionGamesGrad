@@ -18,6 +18,9 @@ public:
 	void DeActivate() override;
 	void SetVelocity(const CU::Vector2<float>& aVelocity) override;
 
+	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
+
 private:
 	float myTimer;
 };

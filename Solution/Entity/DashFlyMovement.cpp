@@ -51,12 +51,20 @@ void DashFlyMovement::Activate()
 {
 	myVelocity = myOrientation.GetRight().GetVector2() * myData.myDashSpeed;
 	myTimer = myData.myDashFlyTime;
+	myIsActive = true;
 }
 
 void DashFlyMovement::DeActivate()
 {
+	myIsActive = false;
 }
 
 void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
 {
+}
+
+void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+{
+
 }

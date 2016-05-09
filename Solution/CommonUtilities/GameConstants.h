@@ -25,4 +25,6 @@ public:
 	static eMultiplayerMode MultiplayerMode;
 
 	static bool ShouldRenderGUI;
+
+	static float PlayerHeightWithLegs;
 };
