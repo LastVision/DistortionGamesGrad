@@ -13,4 +13,5 @@ void Subscriber::ReceiveMessage(const OnClickMessage&){}
 void Subscriber::ReceiveMessage(const ResizeMessage&){}
 void Subscriber::ReceiveMessage(const FinishLevelMessage&){}
 void Subscriber::ReceiveMessage(const PlayerActiveMessage&){}
+void Subscriber::ReceiveMessage(const ScrapMessage&){}
 void Subscriber::ReceiveMessage(const OnDeathMessage&){}

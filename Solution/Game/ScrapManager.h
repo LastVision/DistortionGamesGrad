@@ -7,7 +7,7 @@ namespace Prism
 	class Scene;
 }
 
-class ScrapManager
+class ScrapManager : public Subscriber
 {
 public:
 	static void Create(Prism::Scene* aScene);
@@ -16,6 +16,8 @@ public:
 
 	void Update(float aDeltaTime);
 	void SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosition, const CU::Vector2<float>& aVelocity);
+
+	void ReceiveMessage(const ScrapMessage& aMessage) override;
 
 
 private:

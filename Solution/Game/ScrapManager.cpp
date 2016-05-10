@@ -3,7 +3,9 @@
 #include <Entity.h>
 #include <EntityFactory.h>
 #include <PhysicsComponent.h>
+#include <PostMaster.h>
 #include "ScrapManager.h"
+#include <ScrapMessage.h>
 
 ScrapManager* ScrapManager::myInstance = nullptr;
 
@@ -13,12 +15,14 @@ ScrapManager::ScrapManager(Prism::Scene* aScene)
 	, myHeadIndex(0)
 	, myScene(aScene)
 {
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::SPAWN_SCRAP);
 	CreateHeads();
 }
 
 
 ScrapManager::~ScrapManager()
 {
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	for (int i = 0; i < myHeads.Size(); ++i)
 	{
 		SAFE_DELETE(myHeads[i].myHead);
@@ -81,7 +85,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
-		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->AddForce(dir, 5.f);
+		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->AddForce(dir, 50.f);
 		++myHeadIndex;
 		break;
 	}
@@ -94,6 +98,11 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 	default:
 		break;
 	}
+}
+
+void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
+{
+	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
 }
 
 void ScrapManager::CreateHeads()

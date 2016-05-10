@@ -146,11 +146,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			//first->Reset();
 			if (aHasEntered == true)
 			{
-				ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
-					, first->GetComponent<MovementComponent>()->GetVelocity());
+				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
+				//	, first->GetComponent<MovementComponent>()->GetVelocity());
 
-				//PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-				//	, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
 				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
 				first->SetPosition(myStartPosition);

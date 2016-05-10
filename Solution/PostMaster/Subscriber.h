@@ -8,7 +8,8 @@ struct ResizeMessage;
 struct Message;
 struct FinishLevelMessage;
 struct PlayerActiveMessage;
-struct  OnDeathMessage;
+struct OnDeathMessage;
+struct ScrapMessage;
 
 class Subscriber
 {
@@ -24,6 +25,7 @@ public:
 	virtual void ReceiveMessage(const ResizeMessage& aMessage);
 	virtual void ReceiveMessage(const FinishLevelMessage& aMessage);
 	virtual void ReceiveMessage(const PlayerActiveMessage& aMessage);
+	virtual void ReceiveMessage(const ScrapMessage& aMessage);
 	virtual void ReceiveMessage(const OnDeathMessage& aMessage);
 
 };
