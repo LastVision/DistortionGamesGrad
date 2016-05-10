@@ -21,6 +21,7 @@ public:
 
 	void Init() override;
 	void Reset() override;
+	void Activate();
 
 	void Update(float aDeltaTime) override;
 
@@ -32,6 +33,7 @@ public:
 private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;
+
 
 	Prism::Scene* myScene;
 

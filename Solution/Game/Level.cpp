@@ -1,27 +1,30 @@
 #include "stdafx.h"
 
 #include <ContactNote.h>
+#include <ControllerInput.h>
 #include <EntityFactory.h>
+#include <FinishLevelMessage.h>
 #include <InputComponent.h>
 #include "Level.h"
 #include <MovementComponent.h>
+#include <ModelLoader.h>
+#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
-#include <Scene.h>
-#include <ControllerInput.h>
-#include <TriggerComponent.h>
-#include "SmartCamera.h"
-#include <FinishLevelMessage.h>
-#include <PostMaster.h>
-#include <InputComponent.h>
 #include <PlayerActiveMessage.h>
-#include <OnDeathMessage.h>
+#include <PostMaster.h>
+#include <Scene.h>
+#include "SmartCamera.h"
+#include <SpriteProxy.h>
+#include <TriggerComponent.h>
+
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
 	, mySmartCamera(new SmartCamera(myCamera))
 	, myShouldChangeLevel(false)
+	, myBackground(nullptr)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -30,15 +33,19 @@ Level::Level(Prism::Camera& aCamera)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	mySmartCamera->SetStartPosition(myStartPosition);
+	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
+	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 
 }
 
 Level::~Level()
 {
+	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
@@ -70,6 +77,7 @@ void Level::Update(float aDelta)
 
 void Level::Render()
 {
+	myBackground->Render(myWindowSize * 0.5f);
 	myScene->Render();
 }
 

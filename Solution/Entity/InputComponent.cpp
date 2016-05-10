@@ -4,7 +4,10 @@
 #include "MovementComponent.h"
 #include <PostMaster.h>
 #include <PlayerActiveMessage.h>
+#include "PlayerGraphicsComponent.h"
 #include <OnDeathMessage.h>
+
+
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
 	, myComponentData(aInputData)
@@ -76,6 +79,7 @@ void InputComponent::Update(float aDeltaTime)
 			{
 				PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
 				myEntity.Reset();
+				myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
 				myIsActive = true;
 				myMovement->Impulse();
 			}
