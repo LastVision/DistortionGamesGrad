@@ -165,6 +165,7 @@
     <ClInclude Include="MessageEnum.h" />
     <ClInclude Include="OnClickMessage.h" />
     <ClInclude Include="OnDeathMessage.h" />
+    <ClInclude Include="OnPlayerJoin.h" />
     <ClInclude Include="OnPlayerLevelComplete.h" />
     <ClInclude Include="PlayerActiveMessage.h" />
     <ClInclude Include="PostMaster.h" />
