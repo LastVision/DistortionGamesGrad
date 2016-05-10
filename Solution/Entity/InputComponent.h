@@ -45,6 +45,7 @@ private:
 	bool myHasCompletedLevel;
 	CU::Matrix44<float>& myOrientation;
 	bool myIsFlipped;
+	bool myIsInLevel;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()
