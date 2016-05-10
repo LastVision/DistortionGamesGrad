@@ -178,7 +178,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
-				if (myPlayerWinCount > 1)
+				if (myPlayerWinCount > 0)
 				{
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(firstTrigger->GetLevelID()));
 
