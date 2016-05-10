@@ -33,6 +33,7 @@ public:
 	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 	bool GetIsActive();
+	void ResetIsInLevel();
 
 private:
 
@@ -45,6 +46,7 @@ private:
 	bool myHasCompletedLevel;
 	CU::Matrix44<float>& myOrientation;
 	bool myIsFlipped;
+	bool myIsInLevel;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()

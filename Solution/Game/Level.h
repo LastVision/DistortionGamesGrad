@@ -42,6 +42,8 @@ public:
 	void ResumeState() override;
 	void OnResize(int aWidth, int aHeight) override;
 
+	void ReceiveMessage(const OnPlayerJoin& aMessage) override;
+
 private:
 	void operator=(Level&) = delete;
 
@@ -63,5 +65,7 @@ private:
 	CU::Vector2<float> myWindowSize;
 	float myTimeToLevelChange;
 	short myPlayerWinCount;
+	short myPlayersPlaying;
+	int myLevelToChangeToID;
 };
 

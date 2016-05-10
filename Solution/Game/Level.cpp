@@ -30,6 +30,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayerWinCount(0)
 	, myTimeToLevelChange(10.f)
 	, myBackground(nullptr)
+	, myPlayersPlaying(0)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -40,7 +41,7 @@ Level::Level(Prism::Camera& aCamera)
 	mySmartCamera->SetStartPosition(myStartPosition);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
-
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
 }
 
@@ -52,6 +53,7 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 
 #ifdef THREAD_PHYSICS
@@ -86,6 +88,18 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	{
 		entity->Update(aDeltaTime);
 	}
+
+	if (myPlayerWinCount >= 1)
+	{
+		myTimeToLevelChange -= aDeltaTime;
+		if (myTimeToLevelChange < 0.f)
+		{
+			SET_RUNTIME(false);
+			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+			myStateStack->PushSubGameState(new ScoreState());
+		}
+	}
+
 
 	return myStateStatus;
 }
@@ -131,6 +145,20 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 			second.GetComponent<MovementComponent>()->SetInSteam(false);
 		}
 	}
+	else if (second.GetType() == eEntityType::SCRAP)
+	{
+		if (aHasEntered == true)
+		{
+			switch (firstTrigger->GetTriggerType())
+			{
+			case eTriggerType::HAZARD:
+				break;
+			case eTriggerType::FORCE:
+				aSecond->AddForce(first.GetOrientation().GetUp(), 10.f);
+				break;
+			}
+		}
+	}
 }
 
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
@@ -145,6 +173,22 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		switch (second->GetType())
 		{
 		case eEntityType::SAW_BLADE:
+			if (aHasEntered == true)
+			{
+				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
+				//	, first->GetComponent<MovementComponent>()->GetVelocity());
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
+				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
+				first->SetPosition(myStartPosition);
+				aFirst->TeleportToPosition(myStartPosition);
+			}
+			break;
 		case eEntityType::SPIKE:
 			//first->Reset();
 			if (aHasEntered == true)
@@ -178,9 +222,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
-				if (myPlayerWinCount > 0)
+
+				myLevelToChangeToID = firstTrigger->GetLevelID();
+				if (myPlayerWinCount >= myPlayersPlaying)
 				{
-					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(firstTrigger->GetLevelID()));
+					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
 					myStateStack->PushSubGameState(new ScoreState());
@@ -190,6 +236,31 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			break;
 		}
 	}
+	else if (first->GetType() == eEntityType::SCRAP)
+	{
+		if (aHasEntered == true)
+		{
+			switch (second->GetType())
+			{
+			case BOUNCER:
+			case STEAM:
+			case SPIKE:
+				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
+				break;
+			case SAW_BLADE:
+				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				break;
+			case GOAL_POINT:
+				//if (aSecond->GetSubtype() == "body")
+				//{
+				//	//finish level with this player part
+				//}
+				////break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void Level::CreatePlayers()
@@ -197,7 +268,7 @@ void Level::CreatePlayers()
 	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
-
+	player->GetComponent<InputComponent>()->ResetIsInLevel();
 	player->AddToScene();
 	myPlayers.Add(player);
 	mySmartCamera->AddOrientation(&player->GetOrientation());
@@ -206,6 +277,7 @@ void Level::CreatePlayers()
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
+	player->GetComponent<InputComponent>()->ResetIsInLevel();
 
 	player->AddToScene();
 	myPlayers.Add(player);
@@ -228,4 +300,9 @@ void Level::OnResize(int aWidth, int aHeight)
 {
 	aWidth;
 	aHeight;
+}
+
+void Level::ReceiveMessage(const OnPlayerJoin& aMessage)
+{
+	myPlayersPlaying++;
 }

@@ -120,10 +120,14 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		BodyPart toAdd; 
 		toAdd.myEntity = myHeads[myHeadIndex].myEntity;
 		toAdd.myMaxTime = myHeads[myHeadIndex].myMaxTime;
-		myLiveHeads.Add(toAdd);
+		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		if (isAlreadyInScene == false)
+		{
+			myLiveHeads.Add(toAdd);
 
-		myLiveHeads.GetLast().myEntity->AddToScene();
-		myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			myLiveHeads.GetLast().myEntity->AddToScene();
+			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+		}
 		myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
@@ -141,10 +145,14 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		BodyPart toAdd;
 		toAdd.myEntity = myBodies[myBodyIndex].myEntity;
 		toAdd.myMaxTime = myBodies[myBodyIndex].myMaxTime;
-		myLiveBodies.Add(toAdd);
+		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		if (isAlreadyInScene == false)
+		{
+			myLiveBodies.Add(toAdd);
 
-		myLiveBodies.GetLast().myEntity->AddToScene();
-		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			myLiveBodies.GetLast().myEntity->AddToScene();
+			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+		}
 		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
@@ -162,10 +170,14 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		BodyPart toAdd;
 		toAdd.myEntity = myLegs[myLegIndex].myEntity;
 		toAdd.myMaxTime = myLegs[myLegIndex].myMaxTime;
-		myLiveLegs.Add(toAdd);
+		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		if (isAlreadyInScene == false)
+		{
+			myLiveLegs.Add(toAdd);
 
-		myLiveLegs.GetLast().myEntity->AddToScene();
-		myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			myLiveLegs.GetLast().myEntity->AddToScene();
+			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+		}
 		myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
