@@ -14,6 +14,7 @@
 #include <PlayerActiveMessage.h>
 #include <PostMaster.h>
 #include <Scene.h>
+#include "ScoreState.h"
 #include "ScrapManager.h"
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
@@ -24,7 +25,6 @@ Level::Level(Prism::Camera& aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
 	, mySmartCamera(new SmartCamera(myCamera))
-	, myShouldChangeLevel(false)
 	, myBackground(nullptr)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
@@ -56,7 +56,16 @@ Level::~Level()
 	Prism::PhysicsInterface::Destroy();
 }
 
-void Level::Update(float aDelta)
+void Level::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+{
+	myCursor = aCursor;
+	myStateStack = aStateStackProxy;
+	myIsLetThrough = false;
+	myIsActiveState = true;
+	myStateStatus = eStateStatus::eKeepState;
+}
+
+const eStateStatus Level::Update(const float& aDeltaTime)
 {
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
@@ -66,18 +75,15 @@ void Level::Update(float aDelta)
 
 	for each(Entity* player in myPlayers)
 	{
-		player->Update(aDelta);
+		player->Update(aDeltaTime);
 	}
 
 	for each(Entity* entity in myEntities)
 	{
-		entity->Update(aDelta);
+		entity->Update(aDeltaTime);
 	}
 
-	if (myShouldChangeLevel == true)
-	{
-		PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-	}
+	return myStateStatus;
 }
 
 void Level::Render()
@@ -103,6 +109,14 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				// kill player
 				break;
 			case eTriggerType::FORCE:
+
+				CU::Vector3<float> velocity = { second.GetComponent<MovementComponent>()->GetVelocity().x, second.GetComponent<MovementComponent>()->GetVelocity().y, 0.f };
+
+				if (abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
+				{
+					second.GetComponent<MovementComponent>()->SetVelocity(second.GetComponent<MovementComponent>()->GetVelocity() * 0.5f);
+				}
+
 				second.GetComponent<MovementComponent>()->SetInSteam(true
 					, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
 				break;
@@ -142,15 +156,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
-			/*case eEntityType::PROP:
-				if (aContactNormal.y == 1.f)
-				{
-				CU::Vector3<float> pos = first->GetOrientation().GetPos();
-				pos.y = aContactPoint.y + 0.5f;
-				first->SetPosition(pos);
-				first->GetComponent<MovementComponent>()->Reset();
-				}
-				break;*/
 		case eEntityType::BOUNCER:
 			if (aHasEntered == true)
 			{
@@ -163,11 +168,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			{
 				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-				myShouldChangeLevel = true;
-				myLevelToChangeToID = firstTrigger->GetLevelID();
+				PostMaster::GetInstance()->SendMessage(FinishLevelMessage(firstTrigger->GetLevelID()));
+
+				SET_RUNTIME(false);
+				myStateStack->PushSubGameState(new ScoreState());
+
 			}
 			break;
-
 		}
 	}
 }
@@ -192,4 +199,20 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	mySmartCamera->SetActivePlayerCount(0);
+}
+
+void Level::EndState()
+{
+
+}
+
+void Level::ResumeState()
+{
+
+}
+
+void Level::OnResize(int aWidth, int aHeight)
+{
+	aWidth;
+	aHeight;
 }

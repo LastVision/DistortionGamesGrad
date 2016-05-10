@@ -25,7 +25,6 @@ InGameState::InGameState(int aLevelID)
 	: myGUIManager(nullptr)
 	, myLevelToLoad(aLevelID)
 	, myState(eInGameState::LEVEL)
-	, myLevel(nullptr)
 	, myLevelFactory(nullptr)
 	, myFailedLevelHash(false)
 	, myHasStartedMusicBetweenLevels(false)
@@ -41,15 +40,13 @@ InGameState::InGameState(int aLevelID)
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
-	PostMaster::GetInstance()->Subscribe(eMessageType::LEVEL_FINISHED, this);
 }
 
 InGameState::~InGameState()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::LEVEL_FINISHED, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::GAME_STATE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
+
 	Console::Destroy();
-	SAFE_DELETE(myLevel);
 	SAFE_DELETE(myCamera);
 	SAFE_DELETE(myLevelFactory);
 	SAFE_DELETE(myText);
@@ -65,14 +62,17 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
 	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera);
-	myLevel = myLevelFactory->LoadLevel(1);
+	//myLevel = myLevelFactory->LoadLevel(1);
+
 
 	myIsActiveState = true;
 
 	myText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE));
 	myText->SetPosition(CU::Vector2<float>(800.f, 800.f));
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::GAME_STATE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED);
+
+	myNextLevel = 1;
 }
 
 void InGameState::EndState()
@@ -81,20 +81,14 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float& aDeltaTime)
 {
-	if (myLevel != nullptr)
-	{
-		myLevel->Update(aDeltaTime);
-	}
+	SET_RUNTIME(false);
+	myStateStack->PushMainGameState(myLevelFactory->LoadLevel(myNextLevel));
 
 	return myStateStatus;
 }
 
 void InGameState::Render()
 {
-	if (myLevel != nullptr)
-	{
-		myLevel->Render();
-	}
 }
 
 void InGameState::ResumeState()
@@ -103,28 +97,9 @@ void InGameState::ResumeState()
 	myLevelToLoad = -1;
 }
 
-void InGameState::ReceiveMessage(const GameStateMessage& aMessage)
-{
-	if (myState != eInGameState::LEVEL)
-	{
-		switch (aMessage.myGameState)
-		{
-		case eGameState::LOAD_LEVEL:
-			myLevelToLoad = aMessage.myID;
-			myState = eInGameState::LOAD_LEVEL;
-			break;
-		}
-	}
-}
-
-
 void InGameState::ReceiveMessage(const FinishLevelMessage& aMessage)
 {
-	SET_RUNTIME(false);
 	myNextLevel = aMessage.myLevelID;
-	//myState = eInGameState::SCORE;
-	myLevel = myLevelFactory->LoadLevel(aMessage.myLevelID);
-	SET_RUNTIME(true);
 }
 
 void InGameState::OnResize(int aWidth, int aHeight)

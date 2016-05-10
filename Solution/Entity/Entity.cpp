@@ -99,7 +99,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		myComponents[static_cast<int>(eComponentType::SAW_BLADE)] = new SawBladeComponent(*this);
 	}
 
-	if (aEntityData.mySteamData.myExistsInEntity == true)
+	if (aEntityData.mySteamData.myExistsInEntity == true) // has to be after physics
 	{
 		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
 	}

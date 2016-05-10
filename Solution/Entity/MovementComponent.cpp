@@ -22,8 +22,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::PLAYER_ACTIVE);
 }
 
 MovementComponent::~MovementComponent()
@@ -33,8 +32,7 @@ MovementComponent::~MovementComponent()
 		SAFE_DELETE(myMovements[i]);
 	}
 
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void MovementComponent::Reset()
@@ -135,4 +133,9 @@ void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 	myCurrentMovement = eMovementType::FLY;
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 	//myEntity.ResetPosition();
+}
+
+const CU::Vector2<float>& MovementComponent::GetVelocity() const
+{
+	return myMovements[myCurrentMovement]->GetVelocity();
 }

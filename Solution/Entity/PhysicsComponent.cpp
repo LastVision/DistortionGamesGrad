@@ -18,6 +18,11 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	, myData(aPhysicsComponentData)
 	, myIsAwake(true)
 {
+	if (myEntity.GetType() == eEntityType::STEAM)
+	{
+		myEntity.SetPosition(myEntity.GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp() * ((myData.myPhysicsMax.y * 0.5f) + 0.5f)));
+	}
+
 	for (int i = 0; i < 16; ++i)
 	{
 		my4x4Float[i] = myEntity.GetOrientation().myMatrix[i];
@@ -29,6 +34,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	myPosition[2] = my4x4Float[14];
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
+
 
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
@@ -44,8 +50,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myIsInScene = myData.myIsActiveFromStart;
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::PLAYER_ACTIVE);
 }
 
 
@@ -54,8 +59,7 @@ PhysicsComponent::~PhysicsComponent()
 	delete[] myShapes;
 	myShapes = nullptr;
 
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void PhysicsComponent::Update(float)
@@ -254,3 +258,7 @@ void PhysicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
 	}
 }
 
+float PhysicsComponent::GetHeight() const
+{
+	return myData.myPhysicsMax.y;
+}

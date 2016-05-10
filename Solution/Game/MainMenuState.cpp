@@ -49,12 +49,12 @@ MainMenuState::~MainMenuState()
 	SAFE_DELETE(myLogoDust);
 	SAFE_DELETE(myGUIManager);
 	myCursor = nullptr;
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_CLICK, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
 {
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_CLICK, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
@@ -136,7 +136,7 @@ void MainMenuState::Render()
 void MainMenuState::ResumeState()
 {
 	myIsActiveState = true;
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_CLICK, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myCursor->SetShouldRender(true);
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 }

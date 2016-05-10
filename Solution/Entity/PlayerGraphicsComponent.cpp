@@ -18,17 +18,13 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
 {
-	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
-
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH);
 }
 
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
-
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void PlayerGraphicsComponent::Init()
