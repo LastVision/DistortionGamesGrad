@@ -31,6 +31,7 @@ public:
 	bool GetIsFlipped() const;
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 
 
 private:
@@ -41,7 +42,7 @@ private:
 	MovementComponent* myMovement;
 	int myPlayerID;
 	bool myIsActive;
-
+	bool myHasCompletedLevel;
 	CU::Matrix44<float>& myOrientation;
 	bool myIsFlipped;
 };

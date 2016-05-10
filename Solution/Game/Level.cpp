@@ -16,12 +16,15 @@
 #include <InputComponent.h>
 #include <PlayerActiveMessage.h>
 #include <OnDeathMessage.h>
+#include <OnPlayerLevelComplete.h>
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
 	, mySmartCamera(new SmartCamera(myCamera))
 	, myShouldChangeLevel(false)
+	, myPlayerWinCount(0)
+	, myTimeToLevelChange(10.f)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -31,10 +34,12 @@ Level::Level(Prism::Camera& aCamera)
 	myScene->SetCamera(aCamera);
 	mySmartCamera->SetStartPosition(myStartPosition);
 
+
 }
 
 Level::~Level()
 {
+
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
@@ -60,6 +65,15 @@ void Level::Update(float aDelta)
 	for each(Entity* entity in myEntities)
 	{
 		entity->Update(aDelta);
+	}
+
+	if (myPlayerWinCount == 1)
+	{
+		myTimeToLevelChange -= aDelta;
+		if (myTimeToLevelChange <= 0.f)
+		{
+			myShouldChangeLevel = true;
+		}
 	}
 
 	if (myShouldChangeLevel == true)
@@ -138,7 +152,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::GOAL_POINT:
 			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-			myShouldChangeLevel = true;
+			myPlayerWinCount++;
+
+			PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
+			if (myPlayerWinCount == mySmartCamera->GetActivePlayerCount())
+			{
+				myShouldChangeLevel = true;
+			}
 			myLevelToChangeToID = firstTrigger->GetLevelID();
 			break;
 

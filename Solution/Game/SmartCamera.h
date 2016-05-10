@@ -20,6 +20,9 @@ public:
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 
+
+	int GetPlayerCount();
+	int GetActivePlayerCount();
 private:
 
 	enum eActivePlayer

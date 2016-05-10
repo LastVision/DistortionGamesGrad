@@ -14,3 +14,4 @@ void Subscriber::ReceiveMessage(const ResizeMessage&){}
 void Subscriber::ReceiveMessage(const FinishLevelMessage&){}
 void Subscriber::ReceiveMessage(const PlayerActiveMessage&){}
 void Subscriber::ReceiveMessage(const OnDeathMessage&){}
+void Subscriber::ReceiveMessage(const OnPlayerLevelComplete&){}

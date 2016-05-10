@@ -118,3 +118,13 @@ void SmartCamera::ReceiveMessage(const OnDeathMessage& aMessage)
 
 	DL_ASSERT_EXP(myActivePlayerCount >= 0, "Player count less than 0.");
 }
+
+int SmartCamera::GetPlayerCount()
+{
+	return myPlayerOrientations.Size();
+}
+
+int SmartCamera::GetActivePlayerCount()
+{
+	return myActivePlayerCount;
+}

@@ -9,7 +9,7 @@ struct Message;
 struct FinishLevelMessage;
 struct PlayerActiveMessage;
 struct  OnDeathMessage;
-
+struct OnPlayerLevelComplete;
 class Subscriber
 {
 public:
@@ -25,6 +25,7 @@ public:
 	virtual void ReceiveMessage(const FinishLevelMessage& aMessage);
 	virtual void ReceiveMessage(const PlayerActiveMessage& aMessage);
 	virtual void ReceiveMessage(const OnDeathMessage& aMessage);
+	virtual void ReceiveMessage(const OnPlayerLevelComplete& aMessage);
 
 };
 

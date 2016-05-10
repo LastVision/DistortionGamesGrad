@@ -9,5 +9,6 @@ enum class eMessageType
 	LEVEL_FINISHED,
 	PLAYER_ACTIVE,
 	ON_DEATH,
+	ON_PLAYER_LEVEL_COMPLETE,
 	COUNT,
 };
