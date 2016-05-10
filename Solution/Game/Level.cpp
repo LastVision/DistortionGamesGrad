@@ -40,10 +40,12 @@ Level::Level(Prism::Camera& aCamera)
 
 Level::~Level()
 {
+	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
