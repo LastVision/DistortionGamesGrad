@@ -101,6 +101,7 @@
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="ScrapManager.h" />
+    <ClInclude Include="Score.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
