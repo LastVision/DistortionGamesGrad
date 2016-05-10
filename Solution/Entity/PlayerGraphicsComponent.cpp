@@ -65,11 +65,20 @@ void PlayerGraphicsComponent::Init()
 
 void PlayerGraphicsComponent::Reset()
 {
+	myBody.SetActive(false);
+	myLeftLeg.SetActive(false);
+	myRightLeg.SetActive(false);
+	myHead.SetActive(false);
+}
+
+void PlayerGraphicsComponent::Activate()
+{
 	myBody.SetActive(true);
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
 }
+
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
@@ -116,7 +125,7 @@ void PlayerGraphicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage
 	{
 		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
-			Reset();			
+			Activate();			
 		}
 	}
 
@@ -128,10 +137,7 @@ void PlayerGraphicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
 	{
 		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
-			myBody.SetActive(false);
-			myLeftLeg.SetActive(false);
-			myRightLeg.SetActive(false);
-			myHead.SetActive(false);
+			Reset();
 		}
 	}
 }
