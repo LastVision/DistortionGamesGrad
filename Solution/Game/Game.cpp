@@ -30,7 +30,7 @@
 #include "InGameState.h"
 
 //Hej
-ClientGame::ClientGame()
+Game::Game()
 	: myLockMouse(true)
 	, myWindowHandler(nullptr)
 	, myIsComplete(false)
@@ -54,7 +54,7 @@ ClientGame::ClientGame()
 	myStateStack.SetCursor(myCursor);
 }
 
-ClientGame::~ClientGame()
+Game::~Game()
 {
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -71,7 +71,7 @@ ClientGame::~ClientGame()
 //	NetworkManager::Destroy();
 }
 
-bool ClientGame::Init(HWND& aHwnd)
+bool Game::Init(HWND& aHwnd)
 {
 	myWindowHandler = &aHwnd;
 	myIsComplete = false;
@@ -93,12 +93,12 @@ bool ClientGame::Init(HWND& aHwnd)
 	return true;
 }
 
-bool ClientGame::Destroy()
+bool Game::Destroy()
 {
 	return true;
 }
 
-bool ClientGame::Update()
+bool Game::Update()
 {
 	CU::InputWrapper::GetInstance()->LogicUpdate();
 
@@ -153,19 +153,19 @@ bool ClientGame::Update()
 	return true;
 }
 
-void ClientGame::Pause()
+void Game::Pause()
 {
 	myLockMouse = false;
 	ShowCursor(true);
 }
 
-void ClientGame::UnPause()
+void Game::UnPause()
 {
 	myLockMouse = true;
 	ShowCursor(false);
 }
 
-void ClientGame::OnResize(int aWidth, int aHeight)
+void Game::OnResize(int aWidth, int aHeight)
 {
 	myStateStack.OnResize(aWidth, aHeight);
 	myCursor->OnResize(aWidth, aHeight);

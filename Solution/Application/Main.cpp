@@ -16,7 +16,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath);
 void OnResize();
 
-ClientGame* globalGame = nullptr;
+Game* globalGame = nullptr;
 int globalClientWidth = 800;
 int globalClientHeight = 600;
 bool globalIsResizing = false;
@@ -117,7 +117,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		return 1;
 	}
 
-	globalGame = new ClientGame();
+	globalGame = new Game();
 	if (globalGame->Init(hwnd) == false)
 	{
 		return 1;
