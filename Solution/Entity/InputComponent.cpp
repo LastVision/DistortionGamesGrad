@@ -9,6 +9,7 @@
 #include <OnPlayerLevelComplete.h>
 
 #include <ScrapMessage.h>
+#include <OnPlayerJoin.h>
 
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
@@ -53,57 +54,63 @@ void InputComponent::Update(float aDeltaTime)
 	{
 		if (myHasCompletedLevel == false)
 		{
-		if (myIsActive == true)
-		{
-			if (myController->ButtonOnDown(eXboxButton::A))
+			if (myIsActive == true)
 			{
-				myMovement->Impulse();
-			}
-			else
-			{
-			}
+				if (myController->ButtonOnDown(eXboxButton::A))
+				{
+					myMovement->Impulse();
+				}
+				else
+				{
+				}
 
-			if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
-			{
-				myMovement->RightTriggerDown();
-			}
-			else if (myController->ButtonOnUp(eXboxButton::RTRIGGER))
-			{
-				myMovement->RightTriggerUp();
-			}
+				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
+				{
+					myMovement->RightTriggerDown();
+				}
+				else if (myController->ButtonOnUp(eXboxButton::RTRIGGER))
+				{
+					myMovement->RightTriggerUp();
+				}
 #ifndef RELEASE_BUILD
-			else if (myController->ButtonOnDown(eXboxButton::Y))
-			{
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
+				else if (myController->ButtonOnDown(eXboxButton::Y))
+				{
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+						, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
 
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::BODY
-					, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::BODY
+						, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
 
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
-			}
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+						, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
+				}
 #endif
-			if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
-			{
-				SetIsFlipped(!myIsFlipped);
-			}
+				if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
+				{
+					SetIsFlipped(!myIsFlipped);
+				}
 
-			myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
-		}
-		else if (myIsActive == false)
-		{
-			if (myController->ButtonOnDown(eXboxButton::A))
+				myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
+			}
+			else if (myIsActive == false)
 			{
-				PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
-				myEntity.Reset();
-				myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
-				myIsActive = true;
-				myMovement->Impulse();
+				if (myController->ButtonOnDown(eXboxButton::A))
+				{
+
+					if (myIsInLevel == false)
+					{
+						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
+					}
+
+					PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
+					myEntity.Reset();
+					myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
+					myIsActive = true;
+					myMovement->Impulse();
+				}
 			}
 		}
 	}
-}
 }
 
 void InputComponent::SetPlayerID(int aPlayerID)

@@ -30,6 +30,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayerWinCount(0)
 	, myTimeToLevelChange(10.f)
 	, myBackground(nullptr)
+	, myPlayersPlaying(0)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -40,7 +41,7 @@ Level::Level(Prism::Camera& aCamera)
 	mySmartCamera->SetStartPosition(myStartPosition);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
-
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
 }
 
@@ -52,6 +53,7 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 
 #ifdef THREAD_PHYSICS
@@ -86,6 +88,17 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	{
 		entity->Update(aDeltaTime);
 	}
+
+	if (myPlayerWinCount >= 1)
+	{
+		myTimeToLevelChange -= aDeltaTime;
+		if (myTimeToLevelChange < 0.f)
+		{
+			SET_RUNTIME(false);
+			myStateStack->PushSubGameState(new ScoreState());
+		}
+	}
+
 
 	return myStateStatus;
 }
@@ -178,7 +191,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
-				if (myPlayerWinCount > 0)
+
+				if (myPlayerWinCount >= myPlayersPlaying)
 				{
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(firstTrigger->GetLevelID()));
 
@@ -228,4 +242,9 @@ void Level::OnResize(int aWidth, int aHeight)
 {
 	aWidth;
 	aHeight;
+}
+
+void Level::ReceiveMessage(const OnPlayerJoin& aMessage)
+{
+	myPlayersPlaying++;
 }
