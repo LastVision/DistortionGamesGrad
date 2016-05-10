@@ -60,8 +60,7 @@
     <ClInclude Include="OnPlayerLevelComplete.h">
       <Filter>Message</Filter>
     </ClInclude>
-    <ClInclude Include="ScrapMessage.h">
-      <Filter>Message</Filter>
-    </ClInclude>
+    <ClInclude Include="ScrapMessage.h" />
+    <ClInclude Include="OnPlayerJoin.h" />
   </ItemGroup>
 </Project>
