@@ -8,6 +8,7 @@ namespace Prism
 {
 	class Camera;
 	class Scene;
+	class SpriteProxy;
 };
 
 class PhysicsComponent;
@@ -32,7 +33,7 @@ public:
 private:
 	void operator=(Level&) = delete;
 
-
+	Prism::SpriteProxy* myBackground;
 
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
@@ -46,6 +47,7 @@ private:
 	CU::Vector3<float> myStartPosition;
 	int myLevelToChangeToID;
 	bool myShouldChangeLevel;
+	CU::Vector2<float> myWindowSize;
 	float myTimeToLevelChange;
 	short myPlayerWinCount;
 };

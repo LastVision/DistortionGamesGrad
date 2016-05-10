@@ -4,25 +4,25 @@
 
 PostMaster* PostMaster::myInstance = nullptr;
 PostMaster::PostMaster()
+	: mySubscribers(64)
 {
-	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
+	for (int i = 1; i < eMessageType::_POSTMASTER_COUNT; i *= 2)
 	{
-		mySubscribers[i].Init(64);
+		mySubscribers.Add(SubscriberInfo(i));
 	}
 }
 
 
 PostMaster::~PostMaster()
 {
-	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
+	for (int i = 0; i < mySubscribers.Size(); ++i)
 	{
-		if (mySubscribers[i].Size() > 0)
+		if (mySubscribers[i].mySubscribers.Size() > 0)
 		{
-			DL_DEBUG("Subscriber not unsubscribed at index %i",i);
-			DL_ASSERT("Subscriber not unsubscribed at Postmaster-Destroy.");
+			DL_ASSERT(CU::Concatenate("Subscriber not unsubscribed at flag %i at Postmaster-Destroy", mySubscribers[i].myFlag));
 		}
 
-		mySubscribers[i].RemoveAll();
+		mySubscribers[i].mySubscribers.RemoveAll();
 	}
 }
 
@@ -48,133 +48,64 @@ void PostMaster::Destroy()
 	myInstance = nullptr;
 }
 
-void PostMaster::Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority, bool aLetThrough)
+void PostMaster::Subscribe(Subscriber* aSubscriber, int someMessageFlags)
 {
-#ifdef _DEBUG
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessageType)];
-	for (int i = 0; i < subscribers.Size(); ++i)
+	bool success = false;
+	
+	for (SubscriberInfo& info : mySubscribers)
 	{
-		DL_ASSERT_EXP(subscribers[i].mySubscriber != aSubscriber, "Tried to add the same subscriber to the same message twice.");
-	}
+		if ((info.myFlag & someMessageFlags) > 0)
+		{
+#ifdef _DEBUG
+			for each (const Subscriber* subscriber in info.mySubscribers)
+			{
+				DL_ASSERT_EXP(subscriber != aSubscriber, "Tried to add the same subscriber to the same message twice.");
+			}
 #endif
 
-	SubscriberInfo newSubscriber;
-	newSubscriber.mySubscriber = aSubscriber;
-	newSubscriber.myPriority = aPriority;
-	newSubscriber.myLetThrough = aLetThrough;
-
-	if (aPriority == ePriorityLayer::NO_PRIO)
-	{
-		mySubscribers[static_cast<int>(aMessageType)].Add(newSubscriber);
-	}
-	else
-	{
-		mySubscribers[static_cast<int>(aMessageType)].Add(newSubscriber);
-		SortSubscribers(mySubscribers[static_cast<int>(aMessageType)]);
-	}
-}
-
-void PostMaster::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber)
-{
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessageType)];
-
-	for (int i = 0; i < subscribers.Size(); ++i)
-	{
-		if (subscribers[i].mySubscriber == aSubscriber)
-		{
-			subscribers.RemoveCyclicAtIndex(i);
-			break;
+			success = true;
+			info.mySubscribers.Add(aSubscriber);
 		}
 	}
 
-	SortSubscribers(subscribers);
+	DL_ASSERT_EXP(success == true, CU::Concatenate("Cant subscribe with flags %i", someMessageFlags));
 }
 
-void PostMaster::UnSubscribe(Subscriber* aSubscriber)
+void PostMaster::UnSubscribe(Subscriber* aSubscriber, int someMessageFlags)
 {
-	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
-	{
-		CU::GrowingArray<SubscriberInfo, int>& subscribers
-			= mySubscribers[i];
+	bool success = false;
 
-		for (int j = 0; j < subscribers.Size(); ++j)
+	for (SubscriberInfo& info : mySubscribers)
+	{
+		if (someMessageFlags == 0)
 		{
-			if (subscribers[j].mySubscriber == aSubscriber)
+			if (IsSubscribed(aSubscriber, static_cast<eMessageType>(info.myFlag)))
 			{
-				subscribers.RemoveCyclicAtIndex(j);
-				break;
+				success = true;
+				info.mySubscribers.RemoveCyclic(aSubscriber);
 			}
 		}
+		else if ((info.myFlag & someMessageFlags) > 0)
+		{
+			DL_ASSERT_EXP(info.mySubscribers.Find(aSubscriber) != info.mySubscribers.FoundNone, CU::Concatenate("Cant unsubscribe with flag %i", info.myFlag));
+
+			success = true;
+			info.mySubscribers.RemoveCyclic(aSubscriber);
+		}
 	}
+
+	DL_ASSERT_EXP(success == true, CU::Concatenate("Cant unsubscribe with flag %i", someMessageFlags));
 }
 
-bool PostMaster::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber)
+bool PostMaster::IsSubscribed(Subscriber* aSubscriber, eMessageType aMessageType)
 {
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessageType)];
-
-	for (int i = 0; i < subscribers.Size(); ++i)
+	for each (const SubscriberInfo& info in mySubscribers)
 	{
-		if (subscribers[i].mySubscriber == aSubscriber)
+		if ((info.myFlag & aMessageType) > 0)
 		{
-			return true;
+			return info.mySubscribers.Find(aSubscriber) != info.mySubscribers.FoundNone;
 		}
 	}
 
 	return false;
-}
-
-void PostMaster::SortSubscribers(CU::GrowingArray<SubscriberInfo> &aBuffer)
-{
-	int max = 0;
-	if (aBuffer.Size() < 3)
-	{
-		if (aBuffer.Size() > 1 && (aBuffer[1].myPriority > aBuffer[0].myPriority))
-		{
-			std::swap(aBuffer[1], aBuffer[0]);
-		}
-		return;
-	}
-
-	for (int i = 0; i < aBuffer.Size(); ++i)
-	{
-		if (aBuffer[max].myPriority < aBuffer[i].myPriority)
-			max = i;
-	}
-
-	std::swap(aBuffer[max], aBuffer[aBuffer.Size() - 1]);
-	QuickSort(aBuffer, 0, aBuffer.Size() - 2);
-}
-
-void PostMaster::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const int aStart, const int aEnd)
-{
-	int lower = aStart + 1;
-	int upper = aEnd;
-
-	std::swap(aBuffer[aStart], aBuffer[(aStart + aEnd) / 2]);
-
-	int bound = static_cast<int>(aBuffer[aStart].myPriority);
-
-	while (lower <= upper)
-	{
-		while (bound > static_cast<int>(aBuffer[lower].myPriority))
-			++lower;
-
-		while (bound < static_cast<int>(aBuffer[upper].myPriority))
-			--upper;
-
-		if (lower < upper)
-			std::swap(aBuffer[lower++], aBuffer[upper--]);
-		else
-			++lower;
-	}
-
-	std::swap(aBuffer[aStart], aBuffer[upper]);
-
-	if (aStart < upper - 1)
-		QuickSort(aBuffer, aStart, upper - 1);
-	if (upper + 1 < aEnd)
-		QuickSort(aBuffer, upper + 1, aEnd);
 }

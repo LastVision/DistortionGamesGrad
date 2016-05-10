@@ -41,13 +41,12 @@ InGameState::InGameState(int aLevelID)
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
-	PostMaster::GetInstance()->Subscribe(eMessageType::LEVEL_FINISHED, this);
 }
 
 InGameState::~InGameState()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::LEVEL_FINISHED, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::GAME_STATE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
+
 	Console::Destroy();
 	SAFE_DELETE(myLevel);
 	SAFE_DELETE(myCamera);
@@ -72,7 +71,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE));
 	myText->SetPosition(CU::Vector2<float>(800.f, 800.f));
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::GAME_STATE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::GAME_STATE);
 }
 
 void InGameState::EndState()

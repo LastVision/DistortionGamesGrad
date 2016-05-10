@@ -23,6 +23,7 @@ public:
 	virtual void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) = 0;
 
+	const CU::Vector2<float>& GetVelocity() const;
 
 protected:
 	void operator=(Movement&) = delete;
@@ -37,3 +38,8 @@ protected:
 	CU::Vector2<float> myDirectionTarget;
 
 };
+
+inline const CU::Vector2<float>& Movement::GetVelocity() const
+{
+	return myVelocity;
+}

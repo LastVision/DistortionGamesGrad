@@ -32,7 +32,7 @@ public:
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
-
+	bool GetIsActive();
 
 private:
 

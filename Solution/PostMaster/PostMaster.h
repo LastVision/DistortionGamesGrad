@@ -1,5 +1,6 @@
 #pragma once
 
+#include <CommonHelper.h>
 #include <GrowingArray.h>
 #include "Message.h"
 #include "MessageEnum.h"
@@ -11,20 +12,6 @@
 
 #undef SendMessage
 
-enum class ePriorityLayer
-{
-	NO_PRIO,
-	NORMAL,
-	HIGH
-};
-
-struct SubscriberInfo
-{
-	Subscriber* mySubscriber;
-	ePriorityLayer myPriority = ePriorityLayer::NO_PRIO;
-	bool myLetThrough = true;
-};
-
 class PostMaster
 {
 public:
@@ -32,10 +19,12 @@ public:
 	static void Create();
 	static void Destroy();
 
-	void Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority = ePriorityLayer::NO_PRIO, bool aLetThrough = true);
-	void UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber);
-	void UnSubscribe(Subscriber* aSubscriber);
-	bool IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber);
+	void Subscribe(Subscriber* aSubscriber, int someMessageFlags);
+
+	//Set someMessageFlags to 0 to unsubscribe to everything
+	void UnSubscribe(Subscriber* aSubscriber, int someMessageFlags);
+
+	bool IsSubscribed(Subscriber* aSubscriber, eMessageType aMessageType);
 
 	template<typename Message>
 	void SendMessage(const Message& aMessage);
@@ -44,34 +33,41 @@ private:
 	PostMaster();
 	~PostMaster();
 	static PostMaster* myInstance;
-	
-	void SortSubscribers(CU::GrowingArray<SubscriberInfo>& aSubscribers);
-	void QuickSort(CU::GrowingArray<SubscriberInfo>& aBuffer, const int aStart, const int aEnd);
 
-	CU::StaticArray<CU::GrowingArray<SubscriberInfo>, static_cast<int>(eMessageType::COUNT)> mySubscribers;
+	struct SubscriberInfo
+	{
+		SubscriberInfo(int aFlag = 0)
+			: mySubscribers(64)
+			, myFlag(aFlag)
+		{}
+
+		CU::GrowingArray<Subscriber*> mySubscribers;
+		int myFlag;
+	};
+
+	CU::GrowingArray<SubscriberInfo> mySubscribers;
 };
 
 template<typename Message>
 void PostMaster::SendMessage(const Message& aMessage)
 {
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessage.myMessageType)];
-
-	if (subscribers.Size() > 0)
+	for each (const SubscriberInfo& info in mySubscribers)
 	{
-		for (int i = 0; i < subscribers.Size(); ++i)
+		if ((info.myFlag & aMessage.myMessageType) > 0)
 		{
-			bool letThrough = subscribers[i].myLetThrough;
-			subscribers[i].mySubscriber->ReceiveMessage(aMessage);
-
-			if (letThrough == false)
+#ifdef _DEBUG
+			if (info.mySubscribers.Size() == 0
+				//&& aMessage.myMessageType != eMessageType::RESIZE
+				)
 			{
-				return;
+				DL_ASSERT(CU::Concatenate("Cant send message %i without subscriber", aMessage.myMessageType));
+			}
+#endif
+
+			for each (Subscriber* subscriber in info.mySubscribers)
+			{
+				subscriber->ReceiveMessage(aMessage);
 			}
 		}
-	}
-	else if (aMessage.myMessageType != eMessageType::RESIZE)
-	{
-		//DL_ASSERT("Message sent without subscriber.");
 	}
 }

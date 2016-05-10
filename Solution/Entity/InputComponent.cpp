@@ -17,15 +17,13 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myIsFlipped(false)
 	, myHasCompletedLevel(false)
 {
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_PLAYER_LEVEL_COMPLETE, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::ON_PLAYER_LEVEL_COMPLETE);
 
 }
 
 InputComponent::~InputComponent()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_PLAYER_LEVEL_COMPLETE, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myController);
 }
 
@@ -53,45 +51,45 @@ void InputComponent::Update(float aDeltaTime)
 	{
 		if (myHasCompletedLevel == false)
 		{
-			if (myIsActive == true)
+		if (myIsActive == true)
+		{
+			if (myController->ButtonOnDown(eXboxButton::A))
 			{
-				if (myController->ButtonOnDown(eXboxButton::A))
-				{
-					myMovement->Impulse();
-				}
-				else
-				{
-				}
-
-				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
-				{
-					myMovement->RightTriggerDown();
-				}
-				else if (myController->ButtonOnUp(eXboxButton::RTRIGGER))
-				{
-					myMovement->RightTriggerUp();
-				}
-
-				if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
-				{
-					SetIsFlipped(!myIsFlipped);
-				}
-
-				myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
+				myMovement->Impulse();
 			}
-			else if (myIsActive == false)
+			else
 			{
-				if (myController->ButtonOnDown(eXboxButton::A))
-				{
-					PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
-					myEntity.Reset();
-					myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
-					myIsActive = true;
-					myMovement->Impulse();
-				}
+			}
+
+			if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
+			{
+				myMovement->RightTriggerDown();
+			}
+			else if (myController->ButtonOnUp(eXboxButton::RTRIGGER))
+			{
+				myMovement->RightTriggerUp();
+			}
+
+			if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
+			{
+				SetIsFlipped(!myIsFlipped);
+			}
+
+			myMovement->SetDirectionTarget(CU::Vector2<float>(myController->LeftThumbstickX(), myController->LeftThumbstickY()));
+		}
+		else if (myIsActive == false)
+		{
+			if (myController->ButtonOnDown(eXboxButton::A))
+			{
+				PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
+				myEntity.Reset();
+				myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
+				myIsActive = true;
+				myMovement->Impulse();
 			}
 		}
 	}
+}
 }
 
 void InputComponent::SetPlayerID(int aPlayerID)
@@ -135,4 +133,9 @@ void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
 		myHasCompletedLevel = true;
 		myEntity.GetComponent<PlayerGraphicsComponent>()->Reset();
 	}
+}
+
+bool InputComponent::GetIsActive()
+{
+	return myIsActive;
 }
