@@ -836,6 +836,13 @@ namespace Prism
 			physx::PxU32 nShapes = (*aDynamicBodyOut)->getNbShapes();
 
 			*someShapesOut = new physx::PxShape*[nShapes];
+
+			(*aDynamicBodyOut)->getShapes(*someShapesOut, nShapes);
+
+			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
+			fd.word1 = physx::PxU32(OTHER_FLAG);
+			fd.word0 = physx::PxU32(KINEMATIC_FLAG);
+			(*someShapesOut[0])->setSimulationFilterData(fd);
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::KINEMATIC)
 		{
