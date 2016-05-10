@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GameState.h"
 #include <GrowingArray.h>
 #include "Subscriber.h"
 
@@ -14,21 +16,27 @@ namespace Prism
 class PhysicsComponent;
 class SmartCamera;
 
-class Level : public Subscriber
+class Level : public Subscriber, public GameState
 {
 	friend class LevelFactory;
 public:
 	Level(Prism::Camera& aCamera);
 	~Level();
 
-	void Update(float aDelta);
-	void Render();
+	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
+
+	const eStateStatus Update(const float& aDeltaTime) override;
+	void Render() override;
 
 	void CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered);
 	void ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 		, CU::Vector3<float> aContactNormal, bool aHasEntered);
 
 	void CreatePlayers();
+
+	void EndState() override;
+	void ResumeState() override;
+	void OnResize(int aWidth, int aHeight) override;
 
 private:
 	void operator=(Level&) = delete;
@@ -45,8 +53,6 @@ private:
 	CU::GrowingArray<Entity*> myEntities;
 
 	CU::Vector3<float> myStartPosition;
-	int myLevelToChangeToID;
-	bool myShouldChangeLevel;
 	CU::Vector2<float> myWindowSize;
 };
 

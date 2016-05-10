@@ -101,6 +101,9 @@ bool StateStack::UpdateCurrentState(const float& aDeltaTime)
 		break;
 	}
 
+	DEBUG_PRINT(myMainIndex);
+	DEBUG_PRINT(mySubIndex);
+
 	return myGameStates.Size() > 0;
 }
 
