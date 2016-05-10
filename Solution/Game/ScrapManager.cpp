@@ -85,7 +85,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
-		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->AddForce(dir, 50.f);
+		myLiveHeads.GetLast().myHead->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
 		++myHeadIndex;
 		break;
 	}
