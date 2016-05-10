@@ -40,6 +40,8 @@ public:
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
+	const CU::Vector2<float>& GetVelocity() const;
+
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 

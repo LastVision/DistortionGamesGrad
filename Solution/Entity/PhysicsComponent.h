@@ -49,6 +49,7 @@ public:
 	eComponentType GetType() override;
 
 	bool IsInScene() const;
+	float GetHeight() const;
 
 private:
 	const PhysicsComponentData& myData;

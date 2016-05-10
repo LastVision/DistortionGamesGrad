@@ -13,6 +13,11 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	, myData(aPhysicsComponentData)
 	, myIsAwake(true)
 {
+	if (myEntity.GetType() == eEntityType::STEAM)
+	{
+		myEntity.SetPosition(myEntity.GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp() * ((myData.myPhysicsMax.y * 0.5f) + 0.5f)));
+	}
+
 	for (int i = 0; i < 16; ++i)
 	{
 		my4x4Float[i] = myEntity.GetOrientation().myMatrix[i];
@@ -24,6 +29,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	myPosition[2] = my4x4Float[14];
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
+
 
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
@@ -220,3 +226,7 @@ void PhysicsComponent::RemoveFromScene()
 	myIsInScene = false;
 }
 
+float PhysicsComponent::GetHeight() const
+{
+	return myData.myPhysicsMax.y;
+}
