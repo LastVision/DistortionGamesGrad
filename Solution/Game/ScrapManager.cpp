@@ -16,11 +16,15 @@ ScrapManager::ScrapManager(Prism::Scene* aScene)
 	, myLegs(16)
 	, myLiveLegs(16)
 	, myLegIndex(0)
+	, myBodies(16)
+	, myLiveBodies(16)
+	, myBodyIndex(0)
 	, myScene(aScene)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::SPAWN_SCRAP);
 	CreateHeads();
 	CreateLegs();
+	CreateBodies();
 }
 
 
@@ -67,6 +71,19 @@ void ScrapManager::Update(float aDeltaTime)
 		}
 	}
 
+	for (int i = myLiveBodies.Size() - 1; i >= 0; --i)
+	{
+		myLiveBodies[i].myTimer += aDeltaTime;
+		myLiveBodies[i].myEntity->Update(aDeltaTime);
+
+		if (myLiveBodies[i].myTimer >= myLiveBodies[i].myMaxTime)
+		{
+			myLiveBodies[i].myEntity->RemoveFromScene();
+			myLiveBodies[i].myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveBodies.RemoveCyclicAtIndex(i);
+		}
+	}
+
 	for (int i = myLiveLegs.Size() - 1; i >= 0; --i)
 	{
 		myLiveLegs[i].myTimer += aDeltaTime;
@@ -107,8 +124,26 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		break;
 	}
 	case eScrapPart::BODY:
-		DL_ASSERT("BODY not implemented!");
+	{
+		if (myBodyIndex >= myBodies.Size())
+		{
+			myBodyIndex = 0;
+		}
+
+		BodyPart toAdd;
+		toAdd.myEntity = myBodies[myBodyIndex].myEntity;
+		toAdd.myMaxTime = myBodies[myBodyIndex].myMaxTime;
+		myLiveBodies.Add(toAdd);
+
+		myLiveBodies.GetLast().myEntity->AddToScene();
+		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		++myBodyIndex;
 		break;
+	}
 	case eScrapPart::LEGS:
 	{
 		if (myLegIndex >= myLegs.Size())
@@ -158,5 +193,15 @@ void ScrapManager::CreateLegs()
 		BodyPart toAdd;
 		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "legs", myScene, { 1000.f, 100000.f + (i * 100.f), 10000.f });
 		myLegs.Add(toAdd);
+	}
+}
+
+void ScrapManager::CreateBodies()
+{
+	for (int i = 0; i < myBodies.GetCapacity(); ++i)
+	{
+		BodyPart toAdd;
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "body", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		myBodies.Add(toAdd);
 	}
 }

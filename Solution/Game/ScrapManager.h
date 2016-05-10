@@ -28,6 +28,7 @@ private:
 
 	void CreateHeads();
 	void CreateLegs();
+	void CreateBodies();
 	struct BodyPart
 	{
 		BodyPart::BodyPart() : myEntity(nullptr), myTimer(0.f), myMaxTime(10.f){}
@@ -43,6 +44,10 @@ private:
 	CU::GrowingArray<BodyPart> myLegs;
 	CU::GrowingArray<BodyPart> myLiveLegs;
 	int myLegIndex;
+
+	CU::GrowingArray<BodyPart> myBodies;
+	CU::GrowingArray<BodyPart> myLiveBodies;
+	int myBodyIndex;
 
 	Prism::Scene* myScene;
 };
