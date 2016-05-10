@@ -7,6 +7,8 @@
 #include "PlayerGraphicsComponent.h"
 #include <OnDeathMessage.h>
 
+#include <ScrapMessage.h>
+
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -65,7 +67,16 @@ void InputComponent::Update(float aDeltaTime)
 			{
 				myMovement->RightTriggerUp();
 			}
+#ifndef RELEASE_BUILD
+			else if (myController->ButtonOnDown(eXboxButton::Y))
+			{
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
 
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, myEntity.GetOrientation().GetPos(), myEntity.GetComponent<MovementComponent>()->GetVelocity()));
+			}
+#endif
 			if (myController->ButtonOnDown(eXboxButton::LTRIGGER))
 			{
 				SetIsFlipped(!myIsFlipped);
