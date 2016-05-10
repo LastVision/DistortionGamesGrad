@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include <PhysicsCallbackStruct.h>
+#include "Subscriber.h"
 
 struct PhysicsComponentData;
 
@@ -12,7 +13,7 @@ namespace physx
 	class PxShape;
 }
 
-class PhysicsComponent : public Component
+class PhysicsComponent : public Component, public Subscriber
 {
 public:
 	PhysicsComponent(Entity& aEntity, const PhysicsComponentData& aPhysicsComponentData, const std::string& aFBXPath);
@@ -43,12 +44,16 @@ public:
 	void AddToScene();
 	void RemoveFromScene();
 
+	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
+
 	const int GetCapsuleControllerId() const;
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
 	bool IsInScene() const;
+	float GetHeight() const;
 
 private:
 	const PhysicsComponentData& myData;

@@ -129,3 +129,8 @@ void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 	//myEntity.ResetPosition();
 }
+
+const CU::Vector2<float>& MovementComponent::GetVelocity() const
+{
+	return myMovements[myCurrentMovement]->GetVelocity();
+}

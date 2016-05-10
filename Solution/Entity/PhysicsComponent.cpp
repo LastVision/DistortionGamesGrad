@@ -1,10 +1,15 @@
 #include "stdafx.h"
+
+#include <CommonHelper.h>
+#include "InputComponent.h"
+#include "OnDeathMessage.h"
 #include <PhysicsCallbackStruct.h>
 #include "PhysicsComponent.h"
 #include "PhysicsComponentData.h"
 #include <PhysicsInterface.h>
+#include "PlayerActiveMessage.h"
+#include "PostMaster.h"
 #include "TriggerComponent.h"
-#include <CommonHelper.h>
 
 
 PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& aPhysicsComponentData
@@ -13,6 +18,11 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	, myData(aPhysicsComponentData)
 	, myIsAwake(true)
 {
+	if (myEntity.GetType() == eEntityType::STEAM)
+	{
+		myEntity.SetPosition(myEntity.GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp() * ((myData.myPhysicsMax.y * 0.5f) + 0.5f)));
+	}
+
 	for (int i = 0; i < 16; ++i)
 	{
 		my4x4Float[i] = myEntity.GetOrientation().myMatrix[i];
@@ -24,6 +34,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	myPosition[2] = my4x4Float[14];
 
 	myPhysicsType = aPhysicsComponentData.myPhysicsType;
+
 
 	if (myPhysicsType != ePhysics::CAPSULE)
 	{
@@ -38,6 +49,9 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 	}
 
 	myIsInScene = myData.myIsActiveFromStart;
+
+	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
 }
 
 
@@ -45,6 +59,9 @@ PhysicsComponent::~PhysicsComponent()
 {
 	delete[] myShapes;
 	myShapes = nullptr;
+
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
 }
 
 void PhysicsComponent::Update(float)
@@ -220,3 +237,30 @@ void PhysicsComponent::RemoveFromScene()
 	myIsInScene = false;
 }
 
+void PhysicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+{
+	if (myEntity.GetComponent<InputComponent>() != nullptr)
+	{
+		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			AddToScene();
+		}
+	}
+
+}
+
+void PhysicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+{
+	if (myEntity.GetComponent<InputComponent>() != nullptr)
+	{
+		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			RemoveFromScene();
+		}
+	}
+}
+
+float PhysicsComponent::GetHeight() const
+{
+	return myData.myPhysicsMax.y;
+}

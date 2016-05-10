@@ -12,13 +12,13 @@ SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU:
 	, mySteamTime(0.f)
 	, myIsConstant(true)
 {
-	CU::Vector3<float> position = myEntity.GetOrientation().GetPos() + myEntity.GetOrientation().GetUp();
-
-	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aScene, position, aRotation);
+	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aScene, myEntity.GetOrientation().GetPos(), aRotation);
 
 
 	mySteam->AddToScene();
 	mySteam->GetComponent<PhysicsComponent>()->AddToScene();
+	//mySteam->GetComponent<PhysicsComponent>()->TeleportToPosition(mySteam->GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp()));
+	mySteam->GetComponent<PhysicsComponent>()->UpdateOrientationStatic();
 }
 
 SteamComponent::~SteamComponent()
