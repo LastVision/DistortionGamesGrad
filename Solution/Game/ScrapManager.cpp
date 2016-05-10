@@ -35,6 +35,14 @@ ScrapManager::~ScrapManager()
 	{
 		SAFE_DELETE(myHeads[i].myEntity);
 	}
+	for (int i = 0; i < myBodies.Size(); ++i)
+	{
+		SAFE_DELETE(myBodies[i].myEntity);
+	}
+	for (int i = 0; i < myLegs.Size(); ++i)
+	{
+		SAFE_DELETE(myLegs[i].myEntity);
+	}
 }
 
 
