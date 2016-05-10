@@ -20,7 +20,7 @@ EmitterManager::EmitterManager()
 	: myEmitterList(64)
 {
 	PostMaster* postMaster = PostMaster::GetInstance();
-	postMaster->Subscribe(eMessageType::PARTICLE, this);
+	postMaster->Subscribe(this, eMessageType::PARTICLE);
 	Prism::ModelLoader::GetInstance()->Pause();
 	//ReadListOfLists("Data/Resource/Particle/LI_emitter_lists.xml");
 
@@ -36,7 +36,7 @@ EmitterManager::EmitterManager()
 EmitterManager::~EmitterManager()
 {
 	PostMaster* postMaster = PostMaster::GetInstance();
-	postMaster->UnSubscribe(eMessageType::PARTICLE, this);
+	postMaster->UnSubscribe(this, 0);
 	myEmitterList.RemoveAll();
 	for (auto it = myEmitters.begin(); it != myEmitters.end(); ++it)
 	{

@@ -20,8 +20,7 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	myMinZoom = -myMinZoom;
 	myMaxZoom = -50;
 	myCamera.SetPosition(CU::Vector3f(0, 0, myMinZoom));
-	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH);
 
 	myActivePlayers.reset();
 }
@@ -29,8 +28,7 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 
 SmartCamera::~SmartCamera()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void SmartCamera::Update(float aDeltaTime)

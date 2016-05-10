@@ -57,7 +57,7 @@ ClientGame::ClientGame()
 ClientGame::~ClientGame()
 {
 	SAFE_DELETE(myTimerManager);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::FADE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myCursor);
 	Prism::Audio::AudioInterface::Destroy();
 	Prism::StreakDataContainer::Destroy();
@@ -76,7 +76,7 @@ bool ClientGame::Init(HWND& aHwnd)
 	myWindowHandler = &aHwnd;
 	myIsComplete = false;
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::FADE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::FADE);
 
 	Prism::Engine::GetInstance()->SetClearColor({ MAGENTA });
 	CU::InputWrapper::Create(aHwnd, GetModuleHandle(NULL), DISCL_NONEXCLUSIVE

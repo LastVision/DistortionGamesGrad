@@ -15,13 +15,13 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myOrientation(aOrientation)
 	, myIsFlipped(false)
 {
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH);
 
 }
 
 InputComponent::~InputComponent()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myController);
 }
 
