@@ -50,8 +50,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myIsInScene = myData.myIsActiveFromStart;
 
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->Subscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::PLAYER_ACTIVE);
 }
 
 
@@ -60,8 +59,7 @@ PhysicsComponent::~PhysicsComponent()
 	delete[] myShapes;
 	myShapes = nullptr;
 
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_DEATH, this);
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::PLAYER_ACTIVE, this);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void PhysicsComponent::Update(float)
