@@ -145,6 +145,20 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 			second.GetComponent<MovementComponent>()->SetInSteam(false);
 		}
 	}
+	else if (second.GetType() == eEntityType::SCRAP)
+	{
+		if (aHasEntered == true)
+		{
+			switch (firstTrigger->GetTriggerType())
+			{
+			case eTriggerType::HAZARD:
+				break;
+			case eTriggerType::FORCE:
+				aSecond->AddForce(first.GetOrientation().GetUp(), 10.f);
+				break;
+			}
+		}
+	}
 }
 
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
@@ -159,6 +173,22 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		switch (second->GetType())
 		{
 		case eEntityType::SAW_BLADE:
+			if (aHasEntered == true)
+			{
+				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
+				//	, first->GetComponent<MovementComponent>()->GetVelocity());
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
+				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
+				first->SetPosition(myStartPosition);
+				aFirst->TeleportToPosition(myStartPosition);
+			}
+			break;
 		case eEntityType::SPIKE:
 			//first->Reset();
 			if (aHasEntered == true)
@@ -204,6 +234,31 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 			}
 			break;
+		}
+	}
+	else if (first->GetType() == eEntityType::SCRAP)
+	{
+		if (aHasEntered == true)
+		{
+			switch (second->GetType())
+			{
+			case BOUNCER:
+			case STEAM:
+			case SPIKE:
+				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
+				break;
+			case SAW_BLADE:
+				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				break;
+			case GOAL_POINT:
+				//if (aSecond->GetSubtype() == "body")
+				//{
+				//	//finish level with this player part
+				//}
+				////break;
+			default:
+				break;
+			}
 		}
 	}
 }
