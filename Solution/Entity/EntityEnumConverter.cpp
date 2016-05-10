@@ -46,6 +46,10 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::GOAL_POINT;
 		}
+		else if (aType == "scrap")
+		{
+			return eEntityType::SCRAP;
+		}
 
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;

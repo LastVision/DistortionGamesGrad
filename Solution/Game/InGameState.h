@@ -41,14 +41,12 @@ public:
 	void Render() override;
 	void ResumeState() override;
 
-	void ReceiveMessage(const GameStateMessage& aMessage) override;
 	void ReceiveMessage(const FinishLevelMessage& aMessage) override;
 
 	void OnResize(int aWidth, int aHeight) override;
 
 private:
 	GUI::GUIManager* myGUIManager;
-	Level* myLevel;
 	LevelFactory* myLevelFactory;
 
 	Prism::Camera* myCamera;

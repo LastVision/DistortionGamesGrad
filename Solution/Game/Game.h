@@ -18,11 +18,11 @@ namespace CU
 }
 
 
-class ClientGame : public Subscriber
+class Game : public Subscriber
 {
 public:
-	ClientGame();
-	~ClientGame();
+	Game();
+	~Game();
 
 	bool Init(HWND& aHwnd);
 	bool Destroy();
@@ -33,7 +33,7 @@ public:
 	void OnResize(int aWidth, int aHeight);
 
 private:
-	void operator=(ClientGame& aApp) = delete;
+	void operator=(Game& aApp) = delete;
 
 	GUI::Cursor* myCursor;
 

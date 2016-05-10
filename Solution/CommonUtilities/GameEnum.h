@@ -6,6 +6,14 @@ enum class eGameType : unsigned char
 	MULTIPLAYER,
 };
 
+enum class eScrapPart
+{
+	HEAD,
+	BODY,
+	LEGS,
+	_COUNT
+};
+
 enum class eWeaponType
 {
 	PISTOL,
@@ -66,6 +74,7 @@ enum eEntityType
 	SPAWN_POINT = 64,
 	GOAL_POINT = 128,
 	STEAM_VENT = 256,
+	SCRAP = 512,
 	_COUNT,
 };
 

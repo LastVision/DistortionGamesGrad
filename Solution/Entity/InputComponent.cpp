@@ -132,6 +132,7 @@ void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
 	{
 		myHasCompletedLevel = true;
 		myEntity.GetComponent<PlayerGraphicsComponent>()->Reset();
+		myOrientation.SetPos({ -15, -15, 0 });
 	}
 }
 

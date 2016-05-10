@@ -113,6 +113,11 @@ void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
 	myMovements[myCurrentMovement]->SetVelocity(aVelocity);
 }
 
+const CU::Vector2<float>& MovementComponent::GetVelocity() const
+{
+	return myMovements[myCurrentMovement]->GetVelocity();
+}
+
 void MovementComponent::ReceiveMessage(const OnDeathMessage& aMessage)
 {
 	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
@@ -128,9 +133,4 @@ void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 	myCurrentMovement = eMovementType::FLY;
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 	//myEntity.ResetPosition();
-}
-
-const CU::Vector2<float>& MovementComponent::GetVelocity() const
-{
-	return myMovements[myCurrentMovement]->GetVelocity();
 }

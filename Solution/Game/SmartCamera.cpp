@@ -6,6 +6,7 @@
 #include <PostMaster.h>
 #include <PlayerActiveMessage.h>
 #include <OnDeathMessage.h>
+#include <OnPlayerLevelComplete.h>
 SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myPlayerOrientations(2)
@@ -20,7 +21,7 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	myMinZoom = -myMinZoom;
 	myMaxZoom = -50;
 	myCamera.SetPosition(CU::Vector3f(0, 0, myMinZoom));
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH | eMessageType::ON_PLAYER_LEVEL_COMPLETE);
 
 	myActivePlayers.reset();
 }
@@ -116,6 +117,21 @@ void SmartCamera::ReceiveMessage(const OnDeathMessage& aMessage)
 
 	DL_ASSERT_EXP(myActivePlayerCount >= 0, "Player count less than 0.");
 }
+
+void SmartCamera::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
+{
+	if (aMessage.myPlayerID == PLAYER_1 && myActivePlayers[PLAYER_1] == TRUE)
+	{
+		myActivePlayers[PLAYER_1] = FALSE;
+		myActivePlayerCount--;
+	}
+	else if (aMessage.myPlayerID == PLAYER_2 && myActivePlayers[PLAYER_2] == TRUE)
+	{
+		myActivePlayers[PLAYER_2] = FALSE;
+		myActivePlayerCount--;
+	}
+}
+
 
 int SmartCamera::GetPlayerCount()
 {

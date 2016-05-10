@@ -19,6 +19,8 @@ public:
 	void SetStartPosition(const CU::Vector3f& aPosition);
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
+
 
 
 	int GetPlayerCount();
