@@ -33,6 +33,7 @@ public:
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 	bool GetIsActive();
+	void ResetIsInLevel();
 
 private:
 

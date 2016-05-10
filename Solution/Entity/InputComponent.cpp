@@ -99,6 +99,7 @@ void InputComponent::Update(float aDeltaTime)
 
 					if (myIsInLevel == false)
 					{
+						myIsInLevel = true;
 						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 					}
 
@@ -160,4 +161,9 @@ void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
 bool InputComponent::GetIsActive()
 {
 	return myIsActive;
+}
+
+void InputComponent::ResetIsInLevel()
+{
+	myIsInLevel = false;
 }

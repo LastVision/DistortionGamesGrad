@@ -60,5 +60,6 @@ private:
 	float myTimeToLevelChange;
 	short myPlayerWinCount;
 	short myPlayersPlaying;
+	int myLevelToChangeToID;
 };
 

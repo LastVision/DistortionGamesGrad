@@ -95,6 +95,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		if (myTimeToLevelChange < 0.f)
 		{
 			SET_RUNTIME(false);
+			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 			myStateStack->PushSubGameState(new ScoreState());
 		}
 	}
@@ -192,9 +193,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
 
+				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
 				{
-					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(firstTrigger->GetLevelID()));
+					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
 					myStateStack->PushSubGameState(new ScoreState());
@@ -211,7 +213,7 @@ void Level::CreatePlayers()
 	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
-
+	player->GetComponent<InputComponent>()->ResetIsInLevel();
 	player->AddToScene();
 	myPlayers.Add(player);
 	mySmartCamera->AddOrientation(&player->GetOrientation());
@@ -220,6 +222,7 @@ void Level::CreatePlayers()
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
+	player->GetComponent<InputComponent>()->ResetIsInLevel();
 
 	player->AddToScene();
 	myPlayers.Add(player);
