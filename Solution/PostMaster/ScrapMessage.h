@@ -14,7 +14,7 @@ struct ScrapMessage : public Message
 };
 
 inline ScrapMessage::ScrapMessage(eScrapPart aPart, const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aVelocity)
-	: Message(eMessageType::SCRAP)
+	: Message(eMessageType::SPAWN_SCRAP)
 	, myScrapPart(aPart)
 	, myPosition(aPosition)
 	, myVelocity(aVelocity)

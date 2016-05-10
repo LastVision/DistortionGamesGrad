@@ -9,6 +9,6 @@ enum eMessageType : int
 	LEVEL_FINISHED = 32,
 	PLAYER_ACTIVE = 64,
 	ON_DEATH = 128,
-	SCRAP = 256,
+	SPAWN_SCRAP = 256,
 	_POSTMASTER_COUNT,
 };

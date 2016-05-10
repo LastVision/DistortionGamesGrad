@@ -70,8 +70,8 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
-	mySmartCamera->Update(aDelta);
-	ScrapManager::GetInstance()->Update(aDelta);
+	mySmartCamera->Update(aDeltaTime);
+	ScrapManager::GetInstance()->Update(aDeltaTime);
 
 	for each(Entity* player in myPlayers)
 	{
