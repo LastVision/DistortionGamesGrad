@@ -4,7 +4,6 @@
 #include "FlyMovement.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
-#include "OnDeathMessage.h"
 #include "PostMaster.h"
 #include "PlayerActiveMessage.h"
 #include "WalkMovement.h"
@@ -22,7 +21,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::PLAYER_ACTIVE);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }
 
 MovementComponent::~MovementComponent()
@@ -118,9 +117,8 @@ const CU::Vector2<float>& MovementComponent::GetVelocity() const
 	return myMovements[myCurrentMovement]->GetVelocity();
 }
 
-void MovementComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+void MovementComponent::ReceiveNote(const DeathNote& aMessage)
 {
-	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
 		myMovements[i]->DeActivate();

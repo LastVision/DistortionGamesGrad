@@ -45,7 +45,7 @@ public:
 	void AddToScene();
 	void RemoveFromScene();
 
-	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
 	const int GetCapsuleControllerId() const;

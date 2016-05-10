@@ -50,7 +50,7 @@ PhysicsComponent::PhysicsComponent(Entity& aEntity, const PhysicsComponentData& 
 
 	myIsInScene = myData.myIsActiveFromStart;
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::PLAYER_ACTIVE);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }
 
 
@@ -259,15 +259,9 @@ void PhysicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
 
 }
 
-void PhysicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+void PhysicsComponent::ReceiveNote(const DeathNote& aMessage)
 {
-	if (myEntity.GetComponent<InputComponent>() != nullptr)
-	{
-		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
-		{
-			RemoveFromScene();
-		}
-	}
+	RemoveFromScene();
 }
 
 float PhysicsComponent::GetHeight() const

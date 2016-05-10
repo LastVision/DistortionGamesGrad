@@ -146,7 +146,9 @@ enum class eComponentType
 	SAW_BLADE,
 	SPIKE,
 	STEAM,
+	PLAYER,
 	PLAYER_GRAPHICS,
+	SCORE,
 	_COUNT,
 };
 

@@ -168,6 +168,7 @@
     <ClInclude Include="ContactNote.h" />
     <ClInclude Include="DashAimMovement.h" />
     <ClInclude Include="DashFlyMovement.h" />
+    <ClInclude Include="DeathNote.h" />
     <ClInclude Include="EntityEnumConverter.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentLoader.h" />
@@ -184,11 +185,16 @@
     <ClInclude Include="MovementComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PlayerBody.h" />
+    <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerComponentData.h" />
     <ClInclude Include="PlayerGraphicsComponent.h" />
     <ClInclude Include="PlayerGraphicsComponentData.h" />
     <ClInclude Include="PollingStation.h" />
     <ClInclude Include="SawBladeComponent.h" />
     <ClInclude Include="SawBladeComponentData.h" />
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="ScoreComponentData.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
     <ClInclude Include="stdafx.h" />
@@ -214,9 +220,11 @@
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PlayerBody.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerGraphicsComponent.cpp" />
     <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="SawBladeComponent.cpp" />
+    <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="SoundComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</MultiProcessorCompilation>

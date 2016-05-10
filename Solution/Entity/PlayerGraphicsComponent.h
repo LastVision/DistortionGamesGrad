@@ -28,7 +28,7 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
-	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveNote(const DeathNote& aMessage) override;
 
 private:
 	const PlayerGraphicsComponentData& myData;

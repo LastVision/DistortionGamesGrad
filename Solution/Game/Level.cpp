@@ -2,13 +2,13 @@
 
 #include <ContactNote.h>
 #include <ControllerInput.h>
+#include <DeathNote.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
-#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
@@ -158,7 +158,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
-				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
+				first->SendNote(DeathNote());
 				first->SetPosition(myStartPosition);
 				aFirst->TeleportToPosition(myStartPosition);
 			}

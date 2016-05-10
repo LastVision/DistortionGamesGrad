@@ -19,7 +19,7 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myIsFlipped(false)
 	, myHasCompletedLevel(false)
 {
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_DEATH | eMessageType::ON_PLAYER_LEVEL_COMPLETE);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE);
 
 }
 
@@ -132,12 +132,9 @@ void InputComponent::SetIsFlipped(bool aIsFlipped)
 
 }
 
-void InputComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+void InputComponent::ReceiveNote(const DeathNote& aMessage)
 {
-	if (myPlayerID == aMessage.myPlayerID)
-	{
-		myIsActive = false;
-	}
+	myIsActive = false;
 }
 
 void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)

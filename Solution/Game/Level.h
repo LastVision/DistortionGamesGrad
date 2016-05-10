@@ -13,9 +13,12 @@ namespace Prism
 	class SpriteProxy;
 };
 
-class ScrapManager;
 class PhysicsComponent;
+class ScrapManager;
 class SmartCamera;
+
+struct Score;
+struct ScoreInfo;
 
 class Level : public Subscriber, public GameState
 {
@@ -52,6 +55,9 @@ private:
 	CU::GrowingArray<Entity*> myPlayers;
 
 	CU::GrowingArray<Entity*> myEntities;
+
+	CU::GrowingArray<Score*> myScores;
+	ScoreInfo* myScoreInfo;
 
 	CU::Vector3<float> myStartPosition;
 	CU::Vector2<float> myWindowSize;

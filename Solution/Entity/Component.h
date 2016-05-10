@@ -5,6 +5,7 @@ class Entity;
 
 struct ContactNote;
 struct CollisionNote;
+struct DeathNote;
 
 class Component
 {
@@ -17,6 +18,7 @@ public:
 
 	virtual void ReceiveNote(const CollisionNote&) {}
 	virtual void ReceiveNote(const ContactNote&) {}
+	virtual void ReceiveNote(const DeathNote&) {}
 
 	virtual void Init();
 

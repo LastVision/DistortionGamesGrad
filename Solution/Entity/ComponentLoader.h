@@ -11,6 +11,8 @@ struct InputComponentData;
 struct SawBladeComponentData;
 struct PlayerGraphicsComponentData;
 struct SteamComponentData;
+struct ScoreComponentData;
+struct PlayerComponentData;
 class XMLReader;
 
 namespace tinyxml2
@@ -31,6 +33,8 @@ public:
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SawBladeComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerGraphicsComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, ScoreComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerComponentData& aOutputData);
 
 private:
 

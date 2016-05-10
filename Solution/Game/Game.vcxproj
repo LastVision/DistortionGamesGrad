@@ -213,7 +213,6 @@
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="LevelSelectState.h" />
     <ClInclude Include="MainMenuState.h" />
-    <ClInclude Include="Score.h" />
     <ClInclude Include="ScoreState.h" />
     <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScriptInterface.h" />

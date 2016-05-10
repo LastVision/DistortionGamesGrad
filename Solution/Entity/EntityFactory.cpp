@@ -147,6 +147,14 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.mySteamData);
 		}
+		else if (elementName == CU::ToLower("ScoreComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myScoreData);
+		}
+		else if (elementName == CU::ToLower("PlayerComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myPlayerData);
+		}
 		else
 		{
 			std::string errorMessage = "The component " + elementName +

@@ -30,7 +30,7 @@ public:
 	int GetPlayerID();
 	bool GetIsFlipped() const;
 	void SetIsFlipped(bool aIsFlipped);
-	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 	bool GetIsActive();
 

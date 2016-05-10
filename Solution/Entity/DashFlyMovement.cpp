@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "DashFlyMovement.h"
+#include "DeathNote.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
-#include "OnDeathMessage.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
-#include "PostMaster.h"
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -79,8 +78,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		myHasContact = true;
 		if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 		{
-			PostMaster::GetInstance()->SendMessage<OnDeathMessage>(
-			OnDeathMessage(myMovementComponent.GetEntity().GetComponent<InputComponent>()->GetPlayerID()));
+			myMovementComponent.GetEntity().SendNote(DeathNote());
 		}
 		else
 		{

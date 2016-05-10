@@ -98,6 +98,12 @@
     <ClCompile Include="SteamComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -199,6 +205,22 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="SteamComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="DeathNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
   </ItemGroup>

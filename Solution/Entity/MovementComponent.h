@@ -36,7 +36,7 @@ public:
 	void SetState(eMovementType aState, const CU::Vector2<float>& aVelocity);
 	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
 	void SetVelocity(const CU::Vector2<float>& aVelocity);
-	void ReceiveMessage(const OnDeathMessage& aMessage) override;
+	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
 	const CU::Vector2<float>& GetVelocity() const;

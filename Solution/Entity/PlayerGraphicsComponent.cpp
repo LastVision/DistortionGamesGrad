@@ -127,13 +127,7 @@ void PlayerGraphicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage
 
 }
 
-void PlayerGraphicsComponent::ReceiveMessage(const OnDeathMessage& aMessage)
+void PlayerGraphicsComponent::ReceiveNote(const DeathNote& aMessage)
 {
-	if (myEntity.GetComponent<InputComponent>() != nullptr)
-	{
-		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
-		{
-			Reset();
-		}
-	}
+	Reset();
 }

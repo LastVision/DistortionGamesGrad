@@ -5,8 +5,10 @@
 #include "EntityEnumConverter.h"
 #include "PhysicsComponentData.h"
 #include "TriggerComponentData.h"
+#include "ScoreComponentData.h"
 #include "SawBladeComponentData.h"
 #include "SteamComponentData.h"
+#include "PlayerComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
 
@@ -207,6 +209,16 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, ScoreComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }

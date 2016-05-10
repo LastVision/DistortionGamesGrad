@@ -9,9 +9,11 @@
 #include <Scene.h>
 #include <Instance.h>
 #include <EmitterMessage.h>
+#include "PlayerComponent.h"
 #include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
 #include "SawBladeComponent.h"
+#include "ScoreComponent.h"
 #include "SteamComponent.h"
 #include "SoundComponent.h"
 #include "TriggerComponent.h"
@@ -102,6 +104,16 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.mySteamData.myExistsInEntity == true) // has to be after physics
 	{
 		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
+	}
+
+	if (aEntityData.myScoreData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::SCORE)] = new ScoreComponent(*this);
+	}
+
+	if (aEntityData.myPlayerData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::PLAYER)] = new PlayerComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
