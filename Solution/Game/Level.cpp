@@ -16,6 +16,7 @@
 #include <Scene.h>
 #include "ScoreState.h"
 #include "ScrapManager.h"
+#include <ScrapMessage.h>
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
 #include <TriggerComponent.h>
