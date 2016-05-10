@@ -19,6 +19,7 @@ public:
 	virtual void Activate(const CU::Vector2<float>& aVelocity) = 0;
 	virtual void DeActivate() = 0;
 	virtual void SetVelocity(const CU::Vector2<float>& aVelocity) = 0;
+	const CU::Vector2<float>& GetVelocity() const { return myVelocity; };
 
 	virtual void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) = 0;

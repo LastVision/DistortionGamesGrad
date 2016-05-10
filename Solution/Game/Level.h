@@ -11,6 +11,7 @@ namespace Prism
 	class SpriteProxy;
 };
 
+class ScrapManager;
 class PhysicsComponent;
 class SmartCamera;
 

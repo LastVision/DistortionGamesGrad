@@ -14,6 +14,7 @@
 #include <PlayerActiveMessage.h>
 #include <PostMaster.h>
 #include <Scene.h>
+#include "ScrapManager.h"
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
 #include <TriggerComponent.h>
@@ -36,10 +37,12 @@ Level::Level(Prism::Camera& aCamera)
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 
+	ScrapManager::Create(myScene);
 }
 
 Level::~Level()
 {
+	ScrapManager::Destroy();
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
@@ -59,6 +62,8 @@ void Level::Update(float aDelta)
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
 	mySmartCamera->Update(aDelta);
+	ScrapManager::GetInstance()->Update(aDelta);
+
 	for each(Entity* player in myPlayers)
 	{
 		player->Update(aDelta);
@@ -124,8 +129,18 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SAW_BLADE:
 		case eEntityType::SPIKE:
 			//first->Reset();
-			PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
-			first->SetPosition(myStartPosition);
+			if (aHasEntered == true)
+			{
+				ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
+					, first->GetComponent<MovementComponent>()->GetVelocity());
+
+				//PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+				//	, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
+				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
+				first->SetPosition(myStartPosition);
+				aFirst->TeleportToPosition(myStartPosition);
+			}
 			break;
 			/*case eEntityType::PROP:
 				if (aContactNormal.y == 1.f)
@@ -144,10 +159,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			}
 			break;
 		case eEntityType::GOAL_POINT:
-			TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
-			DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-			myShouldChangeLevel = true;
-			myLevelToChangeToID = firstTrigger->GetLevelID();
+			if (aHasEntered == true)
+			{
+				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
+				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
+				myShouldChangeLevel = true;
+				myLevelToChangeToID = firstTrigger->GetLevelID();
+			}
 			break;
 
 		}
