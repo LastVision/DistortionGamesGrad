@@ -920,7 +920,7 @@ namespace Prism
 			}
 		}
 
-		if (aPhysData.myData->myPhysicsType != ePhysics::STATIC)
+		if (aPhysData.myData->myPhysicsType != ePhysics::STATIC && aPhysData.myData->myIsActiveFromStart == true)
 		{
 			myPhysicsComponentCallbacks.Add(aPhysData);
 		}

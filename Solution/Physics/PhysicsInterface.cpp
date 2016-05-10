@@ -49,6 +49,11 @@ namespace Prism
 		myManager->EndFrame();
 	}
 
+	void PhysicsInterface::Add(const PhysicsCallbackStruct& aCallbackStruct)
+	{
+		myManager->Add(aCallbackStruct);
+	}
+
 	void PhysicsInterface::EndFrame()
 	{
 #ifndef THREAD_PHYSICS

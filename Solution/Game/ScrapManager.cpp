@@ -102,7 +102,9 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 {
+
 	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
+	
 }
 
 void ScrapManager::CreateHeads()
