@@ -44,6 +44,8 @@ namespace Prism
 #endif
 		bool GetInitDone() const;
 		void FrameUpdate();
+
+		void Add(const PhysicsCallbackStruct& aCallbackStruct);
 		
 		void EndFrame();
 

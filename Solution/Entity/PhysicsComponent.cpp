@@ -201,6 +201,14 @@ void PhysicsComponent::SetPlayerCapsulePosition(const CU::Vector3<float>& aPosit
 	Prism::PhysicsInterface::GetInstance()->SetPosition(myCapsuleControllerId, aPosition);
 }
 
+void PhysicsComponent::AddCallback()
+{
+	if (myPhysicsType == ePhysics::DYNAMIC)
+	{
+		Prism::PhysicsInterface::GetInstance()->Add(myCallbackStruct);
+	}
+}
+
 void PhysicsComponent::AddToScene()
 {
 	if (myPhysicsType == ePhysics::DYNAMIC || myPhysicsType == ePhysics::KINEMATIC)
@@ -214,6 +222,10 @@ void PhysicsComponent::AddToScene()
 	else
 	{
 		Prism::PhysicsInterface::GetInstance()->Add(myStaticBody);
+	}
+	if (myPhysicsType == ePhysics::DYNAMIC)
+	{
+		AddCallback();
 	}
 	myIsInScene = true;
 }

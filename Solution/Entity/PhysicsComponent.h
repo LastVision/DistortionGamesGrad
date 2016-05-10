@@ -41,6 +41,7 @@ public:
 
 	ePhysics GetPhysicsType() const;
 
+	void AddCallback();
 	void AddToScene();
 	void RemoveFromScene();
 

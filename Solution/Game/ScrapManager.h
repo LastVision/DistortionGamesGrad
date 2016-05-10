@@ -27,17 +27,27 @@ private:
 	static ScrapManager* myInstance;
 
 	void CreateHeads();
-	struct Head
+	void CreateLegs();
+	void CreateBodies();
+	struct BodyPart
 	{
-		Head::Head() : myHead(nullptr), myTimer(0.f), myMaxTime(10.f){}
-		Entity* myHead;
+		BodyPart::BodyPart() : myEntity(nullptr), myTimer(0.f), myMaxTime(10.f){}
+		Entity* myEntity;
 		float myTimer;
 		float myMaxTime;
 	};
 
-	CU::GrowingArray<Head> myHeads;
-	CU::GrowingArray<Head> myLiveHeads;
+	CU::GrowingArray<BodyPart> myHeads;
+	CU::GrowingArray<BodyPart> myLiveHeads;
 	int myHeadIndex;
+
+	CU::GrowingArray<BodyPart> myLegs;
+	CU::GrowingArray<BodyPart> myLiveLegs;
+	int myLegIndex;
+
+	CU::GrowingArray<BodyPart> myBodies;
+	CU::GrowingArray<BodyPart> myLiveBodies;
+	int myBodyIndex;
 
 	Prism::Scene* myScene;
 };

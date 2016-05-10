@@ -155,6 +155,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+
 				PostMaster::GetInstance()->SendMessage(OnDeathMessage(first->GetComponent<InputComponent>()->GetPlayerID()));
 				first->SetPosition(myStartPosition);
 				aFirst->TeleportToPosition(myStartPosition);
