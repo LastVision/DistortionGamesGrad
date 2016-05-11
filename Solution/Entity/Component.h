@@ -3,6 +3,7 @@
 
 class Entity;
 
+struct BounceNote;
 struct ContactNote;
 struct CollisionNote;
 struct DeathNote;
@@ -18,6 +19,7 @@ public:
 	//TODO: Make = 0 ?
 	virtual void Reset();
 
+	virtual void ReceiveNote(const BounceNote&) {}
 	virtual void ReceiveNote(const CollisionNote&) {}
 	virtual void ReceiveNote(const ContactNote&) {}
 	virtual void ReceiveNote(const DeathNote&) {}

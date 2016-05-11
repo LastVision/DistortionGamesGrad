@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <BounceComponent.h>
+#include <BounceNote.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
 #include <DeferredRenderer.h>
@@ -243,6 +244,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				{
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
 						, second->GetOrientation().GetUp().y * force });
+					second->SendNote(BounceNote());
 				}
 			}
 			break;
