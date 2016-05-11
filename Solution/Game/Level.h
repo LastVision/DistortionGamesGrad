@@ -58,7 +58,7 @@ private:
 
 	CU::GrowingArray<Entity*> myEntities;
 
-	CU::GrowingArray<Score*> myScores;
+	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;
 
 	CU::Vector3<float> myStartPosition;

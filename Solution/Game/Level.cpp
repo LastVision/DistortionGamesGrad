@@ -14,6 +14,7 @@
 #include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Scene.h>
+#include <ScoreComponent.h>
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -32,6 +33,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myTimeToLevelChange(10.f)
 	, myBackground(nullptr)
 	, myPlayersPlaying(0)
+	, myScores(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -296,6 +298,12 @@ void Level::CreatePlayers()
 
 	player->AddToScene();
 	myPlayers.Add(player);
+
+	for each(Entity* player in myPlayers)
+	{
+		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
+	}
+
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	mySmartCamera->SetActivePlayerCount(0);

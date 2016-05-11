@@ -49,7 +49,7 @@ Entity* EntityFactory::CreateEntity(eEntityType aType, Prism::Scene* aScene, con
 	{
 
 		Entity* newEntity = new Entity(myInstance->myLoadedEntityData.find(aType)->second, aScene, aPosition, aRotation
-			, aScale);
+			, aScale, "");
 		return newEntity;
 	}
 	DL_ASSERT("Entity not found with enum: " + std::to_string(aType));
@@ -66,8 +66,6 @@ Entity* EntityFactory::CreateEntity(eEntityType, std::string aSubType, Prism::Sc
 
 			Entity* newEntity = new Entity(myInstance->myLoadedSubEntityData.find(aSubType)->second, aScene, aPosition, aRotation
 				, aScale, aSubType);
-			newEntity->mySubType = aSubType;
-
 				
 			return newEntity;
 		}

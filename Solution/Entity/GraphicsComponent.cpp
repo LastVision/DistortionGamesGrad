@@ -20,7 +20,7 @@ GraphicsComponent::GraphicsComponent(Entity& aEntity, const GraphicsComponentDat
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadModel(myComponentData.myModelPath
 		, myComponentData.myEffectPath);
 
-	myInstance = new Prism::Instance(*model, myEntity.myOrientation);
+	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
 }
 
 GraphicsComponent::~GraphicsComponent()
@@ -37,14 +37,14 @@ void GraphicsComponent::InitDLL(const char* aModelPath, const char* aEffectPath)
 	Prism::EffectContainer::GetInstance()->GetEffect(aEffectPath);
 	model->SetEffect(Prism::EffectContainer::GetInstance()->GetEffect(aEffectPath));
 
-	myInstance = new Prism::Instance(*model, myEntity.myOrientation);
+	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
 }
 
 void GraphicsComponent::InitCube(float aWidth, float aHeight, float aDepth)
 {
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadCube(aWidth, aHeight, aDepth);
 
-	myInstance = new Prism::Instance(*model, myEntity.myOrientation);
+	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
 }
 
 void GraphicsComponent::Update(float aDeltaTime)
@@ -53,23 +53,6 @@ void GraphicsComponent::Update(float aDeltaTime)
 	{
 		myEntity.SetRotation({ 0, 0, 15.f * aDeltaTime });
 	}
-}
-
-void GraphicsComponent::SetPosition(const CU::Vector3<float>& aPosition)
-{
-	myEntity.myOrientation.SetPos(aPosition);
-}
-
-void GraphicsComponent::SetRotation(const CU::Vector3<float>& aRotation)
-{
-	CU::Vector3f position(myEntity.myOrientation.GetPos());
-	myEntity.myOrientation.SetPos(CU::Vector3f());
-
-	myEntity.myOrientation = CU::Matrix44f::CreateRotateAroundX(aRotation.x) * myEntity.myOrientation;
-	myEntity.myOrientation = CU::Matrix44f::CreateRotateAroundY(aRotation.y) * myEntity.myOrientation;
-	myEntity.myOrientation = CU::Matrix44f::CreateRotateAroundZ(aRotation.z) * myEntity.myOrientation;
-
-	myEntity.myOrientation.SetPos(position);
 }
 
 void GraphicsComponent::SetScale(const CU::Vector3<float>& aScale)
