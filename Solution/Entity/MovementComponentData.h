@@ -15,5 +15,6 @@ struct MovementComponentData
 	float myDashDistance;
 	float myDashCooldown;
 	float myDashSpeed;
+	float myMaxAngleWhenLanding;
 	CU::Vector2<float> myDrag;
 };

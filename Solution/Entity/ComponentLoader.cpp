@@ -88,6 +88,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashFlyTime"), "value", aOutputData.myDashFlyTime);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashDistance"), "value", aOutputData.myDashDistance);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashCooldown"), "value", aOutputData.myDashCooldown);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "MaxAngleWhenLanding"), "value", aOutputData.myMaxAngleWhenLanding);
 
 	aOutputData.myDashSpeed = aOutputData.myDashDistance / aOutputData.myDashFlyTime;
 }

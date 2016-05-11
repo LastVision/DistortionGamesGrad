@@ -196,10 +196,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				//	, first->GetComponent<MovementComponent>()->GetVelocity());
 
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
 				first->SendNote(DeathNote());
 				first->SetPosition(myStartPosition);
