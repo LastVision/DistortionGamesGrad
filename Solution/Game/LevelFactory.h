@@ -28,22 +28,21 @@ private:
 	void operator=(LevelFactory&) = delete;
 
 	void ReadLevelList(const std::string& aLevelListPath);
-	void ReadLevel(const std::string& aLevelPath);
+	Level* ReadLevel(const std::string& aLevelPath);
 
-	void LoadLevelData(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aElement);
-	void LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadProps(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadSpikes(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadSawBlades(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 
-	void LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 
 	void ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale);
 
 	Prism::Camera& myCamera;
 
-	Level* myCurrentLevel;
 	int myCurrentLevelID;
 
 	std::unordered_map<int, std::string> myLevelPaths;
