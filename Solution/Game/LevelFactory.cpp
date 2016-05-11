@@ -117,10 +117,8 @@ void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 
 		ReadOrientation(aReader, entityElement, propPosition, propRotation, propScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::PROP, CU::ToLower(propType),
-			myCurrentLevel->myScene, propPosition, propRotation, propScale));
-		myCurrentLevel->myEntities.GetLast()->AddToScene();
-		myCurrentLevel->myEntities.GetLast()->Reset();
+		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::PROP, CU::ToLower(propType)
+			, myCurrentLevel->GetScene(), propPosition, propRotation, propScale));
 	}
 }
 
@@ -138,10 +136,8 @@ void LevelFactory::LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement
 
 		ReadOrientation(aReader, entityElement, spikePosition, spikeRotation, spikeScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPIKE, CU::ToLower(spikeType),
-			myCurrentLevel->myScene, spikePosition, spikeRotation, spikeScale));
-		myCurrentLevel->myEntities.GetLast()->AddToScene();
-		myCurrentLevel->myEntities.GetLast()->Reset();
+		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::SPIKE, CU::ToLower(spikeType),
+			myCurrentLevel->GetScene(), spikePosition, spikeRotation, spikeScale));
 	}
 }
 
@@ -159,10 +155,8 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 		ReadOrientation(aReader, entityElement, sawBladePosition, sawBladeRotation, sawBladeScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, CU::ToLower(sawBladeType),
-			myCurrentLevel->myScene, sawBladePosition, sawBladeRotation, sawBladeScale));
-		myCurrentLevel->myEntities.GetLast()->AddToScene();
-		myCurrentLevel->myEntities.GetLast()->Reset();
+		Entity* entity(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, CU::ToLower(sawBladeType),
+			myCurrentLevel->GetScene(), sawBladePosition, sawBladeRotation, sawBladeScale));
 
 		tinyxml2::XMLElement* patrolElement = aReader.FindFirstChild(entityElement, "patrols");
 
@@ -185,7 +179,7 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 			tinyxml2::XMLElement* patrolSpeedElement = aReader.FindFirstChild(entityElement, "patrolSpeed");
 			tinyxml2::XMLElement* patrolDelayElement = aReader.FindFirstChild(entityElement, "patrolDelay");
 			
-			DL_ASSERT_EXP(myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>() != nullptr, "Saw blades have to have saw blade components to be able to patrol");
+			DL_ASSERT_EXP(entity->GetComponent<SawBladeComponent>() != nullptr, "Saw blades have to have saw blade components to be able to patrol");
 			DL_ASSERT_EXP(patrolSpeedElement != nullptr, "SawBlade has to have a patrolSpeed in level XML");
 
 			aReader.ForceReadAttribute(patrolSpeedElement, "value", speed);
@@ -195,8 +189,9 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 				aReader.ForceReadAttribute(patrolDelayElement, "value", delay);
 			}
 
-			myCurrentLevel->myEntities.GetLast()->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions, speed, delay);
+			entity->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions, speed, delay);
 		}
+		myCurrentLevel->Add(entity);
 	}
 }
 
@@ -214,12 +209,10 @@ void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aEle
 
 		ReadOrientation(aReader, entityElement, steamVentPosition, steamVentRotation, steamVentScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::STEAM_VENT, CU::ToLower(steamVentType),
-			myCurrentLevel->myScene, steamVentPosition, steamVentRotation, steamVentScale));
-		myCurrentLevel->myEntities.GetLast()->AddToScene();
-		myCurrentLevel->myEntities.GetLast()->Reset();
+		Entity* entity(EntityFactory::CreateEntity(eEntityType::STEAM_VENT, CU::ToLower(steamVentType),
+			myCurrentLevel->GetScene(), steamVentPosition, steamVentRotation, steamVentScale));
 
-		DL_ASSERT_EXP(myCurrentLevel->myEntities.GetLast()->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
+		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
 
 		tinyxml2::XMLElement* steamTimeElement = aReader.FindFirstChild(entityElement, "steamTime");
 		tinyxml2::XMLElement* steamIntervalElement = aReader.FindFirstChild(entityElement, "steamInterval");
@@ -239,8 +232,9 @@ void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aEle
 				aReader.ForceReadAttribute(steamDelayElement, "value", steamDelay);
 			}
 
-			myCurrentLevel->myEntities.GetLast()->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
+			entity->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
 		}
+		myCurrentLevel->Add(entity);
 	}
 }
 
@@ -258,10 +252,8 @@ void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aEleme
 
 		ReadOrientation(aReader, entityElement, bouncerPosition, bouncerRotation, bouncerScale);
 
-		myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
-			myCurrentLevel->myScene, bouncerPosition, bouncerRotation, bouncerScale));
-		myCurrentLevel->myEntities.GetLast()->AddToScene();
-		myCurrentLevel->myEntities.GetLast()->Reset();
+		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
+			myCurrentLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale));
 	}
 }
 
@@ -276,23 +268,19 @@ void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aE
 
 	ReadOrientation(aReader, spawnElement, position, rotation, scale);
 
-	myCurrentLevel->myEntities.Add(EntityFactory::CreateEntity(eEntityType::SPAWN_POINT,
-		myCurrentLevel->myScene, position, rotation, scale));
-	myCurrentLevel->myEntities.GetLast()->AddToScene();
-	myCurrentLevel->myEntities.GetLast()->Reset();
-	myCurrentLevel->myStartPosition = myCurrentLevel->myEntities.GetLast()->GetOrientation().GetPos();
+	myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::SPAWN_POINT,
+		myCurrentLevel->GetScene(), position, rotation, scale));
+	myCurrentLevel->SetSpawnPosition(position);
 
 	ReadOrientation(aReader, goalElement, position, rotation, scale);
 	int levelID = 0;
 	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(goalElement, "levelid"), "id", levelID);
 
 	Entity* entity = EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
-		myCurrentLevel->myScene, position, rotation, scale);
+		myCurrentLevel->GetScene(), position, rotation, scale);
 	entity->GetComponent<TriggerComponent>()->SetLevelChangeID(levelID);
 
-	myCurrentLevel->myEntities.Add(entity);
-	myCurrentLevel->myEntities.GetLast()->AddToScene();
-	myCurrentLevel->myEntities.GetLast()->Reset();
+	myCurrentLevel->Add(entity);
 
 }
 

@@ -22,7 +22,6 @@ struct ScoreInfo;
 
 class Level : public Subscriber, public GameState
 {
-	friend class LevelFactory;
 public:
 	Level(Prism::Camera& aCamera);
 	~Level();
@@ -44,6 +43,10 @@ public:
 
 	void ReceiveMessage(const OnPlayerJoin& aMessage) override;
 
+	Prism::Scene* GetScene() const;
+	void Add(Entity* anEntity);
+	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
+
 private:
 	void operator=(Level&) = delete;
 
@@ -61,7 +64,7 @@ private:
 	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;
 
-	CU::Vector3<float> myStartPosition;
+	CU::Vector3<float> mySpawnPosition;
 	CU::Vector2<float> myWindowSize;
 	float myTimeToLevelChange;
 	short myPlayerWinCount;
@@ -69,3 +72,12 @@ private:
 	int myLevelToChangeToID;
 };
 
+inline Prism::Scene* Level::GetScene() const
+{
+	return myScene;
+}
+
+inline void Level::SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition)
+{
+	mySpawnPosition = aSpawnPosition;
+}

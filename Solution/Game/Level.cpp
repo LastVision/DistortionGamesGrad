@@ -282,7 +282,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 void Level::CreatePlayers()
 {
-	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
@@ -291,7 +291,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
@@ -307,7 +307,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	mySmartCamera->SetActivePlayerCount(0);
-	mySmartCamera->SetStartPosition(myStartPosition);
+	mySmartCamera->SetStartPosition(mySpawnPosition);
 
 }
 
@@ -331,4 +331,11 @@ void Level::OnResize(int aWidth, int aHeight)
 void Level::ReceiveMessage(const OnPlayerJoin&)
 {
 	myPlayersPlaying++;
+}
+
+void Level::Add(Entity* anEntity)
+{
+	myEntities.Add(anEntity);
+	myEntities.GetLast()->AddToScene();
+	myEntities.GetLast()->Reset();
 }
