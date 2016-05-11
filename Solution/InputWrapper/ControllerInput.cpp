@@ -104,8 +104,11 @@ namespace CU
 		default:
 			break;
 		}
-		DL_ASSERT("Tried to convert to unknown button.");
-		return 0;
+		if (aButton != eXboxButton::Y)
+		{
+			DL_ASSERT("Tried to convert to unknown button.");
+			return 0;
+		}
 	}
 
 	void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)
