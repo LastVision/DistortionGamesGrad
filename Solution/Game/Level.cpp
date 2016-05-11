@@ -1,8 +1,11 @@
 #include "stdafx.h"
 
+#include <BounceComponent.h>
+#include <BounceNote.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
 #include "EmitterManager.h"
+#include <DeferredRenderer.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -14,6 +17,7 @@
 #include <PlayerActiveMessage.h>
 #include <PlayerComponent.h>
 #include <PostMaster.h>
+#include <Renderer.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreState.h"
@@ -22,6 +26,7 @@
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
+#include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
 
@@ -47,6 +52,11 @@ Level::Level(Prism::Camera& aCamera)
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
 	myEmitterManager = new EmitterManager();
+
+	Prism::ModelLoader::GetInstance()->Pause();
+	myDeferredRenderer = new Prism::DeferredRenderer();
+	myFullscreenRenderer = new Prism::Renderer();
+	Prism::ModelLoader::GetInstance()->UnPause();
 }
 
 Level::~Level()
@@ -56,6 +66,8 @@ Level::~Level()
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
+	SAFE_DELETE(myDeferredRenderer);
+	SAFE_DELETE(myFullscreenRenderer);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -124,8 +136,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	myBackground->Render(myWindowSize * 0.5f);
-	myScene->Render();
+
+	//myBackground->Render(myWindowSize * 0.5f);
+	//myScene->Render();
+	myDeferredRenderer->Render(myScene, myBackground);
+
+	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture(), myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 
 	myEmitterManager->RenderEmitters();
 
@@ -155,12 +171,13 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				// kill player
 				break;
 			case eTriggerType::FORCE:
+				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
 
-				CU::Vector3<float> velocity = { second.GetComponent<MovementComponent>()->GetVelocity().x, second.GetComponent<MovementComponent>()->GetVelocity().y, 0.f };
+				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
 
-				if (abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
+				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
-					second.GetComponent<MovementComponent>()->SetVelocity(second.GetComponent<MovementComponent>()->GetVelocity() * 0.5f);
+					second.GetComponent<MovementComponent>()->SetVelocity(currentVelocity * 0.5f);
 				}
 
 				second.GetComponent<MovementComponent>()->SetInSteam(true
@@ -192,7 +209,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
-	Entity* first = &aFirst->GetEntity(); 
+ 	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
@@ -203,9 +220,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SAW_BLADE:
 			if (aHasEntered == true)
 			{
-				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
-				//	, first->GetComponent<MovementComponent>()->GetVelocity());
-
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
@@ -213,17 +227,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
 				first->SendNote(ShouldDieNote());
-				//first->SetPosition(myStartPosition);
-				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::SPIKE:
-			//first->Reset();
 			if (aHasEntered == true)
 			{
-				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
-				//	, first->GetComponent<MovementComponent>()->GetVelocity());
-
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
@@ -231,19 +239,19 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
 				first->SendNote(ShouldDieNote());
-				//first->SetPosition(myStartPosition);
-				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::BOUNCER:
 			if (aHasEntered == true)
 			{
 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				float force = second->GetComponent<BounceComponent>()->GetForce();
 
 				if (dot > 0.001f)
 				{
-					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
-						, second->GetOrientation().GetUp().y * 0.1f });
+					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
+						, second->GetOrientation().GetUp().y * force });
+					second->SendNote(BounceNote());
 				}
 			}
 			break;
@@ -297,7 +305,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 void Level::CreatePlayers()
 {
-	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition);
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 1);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
@@ -306,7 +314,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1,1,1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();

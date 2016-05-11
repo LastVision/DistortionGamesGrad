@@ -6,6 +6,7 @@
 #include "IndexBufferWrapper.h"
 #include "Texture.h"
 #include "Scene.h"
+#include "SpriteProxy.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "SpotLightTextureProjection.h"
@@ -111,7 +112,7 @@ namespace Prism
 
 		InitFullscreenQuad();
 
-		//myCubemap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/CubeMap/T_cubemap_level01.dds");
+		myCubemap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/CubeMap/T_cubemap_level01.dds");
 		myCubeMapGenerator = new CubeMapGenerator();
 
 		myFinishedTexture = new Texture();
@@ -119,11 +120,11 @@ namespace Prism
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-		XMLReader reader;
-		reader.OpenDocument("Data/Setting/SET_rendering.xml");
-		tinyxml2::XMLElement* root = reader.ForceFindFirstChild("root");
-		reader.ForceReadAttribute(reader.ForceFindFirstChild(root, "shsize"), "value", GC::SHNodeSize);
-		reader.CloseDocument();
+		//XMLReader reader;
+		//reader.OpenDocument("Data/Setting/SET_rendering.xml");
+		//tinyxml2::XMLElement* root = reader.ForceFindFirstChild("root");
+		//reader.ForceReadAttribute(reader.ForceFindFirstChild(root, "shsize"), "value", GC::SHNodeSize);
+		//reader.CloseDocument();
 	}
 
 	DeferredRenderer::~DeferredRenderer()
@@ -138,7 +139,7 @@ namespace Prism
 		SAFE_DELETE(myGBufferData.myDepthTexture);
 	}
 
-	void DeferredRenderer::Render(Scene* aScene)
+	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground)
 	{
 		Engine::GetInstance()->RestoreViewPort();
 
@@ -149,6 +150,14 @@ namespace Prism
 		Engine::GetInstance()->GetContex()->RSSetViewports(1, myViewPort);
 
 		SetGBufferAsTarget(myDepthStencilTexture);
+
+
+		if (aBackground != nullptr)
+		{
+			aBackground->Render(Engine::GetInstance()->GetWindowSize() * 0.5f);
+		}
+
+
 		aScene->Render();
 
 		ActivateBuffers();
@@ -446,7 +455,6 @@ namespace Prism
 		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		context->OMSetRenderTargets(1, &backbuffer
 			, Engine::GetInstance()->GetDepthView());
-
 		SetAmbientData(false);
 		myAmbientPass.myEffect->SetCameraPosition(aScene->GetCamera()->GetOrientation().GetPos());
 		myAmbientPass.myInvertedProjection->SetMatrix(&CU::InverseReal(aScene->GetCamera()->GetProjection()).myMatrix[0]);
@@ -454,7 +462,7 @@ namespace Prism
 
 		myAmbientPass.mySHGridSizeVariable->SetFloatVector(&myAmbientPass.mySHGridSize.x);
 		myAmbientPass.mySHGridOffsetVariable->SetFloatVector(&myAmbientPass.mySHGridOffset.x);
-		
+
 		if (GC::EnableCheapAmbient == true)
 		{
 			Render(myAmbientPass.myEffect, "Render_Cheap");
@@ -463,6 +471,8 @@ namespace Prism
 		{
 			Render(myAmbientPass.myEffect);
 		}
+
+
 
 		SetAmbientData(true);
 	}
@@ -478,13 +488,13 @@ namespace Prism
 			myAmbientPass.myCubemap->SetResource(myCubemap->GetShaderView());
 			myAmbientPass.mySSAORandomTextureVariable->SetResource(myAmbientPass.mySSAORandomTexture->GetShaderView());
 
-			myAmbientPass.mycAr->SetResource(mySHTextures.cAr->GetShaderView());
-			myAmbientPass.mycAg->SetResource(mySHTextures.cAg->GetShaderView());
-			myAmbientPass.mycAb->SetResource(mySHTextures.cAb->GetShaderView());
-			myAmbientPass.mycBr->SetResource(mySHTextures.cBr->GetShaderView());
-			myAmbientPass.mycBg->SetResource(mySHTextures.cBg->GetShaderView());
-			myAmbientPass.mycBb->SetResource(mySHTextures.cBb->GetShaderView());
-			myAmbientPass.mycC->SetResource(mySHTextures.cC->GetShaderView());
+			//myAmbientPass.mycAr->SetResource(mySHTextures.cAr->GetShaderView());
+			//myAmbientPass.mycAg->SetResource(mySHTextures.cAg->GetShaderView());
+			//myAmbientPass.mycAb->SetResource(mySHTextures.cAb->GetShaderView());
+			//myAmbientPass.mycBr->SetResource(mySHTextures.cBr->GetShaderView());
+			//myAmbientPass.mycBg->SetResource(mySHTextures.cBg->GetShaderView());
+			//myAmbientPass.mycBb->SetResource(mySHTextures.cBb->GetShaderView());
+			//myAmbientPass.mycC->SetResource(mySHTextures.cC->GetShaderView());
 		}
 		else
 		{
@@ -495,13 +505,13 @@ namespace Prism
 			myAmbientPass.myCubemap->SetResource(nullptr);
 			myAmbientPass.mySSAORandomTextureVariable->SetResource(nullptr);
 
-			myAmbientPass.mycAr->SetResource(nullptr);
-			myAmbientPass.mycAg->SetResource(nullptr);
-			myAmbientPass.mycAb->SetResource(nullptr);
-			myAmbientPass.mycBr->SetResource(nullptr);
-			myAmbientPass.mycBg->SetResource(nullptr);
-			myAmbientPass.mycBb->SetResource(nullptr);
-			myAmbientPass.mycC->SetResource(nullptr);
+			//myAmbientPass.mycAr->SetResource(nullptr);
+			//myAmbientPass.mycAg->SetResource(nullptr);
+			//myAmbientPass.mycAb->SetResource(nullptr);
+			//myAmbientPass.mycBr->SetResource(nullptr);
+			//myAmbientPass.mycBg->SetResource(nullptr);
+			//myAmbientPass.mycBb->SetResource(nullptr);
+			//myAmbientPass.mycC->SetResource(nullptr);
 		}
 	}
 

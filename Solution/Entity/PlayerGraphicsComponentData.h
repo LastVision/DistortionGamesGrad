@@ -17,5 +17,6 @@ struct PlayerGraphicsComponentData
 	std::string myWalkAnimation;
 	std::string myFlyAnimation;
 
-	std::string myArrow;
+	std::string myPlayerOneArrow;
+	std::string myPlayerTwoArrow;
 };

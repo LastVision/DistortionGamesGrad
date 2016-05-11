@@ -9,6 +9,8 @@ class Entity;
 namespace Prism
 {
 	class Camera;
+	class DeferredRenderer;
+	class Renderer;
 	class Scene;
 	class SpriteProxy;
 };
@@ -55,6 +57,8 @@ private:
 
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
+	Prism::DeferredRenderer* myDeferredRenderer;
+	Prism::Renderer* myFullscreenRenderer;
 	SmartCamera* mySmartCamera;
 	CU::Matrix44<float> dummyMatrix;
 

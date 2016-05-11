@@ -13,7 +13,6 @@
 #include <Scene.h>
 #include <Texture.h>
 
-//#define BOX_MODE
 
 AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponentData& aComponentData, Prism::Scene*)
 	: Component(aEntity)
@@ -29,15 +28,23 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 
 AnimationComponent::~AnimationComponent()
 {
-	myEntity.GetScene()->RemoveInstance(myInstance);
 	SAFE_DELETE(myInstance);
 }
 
 void AnimationComponent::Reset()
 {
+	myInstance->ResetAnimationTime(0.f);
 }
 
 void AnimationComponent::Update(float aDeltaTime)
 {
-	myInstance->Update(aDeltaTime);
+	if (myInstance->IsAnimationDone() == false || myInstance->AnimationIsLoaded() == false)
+	{
+		myInstance->Update(aDeltaTime);
+	}
+}
+
+void AnimationComponent::ReceiveNote(const BounceNote& aMessage)
+{
+	myInstance->ResetAnimationTime(0.f);
 }

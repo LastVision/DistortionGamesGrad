@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "AnimationComponent.h"
+#include "BounceComponent.h"
 #include "GraphicsComponent.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
@@ -19,7 +20,7 @@
 #include "TriggerComponent.h"
 
 Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition,
-	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType)
+	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType, int aPlayerID)
 	: myScene(aScene)
 	, myEntityData(aEntityData)
 	, myEmitterConnection(nullptr)
@@ -58,7 +59,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	}
 	else if (aEntityData.myPlayerGraphicsData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::PLAYER_GRAPHICS)] = new PlayerGraphicsComponent(*this, aEntityData.myPlayerGraphicsData, myOrientation, aScene);
+		myComponents[static_cast<int>(eComponentType::PLAYER_GRAPHICS)] = new PlayerGraphicsComponent(*this, aEntityData.myPlayerGraphicsData, myOrientation, aScene, aPlayerID);
 	}
 
 	if (aEntityData.mySoundData.myExistsInEntity == true)
@@ -113,6 +114,11 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.myPlayerData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::PLAYER)] = new PlayerComponent(*this);
+	}
+
+	if (aEntityData.myBounceData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::BOUNCE)] = new BounceComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

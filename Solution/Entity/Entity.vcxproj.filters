@@ -104,6 +104,9 @@
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="BounceComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -228,6 +231,15 @@
     </ClInclude>
     <ClInclude Include="ShouldDieNote.h">
       <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="BounceNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="BounceComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BounceComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

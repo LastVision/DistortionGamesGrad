@@ -15,6 +15,7 @@ namespace Prism
 	class Effect;
 	class Scene;
 	class Texture;
+	class SpriteProxy;
 
 	struct RenderToScreenData : public EffectListener
 	{
@@ -95,7 +96,7 @@ namespace Prism
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void Render(Scene* aScene);
+		void Render(Scene* aScene, Prism::SpriteProxy* aBackground);
 		void RenderCubeMap(Scene* aScene, ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepth,
 			D3D11_VIEWPORT* aViewPort, bool aUseAmbientPass);
 		void OnResize(float aWidth, float aHeight);

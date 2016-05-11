@@ -12,11 +12,12 @@
 #include <OnDeathMessage.h>
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
-		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene)
+	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
 	: Component(aEntity)
 	, myData(aData)
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
+	, myPlayerID(aPlayerID)
 {
 }
 
@@ -42,7 +43,15 @@ void PlayerGraphicsComponent::Init()
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myRightLeg, myData.myShader), myRightLeg.myOrientation);
 	myHead.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myHead, myData.myShader), myHead.myOrientation);
-	myArrow = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModel(myData.myArrow, myData.myShader), myArrowOrientation);
+
+	if (myPlayerID == 1)
+	{
+		myArrow = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModel(myData.myPlayerOneArrow, myData.myShader), myArrowOrientation);
+	}
+	else
+	{
+		myArrow = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModel(myData.myPlayerTwoArrow, myData.myShader), myArrowOrientation);
+	}
 
 
 	while (Prism::ModelLoader::GetInstance()->IsLoading())
