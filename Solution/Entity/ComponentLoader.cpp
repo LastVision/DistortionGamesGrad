@@ -65,7 +65,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	}
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, InputComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, InputComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
@@ -187,7 +187,7 @@ void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SoundComponentData
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SawBladeComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SawBladeComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
@@ -209,17 +209,17 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Flyanimation"), "path", aOutputData.myFlyAnimation);
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SteamComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, ScoreComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, PlayerComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }

@@ -39,7 +39,7 @@
 physx::PxFilterFlags GraduationFilter(
 	physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
 	physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-	physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+	physx::PxPairFlags& pairFlags, const void*, physx::PxU32)
 {
 	// let triggers through
 	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
@@ -533,7 +533,7 @@ namespace Prism
 						continue;
 					}
 
-					physx::PxShapeFlags& flags = buffer.touches[i].shape->getFlags();
+					physx::PxShapeFlags flags = buffer.touches[i].shape->getFlags();
 					if (flags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE) == true)
 					{
 						continue;

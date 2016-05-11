@@ -17,7 +17,7 @@ PlayerComponent::~PlayerComponent()
 {
 }
 
-void PlayerComponent::Update(float aDeltaTime)
+void PlayerComponent::Update(float)
 {
 }
 
@@ -33,12 +33,12 @@ void PlayerComponent::EvaluateDeath()
 	}
 }
 
-void PlayerComponent::ReceiveNote(const ShouldDieNote& aMessage)
+void PlayerComponent::ReceiveNote(const ShouldDieNote&)
 {
 	myShouldDie = true;
 }
 
-void PlayerComponent::ReceiveNote(const SpawnNote& aMessage)
+void PlayerComponent::ReceiveNote(const SpawnNote&)
 {
 	PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 }

@@ -113,7 +113,7 @@ namespace Prism
 		myEngine->GetContex()->OMSetRenderTargets(1, &renderTarget, depth);
 	}
 
-	void Renderer::EndScene(int aEffect)
+	void Renderer::EndScene(int)
 	{
 		DL_ASSERT_EXP(mySceneIndex < MAX_NUMBER_OF_SCENES, "Tried to Begin to many Scenes");
 

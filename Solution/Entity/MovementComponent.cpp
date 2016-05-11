@@ -119,7 +119,7 @@ const CU::Vector2<float>& MovementComponent::GetVelocity() const
 	return myMovements[myCurrentMovement]->GetVelocity();
 }
 
-void MovementComponent::ReceiveNote(const DeathNote& aMessage)
+void MovementComponent::ReceiveNote(const DeathNote&)
 {
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
@@ -127,7 +127,7 @@ void MovementComponent::ReceiveNote(const DeathNote& aMessage)
 	}
 }
 
-void MovementComponent::ReceiveNote(const SpawnNote& aMessage)
+void MovementComponent::ReceiveNote(const SpawnNote&)
 {
 	myCurrentMovement = eMovementType::FLY;
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });

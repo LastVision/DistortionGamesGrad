@@ -77,8 +77,8 @@ void DashAimMovement::ReceiveNote(const ContactNote&)
 	//Not needed here?
 }
 
-void DashAimMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void DashAimMovement::HandleRaycast(PhysicsComponent*, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 
 }

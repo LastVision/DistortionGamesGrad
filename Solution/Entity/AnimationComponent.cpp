@@ -15,7 +15,7 @@
 
 //#define BOX_MODE
 
-AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponentData& aComponentData, Prism::Scene* aScene)
+AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponentData& aComponentData, Prism::Scene*)
 	: Component(aEntity)
 	, myComponentData(aComponentData)
 	, myInstance(nullptr)

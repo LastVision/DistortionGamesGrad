@@ -13,6 +13,12 @@ ScoreState::~ScoreState()
 
 void ScoreState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
 {
+	myStateStack = aStateStackProxy;
+	myCursor = aCursor;
+
+	myStateStatus = eStateStatus::ePopMainState;
+	myIsLetThrough = true;
+	myIsActiveState = true;
 }
 
 void ScoreState::EndState()
@@ -21,7 +27,8 @@ void ScoreState::EndState()
 
 const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
-	return eStateStatus::ePopMainState;
+	aDeltaTime;
+	return myStateStatus;
 }
 
 void ScoreState::Render()
@@ -32,6 +39,6 @@ void ScoreState::ResumeState()
 {
 }
 
-void ScoreState::OnResize(int aWidth, int aHeight)
+void ScoreState::OnResize(int, int)
 {
 }

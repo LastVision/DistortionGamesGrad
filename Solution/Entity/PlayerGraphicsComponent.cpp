@@ -113,12 +113,12 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 }
 
-void PlayerGraphicsComponent::ReceiveNote(const SpawnNote& aMessage)
+void PlayerGraphicsComponent::ReceiveNote(const SpawnNote&)
 {
 	Activate();
 }
 
-void PlayerGraphicsComponent::ReceiveNote(const DeathNote& aMessage)
+void PlayerGraphicsComponent::ReceiveNote(const DeathNote&)
 {
 	Reset();
 }

@@ -110,17 +110,17 @@ namespace Prism
 		myInstances.RemoveCyclic(aInstance);
 	}
 
-	const CU::GrowingArray<PointLight*>& Scene::GetPointLights(bool aUseRoomManager) const
+	const CU::GrowingArray<PointLight*>& Scene::GetPointLights(bool) const
 	{
 		return myPointLights;
 	}
 
-	const CU::GrowingArray<SpotLight*>& Scene::GetSpotLights(bool aUseRoomManager) const
+	const CU::GrowingArray<SpotLight*>& Scene::GetSpotLights(bool) const
 	{
 		return mySpotLights;
 	}
 
-	const CU::GrowingArray<SpotLightTextureProjection*>& Scene::GetSpotLightsTextureProjection(bool aUseRoomManager) const
+	const CU::GrowingArray<SpotLightTextureProjection*>& Scene::GetSpotLightsTextureProjection(bool) const
 	{
 		return mySpotLightsTextureProjection;
 	}

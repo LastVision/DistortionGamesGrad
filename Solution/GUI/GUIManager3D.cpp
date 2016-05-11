@@ -15,7 +15,7 @@
 
 namespace GUI
 {
-	GUIManager3D::GUIManager3D(const Prism::Instance* aModel, Prism::Scene* aScene
+	GUIManager3D::GUIManager3D(const Prism::Instance*, Prism::Scene* aScene
 		, const int& aPistolClipSize, const int& aPistolAmmoInClip
 		, const int& aShotgunClipSize, const int& aShotgunAmmoInClip, const int& aShotgunAmmoTotal
 		, const int& aGrenadeLauncherClipSize, const int& aGrenadeLauncherAmmoInClip, const int& aGrenadeLauncherAmmoTotal)
@@ -218,7 +218,7 @@ namespace GUI
 		myHealthOrientation.SetPos(oldPos);
 	}
 
-	void GUIManager3D::Rebuild(const eWeaponType aWeaponType, int aSize)
+	void GUIManager3D::Rebuild(const eWeaponType aWeaponType, int)
 	{
 		switch (aWeaponType)
 		{
