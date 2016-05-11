@@ -43,7 +43,6 @@ private:
 
 	Prism::Camera& myCamera;
 
-	//Level* myCurrentLevel;
 	int myCurrentLevelID;
 
 	std::unordered_map<int, std::string> myLevelPaths;
