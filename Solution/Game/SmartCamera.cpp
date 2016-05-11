@@ -7,10 +7,13 @@
 #include <PlayerActiveMessage.h>
 #include <OnDeathMessage.h>
 #include <OnPlayerLevelComplete.h>
+#include <MathHelper.h>
 SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myPlayerOrientations(2)
+	, myCameraAlpha(0)
 {
+	myShouldResetCameraPos = true;
 	XMLReader reader;
 	reader.OpenDocument("Data/Setting/Smart_Camera.xml");
 
@@ -35,7 +38,6 @@ SmartCamera::~SmartCamera()
 void SmartCamera::Update(float aDeltaTime)
 {
 	myCamera.Update(aDeltaTime);
-
 	if (myActivePlayerCount > 1)
 	{
 		CU::Vector3<float> position;
@@ -65,7 +67,19 @@ void SmartCamera::Update(float aDeltaTime)
 	}
 	else
 	{
+		myCameraAlpha += aDeltaTime * 4;
+
+		if (myCameraAlpha <= 1.f)
+		{
+			CU::Vector3f &cameraPos = myCamera.GetOrientation().GetPos();
+			CU::Vector3f pos = CU::Math::Lerp(cameraPos, myStartPosition, myCameraAlpha);
+			myCamera.SetPosition(pos);
+			myCameraAlpha = 0.f;
+		}
+		/*else
+		{
 		myCamera.SetPosition(myStartPosition);
+		}*/
 	}
 
 }
