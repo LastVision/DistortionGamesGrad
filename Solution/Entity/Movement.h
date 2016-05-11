@@ -26,6 +26,8 @@ public:
 
 	const CU::Vector2<float>& GetVelocity() const;
 
+	void SetIsInSteam(bool aIsInSteam);
+
 protected:
 	void operator=(Movement&) = delete;
 	bool myIsActive;
@@ -38,9 +40,16 @@ protected:
 	CU::Vector2<float> myVelocity;
 	CU::Vector2<float> myDirectionTarget;
 
+	bool myIsInSteam;
+
 };
 
 inline const CU::Vector2<float>& Movement::GetVelocity() const
 {
 	return myVelocity;
+}
+
+inline void Movement::SetIsInSteam(bool aIsInSteam)
+{
+	myIsInSteam = aIsInSteam;
 }

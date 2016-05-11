@@ -68,9 +68,3 @@ inline eComponentType MovementComponent::GetType()
 {
 	return GetTypeStatic();
 }
-
-inline void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)
-{
-	myIsInSteam = aIsInSteam;
-	mySteamVelocity = aVelocity;
-}

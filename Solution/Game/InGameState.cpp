@@ -82,7 +82,15 @@ void InGameState::EndState()
 const eStateStatus InGameState::Update(const float&)
 {
 	SET_RUNTIME(false);
-	myStateStack->PushMainGameState(myLevelFactory->LoadLevel(myNextLevel));
+	Level* level = nullptr;
+	if (myLevelFactory->LoadLevel(level) == true)
+	{
+		myStateStack->PushMainGameState(level);
+	}
+	else
+	{
+		//Game over, push "win"-state
+	}
 
 	return myStateStatus;
 }

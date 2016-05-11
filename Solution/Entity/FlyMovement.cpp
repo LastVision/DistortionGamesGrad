@@ -60,7 +60,7 @@ void FlyMovement::DeActivate()
 }
 
 void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
-{ 
+{
 	myVelocity = aVelocity;
 }
 
@@ -86,7 +86,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 			}
 		}
 		myHasContact = true;
-		
+
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
 		resetPos.z = 0.f;
 
@@ -94,8 +94,16 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		{
 			if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 			{
-				resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
-				myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
+				if (myIsInSteam == false)
+				{
+					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
+				}
+				else if (myVelocity.y < 0.f)
+				{
+					myVelocity.y = 0;
+					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+				}
 			}
 		}
 		else if (aHitNormal.y < -0.5f)

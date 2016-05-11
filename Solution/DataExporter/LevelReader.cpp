@@ -20,6 +20,14 @@ LevelReader::~LevelReader()
 	myBuffer.close();
 	delete myOutputStream;
 	myOutputStream = nullptr;
+
+	for (int i = 0; i < myUsedIDs.Size(); ++i)
+	{
+		if (myUsedIDs.Find(i + 1) == myUsedIDs.FoundNone)
+		{
+			DL_MESSAGE_BOX(CU::Concatenate("Level with ID %i not found", i + 1).c_str(), "ERROR", MB_ICONWARNING);
+		}
+	}
 }
 
 void LevelReader::ReadFile(const std::string& aFile)
@@ -27,18 +35,10 @@ void LevelReader::ReadFile(const std::string& aFile)
 	if (aFile.compare(aFile.size() - 4, 4, ".xml") == 0
 		|| aFile.compare(aFile.size() - 4, 4, ".XML") == 0)
 	{
+		int slashIndex = aFile.rfind("/");
+		std::string levelIDstr(aFile.begin() + slashIndex + 1, aFile.begin() + slashIndex + 4);
 
-		XMLReader reader;
-		reader.OpenDocument(aFile);
-
-		tinyxml2::XMLElement* element = reader.ForceFindFirstChild("root");
-		element = reader.ForceFindFirstChild(element, "scene");
-		element = reader.ForceFindFirstChild(element, "levelData");
-		element = reader.ForceFindFirstChild(element, "id");
-
-		int levelID = -1;
-		reader.ForceReadAttribute(element, "value", levelID);
-		reader.CloseDocument();
+		int levelID = CU::StringToInt(levelIDstr);
 
 		if (myUsedIDs.Find(levelID) != myUsedIDs.FoundNone)
 		{

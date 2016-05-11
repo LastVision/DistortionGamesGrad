@@ -21,11 +21,11 @@ public:
 	LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera);
 	~LevelFactory();
 
-	Level* LoadLevel(const int& aLevelID);
-	Level* LoadCurrentLevel();
-	Level* LoadNextLevel();
+	bool LoadLevel(Level*& aLevelOut);
+
 private:
 	void operator=(LevelFactory&) = delete;
+	Level* LoadCurrentLevel();
 
 	void ReadLevelList(const std::string& aLevelListPath);
 	Level* ReadLevel(const std::string& aLevelPath);
@@ -42,8 +42,9 @@ private:
 	void ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale);
 
 	Prism::Camera& myCamera;
-
+	
 	int myCurrentLevelID;
+	int myFinalLevelID;
 
 	std::unordered_map<int, std::string> myLevelPaths;
 };

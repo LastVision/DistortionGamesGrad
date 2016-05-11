@@ -16,7 +16,7 @@ class PlayerGraphicsComponent : public Component, public Subscriber
 {
 public:
 	PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
-		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene);
+		, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID);
 	~PlayerGraphicsComponent();
 
 	void Init() override;
@@ -34,8 +34,11 @@ private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;
 
+	int myPlayerID;
+
 	Prism::Scene* myScene;
 	Prism::Instance* myArrow;
+
 	CU::Matrix44<float> myArrowOrientation;
 
 	BodyPart myBody;
