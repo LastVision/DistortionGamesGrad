@@ -97,15 +97,6 @@ enum class ePhysics
 	KINEMATIC,
 };
 
-enum class eEntityState : unsigned char
-{
-	IDLE,
-	WALK,
-	ATTACK,
-	DIE,
-	_COUNT,
-};
-
 enum class ePlayerState : int
 {
 	PISTOL_IDLE,

@@ -16,13 +16,9 @@ struct EntityData;
 
 class Entity
 {
-	friend class AnimationComponent;
-	friend class GraphicsComponent;
-	friend class EntityFactory;
-
 public:
 	Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition, 
-		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType = "");
+		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType);
 	~Entity();
 
 	void Reset();
@@ -47,9 +43,6 @@ public:
 
 	Prism::Scene* GetScene();
 	eEntityType GetType() const;
-
-	eEntityState GetState() const;
-	void SetState(eEntityState aState);
 
 	void AddEmitter(Prism::ParticleEmitterInstance* anEmitterConnection);
 	Prism::ParticleEmitterInstance* GetEmitter();
@@ -83,7 +76,6 @@ private:
 	bool myIsActive;
 	bool myIsInScene;
 	std::string mySubType;
-	eEntityState myState;
 
 	Prism::Scene* myScene;
 
@@ -169,16 +161,6 @@ inline void Entity::ResetPosition()
 inline Prism::Scene* Entity::GetScene()
 {
 	return myScene;
-}
-
-inline eEntityState Entity::GetState() const
-{
-	return myState;
-}
-
-inline void Entity::SetState(eEntityState aState)
-{
-	myState = aState;
 }
 
 inline bool Entity::IsAlive() const

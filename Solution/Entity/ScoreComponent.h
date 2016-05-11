@@ -13,6 +13,11 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
+	void ReceiveNote(const DeathNote& aMessage) override;
+	void ReceiveNote(const SpawnNote& aMessage) override;
+
+	const Score* GetScore() const;
+
 private:
 	Score myScore;
 };
@@ -25,4 +30,9 @@ inline eComponentType ScoreComponent::GetTypeStatic()
 inline eComponentType ScoreComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline const Score* ScoreComponent::GetScore() const
+{
+	return &myScore;
 }

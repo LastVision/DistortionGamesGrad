@@ -18,8 +18,8 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	reader.OpenDocument("Data/Setting/Smart_Camera.xml");
 
 	tinyxml2::XMLElement* rootElement = reader.ForceFindFirstChild("root");
-	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
-	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
 	reader.CloseDocument();
 
 	myMinZoom = -myMinZoom;
