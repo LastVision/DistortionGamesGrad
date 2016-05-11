@@ -14,6 +14,7 @@
 #include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Scene.h>
+#include <ScoreComponent.h>
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -33,6 +34,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myTimeToLevelChange(10.f)
 	, myBackground(nullptr)
 	, myPlayersPlaying(0)
+	, myScores(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -120,6 +122,14 @@ void Level::Render()
 {
 	myBackground->Render(myWindowSize * 0.5f);
 	myScene->Render();
+
+	for each(Entity* player in myPlayers)
+	{
+		if (player->GetComponent<MovementComponent>() != nullptr)
+		{
+			player->GetComponent<MovementComponent>()->Render();
+}
+	}
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)
@@ -297,10 +307,16 @@ void Level::CreatePlayers()
 
 	player->AddToScene();
 	myPlayers.Add(player);
+
+	for each(Entity* player in myPlayers)
+	{
+		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
+	}
+
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	mySmartCamera->SetActivePlayerCount(0);
-	mySmartCamera->SetStartPosition(myStartPosition);
+	mySmartCamera->SetStartPosition(mySpawnPosition);
 
 }
 
@@ -324,4 +340,11 @@ void Level::OnResize(int aWidth, int aHeight)
 void Level::ReceiveMessage(const OnPlayerJoin&)
 {
 	myPlayersPlaying++;
+}
+
+void Level::Add(Entity* anEntity)
+{
+	myEntities.Add(anEntity);
+	myEntities.GetLast()->AddToScene();
+	myEntities.GetLast()->Reset();
 }

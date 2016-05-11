@@ -50,7 +50,6 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.myAnimationData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::ANIMATION)] = new AnimationComponent(*this, aEntityData.myAnimationData, aScene);
-		GetComponent<AnimationComponent>()->SetScale(aScale);
 	}
 	else if (aEntityData.myGraphicsData.myExistsInEntity == true)
 	{
@@ -145,7 +144,6 @@ Entity::~Entity()
 void Entity::Reset()
 {
 	myAlive = true;
-	myState = eEntityState::IDLE;
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
@@ -228,7 +226,6 @@ void Entity::AddToScene()
 	else if (GetComponent<AnimationComponent>() != nullptr && GetComponent<AnimationComponent>()->GetInstance() != nullptr)
 	{
 		myScene->AddInstance(GetComponent<AnimationComponent>()->GetInstance());
-		GetComponent<AnimationComponent>()->AddWeaponToScene(myScene);
 	}
 
 	myIsInScene = true;
@@ -250,7 +247,6 @@ void Entity::RemoveFromScene()
 	else if (GetComponent<AnimationComponent>() != nullptr)
 	{
 		myScene->RemoveInstance(GetComponent<AnimationComponent>()->GetInstance());
-		GetComponent<AnimationComponent>()->RemoveWeaponFromScene(myScene);
 	}
 
 	myIsInScene = false;

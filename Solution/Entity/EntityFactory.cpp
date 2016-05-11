@@ -66,7 +66,6 @@ Entity* EntityFactory::CreateEntity(eEntityType, std::string aSubType, Prism::Sc
 
 			Entity* newEntity = new Entity(myInstance->myLoadedSubEntityData.find(aSubType)->second, aScene, aPosition, aRotation
 				, aScale, aSubType, aPlayerID);
-			newEntity->mySubType = aSubType;
 
 				
 			return newEntity;

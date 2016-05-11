@@ -3,6 +3,8 @@
 
 namespace Prism
 {
+	class Bar3D;
+	class Effect;
 	class Instance;
 	class Scene;
 }
@@ -17,6 +19,7 @@ public:
 	void Reset() override;
 
 	void Update(float aDeltaTime) override;
+	void Render() override;
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
 	void Impulse(const CU::Vector2<float>& aVelocity) override;
@@ -37,5 +40,8 @@ private:
 	float myTimer;
 	Prism::Instance* myArrow;
 	Prism::Scene* myScene;
+
+	Prism::Bar3D* myAimTimer;
+	Prism::Effect* myEffect;
 };
 

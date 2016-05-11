@@ -18,8 +18,8 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	reader.OpenDocument("Data/Setting/Smart_Camera.xml");
 
 	tinyxml2::XMLElement* rootElement = reader.ForceFindFirstChild("root");
-	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
-	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
 	reader.CloseDocument();
 
 	myMinZoom = -myMinZoom;
@@ -127,6 +127,7 @@ void SmartCamera::SetStartPosition(const CU::Vector3f& aPosition)
 	CU::Vector3f pos(aPosition);
 	pos.z = myMinZoom;
 	myOrientation.SetPos(pos);
+	myCamera.SetPosition(pos);
 	myStartPosition = pos;
 }
 

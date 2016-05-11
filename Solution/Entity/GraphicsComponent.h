@@ -24,8 +24,6 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
-	void SetPosition(const CU::Vector3<float>& aPosition);
-	void SetRotation(const CU::Vector3<float>& aRotation);
 	void SetScale(const CU::Vector3<float>& aScale);
 
 private:

@@ -15,3 +15,13 @@ void ScoreComponent::Update(float aDeltaTime)
 {
 	myScore.myTime += aDeltaTime;
 }
+
+void ScoreComponent::ReceiveNote(const DeathNote&)
+{
+	++myScore.myDeathCount;
+}
+
+void ScoreComponent::ReceiveNote(const SpawnNote&)
+{
+	myScore.myTime = 0;
+}
