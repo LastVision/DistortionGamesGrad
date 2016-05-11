@@ -61,7 +61,8 @@ int main(int argC,      // Number of strings in array argv
 	bool calcCollisionRadius = false;
 	bool readModelCount = false;
 	bool readEntities = false;
-	bool readLevel = false;
+	bool readLevel = true;
+	bool removeOldFiles = false;
 
 	for (int i = 0; i < argC; ++i)
 	{
@@ -87,11 +88,22 @@ int main(int argC,      // Number of strings in array argv
 		{
 			readLevel = true;
 		}
+		else if (command == "-removeoldfiles")
+		{
+			removeOldFiles = true;
+		}
 	}
 
 	DL_Debug::Debug::Create();
 	//CU::TimerManager::Create();
 	
+
+	if (removeOldFiles == true)
+	{
+
+	}
+
+
 	IReader* reader;
 
 	if (calcCollisionRadius == true)
