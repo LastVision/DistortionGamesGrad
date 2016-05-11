@@ -172,8 +172,8 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				break;
 			case eTriggerType::FORCE:
 				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
-
 				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
+				float force = firstTrigger->GetForce();
 
 				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
@@ -181,7 +181,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				}
 
 				second.GetComponent<MovementComponent>()->SetInSteam(true
-					, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
+					, { first.GetOrientation().GetUp().x * force, first.GetOrientation().GetUp().y * force });
 				break;
 			}
 		}

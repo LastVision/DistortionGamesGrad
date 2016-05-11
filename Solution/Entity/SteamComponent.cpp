@@ -2,6 +2,7 @@
 #include <EmitterMessage.h>
 #include "EntityFactory.h"
 #include "SteamComponent.h"
+#include "TriggerComponent.h"
 #include "PhysicsComponent.h"
 #include <PostMaster.h>
 SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation)
@@ -86,4 +87,14 @@ void SteamComponent::SetSteamVariables(float aSteamInterval, float aSteamTime, f
 		myCurrentSteamTime = 0.f;
 		mySteam->GetComponent<PhysicsComponent>()->RemoveFromScene();
 	}
+}
+
+float SteamComponent::GetForce() const
+{
+	return mySteam->GetComponent<TriggerComponent>()->GetForce();
+}
+
+void SteamComponent::SetForce(float aForce)
+{
+	mySteam->GetComponent<TriggerComponent>()->SetForce(aForce);
 }
