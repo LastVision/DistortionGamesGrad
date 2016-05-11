@@ -38,7 +38,6 @@ Level::Level(Prism::Camera& aCamera)
 
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
-	mySmartCamera->SetStartPosition(myStartPosition);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
@@ -284,7 +283,10 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 
 	mySmartCamera->SetActivePlayerCount(0);
+	mySmartCamera->SetStartPosition(myStartPosition);
+
 }
+
 
 void Level::EndState()
 {
