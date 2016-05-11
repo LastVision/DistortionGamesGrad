@@ -51,6 +51,8 @@ namespace Prism
 		bool GetExistInMultipleRooms() const;
 		void SetExistInMultipleRooms(bool aValue);
 
+		bool AnimationIsLoaded() const;
+
 	private:
 		void operator=(Instance&) = delete;
 

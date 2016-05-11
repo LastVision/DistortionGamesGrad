@@ -28,6 +28,8 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
+	void ReceiveNote(const BounceNote& aMessage) override;
+
 private:
 	struct AnimationData
 	{
