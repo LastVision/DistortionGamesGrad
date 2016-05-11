@@ -186,7 +186,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
- 	Entity* first = &aFirst->GetEntity(); 
+	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
@@ -237,7 +237,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				if (dot > 0.001f)
 				{
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
- 						, second->GetOrientation().GetUp().y * 0.1f });
+						, second->GetOrientation().GetUp().y * 0.1f });
 				}
 			}
 			break;
@@ -291,7 +291,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 void Level::CreatePlayers()
 {
-	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 1);
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 1);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
@@ -300,7 +300,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition, CU::Vector3f(), CU::Vector3f(1,1,1), 2);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1,1,1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
