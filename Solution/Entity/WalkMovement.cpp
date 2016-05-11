@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "ContactNote.h"
-#include "DeathNote.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 #include "PostMaster.h"
+#include "ShouldDieNote.h"
 #include "WalkMovement.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -77,7 +77,7 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
 	if (dir < myData.myMaxAngleWhenLanding)
 	{
-		myMovementComponent.GetEntity().SendNote(DeathNote());
+		myMovementComponent.GetEntity().SendNote(ShouldDieNote());
 	}
 	else
 	{
@@ -90,8 +90,6 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 			myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI);
 			myOrientation.SetPos(oldPos);
 		}
-		
-
 	}
 }
 

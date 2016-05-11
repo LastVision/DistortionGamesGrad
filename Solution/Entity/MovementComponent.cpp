@@ -45,6 +45,8 @@ void MovementComponent::Reset()
 
 void MovementComponent::Update(float aDeltaTime)
 {
+	DEBUG_PRINT(myEntity.GetOrientation().GetPos());
+
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
 	myMovements[myCurrentMovement]->Update(aDeltaTime);

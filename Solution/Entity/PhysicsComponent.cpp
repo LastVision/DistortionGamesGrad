@@ -254,6 +254,7 @@ void PhysicsComponent::ReceiveNote(const SpawnNote& aMessage)
 
 void PhysicsComponent::ReceiveNote(const DeathNote& aMessage)
 {
+	TeleportToPosition(myEntity.GetStartPosition());
 	RemoveFromScene();
 }
 

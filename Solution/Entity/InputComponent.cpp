@@ -97,7 +97,6 @@ void InputComponent::Update(float aDeltaTime)
 			{
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
-
 					if (myIsInLevel == false)
 					{
 						myIsInLevel = true;
@@ -105,7 +104,6 @@ void InputComponent::Update(float aDeltaTime)
 					}
 
 					myEntity.SendNote(SpawnNote());
-					myEntity.Reset();
 					myIsActive = true;
 					myMovement->Impulse();
 				}

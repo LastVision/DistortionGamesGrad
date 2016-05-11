@@ -195,6 +195,7 @@
     <ClInclude Include="Score.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoreComponentData.h" />
+    <ClInclude Include="ShouldDieNote.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
     <ClInclude Include="SpawnNote.h" />

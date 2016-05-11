@@ -18,13 +18,11 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
 {
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH);
 }
 
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
-	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void PlayerGraphicsComponent::Init()
@@ -117,7 +115,7 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 
 void PlayerGraphicsComponent::ReceiveNote(const SpawnNote& aMessage)
 {
-	Activate();			
+	Activate();
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const DeathNote& aMessage)
