@@ -19,10 +19,11 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 
 	tinyxml2::XMLElement* rootElement = reader.ForceFindFirstChild("root");
 	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
+	reader.ForceReadAttribute(reader.FindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
 	reader.CloseDocument();
 
 	myMinZoom = -myMinZoom;
-	myMaxZoom = -50;
+	myMaxZoom = -myMaxZoom;
 	myCamera.SetPosition(CU::Vector3f(0, 0, myMinZoom));
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH | eMessageType::ON_PLAYER_LEVEL_COMPLETE);
 
@@ -46,13 +47,28 @@ void SmartCamera::Update(float aDeltaTime)
 		position.z = -CU::Length(myPlayerOrientations[0]->GetPos() - myPlayerOrientations[1]->GetPos()) * 1.2f;
 		if (position.z < myMinZoom)
 		{
-			myCamera.SetPosition(position);
+		
+			if (position.z < myMaxZoom)
+			{
+				position.z = myMaxZoom;
+			}
+			
+			myCameraAlpha += aDeltaTime * 4;
+			if (myCameraAlpha <= 1.f)
+			{
+
+				myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), position, myCameraAlpha));
+				myCameraAlpha = 0.f;
+			}
 			DEBUG_PRINT(position);
 		}
 		else
 		{
 			myCamera.SetPosition(CU::Vector3f(position.x, position.y, myMinZoom));
 		}
+		
+
+
 	}
 	else if (myActivePlayerCount < 2 && myActivePlayerCount > 0)
 	{
@@ -87,7 +103,7 @@ void SmartCamera::Update(float aDeltaTime)
 
 		if (myCameraAlpha <= 1.f)
 		{
-			CU::Vector3f &cameraPos = myCamera.GetOrientation().GetPos();
+			CU::Vector3f cameraPos = myCamera.GetOrientation().GetPos();
 			CU::Vector3f pos = CU::Math::Lerp(cameraPos, myStartPosition, myCameraAlpha);
 			myCamera.SetPosition(pos);
 			myCameraAlpha = 0.f;
