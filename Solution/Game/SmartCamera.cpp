@@ -127,6 +127,7 @@ void SmartCamera::SetStartPosition(const CU::Vector3f& aPosition)
 	CU::Vector3f pos(aPosition);
 	pos.z = myMinZoom;
 	myOrientation.SetPos(pos);
+	myCamera.SetPosition(pos);
 	myStartPosition = pos;
 }
 
