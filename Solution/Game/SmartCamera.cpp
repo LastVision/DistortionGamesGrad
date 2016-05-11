@@ -56,13 +56,29 @@ void SmartCamera::Update(float aDeltaTime)
 	}
 	else if (myActivePlayerCount < 2 && myActivePlayerCount > 0)
 	{
+		myCameraAlpha += aDeltaTime * 4;
 		if (myActivePlayers[PLAYER_1] == TRUE)
 		{
-			myCamera.SetPosition({ myPlayerOrientations[0]->GetPos().x, myPlayerOrientations[0]->GetPos().y, myCamera.GetOrientation().GetPos().z });
+			if (myCameraAlpha <= 1.f)
+			{
+				CU::Vector3f targetPos = myPlayerOrientations[0]->GetPos();
+				targetPos.z = myMinZoom;
+				myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), targetPos, myCameraAlpha));
+				myCameraAlpha = 0.f;
+			}
+			//myCamera.SetPosition({ myPlayerOrientations[0]->GetPos().x, myPlayerOrientations[0]->GetPos().y, myMinZoom });
 		}
 		else if (myActivePlayers[PLAYER_2] == TRUE)
 		{
-			myCamera.SetPosition({ myPlayerOrientations[1]->GetPos().x, myPlayerOrientations[1]->GetPos().y, myCamera.GetOrientation().GetPos().z });
+
+			if (myCameraAlpha <= 1.f)
+			{
+				CU::Vector3f targetPos = myPlayerOrientations[1]->GetPos();
+				targetPos.z = myMinZoom;
+				myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), targetPos, myCameraAlpha));
+				myCameraAlpha = 0.f;
+			}
+			//myCamera.SetPosition({ myPlayerOrientations[1]->GetPos().x, myPlayerOrientations[1]->GetPos().y, myMinZoom });
 		}
 	}
 	else
@@ -76,10 +92,6 @@ void SmartCamera::Update(float aDeltaTime)
 			myCamera.SetPosition(pos);
 			myCameraAlpha = 0.f;
 		}
-		/*else
-		{
-		myCamera.SetPosition(myStartPosition);
-		}*/
 	}
 
 }
