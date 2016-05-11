@@ -43,13 +43,13 @@ void EntityFactory::LoadEntities(const char* aEntityListXML)
 
 
 Entity* EntityFactory::CreateEntity(eEntityType aType, Prism::Scene* aScene, const CU::Vector3f& aPosition
-	, const CU::Vector3f& aRotation, const CU::Vector3f& aScale)
+	, const CU::Vector3f& aRotation, const CU::Vector3f& aScale, int aPlayerID)
 {
 	if (myInstance->myLoadedEntityData.find(aType) != myInstance->myLoadedEntityData.end())
 	{
 
 		Entity* newEntity = new Entity(myInstance->myLoadedEntityData.find(aType)->second, aScene, aPosition, aRotation
-			, aScale, "");
+			, aScale, "", aPlayerID);
 		return newEntity;
 	}
 	DL_ASSERT("Entity not found with enum: " + std::to_string(aType));
@@ -58,14 +58,15 @@ Entity* EntityFactory::CreateEntity(eEntityType aType, Prism::Scene* aScene, con
 
 
 Entity* EntityFactory::CreateEntity(eEntityType, std::string aSubType, Prism::Scene* aScene, const CU::Vector3f& aPosition,
-	const CU::Vector3f& aRotation, const CU::Vector3f& aScale)
+	const CU::Vector3f& aRotation, const CU::Vector3f& aScale, int aPlayerID)
 {
 
 		if (myInstance->myLoadedSubEntityData.find(aSubType) != myInstance->myLoadedSubEntityData.end())
 		{
 
 			Entity* newEntity = new Entity(myInstance->myLoadedSubEntityData.find(aSubType)->second, aScene, aPosition, aRotation
-				, aScale, aSubType);
+				, aScale, aSubType, aPlayerID);
+
 				
 			return newEntity;
 		}

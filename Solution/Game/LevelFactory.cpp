@@ -15,6 +15,7 @@
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myCurrentLevelID(0)
+	, myFinalLevelID(0)
 {
 	ReadLevelList(aLevelListPath);
 }
@@ -23,12 +24,18 @@ LevelFactory::~LevelFactory()
 {
 }
 
-Level* LevelFactory::LoadLevel(const int& aLevelID)
+bool LevelFactory::LoadLevel(Level*& aLevelOut)
 {
-	DL_ASSERT_EXP(myLevelPaths.find(aLevelID) != myLevelPaths.end(), "[LevelFactory]: Non-existing ID in LoadLevel! ID most correspond with LI_level.xml");
-	myCurrentLevelID = aLevelID;
+	myCurrentLevelID++;
+	if (myCurrentLevelID > myFinalLevelID)
+	{
+		return false;
+	}
 
-	return LoadCurrentLevel();
+	DL_ASSERT_EXP(myLevelPaths.find(myCurrentLevelID) != myLevelPaths.end(), "[LevelFactory]: Non-existing ID in LoadLevel! ID most correspond with LI_level.xml");
+
+	aLevelOut = LoadCurrentLevel();
+	return true;
 }
 
 Level* LevelFactory::LoadCurrentLevel()
@@ -40,13 +47,6 @@ Level* LevelFactory::LoadCurrentLevel()
 #endif
 
 	return level;
-}
-
-Level* LevelFactory::LoadNextLevel()
-{
-	myCurrentLevelID++;
-
-	return LoadCurrentLevel();
 }
 
 void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
@@ -64,6 +64,8 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 		reader.ForceReadAttribute(element, "ID", ID);
 		reader.ForceReadAttribute(element, "path", levelPath);
 		myLevelPaths[ID] = levelPath;
+
+		myFinalLevelID = max(myFinalLevelID, ID);
 	}
 	reader.CloseDocument();
 }
