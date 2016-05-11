@@ -176,7 +176,7 @@ void EmitterManager::ReceiveMessage(const EmitterMessage& aMessage)
 	{
 		Prism::ParticleEmitterInstance* instance = emitter->myEmitters[index][i];
 
-		
+
 
 		instance->SetEntity(aMessage.myEntity);
 
@@ -185,17 +185,7 @@ void EmitterManager::ReceiveMessage(const EmitterMessage& aMessage)
 			aMessage.myEntity->AddEmitter(instance);
 		}
 
-
-		if (aMessage.myRoom != nullptr)
-		{
-			aMessage.myRoom->AddEmitter(instance);
-			instance->SetHasRoom(true);
-			instance->Activate(false);
-		}
-		else
-		{
-			instance->Activate();
-		}
+		instance->Activate();
 
 
 		instance->SetPosition(position);
@@ -217,6 +207,7 @@ void EmitterManager::ReceiveMessage(const EmitterMessage& aMessage)
 		{
 			instance->SetEmitterLifeTime(aMessage.myEmitterLifeTime);
 		}
+
 		if (aMessage.myUseDirection == true)
 		{
 			instance->SetDirection(aMessage.myDirection);

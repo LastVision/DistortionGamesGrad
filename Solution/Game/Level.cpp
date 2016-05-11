@@ -52,7 +52,7 @@ Level::Level(Prism::Camera& aCamera)
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
 	myEmitterManager = new EmitterManager();
-
+	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
@@ -209,7 +209,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
- 	Entity* first = &aFirst->GetEntity(); 
+	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
