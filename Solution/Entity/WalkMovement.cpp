@@ -75,7 +75,7 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 	myIsActive = true;
 
 	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
-	if (dir < 0.85f)
+	if (dir < myData.myMaxAngleWhenLanding)
 	{
 		myMovementComponent.GetEntity().SendNote(DeathNote());
 	}
