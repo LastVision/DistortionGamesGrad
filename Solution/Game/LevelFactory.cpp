@@ -14,7 +14,6 @@
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
 	: myCamera(aCamera)
-	, myCurrentLevel(nullptr)
 	, myCurrentLevelID(0)
 {
 	ReadLevelList(aLevelListPath);
@@ -34,17 +33,13 @@ Level* LevelFactory::LoadLevel(const int& aLevelID)
 
 Level* LevelFactory::LoadCurrentLevel()
 {
-	SAFE_DELETE(myCurrentLevel);
-
-	myCurrentLevel = new Level(myCamera);
-
-	ReadLevel(myLevelPaths[myCurrentLevelID]);
+	Level* level = ReadLevel(myLevelPaths[myCurrentLevelID]);
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->InitThread();
 #endif
 
-	return myCurrentLevel;
+	return level;
 }
 
 Level* LevelFactory::LoadNextLevel()
@@ -73,7 +68,7 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 	reader.CloseDocument();
 }
 
-void LevelFactory::ReadLevel(const std::string& aLevelPath)
+Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 {
 	XMLReader reader;
 	reader.OpenDocument(aLevelPath);
@@ -81,20 +76,23 @@ void LevelFactory::ReadLevel(const std::string& aLevelPath)
 	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
-	LoadLevelData(reader, levelElement);
-	LoadStartAndGoal(reader, levelElement);
-	LoadProps(reader, levelElement);
-	LoadSpikes(reader, levelElement);
-	LoadSawBlades(reader, levelElement);
-	LoadSteamVents(reader, levelElement);
-	LoadBouncers(reader, levelElement);
+	Level* level = new Level(myCamera);
+
+	LoadLevelData(level, reader, levelElement);
+	LoadStartAndGoal(level, reader, levelElement);
+	LoadProps(level, reader, levelElement);
+	LoadSpikes(level, reader, levelElement);
+	LoadSawBlades(level, reader, levelElement);
+	LoadSteamVents(level, reader, levelElement);
+	LoadBouncers(level, reader, levelElement);
 
 	reader.CloseDocument();
 
-	myCurrentLevel->CreatePlayers();
+	level->CreatePlayers();
+	return level;
 }
 
-void LevelFactory::LoadLevelData(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	tinyxml2::XMLElement* levelDataElement = aReader.ForceFindFirstChild(aElement, "levelData");
 
@@ -103,7 +101,7 @@ void LevelFactory::LoadLevelData(XMLReader& aReader, tinyxml2::XMLElement* aElem
 	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
 }
 
-void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadProps(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "prop"); entityElement != nullptr; 
 		entityElement = aReader.FindNextElement(entityElement, "prop"))
@@ -117,12 +115,12 @@ void LevelFactory::LoadProps(XMLReader& aReader, tinyxml2::XMLElement* aElement)
 
 		ReadOrientation(aReader, entityElement, propPosition, propRotation, propScale);
 
-		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::PROP, CU::ToLower(propType)
-			, myCurrentLevel->GetScene(), propPosition, propRotation, propScale));
+		aLevel->Add(EntityFactory::CreateEntity(eEntityType::PROP, CU::ToLower(propType)
+			, aLevel->GetScene(), propPosition, propRotation, propScale));
 	}
 }
 
-void LevelFactory::LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadSpikes(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "spike"); entityElement != nullptr;
 		entityElement = aReader.FindNextElement(entityElement, "spike"))
@@ -136,12 +134,12 @@ void LevelFactory::LoadSpikes(XMLReader& aReader, tinyxml2::XMLElement* aElement
 
 		ReadOrientation(aReader, entityElement, spikePosition, spikeRotation, spikeScale);
 
-		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::SPIKE, CU::ToLower(spikeType),
-			myCurrentLevel->GetScene(), spikePosition, spikeRotation, spikeScale));
+		aLevel->Add(EntityFactory::CreateEntity(eEntityType::SPIKE, CU::ToLower(spikeType),
+			aLevel->GetScene(), spikePosition, spikeRotation, spikeScale));
 	}
 }
 
-void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadSawBlades(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "sawBlade"); entityElement != nullptr;
 		entityElement = aReader.FindNextElement(entityElement, "sawBlade"))
@@ -156,7 +154,7 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 		ReadOrientation(aReader, entityElement, sawBladePosition, sawBladeRotation, sawBladeScale);
 
 		Entity* entity(EntityFactory::CreateEntity(eEntityType::SAW_BLADE, CU::ToLower(sawBladeType),
-			myCurrentLevel->GetScene(), sawBladePosition, sawBladeRotation, sawBladeScale));
+			aLevel->GetScene(), sawBladePosition, sawBladeRotation, sawBladeScale));
 
 		tinyxml2::XMLElement* patrolElement = aReader.FindFirstChild(entityElement, "patrols");
 
@@ -191,11 +189,11 @@ void LevelFactory::LoadSawBlades(XMLReader& aReader, tinyxml2::XMLElement* aElem
 
 			entity->GetComponent<SawBladeComponent>()->SetPatrol(patrolPositions, speed, delay);
 		}
-		myCurrentLevel->Add(entity);
+		aLevel->Add(entity);
 	}
 }
 
-void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "steamVent"); entityElement != nullptr;
 		entityElement = aReader.FindNextElement(entityElement, "steamVent"))
@@ -210,7 +208,7 @@ void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aEle
 		ReadOrientation(aReader, entityElement, steamVentPosition, steamVentRotation, steamVentScale);
 
 		Entity* entity(EntityFactory::CreateEntity(eEntityType::STEAM_VENT, CU::ToLower(steamVentType),
-			myCurrentLevel->GetScene(), steamVentPosition, steamVentRotation, steamVentScale));
+			aLevel->GetScene(), steamVentPosition, steamVentRotation, steamVentScale));
 
 		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
 
@@ -234,11 +232,11 @@ void LevelFactory::LoadSteamVents(XMLReader& aReader, tinyxml2::XMLElement* aEle
 
 			entity->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
 		}
-		myCurrentLevel->Add(entity);
+		aLevel->Add(entity);
 	}
 }
 
-void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "bouncer"); entityElement != nullptr;
 		entityElement = aReader.FindNextElement(entityElement, "bouncer"))
@@ -252,12 +250,12 @@ void LevelFactory::LoadBouncers(XMLReader& aReader, tinyxml2::XMLElement* aEleme
 
 		ReadOrientation(aReader, entityElement, bouncerPosition, bouncerRotation, bouncerScale);
 
-		myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
-			myCurrentLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale));
+		aLevel->Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
+			aLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale));
 	}
 }
 
-void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	tinyxml2::XMLElement* spawnElement = aReader.ForceFindFirstChild(aElement, "spawnPoint");
 	tinyxml2::XMLElement* goalElement = aReader.ForceFindFirstChild(aElement, "goalPoint");
@@ -268,19 +266,19 @@ void LevelFactory::LoadStartAndGoal(XMLReader& aReader, tinyxml2::XMLElement* aE
 
 	ReadOrientation(aReader, spawnElement, position, rotation, scale);
 
-	myCurrentLevel->Add(EntityFactory::CreateEntity(eEntityType::SPAWN_POINT,
-		myCurrentLevel->GetScene(), position, rotation, scale));
-	myCurrentLevel->SetSpawnPosition(position);
+	aLevel->Add(EntityFactory::CreateEntity(eEntityType::SPAWN_POINT,
+		aLevel->GetScene(), position, rotation, scale));
+	aLevel->SetSpawnPosition(position);
 
 	ReadOrientation(aReader, goalElement, position, rotation, scale);
 	int levelID = 0;
 	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(goalElement, "levelid"), "id", levelID);
 
 	Entity* entity = EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
-		myCurrentLevel->GetScene(), position, rotation, scale);
+		aLevel->GetScene(), position, rotation, scale);
 	entity->GetComponent<TriggerComponent>()->SetLevelChangeID(levelID);
 
-	myCurrentLevel->Add(entity);
+	aLevel->Add(entity);
 
 }
 
