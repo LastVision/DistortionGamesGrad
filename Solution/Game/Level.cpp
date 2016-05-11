@@ -119,6 +119,14 @@ void Level::Render()
 {
 	myBackground->Render(myWindowSize * 0.5f);
 	myScene->Render();
+
+	for each(Entity* player in myPlayers)
+	{
+		if (player->GetComponent<MovementComponent>() != nullptr)
+		{
+			player->GetComponent<MovementComponent>()->Render();
+		}
+	}
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)

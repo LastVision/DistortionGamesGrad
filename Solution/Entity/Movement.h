@@ -12,6 +12,7 @@ public:
 	virtual void Reset(){};
 
 	virtual void Update(float aDeltaTime) = 0;
+	virtual void Render() {}
 	virtual void ReceiveNote(const ContactNote& aNote) = 0;
 	virtual void SetDirectionTarget(const CU::Vector2<float>& aDirection) = 0;
 	virtual void Impulse() = 0;

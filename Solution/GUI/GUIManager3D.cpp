@@ -38,13 +38,11 @@ namespace GUI
 		, myRenderAmmo(false)
 		, myRenderAmmoTotal(false)
 	{
-		Prism::ModelLoader::GetInstance()->Pause();
+		/*Prism::ModelLoader::GetInstance()->Pause();
 		myEffect = Prism::EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_3dgui.fx");
 
 		myEffect->SetTexture(Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/UI/T_ammo_pistol.dds"));
 
-		//myGUIBone = aModel->GetCurrentAnimation()->GetHiearchyToBone("ui_jnt3");
-		//myHealthBone = aModel->GetCurrentAnimation()->GetHiearchyToBone("health_jnt3");
 		myLeftBar = new Prism::Bar3D({ 0.02f, 0.005f }, myShotgunClipSize, myEffect, eBarPosition::LEFT, "Data/Resource/Texture/UI/T_ammo_shotgun.dds");
 		myRightBar = new Prism::Bar3D({ 0.02f, 0.005f }, myGrenadeLauncherClipSize, myEffect, eBarPosition::RIGHT, "Data/Resource/Texture/UI/T_ammo_grenade_launcher.dds");
 		myTopBar = new Prism::Bar3D({ 0.02f, 0.005f }, myPistolClipSize, myEffect, eBarPosition::TOP, "Data/Resource/Texture/UI/T_ammo_pistol.dds");
@@ -67,7 +65,7 @@ namespace GUI
 
 		Prism::ModelLoader::GetInstance()->UnPause();
 
-		myRotationMatrix = CU::Matrix44<float>::CreateRotateAroundZ(-3.14f * 0.7f);
+		myRotationMatrix = CU::Matrix44<float>::CreateRotateAroundZ(-3.14f * 0.7f);*/
 	}
 
 

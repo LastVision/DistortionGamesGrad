@@ -25,6 +25,7 @@ public:
 	void Reset() override;
 
 	void Update(float aDeltaTime) override;
+	void Render();
 	void ReceiveNote(const ContactNote& aNote) override;
 
 	void Impulse();

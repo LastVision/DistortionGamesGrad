@@ -5,6 +5,7 @@
 
 enum class eBarPosition
 {
+	AIM,
 	LEFT,
 	TOP,
 	RIGHT,
@@ -21,11 +22,12 @@ namespace Prism
 	class Bar3D : public BaseModel
 	{
 	public:
-		Bar3D(const CU::Vector2<float>& aQuadSize
-			, int aNumberOfQuads, Effect* aEffect, eBarPosition aBarPosition, const std::string& aTexturePath);
+		Bar3D(float aInner, float aOuter, int aNumberOfQuads, Effect* aEffect
+			, eBarPosition aBarPosition, const std::string& aTexturePath);
 		~Bar3D();
 
-		void Render(const Camera& aCamera, const CU::Matrix44<float>& aWorld, const CU::Vector4<float>& aColor = { 0.f, 0.f, 0.f, 0.f });
+		void Render(const Camera& aCamera, const CU::Matrix44<float>& aWorld
+			, const CU::Vector4<float>& aColor = { 0.f, 0.f, 0.f, 0.f });
 		void Render() override;
 
 		void SetValue(float aValue);
@@ -34,7 +36,8 @@ namespace Prism
 
 	private:
 		void CreateVertices(int aNumberOfQuads);
-		CU::Vector2<float> myQuadSize;
+		float myInner;
+		float myOuter;
 
 		float myValue;
 		int myNbrOfQuads;
