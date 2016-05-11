@@ -9,6 +9,7 @@
 #include <OnPlayerLevelComplete.h>
 
 #include <ScrapMessage.h>
+#include "SpawnNote.h"
 #include <OnPlayerJoin.h>
 
 
@@ -103,9 +104,8 @@ void InputComponent::Update(float aDeltaTime)
 						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 					}
 
-					PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
+					myEntity.SendNote(SpawnNote());
 					myEntity.Reset();
-					myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
 					myIsActive = true;
 					myMovement->Impulse();
 				}

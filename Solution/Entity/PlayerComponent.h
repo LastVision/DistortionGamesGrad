@@ -13,6 +13,7 @@ public:
 	eComponentType GetType() override;
 
 	void ReceiveNote(const DeathNote& aMessage) override;
+	void ReceiveNote(const SpawnNote& aMessage) override;
 
 
 private:

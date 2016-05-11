@@ -125,9 +125,8 @@ void MovementComponent::ReceiveNote(const DeathNote& aMessage)
 	}
 }
 
-void MovementComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+void MovementComponent::ReceiveNote(const SpawnNote& aMessage)
 {
-	if (aMessage.myPlayerID != myEntity.GetComponent<InputComponent>()->GetPlayerID()) return;
 	myCurrentMovement = eMovementType::FLY;
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
 	//myEntity.ResetPosition();

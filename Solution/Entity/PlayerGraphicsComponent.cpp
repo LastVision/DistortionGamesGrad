@@ -115,16 +115,9 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 }
 
-void PlayerGraphicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+void PlayerGraphicsComponent::ReceiveNote(const SpawnNote& aMessage)
 {
-	if (myEntity.GetComponent<InputComponent>() != nullptr)
-	{
-		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
-		{
-			Activate();			
-		}
-	}
-
+	Activate();			
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const DeathNote& aMessage)

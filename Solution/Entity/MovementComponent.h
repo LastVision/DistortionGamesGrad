@@ -37,7 +37,7 @@ public:
 	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
 	void SetVelocity(const CU::Vector2<float>& aVelocity);
 	void ReceiveNote(const DeathNote& aMessage) override;
-	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
+	void ReceiveNote(const SpawnNote& aMessage) override;
 
 	const CU::Vector2<float>& GetVelocity() const;
 

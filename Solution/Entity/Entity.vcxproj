@@ -197,6 +197,7 @@
     <ClInclude Include="ScoreComponentData.h" />
     <ClInclude Include="SoundComponent.h" />
     <ClInclude Include="SoundComponentData.h" />
+    <ClInclude Include="SpawnNote.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SteamComponent.h" />
     <ClInclude Include="SteamComponentData.h" />
