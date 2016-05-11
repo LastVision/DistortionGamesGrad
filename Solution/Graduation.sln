@@ -515,8 +515,8 @@ Global
 		{269B4029-985D-43A9-AD41-903389C1070D}.DLL_Release|Win32.ActiveCfg = Release|Win32
 		{269B4029-985D-43A9-AD41-903389C1070D}.DLL_Release|Win32.Build.0 = Release|Win32
 		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Any CPU.ActiveCfg = Release|Win32
-		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Mixed Platforms.ActiveCfg = Release|Win32
-		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Mixed Platforms.Build.0 = Release|Win32
+		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Mixed Platforms.ActiveCfg = Internal|Win32
+		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Mixed Platforms.Build.0 = Internal|Win32
 		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Win32.ActiveCfg = Release|Win32
 		{269B4029-985D-43A9-AD41-903389C1070D}.Internal|Win32.Build.0 = Release|Win32
 		{269B4029-985D-43A9-AD41-903389C1070D}.Release|Any CPU.ActiveCfg = Release|Win32
