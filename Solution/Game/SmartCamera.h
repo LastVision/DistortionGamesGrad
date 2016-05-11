@@ -48,5 +48,8 @@ private:
 	float myMinZoom;
 	float myMaxZoom;
 
+	bool myShouldResetCameraPos;
+	float myCameraAlpha;
+
 };
 
