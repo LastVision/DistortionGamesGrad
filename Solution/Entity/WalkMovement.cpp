@@ -116,7 +116,7 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	if (aComponent != nullptr)
 	{
 		const eEntityType& type = aComponent->GetEntity().GetType();
-		if (type == eEntityType::BOUNCER && type == eEntityType::SAW_BLADE && type == eEntityType::SPIKE && type == eEntityType::STEAM_VENT) return;
+		if (type == eEntityType::BOUNCER || type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::STEAM_VENT) return;
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
 		resetPos.z = 0.f;
