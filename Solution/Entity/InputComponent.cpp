@@ -11,7 +11,7 @@
 #include <ScrapMessage.h>
 #include "SpawnNote.h"
 #include <OnPlayerJoin.h>
-
+#include "ShouldDieNote.h"
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -63,6 +63,11 @@ void InputComponent::Update(float aDeltaTime)
 				}
 				else
 				{
+				}
+
+				if (myController->ButtonOnDown(eXboxButton::X))
+				{
+					myEntity.SendNote(ShouldDieNote());
 				}
 
 				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))

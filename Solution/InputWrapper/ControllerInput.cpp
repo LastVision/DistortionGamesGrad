@@ -100,7 +100,16 @@ namespace CU
 
 			break;
 		}
+		case eXboxButton::X:
+		{
+			if (myControllerID == eControllerID::Controller2)
+			{
+				return DIK_NUMPAD9;
+			}
+			return DIK_F3;
 
+			break;
+		}
 		default:
 			break;
 		}
