@@ -20,6 +20,7 @@
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
+#include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
 
@@ -280,7 +281,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 void Level::CreatePlayers()
 {
-	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	Entity* player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 1);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller1);
 	player->GetComponent<InputComponent>()->SetPlayerID(1);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
@@ -289,7 +290,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, myStartPosition, CU::Vector3f(), CU::Vector3f(1,1,1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();

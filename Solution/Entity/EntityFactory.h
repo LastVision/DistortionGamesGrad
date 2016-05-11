@@ -18,10 +18,10 @@ public:
 
 	void LoadEntities(const char* aEntityListXML);
 	static Entity* CreateEntity(eEntityType aType, Prism::Scene* aScene, const CU::Vector3f& aPosition
-		, const CU::Vector3f& aRotation = CU::Vector3f(), const CU::Vector3f& aScale = { 1.f, 1.f, 1.f });
+		, const CU::Vector3f& aRotation = CU::Vector3f(), const CU::Vector3f& aScale = { 1.f, 1.f, 1.f }, int aPlayerID = -1);
 
 	static Entity* CreateEntity(eEntityType aType, std::string aSubType, Prism::Scene* aScene, const CU::Vector3f& aPosition
-		, const CU::Vector3f& aRotation = CU::Vector3f(), const CU::Vector3f& aScale = { 1.f, 1.f, 1.f });
+		, const CU::Vector3f& aRotation = CU::Vector3f(), const CU::Vector3f& aScale = { 1.f, 1.f, 1.f }, int aPlayerID = -1);
 private:
 	void LoadEntity(const char* aEntityPath);
 	EntityFactory();

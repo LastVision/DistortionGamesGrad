@@ -22,7 +22,7 @@ class Entity
 
 public:
 	Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Vector3<float>& aStartPosition, 
-		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType = "");
+		const CU::Vector3f& aRotation, const CU::Vector3f& aScale, const std::string& aSubType = "", int aPlayerID = -1);
 	~Entity();
 
 	void Reset();
