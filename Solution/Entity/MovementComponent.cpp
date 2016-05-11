@@ -114,6 +114,17 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	myMovements[myCurrentMovement]->Activate(velocityToState);
 }
 
+void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)
+{
+	myIsInSteam = aIsInSteam;
+	mySteamVelocity = aVelocity;
+
+	for (int i = 0; i < eMovementType::_COUNT; ++i)
+	{
+		myMovements[i]->SetIsInSteam(aIsInSteam);
+	}
+}
+
 void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
 {
 	myMovements[myCurrentMovement]->SetVelocity(aVelocity);

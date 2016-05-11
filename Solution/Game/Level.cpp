@@ -149,12 +149,13 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				// kill player
 				break;
 			case eTriggerType::FORCE:
+				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
 
-				CU::Vector3<float> velocity = { second.GetComponent<MovementComponent>()->GetVelocity().x, second.GetComponent<MovementComponent>()->GetVelocity().y, 0.f };
+				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
 
-				if (abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
+				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
-					second.GetComponent<MovementComponent>()->SetVelocity(second.GetComponent<MovementComponent>()->GetVelocity() * 0.5f);
+					second.GetComponent<MovementComponent>()->SetVelocity(currentVelocity * 0.5f);
 				}
 
 				second.GetComponent<MovementComponent>()->SetInSteam(true
