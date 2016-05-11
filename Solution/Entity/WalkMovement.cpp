@@ -116,7 +116,16 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	if (aComponent != nullptr)
 	{
 		const eEntityType& type = aComponent->GetEntity().GetType();
-		if (type == eEntityType::BOUNCER || type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::STEAM_VENT) return;
+		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE) return;
+		if (type == eEntityType::BOUNCER)
+		{
+			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
+
+			if (dot > 0.001f)
+			{
+				return;
+			}
+		}
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
 		resetPos.z = 0.f;
