@@ -199,6 +199,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Shader"), "path", aOutputData.myShader);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "AnimationShader"), "path", aOutputData.myAnimationShader);
 
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Arrow"), "path", aOutputData.myArrow);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Body"), "path", aOutputData.myBody);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Head"), "path", aOutputData.myHead);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LeftLeg"), "path", aOutputData.myLeftLeg);
