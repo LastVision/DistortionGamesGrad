@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "BounceComponentData.h"
 #include <CommonHelper.h>
 #include "ComponentLoader.h"
 #include "EntityEnumConverter.h"
@@ -25,6 +26,11 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 			aDocument.ForceReadAttribute(e, "shaderPath", aOutputData.myEffectPath);
 		}
 	}
+}
+
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, BounceComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData)

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <BounceComponent.h>
 #include <EffectContainer.h>
 #include <Engine.h>
 #include <EntityFactory.h>
@@ -247,13 +248,25 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 		CU::Vector3f bouncerPosition;
 		CU::Vector3f bouncerRotation;
 		CU::Vector3f bouncerScale;
+		float force = 0.f;
 
 		aReader.ForceReadAttribute(entityElement, "bouncerType", bouncerType);
 
 		ReadOrientation(aReader, entityElement, bouncerPosition, bouncerRotation, bouncerScale);
 
-		aLevel->Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
-			aLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale));
+		Entity* entity = EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
+			aLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale);
+
+		tinyxml2::XMLElement* forceElement = aReader.FindFirstChild(entityElement, "force");
+
+		DL_ASSERT_EXP(entity->GetComponent<BounceComponent>() != nullptr, "Bouncer need bounce component to work");
+		DL_ASSERT_EXP(forceElement != nullptr, "Bouncer has to have a force in level XML");
+
+		aReader.ForceReadAttribute(forceElement, "value", force);
+
+		entity->GetComponent<BounceComponent>()->SetForce(force);
+
+		aLevel->Add(entity);
 	}
 }
 

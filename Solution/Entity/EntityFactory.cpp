@@ -154,6 +154,10 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 		{
 			myComponentLoader->Load(entityDocument, e, newData.myPlayerData);
 		}
+		else if (elementName == CU::ToLower("BounceComponent"))
+		{
+			myComponentLoader->Load(entityDocument, e, newData.myBounceData);
+		}
 		else
 		{
 			std::string errorMessage = "The component " + elementName +

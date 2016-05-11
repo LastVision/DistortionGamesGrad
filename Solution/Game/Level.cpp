@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <BounceComponent.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
 #include <DeferredRenderer.h>
@@ -236,11 +237,12 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (aHasEntered == true)
 			{
 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				float force = second->GetComponent<BounceComponent>()->GetForce();
 
 				if (dot > 0.001f)
 				{
-					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
-						, second->GetOrientation().GetUp().y * 0.1f });
+					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
+						, second->GetOrientation().GetUp().y * force });
 				}
 			}
 			break;
