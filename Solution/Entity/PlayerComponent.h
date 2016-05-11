@@ -8,14 +8,16 @@ public:
 	~PlayerComponent();
 
 	void Update(float aDeltaTime) override;
+	void EvaluateDeath();
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
-	void ReceiveNote(const DeathNote& aMessage) override;
-
+	void ReceiveNote(const ShouldDieNote& aMessage) override;
+	void ReceiveNote(const SpawnNote& aMessage) override;
 
 private:
+	bool myShouldDie;
 };
 
 inline eComponentType PlayerComponent::GetTypeStatic()

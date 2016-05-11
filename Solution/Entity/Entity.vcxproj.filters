@@ -223,5 +223,11 @@
     <ClInclude Include="PlayerComponentData.h">
       <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
+    <ClInclude Include="SpawnNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="ShouldDieNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

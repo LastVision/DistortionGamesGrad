@@ -27,7 +27,7 @@ public:
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
-	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
+	void ReceiveNote(const SpawnNote& aMessage) override;
 	void ReceiveNote(const DeathNote& aMessage) override;
 
 private:

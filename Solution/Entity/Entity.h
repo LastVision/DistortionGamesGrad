@@ -42,6 +42,7 @@ public:
 	float* GetOrientationAsFloatPtr();
 	void SetRotation(const CU::Vector3<float>& aRotation);
 	void SetPosition(const CU::Vector3<float>& aPosition);
+	const CU::Vector3<float>& GetStartPosition() const;
 	void ResetPosition();
 
 	Prism::Scene* GetScene();
@@ -151,6 +152,11 @@ inline void Entity::SetRotation(const CU::Vector3<float>& aRotation)
 inline void Entity::SetPosition(const CU::Vector3<float>& aPosition)
 {
 	myOrientation.SetPos(aPosition);
+}
+
+inline const CU::Vector3<float>& Entity::GetStartPosition() const
+{
+	return myStartPosition;
 }
 
 inline void Entity::ResetPosition()

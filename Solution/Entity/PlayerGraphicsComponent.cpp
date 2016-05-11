@@ -18,13 +18,11 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
 {
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE | eMessageType::ON_DEATH);
 }
 
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
-	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
 void PlayerGraphicsComponent::Init()
@@ -115,16 +113,9 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 }
 
-void PlayerGraphicsComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+void PlayerGraphicsComponent::ReceiveNote(const SpawnNote& aMessage)
 {
-	if (myEntity.GetComponent<InputComponent>() != nullptr)
-	{
-		if (myEntity.GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
-		{
-			Activate();			
-		}
-	}
-
+	Activate();
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const DeathNote& aMessage)

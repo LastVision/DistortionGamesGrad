@@ -2,7 +2,6 @@
 
 #include <ContactNote.h>
 #include <ControllerInput.h>
-#include <DeathNote.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -12,11 +11,13 @@
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
+#include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Scene.h>
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
+#include <ShouldDieNote.h>
 #include "SmartCamera.h"
 #include <SpriteProxy.h>
 #include <TriggerComponent.h>
@@ -80,7 +81,14 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	for each(Entity* player in myPlayers)
 	{
-		player->Update(aDeltaTime);
+		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
+		{
+			player->Update(aDeltaTime);
+		}
+		else
+		{
+			player->GetComponent<InputComponent>()->Update(aDeltaTime);
+		}
 	}
 
 	for each(Entity* entity in myEntities)
@@ -99,6 +107,10 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		}
 	}
 
+	for each(Entity* player in myPlayers)
+	{
+		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+	}
 
 	return myStateStatus;
 }
@@ -183,9 +195,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
-				first->SendNote(DeathNote());
-				first->SetPosition(myStartPosition);
-				aFirst->TeleportToPosition(myStartPosition);
+				first->SendNote(ShouldDieNote());
+				//first->SetPosition(myStartPosition);
+				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::SPIKE:
@@ -201,9 +213,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
-				first->SendNote(DeathNote());
-				first->SetPosition(myStartPosition);
-				aFirst->TeleportToPosition(myStartPosition);
+				first->SendNote(ShouldDieNote());
+				//first->SetPosition(myStartPosition);
+				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::BOUNCER:

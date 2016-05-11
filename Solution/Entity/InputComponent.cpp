@@ -9,6 +9,7 @@
 #include <OnPlayerLevelComplete.h>
 
 #include <ScrapMessage.h>
+#include "SpawnNote.h"
 #include <OnPlayerJoin.h>
 
 
@@ -96,16 +97,13 @@ void InputComponent::Update(float aDeltaTime)
 			{
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
-
 					if (myIsInLevel == false)
 					{
 						myIsInLevel = true;
 						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 					}
 
-					PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myPlayerID));
-					myEntity.Reset();
-					myEntity.GetComponent<PlayerGraphicsComponent>()->Activate();
+					myEntity.SendNote(SpawnNote());
 					myIsActive = true;
 					myMovement->Impulse();
 				}
