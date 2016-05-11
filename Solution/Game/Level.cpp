@@ -163,7 +163,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
-	Entity* first = &aFirst->GetEntity();
+ 	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
@@ -209,14 +209,18 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::BOUNCER:
 			if (aHasEntered == true)
 			{
-				first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
-					, second->GetOrientation().GetUp().y * 0.1f });
+				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+
+				if (dot > 0.001f)
+				{
+					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
+ 						, second->GetOrientation().GetUp().y * 0.1f });
+				}
 			}
 			break;
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{
-
 				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
