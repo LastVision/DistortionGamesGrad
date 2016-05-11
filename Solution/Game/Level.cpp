@@ -2,6 +2,7 @@
 
 #include <ContactNote.h>
 #include <ControllerInput.h>
+#include <DeferredRenderer.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -13,6 +14,7 @@
 #include <PlayerActiveMessage.h>
 #include <PlayerComponent.h>
 #include <PostMaster.h>
+#include <Renderer.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreState.h"
@@ -45,6 +47,11 @@ Level::Level(Prism::Camera& aCamera)
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
+
+	Prism::ModelLoader::GetInstance()->Pause();
+	myDeferredRenderer = new Prism::DeferredRenderer();
+	myFullscreenRenderer = new Prism::Renderer();
+	Prism::ModelLoader::GetInstance()->UnPause();
 }
 
 Level::~Level()
@@ -53,6 +60,8 @@ Level::~Level()
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
+	SAFE_DELETE(myDeferredRenderer);
+	SAFE_DELETE(myFullscreenRenderer);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -119,8 +128,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	myBackground->Render(myWindowSize * 0.5f);
-	myScene->Render();
+
+	//myBackground->Render(myWindowSize * 0.5f);
+	//myScene->Render();
+	myDeferredRenderer->Render(myScene, myBackground);
+
+	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture(), myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 
 	for each(Entity* player in myPlayers)
 	{
@@ -196,9 +209,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SAW_BLADE:
 			if (aHasEntered == true)
 			{
-				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
-				//	, first->GetComponent<MovementComponent>()->GetVelocity());
-
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
@@ -206,17 +216,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
 
 				first->SendNote(ShouldDieNote());
-				//first->SetPosition(myStartPosition);
-				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::SPIKE:
-			//first->Reset();
 			if (aHasEntered == true)
 			{
-				//ScrapManager::GetInstance()->SpawnScrap(eScrapPart::HEAD, first->GetOrientation().GetPos()
-				//	, first->GetComponent<MovementComponent>()->GetVelocity());
-
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
@@ -224,8 +228,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
 
 				first->SendNote(ShouldDieNote());
-				//first->SetPosition(myStartPosition);
-				//aFirst->TeleportToPosition(myStartPosition);
 			}
 			break;
 		case eEntityType::BOUNCER:
