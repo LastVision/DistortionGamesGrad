@@ -59,6 +59,7 @@ physx::PxFilterFlags GraduationFilter(
 		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	}
 
+
 	return physx::PxFilterFlag::eDEFAULT;
 }
 
@@ -878,8 +879,8 @@ namespace Prism
 			(*aDynamicBodyOut)->getShapes(*someShapesOut, nShapes);
 
 			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
-			fd.word0 = physx::PxU32(KINEMATIC_FLAG);
-			fd.word1 = physx::PxU32(OTHER_FLAG);
+			fd.word0 = physx::PxU32(KINEMATIC_FLAG | OTHER_FLAG);
+			fd.word1 = physx::PxU32(OTHER_FLAG | KINEMATIC_FLAG);
 			(*someShapesOut[0])->setSimulationFilterData(fd);
 
 			/*
