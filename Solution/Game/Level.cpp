@@ -316,7 +316,7 @@ void Level::OnResize(int aWidth, int aHeight)
 	aHeight;
 }
 
-void Level::ReceiveMessage(const OnPlayerJoin& aMessage)
+void Level::ReceiveMessage(const OnPlayerJoin&)
 {
 	myPlayersPlaying++;
 }

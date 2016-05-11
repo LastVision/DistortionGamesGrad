@@ -79,7 +79,7 @@ void InGameState::EndState()
 {
 }
 
-const eStateStatus InGameState::Update(const float& aDeltaTime)
+const eStateStatus InGameState::Update(const float&)
 {
 	SET_RUNTIME(false);
 	myStateStack->PushMainGameState(myLevelFactory->LoadLevel(myNextLevel));

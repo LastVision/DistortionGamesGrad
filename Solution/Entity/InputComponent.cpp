@@ -133,12 +133,12 @@ void InputComponent::SetIsFlipped(bool aIsFlipped)
 
 	CU::Vector3<float> pos = myOrientation.GetPos();
 	myOrientation.SetPos(CU::Vector3<float>());
-	myOrientation = CU::Matrix44<float>::CreateRotateAroundY(M_PI) * myOrientation;
+	myOrientation = CU::Matrix44<float>::CreateRotateAroundY(static_cast<float>(M_PI)) * myOrientation;
 	myOrientation.SetPos(pos);
 
 }
 
-void InputComponent::ReceiveNote(const DeathNote& aMessage)
+void InputComponent::ReceiveNote(const DeathNote&)
 {
 	myIsActive = false;
 }

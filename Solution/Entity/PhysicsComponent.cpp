@@ -247,12 +247,12 @@ void PhysicsComponent::RemoveFromScene()
 	myIsInScene = false;
 }
 
-void PhysicsComponent::ReceiveNote(const SpawnNote& aMessage)
+void PhysicsComponent::ReceiveNote(const SpawnNote&)
 {
 	AddToScene();
 }
 
-void PhysicsComponent::ReceiveNote(const DeathNote& aMessage)
+void PhysicsComponent::ReceiveNote(const DeathNote&)
 {
 	TeleportToPosition(myEntity.GetStartPosition());
 	RemoveFromScene();

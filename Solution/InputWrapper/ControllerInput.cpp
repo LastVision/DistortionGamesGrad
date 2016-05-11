@@ -39,7 +39,7 @@ namespace CU
 		//	return false;
 	}
 
-	void ControllerInput::Update(float aDeltaTime)
+	void ControllerInput::Update(float)
 	{
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
 		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
@@ -107,8 +107,8 @@ namespace CU
 		if (aButton != eXboxButton::Y)
 		{
 			DL_ASSERT("Tried to convert to unknown button.");
-			return 0;
 		}
+		return 0;
 	}
 
 	void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)

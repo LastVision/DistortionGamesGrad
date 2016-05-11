@@ -263,8 +263,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		raw = (RAWINPUT*)lpb;
-		int deltaX = raw->data.mouse.lLastX;
-		int deltaY = raw->data.mouse.lLastY;
+		//int deltaX = raw->data.mouse.lLastX;
+		//int deltaY = raw->data.mouse.lLastY;
 		if (CU::InputWrapper::GetInstance() != nullptr)
 		{
 			//CU::InputWrapper::GetInstance()->FeedMouseRawInput(deltaX, deltaY);

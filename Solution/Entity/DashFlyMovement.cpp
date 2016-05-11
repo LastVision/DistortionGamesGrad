@@ -69,8 +69,8 @@ void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
 {
 }
 
-void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
@@ -84,32 +84,6 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		{
 			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));
 		}
-		//CU::Vector3<float> resetPos(myOrientation.GetPos());
-		//resetPos.z = 0.f;
-
-		//if (aHitNormal.y > 0.f)
-		//{
-		//	if (aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
-		//	{
-		//		myMovementComponent.SetState(MovementComponent::eMovementType::WALK);
-		//	}
-		//}
-		//else if (aHitNormal.y < 0.f)
-		//{
-		//	resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
-		//	myVelocity.y = 0;
-		//}
-		//else if (aDirection.x > 0)
-		//{
-		//	resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
-		//	myVelocity.x = 0;
-		//}
-		//else if (aDirection.x < 0)
-		//{
-		//	resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
-		//	myVelocity.x = 0;
-		//}
-		//myOrientation.SetPos(resetPos);
 	}
 }
 
