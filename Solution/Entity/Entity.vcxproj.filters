@@ -229,5 +229,8 @@
     <ClInclude Include="ShouldDieNote.h">
       <Filter>Notes</Filter>
     </ClInclude>
+    <ClInclude Include="BounceNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

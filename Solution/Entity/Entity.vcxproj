@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationComponentData.h" />
+    <ClInclude Include="BounceNote.h" />
     <ClInclude Include="CollisionNote.h" />
     <ClInclude Include="ContactNote.h" />
     <ClInclude Include="DashAimMovement.h" />
