@@ -32,7 +32,7 @@ public:
 	EmitterManager();
 	~EmitterManager();
 	void Initiate(Prism::Camera* aCamera);
-	void UpdateEmitters(float aDeltaTime, CU::Matrix44f aWorldMatrix);
+	void UpdateEmitters(float aDeltaTime);
 	void RenderEmitters();
 	void ReceiveMessage(const EmitterMessage& aMessage) override;
 private:

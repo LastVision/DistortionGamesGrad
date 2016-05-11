@@ -2,6 +2,7 @@
 
 #include <ContactNote.h>
 #include <ControllerInput.h>
+#include "EmitterManager.h"
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -45,10 +46,12 @@ Level::Level(Prism::Camera& aCamera)
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
+	myEmitterManager = new EmitterManager();
 }
 
 Level::~Level()
 {
+	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
@@ -114,6 +117,8 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
 	}
 
+	myEmitterManager->UpdateEmitters(aDeltaTime);
+
 	return myStateStatus;
 }
 
@@ -121,6 +126,8 @@ void Level::Render()
 {
 	myBackground->Render(myWindowSize * 0.5f);
 	myScene->Render();
+
+	myEmitterManager->RenderEmitters();
 
 	for each(Entity* player in myPlayers)
 	{
@@ -185,7 +192,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
- 	Entity* first = &aFirst->GetEntity(); 
+	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
@@ -236,7 +243,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				if (dot > 0.001f)
 				{
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
- 						, second->GetOrientation().GetUp().y * 0.1f });
+						, second->GetOrientation().GetUp().y * 0.1f });
 				}
 			}
 			break;

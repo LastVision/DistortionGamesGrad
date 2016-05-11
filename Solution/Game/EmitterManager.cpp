@@ -22,12 +22,12 @@ EmitterManager::EmitterManager()
 	PostMaster* postMaster = PostMaster::GetInstance();
 	postMaster->Subscribe(this, eMessageType::PARTICLE);
 	Prism::ModelLoader::GetInstance()->Pause();
-	//ReadListOfLists("Data/Resource/Particle/LI_emitter_lists.xml");
+	ReadListOfLists("Data/Resource/Particle/LI_emitter_lists.xml");
 
-	//for (auto it = myEmitters.begin(); it != myEmitters.end(); ++it)
-	//{
-	//	myEmitterList.Add(it->second);
-	//}
+	for (auto it = myEmitters.begin(); it != myEmitters.end(); ++it)
+	{
+		myEmitterList.Add(it->second);
+	}
 	Prism::ModelLoader::GetInstance()->UnPause();
 	short meter = 60;
 	myCullDistance = meter * meter;
@@ -50,7 +50,7 @@ void EmitterManager::Initiate(Prism::Camera* aCamera)
 	myCamera = aCamera;
 }
 
-void EmitterManager::UpdateEmitters(float aDeltaTime, CU::Matrix44f aWorldMatrix)
+void EmitterManager::UpdateEmitters(float aDeltaTime)
 {
 
 	for (int i = 0; i < myEmitterList.Size(); ++i)
@@ -80,7 +80,7 @@ void EmitterManager::UpdateEmitters(float aDeltaTime, CU::Matrix44f aWorldMatrix
 					continue;
 				}
 
-				instance->Update(aDeltaTime, aWorldMatrix);
+				instance->Update(aDeltaTime);
 			}
 		}
 	}

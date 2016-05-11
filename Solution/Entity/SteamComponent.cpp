@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include <EmitterMessage.h>
 #include "EntityFactory.h"
 #include "SteamComponent.h"
 #include "PhysicsComponent.h"
-
+#include <PostMaster.h>
 SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation)
 	: Component(anEntity)
 	, myCurrentSteamInterval(0.f)
@@ -56,6 +57,7 @@ void SteamComponent::Update(float aDeltaTime)
 				myCurrentSteamTime = mySteamTime;
 				mySteam->AddToScene();
 				mySteam->GetComponent<PhysicsComponent>()->AddToScene();
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp(), mySteamTime));
 			}
 		}
 	}
