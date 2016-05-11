@@ -57,6 +57,11 @@ void MovementComponent::Update(float aDeltaTime)
 	}
 }
 
+void MovementComponent::Render()
+{
+	myMovements[myCurrentMovement]->Render();
+}
+
 void MovementComponent::ReceiveNote(const ContactNote& aNote)
 {
 	myMovements[myCurrentMovement]->ReceiveNote(aNote);

@@ -23,6 +23,7 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
+	SAFE_DELETE(myArrow);
 }
 
 void PlayerGraphicsComponent::Init()
@@ -30,6 +31,8 @@ void PlayerGraphicsComponent::Init()
 	myIdleAnimation.CreateAnimation(myData.myIdleAnimation, myData.myAnimationShader, myEntityOrientation);
 	myWalkAnimation.CreateAnimation(myData.myWalkAnimation, myData.myAnimationShader, myEntityOrientation);
 	myFlyAnimation.CreateAnimation(myData.myFlyAnimation, myData.myAnimationShader, myEntityOrientation);
+
+	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
 
 	myBody.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myBody, myData.myShader), myBody.myOrientation);
@@ -39,6 +42,7 @@ void PlayerGraphicsComponent::Init()
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myRightLeg, myData.myShader), myRightLeg.myOrientation);
 	myHead.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myHead, myData.myShader), myHead.myOrientation);
+	myArrow = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModel(myData.myArrow, myData.myShader), myArrowOrientation);
 
 
 	while (Prism::ModelLoader::GetInstance()->IsLoading())
@@ -53,6 +57,7 @@ void PlayerGraphicsComponent::Init()
 	myScene->AddInstance(myLeftLeg.myInstance);
 	myScene->AddInstance(myRightLeg.myInstance);
 	myScene->AddInstance(myHead.myInstance);
+	myScene->AddInstance(myArrow);
 
 	myCurrentAnimation = &myIdleAnimation;
 }
@@ -63,6 +68,7 @@ void PlayerGraphicsComponent::Reset()
 	myLeftLeg.SetActive(false);
 	myRightLeg.SetActive(false);
 	myHead.SetActive(false);
+	myArrow->SetShouldRender(false);
 }
 
 void PlayerGraphicsComponent::Activate()
@@ -71,6 +77,7 @@ void PlayerGraphicsComponent::Activate()
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
+	myArrow->SetShouldRender(true);
 }
 
 
@@ -111,6 +118,8 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
+
+	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const SpawnNote&)

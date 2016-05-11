@@ -1,11 +1,16 @@
 #include "stdafx.h"
+
+#include <Bar3D.h>
 #include "DashAimMovement.h"
+#include "Entity.h"
+#include <Effect.h>
+#include <EffectContainer.h>
 #include <ModelLoader.h>
 #include "MovementComponent.h"
 #include <Instance.h>
 #include "InputComponent.h"
-#include "Entity.h"
 #include <Scene.h>
+#include <TextureContainer.h>
 
 DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation
 	, MovementComponent& aMovementComponent, Prism::Scene* aScene)
@@ -13,17 +18,25 @@ DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix4
 	, myTimer(aData.myDashAimTime)
 	, myScene(aScene)
 {
+	Prism::ModelLoader::GetInstance()->Pause();
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/SM_arrow.fbx", "Data/Resource/Shader/S_effect_pbl_deferred.fx");
 	myArrow = new Prism::Instance(*model, myOrientation);
 
 	myScene->AddInstance(myArrow);
 	myArrow->SetShouldRender(false);
+
+
+	myEffect = Prism::EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_3dgui.fx");
+
+	myAimTimer = new Prism::Bar3D(0.5f, 1.f, 64, myEffect, eBarPosition::AIM, "Data/Resource/Texture/T_aimbar.dds");
+	Prism::ModelLoader::GetInstance()->UnPause();
 }
 
 
 DashAimMovement::~DashAimMovement()
 {
 	SAFE_DELETE(myArrow);
+	SAFE_DELETE(myAimTimer);
 }
 
 void DashAimMovement::Reset()
@@ -35,11 +48,18 @@ void DashAimMovement::Update(float aDeltaTime)
 {
 	Rotate(aDeltaTime);
 
+	myAimTimer->SetValue(myTimer / myData.myDashAimTime);
+
 	myTimer -= aDeltaTime;
 	if (myTimer <= 0.f)
 	{
 		myMovementComponent.SetState(MovementComponent::eMovementType::DASH_FLY, myVelocity);
 	}
+}
+
+void DashAimMovement::Render() 
+{
+	myAimTimer->Render(*myScene->GetCamera(), myMovementComponent.GetEntity().GetOrientation());
 }
 
 void DashAimMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)

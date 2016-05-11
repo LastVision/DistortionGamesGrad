@@ -34,8 +34,9 @@ private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;
 
-
 	Prism::Scene* myScene;
+	Prism::Instance* myArrow;
+	CU::Matrix44<float> myArrowOrientation;
 
 	BodyPart myBody;
 	BodyPart myLeftLeg;
