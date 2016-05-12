@@ -244,9 +244,9 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
 		dir.z = (rand() % 100) * 0.01f;
-		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
 		++myGibIndex;
 		break;
 	}
@@ -259,7 +259,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 {
 	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
-	//SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+	SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
 }
 
 void ScrapManager::CreateHeads()
