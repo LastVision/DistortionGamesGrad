@@ -17,3 +17,4 @@ void Subscriber::ReceiveMessage(const ScrapMessage&){}
 void Subscriber::ReceiveMessage(const OnDeathMessage&){}
 void Subscriber::ReceiveMessage(const OnPlayerLevelComplete&){}
 void Subscriber::ReceiveMessage(const OnPlayerJoin&){}
+void Subscriber::ReceiveMessage(const ReturnToMenuMessage&){}

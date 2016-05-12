@@ -71,7 +71,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE));
 	myText->SetPosition(CU::Vector2<float>(800.f, 800.f));
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK | eMessageType::RETURN_TO_MENU);
 
 	myNextLevel = 1;
 }
@@ -120,10 +120,17 @@ void InGameState::OnResize(int aWidth, int aHeight)
 
 void InGameState::ReceiveMessage(const OnClickMessage& aMessage)
 {
+	// not used yet, should be for when pressing quit in ingame menu
+
 	switch (aMessage.myEvent)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
+}
+
+void InGameState::ReceiveMessage(const ReturnToMenuMessage&)
+{
+	myStateStatus = eStateStatus::ePopMainState;
 }

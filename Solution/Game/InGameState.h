@@ -46,6 +46,7 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
+	void ReceiveMessage(const ReturnToMenuMessage& aMessage) override;
 
 private:
 	GUI::GUIManager* myGUIManager;

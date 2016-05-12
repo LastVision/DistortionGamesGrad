@@ -20,6 +20,7 @@
 #include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Renderer.h>
+#include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreState.h"
@@ -103,6 +104,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 	{
+		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
 		return eStateStatus::ePopMainState;
 	}

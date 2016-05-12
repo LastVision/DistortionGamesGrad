@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.h"
+#include <Subscriber.h>
 
 namespace GUI
 {
@@ -7,7 +8,7 @@ namespace GUI
 	class Cursor;
 }
 
-class LevelSelectState : public GameState
+class LevelSelectState : public GameState, public Subscriber
 {
 public:
 	LevelSelectState();
@@ -20,6 +21,8 @@ public:
 	void Render() override;
 	void ResumeState() override;
 	void OnResize(int aWidth, int aHeight) override;
+
+	void ReceiveMessage(const OnClickMessage& aMessage) override;
 
 private:
 
