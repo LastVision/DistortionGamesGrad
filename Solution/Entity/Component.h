@@ -7,6 +7,7 @@ struct BounceNote;
 struct ContactNote;
 struct CollisionNote;
 struct DeathNote;
+struct LoseBodyPartNote;
 struct ShouldDieNote;
 struct SpawnNote;
 
@@ -23,6 +24,7 @@ public:
 	virtual void ReceiveNote(const CollisionNote&) {}
 	virtual void ReceiveNote(const ContactNote&) {}
 	virtual void ReceiveNote(const DeathNote&) {}
+	virtual void ReceiveNote(const LoseBodyPartNote&) {}
 	virtual void ReceiveNote(const ShouldDieNote&) {}
 	virtual void ReceiveNote(const SpawnNote&) {}
 

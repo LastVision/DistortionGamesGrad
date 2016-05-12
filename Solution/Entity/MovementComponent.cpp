@@ -34,6 +34,14 @@ MovementComponent::~MovementComponent()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
+void MovementComponent::Init()
+{
+	for (int i = 0; i < eMovementType::_COUNT; ++i)
+	{
+		myMovements[i]->Init();
+	}
+}
+
 void MovementComponent::Reset()
 {
 	for (int i = 0; i < eMovementType::_COUNT; ++i)

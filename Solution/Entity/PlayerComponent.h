@@ -16,6 +16,8 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
+	const PlayerComponentData* GetData() const;
+
 	void ReceiveNote(const ShouldDieNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
 
@@ -32,4 +34,9 @@ inline eComponentType PlayerComponent::GetTypeStatic()
 inline eComponentType PlayerComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline const PlayerComponentData* PlayerComponent::GetData() const
+{
+	return &myData;
 }

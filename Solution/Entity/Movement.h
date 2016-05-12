@@ -11,6 +11,8 @@ public:
 
 	virtual void Reset(){};
 
+	virtual void Init(){};
+
 	virtual void Update(float aDeltaTime) = 0;
 	virtual void Render() {}
 	virtual void ReceiveNote(const ContactNote& aNote) = 0;
