@@ -1,10 +1,12 @@
 #pragma once
 #include "Component.h"
 
+struct PlayerComponentData;
+
 class PlayerComponent : public Component
 {
 public:
-	PlayerComponent(Entity& anEntity);
+	PlayerComponent(Entity& anEntity, const PlayerComponentData& aData);
 	~PlayerComponent();
 
 	void Update(float aDeltaTime) override;
@@ -18,6 +20,7 @@ public:
 	void ReceiveNote(const SpawnNote& aMessage) override;
 
 private:
+	const PlayerComponentData& myData;
 	bool myShouldDie;
 };
 

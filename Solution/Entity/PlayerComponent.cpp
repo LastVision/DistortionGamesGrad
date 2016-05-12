@@ -9,8 +9,9 @@
 #include <PostMaster.h>
 #include "ShouldDieNote.h"
 
-PlayerComponent::PlayerComponent(Entity& anEntity)
+PlayerComponent::PlayerComponent(Entity& anEntity, const PlayerComponentData& aData)
 	: Component(anEntity)
+	, myData(aData)
 	, myShouldDie(false)
 {
 }
@@ -43,7 +44,7 @@ void PlayerComponent::HandleCollision(Entity* aOther)
 	}
 
 	CU::Vector2<float> velocity = myEntity.GetComponent<MovementComponent>()->GetVelocity();
-	if (CU::Length2(velocity) > 0.2f*0.2f)
+	if (CU::Length2(velocity) > myData.myDeathSpeed * myData.myDeathSpeed)
 	{
 		myEntity.SendNote(ShouldDieNote());
 	}
