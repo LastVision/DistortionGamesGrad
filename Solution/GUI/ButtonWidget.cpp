@@ -148,6 +148,10 @@ namespace GUI
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
 			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
 		}
+		else if (clickEvent == "level_select")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::LEVEL_SELECT, myId);
+		}
 		else if (clickEvent == "quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::GAME_QUIT);

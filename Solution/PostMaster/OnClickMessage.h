@@ -4,6 +4,7 @@
 enum class eOnClickEvent
 {
 	START_LEVEL, 
+	LEVEL_SELECT,
 	GAME_QUIT,
 };
 

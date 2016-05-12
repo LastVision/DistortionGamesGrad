@@ -107,6 +107,10 @@ void InGameState::ResumeState()
 	myLevelToLoad = -1;
 }
 
+void InGameState::PauseState()
+{
+}
+
 void InGameState::ReceiveMessage(const FinishLevelMessage& aMessage)
 {
 	myNextLevel = aMessage.myLevelID;

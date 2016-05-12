@@ -60,13 +60,18 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 void LevelSelectState::Render()
 {
 	myGUIManager->Render();
-	//myCursor->Render();
 }
 
 void LevelSelectState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+}
+
+void LevelSelectState::PauseState()
+{
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
 void LevelSelectState::OnResize(int aWidth, int aHeight)

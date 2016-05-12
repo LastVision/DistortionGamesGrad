@@ -49,6 +49,21 @@ private:
 	CU::GrowingArray<BodyPart> myLiveBodies;
 	int myBodyIndex;
 
+	void CreateGibs();
+	struct GibPart
+	{
+		GibPart::GibPart() : mySpring(nullptr), myScrewNut(nullptr), myScrew(nullptr), myTimer(0.f), myMaxTime(10.f){}
+		Entity* mySpring;
+		Entity* myScrewNut;
+		Entity* myScrew;
+		float myTimer;
+		float myMaxTime;
+	};
+
+	CU::GrowingArray<GibPart> myGibs;
+	CU::GrowingArray<GibPart> myLiveGibs;
+	int myGibIndex;
+
 	Prism::Scene* myScene;
 };
 

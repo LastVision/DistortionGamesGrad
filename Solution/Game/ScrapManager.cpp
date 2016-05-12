@@ -19,12 +19,16 @@ ScrapManager::ScrapManager(Prism::Scene* aScene)
 	, myBodies(16)
 	, myLiveBodies(16)
 	, myBodyIndex(0)
+	, myGibs(16)
+	, myLiveGibs(16)
+	, myGibIndex(0)
 	, myScene(aScene)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::SPAWN_SCRAP);
 	CreateHeads();
 	CreateLegs();
 	CreateBodies();
+	CreateGibs();
 }
 
 
@@ -42,6 +46,12 @@ ScrapManager::~ScrapManager()
 	for (int i = 0; i < myLegs.Size(); ++i)
 	{
 		SAFE_DELETE(myLegs[i].myEntity);
+	}
+	for (int i = 0; i < myGibs.Size(); ++i)
+	{
+		SAFE_DELETE(myGibs[i].myScrew);
+		SAFE_DELETE(myGibs[i].myScrewNut);
+		SAFE_DELETE(myGibs[i].mySpring);
 	}
 }
 
@@ -102,6 +112,25 @@ void ScrapManager::Update(float aDeltaTime)
 			myLiveLegs[i].myEntity->RemoveFromScene();
 			myLiveLegs[i].myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveLegs.RemoveCyclicAtIndex(i);
+		}
+	}
+
+	for (int i = myLiveGibs.Size() - 1; i >= 0; --i)
+	{
+		myLiveGibs[i].myTimer += aDeltaTime;
+		myLiveGibs[i].myScrew->Update(aDeltaTime);
+		myLiveGibs[i].myScrewNut->Update(aDeltaTime);
+		myLiveGibs[i].mySpring->Update(aDeltaTime);
+
+		if (myLiveGibs[i].myTimer >= myLiveGibs[i].myMaxTime)
+		{
+			myLiveGibs[i].myScrew->RemoveFromScene();
+			myLiveGibs[i].myScrewNut->RemoveFromScene();
+			myLiveGibs[i].mySpring->RemoveFromScene();
+			myLiveGibs[i].myScrew->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveGibs[i].myScrewNut->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveGibs[i].mySpring->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveGibs.RemoveCyclicAtIndex(i);
 		}
 	}
 }
@@ -185,6 +214,42 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		++myLegIndex;
 		break;
 	}
+	case eScrapPart::GIBS:
+	{
+		if (myGibIndex >= myGibs.Size())
+		{
+			myGibIndex = 0;
+		}
+
+		GibPart toAdd;
+		toAdd.myScrew = myGibs[myGibIndex].myScrew;
+		toAdd.myScrewNut = myGibs[myGibIndex].myScrewNut;
+		toAdd.mySpring = myGibs[myGibIndex].mySpring;
+		toAdd.myMaxTime = myGibs[myGibIndex].myMaxTime;
+		bool isAlreadyInScene = toAdd.myScrew->IsInScene();
+		if (isAlreadyInScene == false)
+		{
+			myLiveGibs.Add(toAdd);
+
+			myLiveGibs.GetLast().myScrew->AddToScene();
+			myLiveGibs.GetLast().myScrewNut->AddToScene();
+			myLiveGibs.GetLast().mySpring->AddToScene();
+			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddToScene();
+			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddToScene();
+			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddToScene();
+		}
+		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		dir.z = (rand() % 100) * 0.01f;
+		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		++myGibIndex;
+		break;
+	}
 		break;
 	default:
 		break;
@@ -194,6 +259,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 {
 	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
+	SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
 }
 
 void ScrapManager::CreateHeads()
@@ -223,5 +289,17 @@ void ScrapManager::CreateBodies()
 		BodyPart toAdd;
 		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "body", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
 		myBodies.Add(toAdd);
+	}
+}
+
+void ScrapManager::CreateGibs()
+{
+	for (int i = 0; i < myGibs.GetCapacity(); ++i)
+	{
+		GibPart toAdd;
+		toAdd.mySpring = EntityFactory::CreateEntity(eEntityType::SCRAP, "gibspring", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		toAdd.myScrewNut = EntityFactory::CreateEntity(eEntityType::SCRAP, "gibscrewnut", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		toAdd.myScrew = EntityFactory::CreateEntity(eEntityType::SCRAP, "gibscrew", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		myGibs.Add(toAdd);
 	}
 }
