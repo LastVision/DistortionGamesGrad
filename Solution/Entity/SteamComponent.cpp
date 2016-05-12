@@ -28,6 +28,11 @@ SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU:
 SteamComponent::~SteamComponent()
 {
 	SAFE_DELETE(mySteam);
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (soundComp != nullptr)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Steam", soundComp->GetAudioSFXID());
+	}
 }
 
 void SteamComponent::Update(float aDeltaTime)

@@ -75,7 +75,6 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aC
 
 void MainMenuState::EndState()
 {
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 }
 
 const eStateStatus MainMenuState::Update(const float& aDeltaTime)
@@ -143,6 +142,7 @@ void MainMenuState::ResumeState()
 
 void MainMenuState::PauseState()
 {
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
