@@ -61,10 +61,18 @@ void StateStack::PopMainGameState()
 	}
 }
 
-void StateStack::PushSubGameState(GameState* aSubGameState)
+void StateStack::PushSubGameState(GameState* aSubGameState, bool aShouldPause)
 {
 	DL_ASSERT_EXP(myGameStates.Size() > 0, "Can't push sub game state, no main game state present.");
 	DL_ASSERT_EXP(myMainIndex < 20 && mySubIndex < 20, "Can't add more than 20 states, it's unreasonable!");
+
+	if (aShouldPause == true)
+	{
+		if (myMainIndex >= 0 && mySubIndex >= 0)
+		{
+			myGameStates[myMainIndex][mySubIndex]->PauseState();
+		}
+	}
 
 	myGameStates[myMainIndex].Add(aSubGameState);
 	//Prism::ModelLoader::GetInstance()->Pause();
@@ -80,9 +88,14 @@ void StateStack::PushSubGameState(GameState* aSubGameState)
 
 void StateStack::PushMainGameState(GameState* aMainGameState)
 {
+	if (myMainIndex >= 0 && mySubIndex >= 0)
+	{
+		myGameStates[myMainIndex][mySubIndex]->PauseState();
+	}
+
 	myGameStates.Add(CU::GrowingArray<GameState*, int>(16));
 	myMainIndex = myGameStates.Size() - 1;
-	PushSubGameState(aMainGameState);
+	PushSubGameState(aMainGameState, false);
 }
 
 bool StateStack::UpdateCurrentState(const float& aDeltaTime)

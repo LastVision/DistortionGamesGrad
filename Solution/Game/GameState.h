@@ -28,6 +28,7 @@ public:
 	virtual const eStateStatus Update(const float& aDeltaTime) = 0;
 	virtual void Render() = 0;
 	virtual void ResumeState() = 0;
+	virtual void PauseState() = 0;
 	virtual void OnResize(int aWidth, int aHeight) = 0;
 
 	const bool& IsLetThroughRender() const;

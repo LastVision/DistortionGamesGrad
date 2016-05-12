@@ -13,7 +13,7 @@
 #include "StateStackProxy.h"
 #include <SpriteProxy.h>
 
-MainMenuState::MainMenuState()
+MainMenuState::MainMenuState(CU::ControllerInput* aController)
 	: myLogoPosition(0.f, 0.f)
 	, myLogoAlpha(0.f)
 	, myMenuAlpha(0.f)
@@ -24,6 +24,7 @@ MainMenuState::MainMenuState()
 	, myLogoDone(false)
 	, myGUIManager(nullptr)
 	, myHasRunOnce(false)
+	, myController(aController)
 {
 	CU::Vector2<float> logoSize(1024.f, 256.f);
 	myLogo = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/MainMenu/T_gamelogo.dds"
@@ -49,6 +50,7 @@ MainMenuState::~MainMenuState()
 	SAFE_DELETE(myLogoDust);
 	SAFE_DELETE(myGUIManager);
 	myCursor = nullptr;
+	myController = nullptr;
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
@@ -59,27 +61,16 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aC
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
 	myCursor = aCursor;
-
-	if (GC::MultiplayerMode == GC::eMultiplayerMode::HOST)
-	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
-	}
-	else
-	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu_join.xml", nullptr, -1);
-	}
-
-	
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 	myGUIManager->SetPosition(myGUIPosition);
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 	myHasRunOnce = false;
-
+	myCursor->SetShouldRender(true);
 }
 
 void MainMenuState::EndState()
 {
-
 }
 
 const eStateStatus MainMenuState::Update(const float& aDeltaTime)
@@ -120,6 +111,8 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 		myDustAlpha *= 3.f;
 		myDustAlpha = fminf(myDustAlpha, 1.f);
 
+		HandleControllerInMenu(myController, myGUIManager);
+
 		myGUIManager->SetPosition(myGUIPosition);
 		myGUIManager->Update(aDeltaTime);
 	}
@@ -141,12 +134,22 @@ void MainMenuState::ResumeState()
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 }
 
+void MainMenuState::PauseState()
+{
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
+}
+
 void MainMenuState::OnResize(int aWidth, int aHeight)
 {
 	myGUIManager->OnResize(aWidth, aHeight);
 }
 
-void MainMenuState::ReceiveMessage(const OnClickMessage&)
+void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
-	
+	switch (aMessage.myEvent)
+	{
+	case eOnClickEvent::GAME_QUIT:
+		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	}
 }

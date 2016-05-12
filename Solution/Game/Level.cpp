@@ -374,6 +374,11 @@ void Level::ResumeState()
 
 }
 
+void Level::PauseState()
+{
+
+}
+
 void Level::OnResize(int aWidth, int aHeight)
 {
 	aWidth;

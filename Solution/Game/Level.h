@@ -43,6 +43,7 @@ public:
 
 	void EndState() override;
 	void ResumeState() override;
+	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
 
 	void ReceiveMessage(const OnPlayerJoin& aMessage) override;

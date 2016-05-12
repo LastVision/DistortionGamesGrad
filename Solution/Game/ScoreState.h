@@ -12,6 +12,7 @@ public:
 	const eStateStatus Update(const float& aDeltaTime) override;
 	void Render() override;
 	void ResumeState() override;
+	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
 
 };

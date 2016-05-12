@@ -92,7 +92,12 @@ bool Game::Init(HWND& aHwnd)
 
 
 	//Console::GetInstance(); // needed to create console here
+	//myStateStack.PushMainGameState(new LevelSelectState(myController));
+#ifdef RELEASE_BUILD
+	myStateStack.PushMainGameState(new MainMenuState(myController));
+#else
 	myStateStack.PushMainGameState(new LevelSelectState(myController));
+#endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
 	GAME_LOG("Init Successful");
@@ -187,6 +192,10 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::START_LEVEL:
 		SET_RUNTIME(false);
 		myStateStack.PushMainGameState(new InGameState(aMessage.myID));
+		break;
+	case eOnClickEvent::LEVEL_SELECT:
+		SET_RUNTIME(false);
+		myStateStack.PushMainGameState(new LevelSelectState(myController));
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;
