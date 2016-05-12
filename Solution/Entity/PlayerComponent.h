@@ -9,6 +9,7 @@ public:
 
 	void Update(float aDeltaTime) override;
 	void EvaluateDeath();
+	void HandleCollision(Entity* aOther);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;

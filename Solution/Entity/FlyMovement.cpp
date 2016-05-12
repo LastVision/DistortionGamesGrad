@@ -4,6 +4,8 @@
 #include "MovementComponent.h"
 #include "InputComponent.h"
 #include "Entity.h"
+#include "PlayerComponent.h"
+#include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -64,7 +66,7 @@ void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
 	myVelocity = aVelocity;
 }
 
-void FlyMovement::ReceiveNote(const ContactNote&)
+void FlyMovement::ReceiveNote(const ContactNote& aNote)
 {
 }
 
@@ -74,6 +76,8 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->HandleCollision(&aComponent->GetEntity());
+
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE) return;
 		if (type == eEntityType::BOUNCER)

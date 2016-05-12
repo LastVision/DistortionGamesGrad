@@ -2,10 +2,12 @@
 
 #include "DeathNote.h"
 #include "InputComponent.h"
+#include "MovementComponent.h"
 #include <OnDeathMessage.h>
 #include <PlayerActiveMessage.h>
 #include "PlayerComponent.h"
 #include <PostMaster.h>
+#include "ShouldDieNote.h"
 
 PlayerComponent::PlayerComponent(Entity& anEntity)
 	: Component(anEntity)
@@ -30,6 +32,20 @@ void PlayerComponent::EvaluateDeath()
 		PostMaster::GetInstance()->SendMessage(OnDeathMessage(myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		myEntity.Reset();
 		myEntity.SendNote(DeathNote());
+	}
+}
+
+void PlayerComponent::HandleCollision(Entity* aOther)
+{
+	if (aOther->GetType() == eEntityType::BOUNCER)
+	{
+		return;
+	}
+
+	CU::Vector2<float> velocity = myEntity.GetComponent<MovementComponent>()->GetVelocity();
+	if (CU::Length2(velocity) > 0.2f*0.2f)
+	{
+		myEntity.SendNote(ShouldDieNote());
 	}
 }
 
