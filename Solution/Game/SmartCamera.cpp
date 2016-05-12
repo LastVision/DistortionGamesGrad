@@ -175,6 +175,10 @@ void SmartCamera::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
 	}
 }
 
+const CU::Matrix44<float>& SmartCamera::GetOrientation() const
+{
+	return myCamera.GetOrientation();
+}
 
 int SmartCamera::GetPlayerCount()
 {

@@ -1,5 +1,8 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "SawBladeComponent.h"
+#include "SoundComponent.h"
 #include "PhysicsComponent.h"
 
 SawBladeComponent::SawBladeComponent(Entity& anEntity)
@@ -15,6 +18,20 @@ SawBladeComponent::SawBladeComponent(Entity& anEntity)
 SawBladeComponent::~SawBladeComponent()
 {
 	myPositions.RemoveAll();
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (soundComp != nullptr)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Saw", soundComp->GetAudioSFXID());
+	}
+}
+
+void SawBladeComponent::Init()
+{
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (soundComp != nullptr)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Saw", soundComp->GetAudioSFXID());
+	}
 }
 
 void SawBladeComponent::Update(float aDeltaTime)

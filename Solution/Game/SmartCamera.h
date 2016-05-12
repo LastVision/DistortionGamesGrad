@@ -21,7 +21,7 @@ public:
 	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 
-
+	const CU::Matrix44<float>& GetOrientation() const;
 
 	int GetPlayerCount();
 	int GetActivePlayerCount();

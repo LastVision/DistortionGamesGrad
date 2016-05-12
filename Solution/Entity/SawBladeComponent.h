@@ -9,6 +9,8 @@ public:
 
 	void Update(float aDeltaTime) override;
 
+	void Init() override;
+
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 

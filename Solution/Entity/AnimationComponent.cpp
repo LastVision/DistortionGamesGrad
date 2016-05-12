@@ -1,16 +1,19 @@
 #include "stdafx.h"
-#include <InputWrapper.h>
+
 #include "AnimationComponent.h"
 #include "AnimationSystem.h"
+#include <AudioInterface.h>
 #include <Effect.h>
 #include <Engine.h>
 #include <EngineEnums.h>
 #include <EffectContainer.h>
+#include <InputWrapper.h>
 #include <Instance.h>
 #include <Model.h>
 #include <ModelLoader.h>
 #include <ModelProxy.h>
 #include <Scene.h>
+#include "SoundComponent.h"
 #include <Texture.h>
 
 
@@ -47,4 +50,9 @@ void AnimationComponent::Update(float aDeltaTime)
 void AnimationComponent::ReceiveNote(const BounceNote& aMessage)
 {
 	myInstance->ResetAnimationTime(0.f);
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (soundComp != nullptr)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Bouncer", soundComp->GetAudioSFXID());
+	}
 }

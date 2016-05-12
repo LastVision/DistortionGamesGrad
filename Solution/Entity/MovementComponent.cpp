@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "DashAimMovement.h"
 #include "DashFlyMovement.h"
 #include "FlyMovement.h"
@@ -6,6 +8,7 @@
 #include "MovementComponent.h"
 #include "PostMaster.h"
 #include "PlayerActiveMessage.h"
+#include "SoundComponent.h"
 #include "WalkMovement.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
@@ -70,6 +73,15 @@ void MovementComponent::ReceiveNote(const ContactNote& aNote)
 void MovementComponent::Impulse()
 {
 	myMovements[myCurrentMovement]->Impulse();
+	if (myCurrentMovement == eMovementType::FLY
+		|| myCurrentMovement == eMovementType::WALK)
+	{
+		SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+		if (soundComp != nullptr)
+		{
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Impulse", soundComp->GetAudioSFXID());
+		}
+	}
 }
 
 void MovementComponent::Impulse(const CU::Vector2<float>& aVelocity)

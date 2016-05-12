@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include <BounceComponent.h>
 #include <BounceNote.h>
 #include <Camera.h>
@@ -60,10 +61,13 @@ Level::Level(Prism::Camera& aCamera)
 	myFullscreenRenderer = new Prism::Renderer();
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
 	Prism::ModelLoader::GetInstance()->UnPause();
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
 }
 
 Level::~Level()
 {
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
 	SAFE_DELETE(myShadowLight);
@@ -75,6 +79,7 @@ Level::~Level()
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
+
 
 
 #ifdef THREAD_PHYSICS
@@ -98,6 +103,13 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
 	mySmartCamera->Update(aDeltaTime);
+	
+	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
+		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
+
 	ScrapManager::GetInstance()->Update(aDeltaTime);
 
 	for each(Entity* player in myPlayers)
