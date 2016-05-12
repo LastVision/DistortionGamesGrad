@@ -40,7 +40,7 @@ void CalcRadiusReader::ReadFile(const std::string& aFilePath)
 		myFactory.LoadModelForRadiusCalc(aFilePath.c_str(), myVertices);
 		float distance = CalcMaxDistance(myVertices);
 
-		if (distance > 1000)
+		if (distance > 3000)
 		{
 			std::stringstream ss;
 			ss << aFilePath << " is too large " << std::endl << "Radius: " << distance;
