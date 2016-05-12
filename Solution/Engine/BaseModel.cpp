@@ -131,7 +131,7 @@ namespace Prism
 		}
 	}
 
-	void BaseModel::Render()
+	void BaseModel::Render(bool aIsDepthOnly)
 	{
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
@@ -141,7 +141,11 @@ namespace Prism
 			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 
 		//bool usePixelShader = Engine::GetInstance()->UsePBLPixelShader();
-
+		std::string techniqueName(myTechniqueName);
+		if (aIsDepthOnly == true)
+		{
+			techniqueName += "_DEPTHONLY";
+		}
 		for (int s = 0; s < mySurfaces.Size(); ++s)
 		{
 			mySurfaces[s]->Activate();

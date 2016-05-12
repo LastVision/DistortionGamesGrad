@@ -72,7 +72,7 @@ void Prism::DebugText::Render(const std::string& aString, const CU::Vector2<floa
 	myEffect->SetPosAndScale(aPosition, aScale);
 	//myEffect->SetColor(aColor);
 
-	BaseModel::Render();
+	BaseModel::Render(false);
 
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 }

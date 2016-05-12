@@ -53,8 +53,8 @@ namespace Prism
 		
 		SetPosition({ 0.f, 0.f, 0.f, 1.f });
 		myOrientation = CU::Matrix44<float>::CreateRotateAroundX(3.14f / 3.f);
-		myOrientation *= CU::Matrix44<float>::CreateRotateAroundZ(-3.14f / 4.f);
-		myOrientation.SetPos({ 0.f, 75.f, 0.f, 1.f });
+		//myOrientation *= CU::Matrix44<float>::CreateRotateAroundZ(-3.14f / 4.f);
+		myOrientation.SetPos({ 0.f, 25.f, -50.f, 1.f });
 		Update();
 		myCamera = new Camera(myOrientation);
 		myCamera->InitShadowCamera(Prism::Engine::GetInstance()->GetWindowSize().x
@@ -66,7 +66,7 @@ namespace Prism
 		myBiasMatrix.myMatrix[5] = 0.5;
 		myBiasMatrix.myMatrix[10] = 0.5;
 		myBiasMatrix.SetPos({ 0.5, 0.5, 0.5, 1.f });
-
+		myCamera->Update(1.f / 30.f);
 	}
 
 

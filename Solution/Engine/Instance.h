@@ -25,7 +25,7 @@ namespace Prism
 
 		void Update(float aDelta);
 		void Render(const Camera& aCamera);
-		void Render(const Camera& aCamera, InstancingHelper& aInstancingHelper);
+		void Render(const Camera& aCamera, InstancingHelper& aInstancingHelper, bool aIsOnlyDepth = false);
 
 		CU::Vector3<float> GetPosition() const;
 
@@ -58,7 +58,7 @@ namespace Prism
 
 		void AddModelToInstancingHelper(Model* aModel, InstancingHelper& aInstancingHelper);
 		void RenderModelAnimated(ModelAnimated* aModel, const CU::Matrix44<float>& aParent
-			, const Camera& aCamera, TransformationNodeInstance& aHierarchy);
+			, const Camera& aCamera, TransformationNodeInstance& aHierarchy, bool aIsOnlyDepth);
 		void BuildHierarchy(TransformationNodeInstance& aHierarchy, ModelAnimated* aModel);
 
 		bool myHierarchyIsBuilt;

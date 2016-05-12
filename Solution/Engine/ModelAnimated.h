@@ -38,7 +38,7 @@ namespace Prism
 
 		void SetEffect(Effect* aEffect);
 
-		void Render(const CU::Matrix44<float>& aOrientation);
+		void Render(const CU::Matrix44<float>& aOrientation, bool aIsOnlyDepth);
 		void SetFileName(const std::string& aFileName) override;
 
 		float GetRadius() const;

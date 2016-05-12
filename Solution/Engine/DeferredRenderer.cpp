@@ -9,6 +9,7 @@
 #include "SpriteProxy.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "SpotLightShadow.h"
 #include "SpotLightTextureProjection.h"
 #include <XMLReader.h>
 
@@ -79,6 +80,17 @@ namespace Prism
 		myNotInvertedView = myEffect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
 	}
 
+	void ShadowPass::OnEffectLoad()
+	{
+		mySceneAlbedo = myEffect->GetEffect()->GetVariableByName("AlbedoTexture")->AsShaderResource();
+		mySceneDepth = myEffect->GetEffect()->GetVariableByName("DepthTexture")->AsShaderResource();
+		myShadowDepth = myEffect->GetEffect()->GetVariableByName("ShadowDepth")->AsShaderResource();
+
+		myShadowMVP = myEffect->GetEffect()->GetVariableByName("ShadowMVP")->AsMatrix();
+		myInvertedProjection = myEffect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
+		myNotInvertedView = myEffect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
+	}
+
 	DeferredRenderer::DeferredRenderer()
 	{
 		CU::Vector2<float> windowSize = Engine::GetInstance()->GetWindowSize();
@@ -109,6 +121,7 @@ namespace Prism
 		SetupAmbientData();
 		SetupLightData();
 		SetupGBufferData();
+		SetupShadowData();
 
 		InitFullscreenQuad();
 
@@ -117,6 +130,11 @@ namespace Prism
 
 		myFinishedTexture = new Texture();
 		myFinishedTexture->Init(windowSize.x, windowSize.y
+			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+		myFinishedSceneTexture = new Texture();
+		myFinishedSceneTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
@@ -130,6 +148,7 @@ namespace Prism
 	DeferredRenderer::~DeferredRenderer()
 	{
 		SAFE_DELETE(myFinishedTexture);
+		SAFE_DELETE(myFinishedSceneTexture);
 		SAFE_DELETE(myViewPort);
 		SAFE_DELETE(myDepthStencilTexture);
 		SAFE_DELETE(myCubeMapGenerator);
@@ -139,7 +158,7 @@ namespace Prism
 		SAFE_DELETE(myGBufferData.myDepthTexture);
 	}
 
-	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground)
+	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight)
 	{
 		Engine::GetInstance()->RestoreViewPort();
 
@@ -163,6 +182,30 @@ namespace Prism
 		ActivateBuffers();
 
 		RenderDeferred(aScene);
+#ifdef SHADOWS
+		RenderShadows(aShadowLight, aScene->GetCamera());
+#endif
+	}
+
+	void DeferredRenderer::RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera)
+	{
+		Prism::EffectContainer::GetInstance()->SetShadowDepth(aShadowLight);
+		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
+		context->ClearRenderTargetView(backbuffer, myClearColor);
+		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		context->OMSetRenderTargets(1, &backbuffer
+			, Engine::GetInstance()->GetDepthView());
+
+		myShadowPass.mySceneAlbedo->SetResource(myFinishedSceneTexture->GetShaderView());
+		myShadowPass.mySceneDepth->SetResource(myGBufferData.myDepthTexture->GetShaderView());
+		myShadowPass.myShadowDepth->SetResource(aShadowLight->GetTexture()->GetDepthStencilShaderView());
+		myShadowPass.myShadowMVP->SetMatrix(&aShadowLight->GetMVP().myMatrix[0]);
+		myShadowPass.myInvertedProjection->SetMatrix(&CU::InverseReal(aCamera->GetProjection()).myMatrix[0]);
+		myShadowPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
+		
+		Render(myShadowPass.myEffect);
+		
 	}
 
 	void DeferredRenderer::RenderCubeMap(Scene* aScene, ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepth,
@@ -348,7 +391,10 @@ namespace Prism
 		RenderAmbientPass(aScene);
 
 		//ID3D11RenderTargetView* renderTarget = Engine::GetInstance()->GetBackbuffer();
-		ID3D11RenderTargetView* renderTarget = myFinishedTexture->GetRenderTargetView();
+		ID3D11RenderTargetView* renderTarget = myFinishedSceneTexture->GetRenderTargetView();
+#ifndef SHADOWS
+		renderTarget = myFinishedTexture->GetRenderTargetView();
+#endif
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &renderTarget, myDepthStencilTexture->GetDepthStencilView());
 
 #ifdef USE_LIGHT
@@ -450,7 +496,10 @@ namespace Prism
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 
 		//ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
-		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
+		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+#ifndef SHADOWS
+		backbuffer = myFinishedTexture->GetRenderTargetView();
+#endif
 		context->ClearRenderTargetView(backbuffer, myClearColor);
 		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		context->OMSetRenderTargets(1, &backbuffer
@@ -572,6 +621,15 @@ namespace Prism
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R32_FLOAT);
 
+	}
+
+	void DeferredRenderer::SetupShadowData()
+	{
+		myShadowPass.myEffect = EffectContainer::GetInstance()->GetEffect(
+			"Data/Resource/Shader/S_effect_deferred_shadow.fx");
+
+		myShadowPass.OnEffectLoad();
+		myShadowPass.myEffect->AddListener(&myShadowPass);
 	}
 
 	void DeferredRenderer::ClearGBuffer()
