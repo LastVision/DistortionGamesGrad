@@ -11,6 +11,7 @@ enum class eScrapPart
 	HEAD,
 	BODY,
 	LEGS,
+	GIBS,
 	_COUNT
 };
 
