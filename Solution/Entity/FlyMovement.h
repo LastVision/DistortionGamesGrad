@@ -4,12 +4,15 @@
 
 class PhysicsComponent;
 
+struct PlayerComponentData;
+
 class FlyMovement : public Movement
 {
 public:
 	FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent);
 	~FlyMovement();
 
+	void Init() override;
 	void Reset() override;
 
 	void Update(float aDeltaTime) override;
@@ -24,16 +27,24 @@ public:
 	
 	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal) override;
+	void HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
 
 
 private:
 	void operator=(FlyMovement&) = delete;
 
-	bool myHasContact;
-
-	void HandleContact();
+	void RaycastBody();
+	void RaycastHead();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
+
+	const PlayerComponentData* myPlayerData;
+
+	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
+		, const CU::Vector3<float>&)> myRaycastHandlerHead;
+
+	bool myHasContact;
 };
 

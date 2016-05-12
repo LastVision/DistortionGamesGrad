@@ -3,10 +3,12 @@
 #include <AnimationSystem.h>
 #include <ModelLoader.h>
 #include <Instance.h>
+#include "LoseBodyPartNote.h"
 #include "PlayerGraphicsComponent.h"
-#include <Scene.h>
 #include <PostMaster.h>
 #include <PlayerActiveMessage.h>
+#include <Scene.h>
+#include <ScrapMessage.h>
 #include <InputWrapper.h>
 #include "InputComponent.h"
 #include <OnDeathMessage.h>
@@ -129,6 +131,31 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 
 	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
+}
+
+void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
+{
+	switch (aMessage.myBodyPart)
+	{
+	case eScrapPart::BODY:
+		myBody.SetActive(false);
+		break;
+	case eScrapPart::HEAD:
+		if (myHead.GetActive() == true)
+		{
+			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+		}
+		myHead.SetActive(false);
+		break;
+	case eScrapPart::LEGS:
+		myRightLeg.SetActive(false);
+		myLeftLeg.SetActive(false);
+		break;
+	default:
+		DL_ASSERT("Unknown body part, see a doctor.");
+		break;
+	}
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const SpawnNote&)
