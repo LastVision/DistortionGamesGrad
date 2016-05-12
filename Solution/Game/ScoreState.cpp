@@ -39,6 +39,10 @@ void ScoreState::ResumeState()
 {
 }
 
+void ScoreState::PauseState()
+{
+}
+
 void ScoreState::OnResize(int, int)
 {
 }

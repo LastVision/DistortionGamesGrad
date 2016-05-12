@@ -23,7 +23,7 @@ namespace GUI
 class MainMenuState : public GameState, public Subscriber
 {
 public:
-	MainMenuState();
+	MainMenuState(CU::ControllerInput* aController);
 	~MainMenuState();
 
 	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
@@ -32,6 +32,7 @@ public:
 	const eStateStatus Update(const float& aDeltaTime) override;
 	void Render() override;
 	void ResumeState() override;
+	void PauseState() override;
 
 	void OnResize(int aWidth, int aHeight) override;
 
@@ -39,6 +40,8 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+
+	CU::ControllerInput* myController;
 
 	Tweener<float> myTweener;
 	CU::Vector2<float> myLogoStartPosition;
