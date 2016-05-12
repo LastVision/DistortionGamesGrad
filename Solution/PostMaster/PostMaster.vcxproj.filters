@@ -62,5 +62,8 @@
     </ClInclude>
     <ClInclude Include="ScrapMessage.h" />
     <ClInclude Include="OnPlayerJoin.h" />
+    <ClInclude Include="ReturnToMenuMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

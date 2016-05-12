@@ -10,6 +10,7 @@
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
+#include <InputWrapper.h>
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
@@ -19,6 +20,7 @@
 #include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Renderer.h>
+#include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreState.h"
@@ -99,6 +101,13 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #endif
 	mySmartCamera->Update(aDeltaTime);
 	ScrapManager::GetInstance()->Update(aDeltaTime);
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	{
+		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
+		myIsActiveState = false;
+		return eStateStatus::ePopMainState;
+	}
 
 	for each(Entity* player in myPlayers)
 	{

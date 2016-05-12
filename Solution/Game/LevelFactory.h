@@ -18,7 +18,7 @@ namespace tinyxml2
 class LevelFactory
 {
 public:
-	LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera);
+	LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel);
 	~LevelFactory();
 
 	bool LoadLevel(Level*& aLevelOut);
