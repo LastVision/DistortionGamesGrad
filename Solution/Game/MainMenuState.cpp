@@ -128,8 +128,8 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 void MainMenuState::Render()
 {
 	myGUIManager->Render();
-	myLogo->Render(myLogoPosition);
-	myLogoDust->Render({ myLogoEndPosition.x, myLogoEndPosition.y + 25.f }, CU::Vector2<float>(0.95f + myDustAlpha * 0.05f, 0.95f + myDustAlpha * 0.05f), CU::Vector4<float>(1.f, 1.f, 1.f, myDustAlpha));
+	//myLogo->Render(myLogoPosition);
+	//myLogoDust->Render({ myLogoEndPosition.x, myLogoEndPosition.y + 25.f }, CU::Vector2<float>(0.95f + myDustAlpha * 0.05f, 0.95f + myDustAlpha * 0.05f), CU::Vector4<float>(1.f, 1.f, 1.f, myDustAlpha));
 }
 
 void MainMenuState::ResumeState()
