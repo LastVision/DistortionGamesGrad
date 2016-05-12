@@ -5,12 +5,14 @@
 #include "Entity.h"
 #include <Effect.h>
 #include <EffectContainer.h>
+#include <EmitterMessage.h>
 #include <ModelLoader.h>
 #include "MovementComponent.h"
 #include <Instance.h>
 #include "InputComponent.h"
 #include <Scene.h>
 #include <TextureContainer.h>
+#include <PostMaster.h>
 
 DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation
 	, MovementComponent& aMovementComponent, Prism::Scene* aScene)
@@ -54,6 +56,7 @@ void DashAimMovement::Update(float aDeltaTime)
 	if (myTimer <= 0.f)
 	{
 		myMovementComponent.SetState(MovementComponent::eMovementType::DASH_FLY, myVelocity);
+		//PostMaster::GetInstance()->SendMessage(EmitterMessage("Dash_Recharge", myOrientation.GetPos(), myData.myDashAimTime)); Should be a streak thingy
 	}
 }
 

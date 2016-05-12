@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <ControllerInput.h>
+#include <EmitterMessage.h>
 #include "InputComponent.h"
 #include "MovementComponent.h"
 #include <PostMaster.h>
@@ -12,6 +13,7 @@
 #include "SpawnNote.h"
 #include <OnPlayerJoin.h>
 #include "ShouldDieNote.h"
+
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -60,6 +62,7 @@ void InputComponent::Update(float aDeltaTime)
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
 					myMovement->Impulse();
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myOrientation.GetPos(), -myOrientation.GetUp()));
 				}
 				else
 				{

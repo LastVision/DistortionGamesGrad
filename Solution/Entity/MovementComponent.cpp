@@ -7,7 +7,8 @@
 #include "PostMaster.h"
 #include "PlayerActiveMessage.h"
 #include "WalkMovement.h"
-
+#include <PostMaster.h>
+#include <EmitterMessage.h>
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
 	, myData(aData)
@@ -103,6 +104,7 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	if (myCurrentMovement == eMovementType::DASH_AIM)
 	{
 		myDashCooldown = myData.myDashCooldown;
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Dash_Recharge", &myEntity, myDashCooldown));
 	}
 	myMovements[myCurrentMovement]->DeActivate();
 	CU::Vector2<float> velocityToState(aVelocity);

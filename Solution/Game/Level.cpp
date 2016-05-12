@@ -148,7 +148,7 @@ void Level::Render()
 	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
 		, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 
-	myEmitterManager->RenderEmitters();
+	myEmitterManager->RenderEmitters(myDeferredRenderer->GetDepthStencilTexture());
 
 	for each(Entity* player in myPlayers)
 	{

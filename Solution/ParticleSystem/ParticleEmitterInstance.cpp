@@ -9,6 +9,7 @@
 #include <Effect.h>
 #include <TextureContainer.h>
 #include <Engine.h>
+#include "../Entity/Entity.h"
 
 namespace Prism
 {
@@ -68,7 +69,7 @@ namespace Prism
 		myParticleEmitterData = nullptr;
 	}
 
-	void ParticleEmitterInstance::Render()
+	void ParticleEmitterInstance::Render(Texture* aTexture)
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
 		myParticleEmitterData->myEffect->SetTexture(TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName));
@@ -325,21 +326,26 @@ namespace Prism
 			myEmissionTime -= aDeltaTime;
 			myEmitterLife -= aDeltaTime;
 
-			if (myRotation.x > 0.f)
+			if (myEntity != nullptr)
 			{
-				myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.x) * aDeltaTime) * myOrientation;
+				myOrientation.SetPos(myEntity->GetOrientation().GetPos());
 			}
 
-			if (myRotation.y > 0.f)
-			{
-				myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.y) * aDeltaTime) * myOrientation;
-			}
+			//if (myRotation.x > 0.f)
+			//{
+			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.x) * aDeltaTime) * myOrientation;
+			//}
+
+			//if (myRotation.y > 0.f)
+			//{
+			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.y) * aDeltaTime) * myOrientation;
+			//}
 
 
-			if (myRotation.z > 0.f)
-			{
-				myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.z) * aDeltaTime) * myOrientation;
-			}
+			//if (myRotation.z > 0.f)
+			//{
+			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.z) * aDeltaTime) * myOrientation;
+			//}
 
 
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
