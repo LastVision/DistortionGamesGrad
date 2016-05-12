@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include <BounceComponent.h>
 #include <BounceNote.h>
 #include <Camera.h>
@@ -10,6 +11,7 @@
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
+#include <InputWrapper.h>
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
@@ -19,6 +21,7 @@
 #include <PlayerComponent.h>
 #include <PostMaster.h>
 #include <Renderer.h>
+#include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreState.h"
@@ -60,10 +63,13 @@ Level::Level(Prism::Camera& aCamera)
 	myFullscreenRenderer = new Prism::Renderer();
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
 	Prism::ModelLoader::GetInstance()->UnPause();
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
 }
 
 Level::~Level()
 {
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
 	SAFE_DELETE(myShadowLight);
@@ -75,6 +81,7 @@ Level::~Level()
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
+
 
 
 #ifdef THREAD_PHYSICS
@@ -98,7 +105,21 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
 	mySmartCamera->Update(aDeltaTime);
+	
+	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
+		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
+
 	ScrapManager::GetInstance()->Update(aDeltaTime);
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	{
+		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
+		myIsActiveState = false;
+		return eStateStatus::ePopMainState;
+	}
 
 	for each(Entity* player in myPlayers)
 	{
@@ -218,7 +239,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
+		if (aHasEntered == true)
+		{
+			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
+		}
 
 		switch (second->GetType())
 		{

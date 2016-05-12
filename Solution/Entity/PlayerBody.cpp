@@ -25,6 +25,11 @@ void BodyPart::SetActive(bool aValue)
 	myInstance->SetShouldRender(aValue);
 }
 
+bool BodyPart::GetActive() const
+{
+	return myInstance->GetShouldRender();
+}
+
 BodyAnimation::~BodyAnimation()
 {
 	SAFE_DELETE(myAnimation);

@@ -20,9 +20,24 @@ namespace Prism
 		{	
 		}
 
+		AudioInterface* AudioInterface::GetInstance()
+		{
+			return myInstance;
+		}
+
 		AudioInterface::~AudioInterface()
 		{
-			delete myWwiseManager;
+			SAFE_DELETE(myWwiseManager);
+		}
+
+		void AudioInterface::CreateInstance()
+		{
+			myInstance = new AudioInterface(); 
+		}
+		
+		void AudioInterface::Destroy()
+		{
+			SAFE_DELETE(myInstance);
 		}
 
 		bool AudioInterface::Init(const char* aInitBank)

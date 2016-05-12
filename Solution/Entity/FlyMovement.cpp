@@ -4,17 +4,32 @@
 #include "MovementComponent.h"
 #include "InputComponent.h"
 #include "Entity.h"
+#include "LoseBodyPartNote.h"
+#include "PlayerComponent.h"
+#include "PlayerComponentData.h"
+#include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
+#include <PostMaster.h>
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(false)
+	, myPlayerData(nullptr)
 {
+	myRaycastHandlerHead = [=](PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+	{
+		this->HandleRaycastHead(aComponent, aDirection, aHitPosition, aHitNormal);
+	};
 }
 
 
 FlyMovement::~FlyMovement()
 {
+}
+
+void FlyMovement::Init()
+{
+	myPlayerData = myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->GetData();
 }
 
 void FlyMovement::Reset()
@@ -24,7 +39,8 @@ void FlyMovement::Reset()
 
 void FlyMovement::Update(float aDeltaTime)
 {
-	HandleContact();
+	RaycastBody();
+	RaycastHead();
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
 	Drag(aDeltaTime);
@@ -74,6 +90,8 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->HandleCollision(&aComponent->GetEntity());
+
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE) return;
 		if (type == eEntityType::BOUNCER)
@@ -125,7 +143,16 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	}
 }
 
-void FlyMovement::HandleContact()
+void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+{
+	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed)
+	{
+		myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
+	}
+}
+
+void FlyMovement::RaycastBody()
 {
 	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
 	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
@@ -162,6 +189,13 @@ void FlyMovement::HandleContact()
 
 
 	myHasContact = false;
+}
+
+void FlyMovement::RaycastHead()
+{
+	CU::Vector3<float> up(myOrientation.GetUp());
+	Prism::PhysicsInterface::GetInstance()->RayCast(myOrientation.GetPos(), myOrientation.GetUp(), myPlayerData->myHeadDistance, myRaycastHandlerHead
+		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 }
 
 void FlyMovement::Drag(float aDeltaTime)

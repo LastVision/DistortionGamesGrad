@@ -22,6 +22,7 @@ public:
 	MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene);
 	~MovementComponent();
 
+	void Init() override;
 	void Reset() override;
 
 	void Update(float aDeltaTime) override;

@@ -170,6 +170,7 @@
     <ClInclude Include="PlayerActiveMessage.h" />
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="ResizeMessage.h" />
+    <ClInclude Include="ReturnToMenuMessage.h" />
     <ClInclude Include="ScrapMessage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Subscriber.h" />

@@ -214,9 +214,13 @@ void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, PlayerComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
+
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DeathSpeed"), "value", aOutputData.myDeathSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LoseHeadSpeed"), "value", aOutputData.myLoseHeadSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "HeadDistance"), "value", aOutputData.myHeadDistance);
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

@@ -13,9 +13,9 @@
 #include <SteamComponent.h>
 #include <TriggerComponent.h>
 
-LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera)
+LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
-	, myCurrentLevelID(0)
+	, myCurrentLevelID(aLevel)
 	, myFinalLevelID(0)
 {
 	ReadLevelList(aLevelListPath);

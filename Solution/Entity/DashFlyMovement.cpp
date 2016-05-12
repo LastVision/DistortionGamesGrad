@@ -80,6 +80,10 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		{
 			myMovementComponent.GetEntity().SendNote(ShouldDieNote());
 		}
+		else if (aComponent->GetEntity().GetType() == eEntityType::PLAYER)
+		{
+			aComponent->GetEntity().SendNote(ShouldDieNote());
+		}
 		else
 		{
 			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));

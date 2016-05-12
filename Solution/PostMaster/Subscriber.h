@@ -12,6 +12,7 @@ struct OnPlayerLevelComplete;
 struct OnDeathMessage;
 struct ScrapMessage;
 struct OnPlayerJoin;
+struct ReturnToMenuMessage;
 
 class Subscriber
 {
@@ -31,6 +32,6 @@ public:
 	virtual void ReceiveMessage(const OnDeathMessage& aMessage);
 	virtual void ReceiveMessage(const OnPlayerLevelComplete& aMessage);
 	virtual void ReceiveMessage(const OnPlayerJoin& aMessage);
-
+	virtual void ReceiveMessage(const ReturnToMenuMessage& aMessage);
 };
 

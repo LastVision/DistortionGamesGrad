@@ -113,7 +113,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myPlayerData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::PLAYER)] = new PlayerComponent(*this);
+		myComponents[static_cast<int>(eComponentType::PLAYER)] = new PlayerComponent(*this, aEntityData.myPlayerData);
 	}
 
 	if (aEntityData.myBounceData.myExistsInEntity == true)
