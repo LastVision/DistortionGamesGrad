@@ -66,7 +66,7 @@ void FlyMovement::SetVelocity(const CU::Vector2<float>& aVelocity)
 	myVelocity = aVelocity;
 }
 
-void FlyMovement::ReceiveNote(const ContactNote& aNote)
+void FlyMovement::ReceiveNote(const ContactNote&)
 {
 }
 
