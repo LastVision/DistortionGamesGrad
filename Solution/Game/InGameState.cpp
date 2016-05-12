@@ -13,6 +13,7 @@
 #include <InputWrapper.h>
 #include <ModelLoader.h>
 #include <MurmurHash3.h>
+#include <OnClickMessage.h>
 #include <PostMaster.h>
 #include <ScriptSystem.h>
 #include <VTuneApi.h>
@@ -61,7 +62,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myCursor->SetShouldRender(false);
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
-	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera);
+	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera, myLevelToLoad);
 	//myLevel = myLevelFactory->LoadLevel(1);
 
 
@@ -70,7 +71,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCur
 	myText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE));
 	myText->SetPosition(CU::Vector2<float>(800.f, 800.f));
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK | eMessageType::RETURN_TO_MENU);
 
 	myNextLevel = 1;
 }
@@ -89,6 +90,7 @@ const eStateStatus InGameState::Update(const float&)
 	}
 	else
 	{
+		return eStateStatus::ePopMainState;
 		//Game over, push "win"-state
 	}
 
@@ -114,4 +116,21 @@ void InGameState::OnResize(int aWidth, int aHeight)
 {
 	aWidth;
 	aHeight;
+}
+
+void InGameState::ReceiveMessage(const OnClickMessage& aMessage)
+{
+	// not used yet, should be for when pressing quit in ingame menu
+
+	switch (aMessage.myEvent)
+	{
+	case eOnClickEvent::GAME_QUIT:
+		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	}
+}
+
+void InGameState::ReceiveMessage(const ReturnToMenuMessage&)
+{
+	myStateStatus = eStateStatus::ePopMainState;
 }

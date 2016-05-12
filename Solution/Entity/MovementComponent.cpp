@@ -49,6 +49,7 @@ void MovementComponent::Reset()
 void MovementComponent::Update(float aDeltaTime)
 {
 	DEBUG_PRINT(myEntity.GetOrientation().GetPos());
+	DEBUG_PRINT(CU::Length(GetVelocity()));
 
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;

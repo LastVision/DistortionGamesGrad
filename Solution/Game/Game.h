@@ -32,6 +32,8 @@ public:
 	void UnPause();
 	void OnResize(int aWidth, int aHeight);
 
+	void ReceiveMessage(const OnClickMessage& aMessage) override;
+
 private:
 	void operator=(Game& aApp) = delete;
 
