@@ -86,7 +86,7 @@ void EmitterManager::UpdateEmitters(float aDeltaTime)
 	}
 }
 
-void EmitterManager::RenderEmitters()
+void EmitterManager::RenderEmitters(Prism::Texture* aTexture)
 {
 	Prism::ParticleDataContainer::GetInstance()->SetGPUData(*myCamera);
 	for (int i = 0; i < myEmitterList.Size(); ++i)
@@ -121,7 +121,7 @@ void EmitterManager::RenderEmitters()
 					{
 						if (instance->GetShouldRender() == true)
 						{
-							instance->Render();
+							instance->Render(aTexture);
 						}
 					}
 				}

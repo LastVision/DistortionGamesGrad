@@ -2,7 +2,6 @@
 #include "ParticleDataContainer.h"
 
 #include "ParticleEmitterData.h"
-#include <D3DX11.h>
 #include <d3dx11effect.h>
 
 #include "Camera.h"
@@ -40,7 +39,6 @@ namespace Prism
 
 	ParticleEmitterData* ParticleDataContainer::GetParticleData(const std::string& aFilePath)
 	{
-//#ifndef DLL_EXPORT
 		auto it = myParticleData.find(aFilePath);
 		if (it == myParticleData.end())
 		{
@@ -48,20 +46,6 @@ namespace Prism
 		}
 
 		return myParticleData[aFilePath];
-//#else
-//		auto it = myParticleData.find(aFilePath);
-//
-//		if (it != myParticleData.end()) 
-//		{
-//			DL_DEBUG("Object found, removing.");
-//			delete it->second;
-//			it->second = nullptr;
-//			myParticleData.erase(aFilePath);
-//		}
-//		LoadParticleData(aFilePath);
-//
-//		return myParticleData[aFilePath];
-//#endif
 	}
 
 

@@ -11,6 +11,7 @@ namespace Prism
 {
 	class ParticleEmitterInstance;
 	class Camera;
+	class Texture;
 };
 
 struct EmitterData
@@ -33,7 +34,7 @@ public:
 	~EmitterManager();
 	void Initiate(Prism::Camera* aCamera);
 	void UpdateEmitters(float aDeltaTime);
-	void RenderEmitters();
+	void RenderEmitters(Prism::Texture* aTexture);
 	void ReceiveMessage(const EmitterMessage& aMessage) override;
 private:
 	void ReadListOfLists(const std::string& aPath);

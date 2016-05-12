@@ -18,7 +18,7 @@ namespace Prism
 		ParticleEmitterInstance(ParticleEmitterData* someData, bool anAllowManyParticles = false);
 		~ParticleEmitterInstance();
 		void ReleaseData();
-		void Render();
+		void Render(Texture* aTexture);
 		void Update(float aDeltaTime);
 		void Activate(bool aShouldRender = true);
 		bool IsActive();
