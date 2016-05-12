@@ -104,14 +104,14 @@ namespace Prism
 		ID3DX11EffectMatrixVariable* myNotInvertedView;
 	};
 
-
+	class EmitterManager;
 	class DeferredRenderer : public BaseModel
 	{
 	public:
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight);
+		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
 		void RenderCubeMap(Scene* aScene, ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepth,
 			D3D11_VIEWPORT* aViewPort, bool aUseAmbientPass);

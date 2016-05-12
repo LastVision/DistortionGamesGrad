@@ -20,9 +20,6 @@
     <ClCompile Include="ConsoleHelp.cpp">
       <Filter>Console</Filter>
     </ClCompile>
-    <ClCompile Include="EmitterManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="StateStack.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
@@ -76,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="ConsoleHelp.h">
       <Filter>Console</Filter>
-    </ClInclude>
-    <ClInclude Include="EmitterManager.h">
-      <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="StateStack.h">
       <Filter>StateStack</Filter>

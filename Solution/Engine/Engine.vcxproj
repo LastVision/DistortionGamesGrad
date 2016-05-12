@@ -272,6 +272,7 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
+    <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FBXFactory.cpp" />
     <ClCompile Include="FBX\FbxLoader.cpp">
@@ -360,6 +361,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />
     <ClInclude Include="EffectListener.h" />
+    <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineEnums.h" />
     <ClInclude Include="FBXFactory.h" />

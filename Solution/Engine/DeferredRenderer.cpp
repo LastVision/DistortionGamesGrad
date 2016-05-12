@@ -12,7 +12,7 @@
 #include "SpotLightShadow.h"
 #include "SpotLightTextureProjection.h"
 #include <XMLReader.h>
-
+#include "EmitterManager.h"
 namespace Prism
 {
 	void RenderToScreenData::OnEffectLoad()
@@ -158,7 +158,7 @@ namespace Prism
 		SAFE_DELETE(myGBufferData.myDepthTexture);
 	}
 
-	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight)
+	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
 	{
 		Engine::GetInstance()->RestoreViewPort();
 
@@ -176,12 +176,24 @@ namespace Prism
 			aBackground->Render(Engine::GetInstance()->GetWindowSize() * 0.5f);
 		}
 
-
 		aScene->Render();
 
 		ActivateBuffers();
 
 		RenderDeferred(aScene);
+
+
+		ID3D11RenderTargetView* targets[2];
+		targets[0] = myFinishedSceneTexture->GetRenderTargetView();
+		targets[1] = myGBufferData.myEmissiveTexture->GetRenderTargetView();
+		
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(2, targets
+			, myDepthStencilTexture->GetDepthStencilView());
+
+
+		aParticleEmitterManager->RenderEmitters(0);
+
+
 #ifdef SHADOWS
 		RenderShadows(aShadowLight, aScene->GetCamera());
 #endif
@@ -189,6 +201,7 @@ namespace Prism
 
 	void DeferredRenderer::RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera)
 	{
+		ActivateBuffers();
 		Prism::EffectContainer::GetInstance()->SetShadowDepth(aShadowLight);
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();

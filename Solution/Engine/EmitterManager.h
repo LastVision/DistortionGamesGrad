@@ -1,5 +1,5 @@
 #pragma once
-#include "Subscriber.h"
+#include "../PostMaster/Subscriber.h"
 #include <GrowingArray.h>
 #include <bitset>
 #define PREALLOCATED_EMITTERGROUP 32
@@ -12,7 +12,6 @@ namespace Prism
 	class ParticleEmitterInstance;
 	class Camera;
 	class Texture;
-};
 
 struct EmitterData
 {
@@ -52,3 +51,4 @@ private:
 
 };
 
+};

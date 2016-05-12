@@ -14,12 +14,12 @@ namespace Prism
 	class Scene;
 	class SpriteProxy;
 	class SpotLightShadow;
+	class EmitterManager;
 };
 
 class PhysicsComponent;
 class ScrapManager;
 class SmartCamera;
-class EmitterManager;
 
 struct Score;
 struct ScoreInfo;
@@ -71,7 +71,7 @@ private:
 	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;
 
-	EmitterManager* myEmitterManager;
+	Prism::EmitterManager* myEmitterManager;
 
 
 	CU::Vector3<float> mySpawnPosition;

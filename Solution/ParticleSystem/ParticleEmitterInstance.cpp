@@ -34,7 +34,7 @@ namespace Prism
 
 		DL_PRINT(("Loading :" + myEmitterPath).c_str());
 		DL_ASSERT_EXP(anAllowManyParticles == true || particleCount <= 201, "Can't have more than 201 particles in an emitter!");
-
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Particle/T_particle_emissive.dds");
 		myGraphicalParticles.Init(particleCount);
 		myLogicalParticles.Init(particleCount);
 
@@ -73,6 +73,7 @@ namespace Prism
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
 		myParticleEmitterData->myEffect->SetTexture(TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName));
+
 
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		context->IASetVertexBuffers(
