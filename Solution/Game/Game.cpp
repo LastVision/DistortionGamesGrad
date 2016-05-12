@@ -12,6 +12,7 @@
 #include <EntityFactory.h>
 #include <FileWatcher.h>
 #include "Game.h"
+#include "LevelSelectState.h"
 #include <InputWrapper.h>
 #include "MainMenuState.h"
 #include <ModelLoader.h>
@@ -28,6 +29,7 @@
 #include <Vector.h>
 #include <XMLReader.h>
 #include "InGameState.h"
+#include <OnClickMessage.h>
 
 //Hej
 Game::Game()
@@ -68,7 +70,7 @@ Game::~Game()
 	Prism::DebugDrawer::Destroy();
 	EntityFactory::Destroy();
 	PostMaster::Destroy();
-//	NetworkManager::Destroy();
+	//	NetworkManager::Destroy();
 }
 
 bool Game::Init(HWND& aHwnd)
@@ -76,7 +78,7 @@ bool Game::Init(HWND& aHwnd)
 	myWindowHandler = &aHwnd;
 	myIsComplete = false;
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::FADE);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::FADE | eMessageType::ON_CLICK);
 
 	Prism::Engine::GetInstance()->SetClearColor({ MAGENTA });
 	CU::InputWrapper::Create(aHwnd, GetModuleHandle(NULL), DISCL_NONEXCLUSIVE
@@ -86,7 +88,7 @@ bool Game::Init(HWND& aHwnd)
 
 
 	//Console::GetInstance(); // needed to create console here
-	myStateStack.PushMainGameState(new InGameState(0));
+	myStateStack.PushMainGameState(new LevelSelectState);
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
 	GAME_LOG("Init Successful");
@@ -104,7 +106,7 @@ bool Game::Update()
 
 	myTimerManager->Update();
 	Prism::Audio::AudioInterface::GetInstance()->Update();
-	
+
 	float deltaTime = myTimerManager->GetMasterTimer().GetTime().GetFrameTime();
 	Prism::Engine::GetInstance()->Update(deltaTime);
 
@@ -133,10 +135,10 @@ bool Game::Update()
 	//	ClipCursor(&windowRect);
 	//}
 
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE))
-	{
-		return false;
-	}
+	//if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE))
+	//{
+	//	return false;
+	//}
 
 	if (myStateStack.UpdateCurrentState(deltaTime) == false)
 	{
@@ -148,7 +150,7 @@ bool Game::Update()
 	//myTimerManager->CapFrameRate(60.f);
 	myCursor->Update();
 	myCursor->Render();
-	
+
 	Prism::DebugDrawer::GetInstance()->RenderTextToScreen(); //Have to be last
 	return true;
 }
@@ -169,5 +171,18 @@ void Game::OnResize(int aWidth, int aHeight)
 {
 	myStateStack.OnResize(aWidth, aHeight);
 	myCursor->OnResize(aWidth, aHeight);
-	PostMaster::GetInstance()->SendMessage(ResizeMessage(aWidth, aHeight));
+	//PostMaster::GetInstance()->SendMessage(ResizeMessage(aWidth, aHeight));
+}
+
+void Game::ReceiveMessage(const OnClickMessage& aMessage)
+{
+	switch (aMessage.myEvent)
+	{
+	case eOnClickEvent::START_LEVEL:
+		SET_RUNTIME(false);
+		myStateStack.PushMainGameState(new InGameState(aMessage.myID));
+		break;
+	case eOnClickEvent::GAME_QUIT:
+		break;
+	}
 }

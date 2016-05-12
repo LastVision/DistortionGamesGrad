@@ -143,79 +143,14 @@ namespace GUI
 		std::string clickEvent = "";
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "event", clickEvent);
 
-		if (clickEvent == "none") // for passive ability buttons
-		{
-			DL_ASSERT("None not yet implemented, needed in FPS?");
-		}
-		else if (clickEvent == "connect")
+		if (clickEvent == "start_level")
 		{
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
-			DL_ASSERT_EXP(myId != -1, "Incorrect connection id.");
-			myClickEvent = new OnClickMessage(eOnClickEvent::CONNECT, myId);
-		}
-		else if (clickEvent == "start_game")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::START_GAME);
-		}
-		else if (clickEvent == "start_singleplayer")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::START_SINGLEPLAYER);
-		}
-		else if (clickEvent == "host_multiplayer")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::MULTIPLAYER_HOST);
-		}
-		else if (clickEvent == "join_multiplayer")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::MULTIPLAYER_JOIN);
-		}
-		else if (clickEvent == "credits")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::CREDITS);
-		}
-		else if (clickEvent == "help")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::HELP);
+			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
 		}
 		else if (clickEvent == "quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::GAME_QUIT);
-		}
-		else if (clickEvent == "options_menu")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS);
-		}
-		else if (clickEvent == "resume_game")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::RESUME_GAME);
-		}
-		else if (clickEvent == "IncreaseVolume")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::INCREASE_VOLUME);
-		}
-		else if (clickEvent == "LowerVolume")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::LOWER_VOLUME);
-		}
-		else if (clickEvent == "IncreaseMusic")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::INCREASE_MUSIC);
-		}
-		else if (clickEvent == "LowerMusic")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::LOWER_MUSIC);
-		}
-		else if (clickEvent == "IncreaseVoice")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::INCREASE_VOICE);
-		}
-		else if (clickEvent == "LowerVoice")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::LOWER_VOICE);
-		}
-		else if (clickEvent == "refresh")
-		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::REFRESH);
 		}
 		else
 		{

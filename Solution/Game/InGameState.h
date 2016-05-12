@@ -45,6 +45,8 @@ public:
 
 	void OnResize(int aWidth, int aHeight) override;
 
+	void ReceiveMessage(const OnClickMessage& aMessage) override;
+
 private:
 	GUI::GUIManager* myGUIManager;
 	LevelFactory* myLevelFactory;

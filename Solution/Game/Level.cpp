@@ -9,6 +9,7 @@
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
+#include <InputWrapper.h>
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
@@ -95,6 +96,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #endif
 	mySmartCamera->Update(aDeltaTime);
 	ScrapManager::GetInstance()->Update(aDeltaTime);
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	{
+		myIsActiveState = false;
+		return eStateStatus::ePopMainState;
+	}
 
 	for each(Entity* player in myPlayers)
 	{
