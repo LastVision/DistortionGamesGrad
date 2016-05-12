@@ -95,6 +95,7 @@ enum class ePhysics
 	PHANTOM,
 	CAPSULE,
 	KINEMATIC,
+	_NONE,
 };
 
 enum class ePlayerState : int
