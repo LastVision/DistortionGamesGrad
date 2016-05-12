@@ -31,7 +31,7 @@ namespace Prism
 		aModel->myHeights.Add(aHeight);
 	}
 
-	void InstancingHelper::Render()
+	void InstancingHelper::Render(bool aIsOnlyDepth)
 	{
 		DL_ASSERT_EXP(myCamera != nullptr, "Tried to render without a camera");
 
@@ -53,7 +53,7 @@ namespace Prism
 				currEffect->SetCameraPosition(myCamera->GetOrientation().GetPos());
 			}
 
-			RenderModel(model, currEffect);
+			RenderModel(model, currEffect, aIsOnlyDepth);
 
 
 			matrices.RemoveAll();
@@ -62,13 +62,19 @@ namespace Prism
 		}
 	}
 
-	void InstancingHelper::RenderModel(Model* aModel, Effect* aEffect)
+	void InstancingHelper::RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth)
 	{
 		if (aModel->SetGPUState(aModel->myMatrices, aModel->myScales, aModel->myHeights))
 		{
 			D3DX11_TECHNIQUE_DESC techDesc;
 			ID3DX11EffectTechnique* tech;
-			tech = aEffect->GetTechnique(aModel->GetTechniqueName());
+
+			std::string techniqueName(aModel->GetTechniqueName());
+			if (aIsOnlyDepth == true)
+			{
+				techniqueName += "_DEPTHONLY";
+			}
+			tech = aEffect->GetTechnique(techniqueName);
 			tech->GetDesc(&techDesc);
 
 			if (tech->IsValid() == false)
@@ -90,7 +96,7 @@ namespace Prism
 
 		for (int i = 0; i < aModel->GetChildren().Size(); ++i)
 		{
-			RenderModel(aModel->GetChildren()[i], aEffect);
+			RenderModel(aModel->GetChildren()[i], aEffect, aIsOnlyDepth);
 		}
 	}
 }

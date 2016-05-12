@@ -28,7 +28,7 @@ namespace Prism
 
 		void Render(const Camera& aCamera, const CU::Matrix44<float>& aWorld
 			, const CU::Vector4<float>& aColor = { 0.f, 0.f, 0.f, 0.f });
-		void Render() override;
+		void Render(bool aIsOnlyDepth) override;
 
 		void SetValue(float aValue);
 

@@ -16,6 +16,7 @@ namespace Prism
 	class Scene;
 	class Texture;
 	class SpriteProxy;
+	class SpotLightShadow;
 
 	struct RenderToScreenData : public EffectListener
 	{
@@ -89,6 +90,20 @@ namespace Prism
 		ID3DX11EffectMatrixVariable* myNotInvertedView;
 	};
 
+	struct ShadowPass : public EffectListener
+	{
+		void OnEffectLoad() override;
+
+		Effect* myEffect = nullptr;
+		ID3DX11EffectShaderResourceVariable* mySceneAlbedo = nullptr;
+		ID3DX11EffectShaderResourceVariable* mySceneDepth = nullptr;
+		ID3DX11EffectShaderResourceVariable* myShadowDepth = nullptr;
+
+		ID3DX11EffectMatrixVariable* myShadowMVP;
+		ID3DX11EffectMatrixVariable* myInvertedProjection;
+		ID3DX11EffectMatrixVariable* myNotInvertedView;
+	};
+
 
 	class DeferredRenderer : public BaseModel
 	{
@@ -96,7 +111,8 @@ namespace Prism
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void Render(Scene* aScene, Prism::SpriteProxy* aBackground);
+		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight);
+		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
 		void RenderCubeMap(Scene* aScene, ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepth,
 			D3D11_VIEWPORT* aViewPort, bool aUseAmbientPass);
 		void OnResize(float aWidth, float aHeight);
@@ -136,6 +152,7 @@ namespace Prism
 		void SetupAmbientData();
 		void SetupLightData();
 		void SetupGBufferData();
+		void SetupShadowData();
 
 		void ClearGBuffer();
 		void SetGBufferAsTarget(Texture* aDepthTexture);
@@ -151,12 +168,14 @@ namespace Prism
 		SHTextures mySHTextures;
 		Texture* myDepthStencilTexture;
 		Texture* myCubemap;
+		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
 		RenderToScreenData myRenderToScreenData;
 		AmbientPass myAmbientPass;
 		PointLightPass myPointLightPass;
 		SpotLightPass mySpotLightPass;
 		SpotLightPass mySpotLightTextureProjectionPass;
+		ShadowPass myShadowPass;
 		GBufferData myGBufferData;
 		D3D11_VIEWPORT* myViewPort;
 

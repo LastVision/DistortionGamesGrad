@@ -46,7 +46,17 @@ namespace Prism
 			myInstances[i]->Render(*myCamera, *myInstancingHelper);
 		}
 		
-		myInstancingHelper->Render();
+		myInstancingHelper->Render(false);
+	}
+
+	void Scene::RenderDepth()
+	{
+		for (int i = 0; i < myInstances.Size(); ++i)
+		{
+			myInstances[i]->Render(*myCamera, *myInstancingHelper, true);
+		}
+
+		myInstancingHelper->Render(true);
 	}
 
 	void Scene::AddInstance(Instance* aInstance)

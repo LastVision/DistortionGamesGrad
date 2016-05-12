@@ -32,7 +32,7 @@ namespace Prism
 
 	protected:
 		void EvaluateEffectTechnique(bool aInstanced);
-		virtual void Render();
+		virtual void Render(bool aIsDepthOnly);
 
 		void InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize, const std::string& aDebugName);
 		void InitVertexBuffer(int aVertexSize, int aBufferUsage, int aCPUUsage);

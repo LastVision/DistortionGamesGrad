@@ -2,6 +2,7 @@
 
 #include <BounceComponent.h>
 #include <BounceNote.h>
+#include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
 #include "EmitterManager.h"
@@ -25,6 +26,7 @@
 #include <ScrapMessage.h>
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
+#include <SpotLightShadow.h>
 #include <SpriteProxy.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
@@ -56,6 +58,7 @@ Level::Level(Prism::Camera& aCamera)
 	Prism::ModelLoader::GetInstance()->Pause();
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
+	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
 	Prism::ModelLoader::GetInstance()->UnPause();
 }
 
@@ -63,6 +66,7 @@ Level::~Level()
 {
 	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
+	SAFE_DELETE(myShadowLight);
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
@@ -136,12 +140,13 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-
+	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 	//myBackground->Render(myWindowSize * 0.5f);
 	//myScene->Render();
-	myDeferredRenderer->Render(myScene, myBackground);
+	myDeferredRenderer->Render(myScene, myBackground, myShadowLight);
 
-	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture(), myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
+	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
+		, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 
 	myEmitterManager->RenderEmitters();
 
@@ -150,7 +155,7 @@ void Level::Render()
 		if (player->GetComponent<MovementComponent>() != nullptr)
 		{
 			player->GetComponent<MovementComponent>()->Render();
-		}
+}
 	}
 }
 

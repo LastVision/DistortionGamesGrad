@@ -25,6 +25,7 @@ namespace Prism
 		~Scene();
 
 		void Render();
+		void RenderDepth();
 		void UpdateLights();
 
 		void AddInstance(Instance* aInstance);
