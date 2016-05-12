@@ -69,7 +69,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aC
 		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu_join.xml", nullptr, -1);
 	}
 
-	
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	myGUIManager->SetPosition(myGUIPosition);
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
@@ -79,7 +79,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aC
 
 void MainMenuState::EndState()
 {
-
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 }
 
 const eStateStatus MainMenuState::Update(const float& aDeltaTime)
