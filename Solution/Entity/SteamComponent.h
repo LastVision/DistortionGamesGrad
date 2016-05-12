@@ -19,6 +19,9 @@ public:
 
 	void SetSteamVariables(float aSteamInterval, float aSteamTime, float aDelayBeforeSteam);
 
+	float GetForce() const;
+	void SetForce(float aForce);
+
 private:
 
 	Entity* mySteam;

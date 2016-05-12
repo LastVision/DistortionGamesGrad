@@ -19,7 +19,7 @@ namespace Prism
 		~ParticleEmitterInstance();
 		void ReleaseData();
 		void Render();
-		void Update(float aDeltaTime, const CU::Matrix44f& aWorldMatrix);
+		void Update(float aDeltaTime);
 		void Activate(bool aShouldRender = true);
 		bool IsActive();
 
@@ -53,7 +53,7 @@ namespace Prism
 		void CreatePoints();
 		void CreateVertexBuffer();
 
-		void UpdateEmitter(float aDeltaTime, const CU::Matrix44f& aWorldMatrix);
+		void UpdateEmitter(float aDeltaTime);
 		void UpdateParticle(float aDeltaTime);
 
 		void EmitParticle(const CU::Matrix44f& aWorldMatrix);

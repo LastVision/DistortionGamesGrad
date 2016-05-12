@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "AnimationComponent.h"
+#include "BounceComponent.h"
 #include "GraphicsComponent.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
@@ -113,6 +114,11 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.myPlayerData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::PLAYER)] = new PlayerComponent(*this);
+	}
+
+	if (aEntityData.myBounceData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::BOUNCE)] = new BounceComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

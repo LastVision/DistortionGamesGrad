@@ -1,8 +1,11 @@
 #include "stdafx.h"
 
+#include <BounceComponent.h>
+#include <BounceNote.h>
 #include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
+#include "EmitterManager.h"
 #include <DeferredRenderer.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
@@ -50,7 +53,8 @@ Level::Level(Prism::Camera& aCamera)
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
-
+	myEmitterManager = new EmitterManager();
+	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
@@ -60,6 +64,7 @@ Level::Level(Prism::Camera& aCamera)
 
 Level::~Level()
 {
+	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
 	SAFE_DELETE(myShadowLight);
 	SAFE_DELETE(myBackground);
@@ -128,6 +133,8 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
 	}
 
+	myEmitterManager->UpdateEmitters(aDeltaTime);
+
 	return myStateStatus;
 }
 
@@ -140,6 +147,8 @@ void Level::Render()
 
 	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
 		, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
+
+	myEmitterManager->RenderEmitters();
 
 	for each(Entity* player in myPlayers)
 	{
@@ -168,8 +177,8 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				break;
 			case eTriggerType::FORCE:
 				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
-
 				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
+				float force = firstTrigger->GetForce();
 
 				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
@@ -177,7 +186,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				}
 
 				second.GetComponent<MovementComponent>()->SetInSteam(true
-					, { first.GetOrientation().GetUp().x * 0.5f, first.GetOrientation().GetUp().y * 0.5f });
+					, { first.GetOrientation().GetUp().x * force, first.GetOrientation().GetUp().y * force });
 				break;
 			}
 		}
@@ -241,11 +250,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (aHasEntered == true)
 			{
 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				float force = second->GetComponent<BounceComponent>()->GetForce();
 
 				if (dot > 0.001f)
 				{
-					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * 0.1f
-						, second->GetOrientation().GetUp().y * 0.1f });
+					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
+						, second->GetOrientation().GetUp().y * force });
+					second->SendNote(BounceNote());
 				}
 			}
 			break;

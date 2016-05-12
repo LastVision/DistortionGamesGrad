@@ -106,9 +106,9 @@ namespace Prism
 		}
 	}
 
-	void ParticleEmitterInstance::Update(float aDeltaTime, const CU::Matrix44f& aWorldMatrix)
+	void ParticleEmitterInstance::Update(float aDeltaTime)
 	{
-		UpdateEmitter(aDeltaTime, aWorldMatrix);
+		UpdateEmitter(aDeltaTime);
 	}
 
 	void ParticleEmitterInstance::Reset()
@@ -318,9 +318,8 @@ namespace Prism
 		return myParticleToGraphicsCard.Size();
 	}
 
-	void ParticleEmitterInstance::UpdateEmitter(float aDeltaTime, const CU::Matrix44f& aWorldMatrix)
+	void ParticleEmitterInstance::UpdateEmitter(float aDeltaTime)
 	{
-		aWorldMatrix;
 		if (myStates[ACTIVE] == TRUE)
 		{
 			myEmissionTime -= aDeltaTime;

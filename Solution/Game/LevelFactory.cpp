@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <BounceComponent.h>
 #include <EffectContainer.h>
 #include <Engine.h>
 #include <EntityFactory.h>
@@ -204,6 +205,7 @@ void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::X
 		CU::Vector3f steamVentPosition;
 		CU::Vector3f steamVentRotation;
 		CU::Vector3f steamVentScale;
+		float force = 0.f;
 
 		aReader.ForceReadAttribute(entityElement, "steamVentType", steamVentType);
 
@@ -211,12 +213,18 @@ void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::X
 
 		Entity* entity(EntityFactory::CreateEntity(eEntityType::STEAM_VENT, CU::ToLower(steamVentType),
 			aLevel->GetScene(), steamVentPosition, steamVentRotation, steamVentScale));
-
-		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
-
+		
+		tinyxml2::XMLElement* forceElement = aReader.FindFirstChild(entityElement, "force");
 		tinyxml2::XMLElement* steamTimeElement = aReader.FindFirstChild(entityElement, "steamTime");
 		tinyxml2::XMLElement* steamIntervalElement = aReader.FindFirstChild(entityElement, "steamInterval");
 		tinyxml2::XMLElement* steamDelayElement = aReader.FindFirstChild(entityElement, "steamDelay");
+
+		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
+		DL_ASSERT_EXP(forceElement != nullptr, "Steam vents need force in level XML");
+
+		aReader.ForceReadAttribute(forceElement, "value", force);
+
+		entity->GetComponent<SteamComponent>()->SetForce(force);
 
 		if (steamTimeElement != nullptr && steamIntervalElement != nullptr)
 		{
@@ -233,6 +241,7 @@ void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::X
 			}
 
 			entity->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
+
 		}
 		aLevel->Add(entity);
 	}
@@ -247,13 +256,25 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 		CU::Vector3f bouncerPosition;
 		CU::Vector3f bouncerRotation;
 		CU::Vector3f bouncerScale;
+		float force = 0.f;
 
 		aReader.ForceReadAttribute(entityElement, "bouncerType", bouncerType);
 
 		ReadOrientation(aReader, entityElement, bouncerPosition, bouncerRotation, bouncerScale);
 
-		aLevel->Add(EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
-			aLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale));
+		Entity* entity = EntityFactory::CreateEntity(eEntityType::BOUNCER, CU::ToLower(bouncerType),
+			aLevel->GetScene(), bouncerPosition, bouncerRotation, bouncerScale);
+
+		tinyxml2::XMLElement* forceElement = aReader.FindFirstChild(entityElement, "force");
+
+		DL_ASSERT_EXP(entity->GetComponent<BounceComponent>() != nullptr, "Bouncer need bounce component to work");
+		DL_ASSERT_EXP(forceElement != nullptr, "Bouncer has to have a force in level XML");
+
+		aReader.ForceReadAttribute(forceElement, "value", force);
+
+		entity->GetComponent<BounceComponent>()->SetForce(force);
+
+		aLevel->Add(entity);
 	}
 }
 

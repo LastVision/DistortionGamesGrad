@@ -19,6 +19,7 @@ namespace Prism
 class PhysicsComponent;
 class ScrapManager;
 class SmartCamera;
+class EmitterManager;
 
 struct Score;
 struct ScoreInfo;
@@ -69,6 +70,9 @@ private:
 
 	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;
+
+	EmitterManager* myEmitterManager;
+
 
 	CU::Vector3<float> mySpawnPosition;
 	CU::Vector2<float> myWindowSize;

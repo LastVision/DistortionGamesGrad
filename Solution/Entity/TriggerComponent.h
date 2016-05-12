@@ -24,12 +24,15 @@ public:
 
 	void SetLevelChangeID(int anID);
 
+	float GetForce() const;
+	void SetForce(float aForce);
 
 private:
 
 	const TriggerComponentData& myData;
 	eTriggerType myTriggerType;
 	int myLevelToChangeToID;
+	float myForce;
 };
 
 inline eComponentType TriggerComponent::GetTypeStatic()
@@ -45,4 +48,14 @@ inline eComponentType TriggerComponent::GetType()
 inline eTriggerType TriggerComponent::GetTriggerType() const
 {
 	return myTriggerType;
+}
+
+inline float TriggerComponent::GetForce() const
+{
+	return myForce;
+}
+
+inline void TriggerComponent::SetForce(float aForce)
+{
+	myForce = aForce;
 }

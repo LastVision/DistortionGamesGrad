@@ -225,6 +225,11 @@ namespace Prism
 		return myProxy;
 	}
 
+	bool Instance::AnimationIsLoaded() const
+	{
+		return myProxy.IsLoaded() == true && myHierarchyIsBuilt == true;
+	}
+
 	void Instance::BuildHierarchy(TransformationNodeInstance& aHierarchy, ModelAnimated* aModel)
 	{
 		aHierarchy.SetTransformationNode(aModel->myTransformation);

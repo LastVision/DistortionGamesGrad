@@ -6,7 +6,6 @@
 namespace Prism
 {
 	class ParticleEmitterInstance;
-	class Room;
 }
 
 class Entity;
@@ -20,15 +19,14 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, const CU::Vector3f& aSize);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, float aRadius);
-	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aSize, Prism::Room* aRoom);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float anEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, const CU::Vector3f& aRotation);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, Entity* anEntity);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, Entity* anEntity);
 
 
 	Prism::ParticleEmitterInstance* myEmitter = nullptr;
-	Prism::Room* myRoom = nullptr;
 	Entity* myEntity = nullptr;
 	const std::string myParticleTypeString = "NONE";
 	const CU::Vector3f myPosition = CU::Vector3f();
@@ -106,15 +104,6 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 {
 }
 
-inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aSize, Prism::Room* aRoom)
-	: Message(eMessageType::PARTICLE)
-	, myParticleTypeString(aParticleType)
-	, myPosition(aPosition)
-	, mySize(aSize)
-	, myRoom(aRoom)
-{
-}
-
 inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, const CU::Vector3f& aRotation)
 	: Message(eMessageType::PARTICLE)
 	, myParticleTypeString(aParticleType)
@@ -140,5 +129,15 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 	, myParticleTypeString(aParticleType)
 	, myPosition(aPosition)
 	, myEntity(anEntity)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float anEmitterLifeTime)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myDirection(aDirection)
+	, myEmitterLifeTime(anEmitterLifeTime)
+	, myUseDirection(true)
 {
 }

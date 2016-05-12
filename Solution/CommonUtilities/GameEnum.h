@@ -140,6 +140,7 @@ enum class eComponentType
 	PLAYER,
 	PLAYER_GRAPHICS,
 	SCORE,
+	BOUNCE,
 	_COUNT,
 };
 

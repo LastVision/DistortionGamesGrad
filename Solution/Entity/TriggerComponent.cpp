@@ -10,6 +10,7 @@ TriggerComponent::TriggerComponent(Entity& anEntity, const TriggerComponentData&
 	: Component(anEntity)
 	, myData(someData)
 	, myTriggerType(eTriggerType(someData.myTriggerType))
+	, myForce(0.f)
 {
 }
 
