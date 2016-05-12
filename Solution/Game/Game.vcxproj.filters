@@ -47,6 +47,9 @@
       <Filter>StateStack</Filter>
     </ClCompile>
     <ClCompile Include="ScrapManager.cpp" />
+    <ClCompile Include="GameState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

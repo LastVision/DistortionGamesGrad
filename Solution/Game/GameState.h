@@ -5,11 +5,13 @@
 namespace CU
 {
 	class InputWrapper;
+	class ControllerInput;
 }
 
 namespace GUI
 {
 	class Cursor;
+	class GUIManager;
 }
 
 class StateStackProxy;
@@ -30,6 +32,8 @@ public:
 
 	const bool& IsLetThroughRender() const;
 
+	void HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager);
+
 protected:
 
 	GUI::Cursor* myCursor;
@@ -37,6 +41,9 @@ protected:
 	eStateStatus myStateStatus;
 	bool myIsLetThrough;
 	bool myIsActiveState;
+
+	bool myControllerUpIsDown;
+	bool myControllerDownIsDown;
 };
 
 inline GameState::~GameState()

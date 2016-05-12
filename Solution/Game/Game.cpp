@@ -6,6 +6,7 @@
 #include <ColoursForBG.h>
 #include <CommonHelper.h>
 #include "Console.h"
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <DebugFont.h>
 #include <Engine.h>
@@ -54,6 +55,8 @@ Game::Game()
 
 	SetCursorPos(Prism::Engine::GetInstance()->GetWindowSizeInt().x / 2, Prism::Engine::GetInstance()->GetWindowSizeInt().y / 2);
 	myStateStack.SetCursor(myCursor);
+
+	myController = new CU::ControllerInput(eControllerID::Controller1);
 }
 
 Game::~Game()
@@ -61,6 +64,7 @@ Game::~Game()
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myCursor);
+	SAFE_DELETE(myController);
 	Prism::Audio::AudioInterface::Destroy();
 	Prism::StreakDataContainer::Destroy();
 	Prism::ParticleDataContainer::Destroy();
@@ -88,7 +92,7 @@ bool Game::Init(HWND& aHwnd)
 
 
 	//Console::GetInstance(); // needed to create console here
-	myStateStack.PushMainGameState(new LevelSelectState);
+	myStateStack.PushMainGameState(new LevelSelectState(myController));
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
 	GAME_LOG("Init Successful");

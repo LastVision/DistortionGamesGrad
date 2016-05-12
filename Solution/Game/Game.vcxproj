@@ -230,6 +230,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />

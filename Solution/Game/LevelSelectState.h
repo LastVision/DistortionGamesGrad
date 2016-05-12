@@ -8,10 +8,15 @@ namespace GUI
 	class Cursor;
 }
 
+namespace CU
+{
+	class ControllerInput;
+}
+
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
-	LevelSelectState();
+	LevelSelectState(CU::ControllerInput* aController);
 	~LevelSelectState();
 
 	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
@@ -27,5 +32,7 @@ public:
 private:
 
 	GUI::GUIManager* myGUIManager;
+
+	CU::ControllerInput* myController;
 };
 

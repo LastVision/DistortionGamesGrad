@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <InputWrapper.h>
 #include "LevelSelectState.h"
@@ -6,8 +7,11 @@
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 
-LevelSelectState::LevelSelectState()
+LevelSelectState::LevelSelectState(CU::ControllerInput* aController)
+	: myController(aController)
 {
+	myControllerUpIsDown = false;
+	myControllerDownIsDown = false;
 }
 
 LevelSelectState::~LevelSelectState()
@@ -15,6 +19,7 @@ LevelSelectState::~LevelSelectState()
 	SAFE_DELETE(myGUIManager);
 	myStateStack = nullptr;
 	myCursor = nullptr;
+	myController = nullptr;
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
@@ -37,12 +42,15 @@ void LevelSelectState::EndState()
 
 const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 {
+	myController->Update(aDeltaTime);
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
 		return eStateStatus::ePopMainState;
 	}
+
+	HandleControllerInMenu(myController, myGUIManager);
 
 	myGUIManager->Update(aDeltaTime);
 

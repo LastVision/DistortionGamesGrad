@@ -23,6 +23,7 @@ namespace GUI
 {
 	class WidgetContainer;
 	class Widget;
+	class ButtonWidget;
 	class Cursor;
 
 	class GUIManager
@@ -53,6 +54,10 @@ namespace GUI
 
 		void SetMouseShouldRender(bool aShouldRender);
 
+		void SelectNextButton();
+		void SelectPreviousButton();
+		void PressSelectedButton();
+
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);
 		void ReadFiles(XMLReader& aReader, tinyxml2::XMLElement* aFilePathElement);
@@ -66,6 +71,8 @@ namespace GUI
 
 		WidgetContainer* myWidgets;
 
+		CU::GrowingArray<ButtonWidget*> myButtons;
+
 		const Prism::Camera* myCamera;
 
 		Widget* myActiveWidget;
@@ -75,6 +82,9 @@ namespace GUI
 		CU::Vector2<float> myWindowSize;
 
 		int myLevelID;
+
+		int myControllerButtonIndex;
+		bool myUseController;
 	};
 
 	inline const Widget* GUIManager::GetActiveWidget() const
