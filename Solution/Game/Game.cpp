@@ -47,7 +47,7 @@ Game::Game()
 	Prism::Audio::AudioInterface::CreateInstance();
 
 	Prism::Audio::AudioInterface::GetInstance()->Init("Data/Resource/Sound/Init.bnk");
-	Prism::Audio::AudioInterface::GetInstance()->LoadBank("Data/Resource/Sound/MachinaSoundBank.bnk");
+	Prism::Audio::AudioInterface::GetInstance()->LoadBank("Data/Resource/Sound/GraduationSoundBank.bnk");
 	Prism::AnimationSystem::GetInstance();
 	Prism::Engine::GetInstance()->SetShowDebugText(myShowSystemInfo);
 

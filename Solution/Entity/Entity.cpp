@@ -187,7 +187,7 @@ void Entity::Update(float aDeltaTime)
 		}
 	}
 
-	if (myEntityData.myPhysicsData.myPhysicsType == ePhysics::DYNAMIC)
+	if (myEntityData.myPhysicsData.myExistsInEntity == true && myEntityData.myPhysicsData.myPhysicsType == ePhysics::DYNAMIC)
 	{
 		memcpy(&myOrientation.myMatrix[0], GetComponent<PhysicsComponent>()->GetOrientation(), sizeof(float) * 16);
 	}

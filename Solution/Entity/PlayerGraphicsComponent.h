@@ -27,6 +27,7 @@ public:
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
+	void ReceiveNote(const LoseBodyPartNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
 	void ReceiveNote(const DeathNote& aMessage) override;
 

@@ -95,6 +95,7 @@ enum class ePhysics
 	PHANTOM,
 	CAPSULE,
 	KINEMATIC,
+	_NONE,
 };
 
 enum class ePlayerState : int
@@ -133,8 +134,8 @@ enum class eComponentType
 	INPUT,
 	MOVEMENT,
 	PHYSICS,
-	SOUND,
 	SAW_BLADE,
+	SOUND,
 	SPIKE,
 	STEAM,
 	PLAYER,

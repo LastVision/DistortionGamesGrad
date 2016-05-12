@@ -219,6 +219,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aOutputData.myExistsInEntity = true;
 
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DeathSpeed"), "value", aOutputData.myDeathSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LoseHeadSpeed"), "value", aOutputData.myLoseHeadSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "HeadDistance"), "value", aOutputData.myHeadDistance);
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

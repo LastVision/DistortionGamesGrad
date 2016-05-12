@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "DashAimMovement.h"
 #include "DashFlyMovement.h"
 #include "FlyMovement.h"
@@ -6,8 +8,10 @@
 #include "MovementComponent.h"
 #include "PostMaster.h"
 #include "PlayerActiveMessage.h"
+#include "SoundComponent.h"
 #include "WalkMovement.h"
-
+#include <PostMaster.h>
+#include <EmitterMessage.h>
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
 	, myData(aData)
@@ -32,6 +36,14 @@ MovementComponent::~MovementComponent()
 	}
 
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
+}
+
+void MovementComponent::Init()
+{
+	for (int i = 0; i < eMovementType::_COUNT; ++i)
+	{
+		myMovements[i]->Init();
+	}
 }
 
 void MovementComponent::Reset()
@@ -71,6 +83,15 @@ void MovementComponent::ReceiveNote(const ContactNote& aNote)
 void MovementComponent::Impulse()
 {
 	myMovements[myCurrentMovement]->Impulse();
+	if (myCurrentMovement == eMovementType::FLY
+		|| myCurrentMovement == eMovementType::WALK)
+	{
+		SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+		if (soundComp != nullptr)
+		{
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Impulse", soundComp->GetAudioSFXID());
+		}
+	}
 }
 
 void MovementComponent::Impulse(const CU::Vector2<float>& aVelocity)
@@ -104,6 +125,7 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	if (myCurrentMovement == eMovementType::DASH_AIM)
 	{
 		myDashCooldown = myData.myDashCooldown;
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Dash_Recharge", &myEntity, myDashCooldown));
 	}
 	myMovements[myCurrentMovement]->DeActivate();
 	CU::Vector2<float> velocityToState(aVelocity);
