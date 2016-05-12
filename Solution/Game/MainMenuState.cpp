@@ -2,6 +2,7 @@
 #include <AudioInterface.h>
 #include <Camera.h>
 #include <Cursor.h>
+#include <ControllerInput.h>
 #include <GUIManager.h>
 #include "InGameState.h"
 #include <InputWrapper.h>
@@ -114,6 +115,8 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 		myDustAlpha = fmaxf(myLogoAlpha - 2.5f, 0.f);
 		myDustAlpha *= 3.f;
 		myDustAlpha = fminf(myDustAlpha, 1.f);
+
+		myController->Update(aDeltaTime);
 
 		HandleControllerInMenu(myController, myGUIManager);
 
