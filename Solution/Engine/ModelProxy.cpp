@@ -15,14 +15,15 @@ namespace Prism
 
 	void ModelProxy::Render(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
 	{
-		if (myModel != nullptr)
-		{
-			myModel->Render(aOrientation, aCameraPosition);
-		}
-		else if (myModelAnimated != nullptr)
-		{
-			myModelAnimated->Render(aOrientation);
-		}
+		DL_ASSERT("REMOVED BY FABIAN AND NIKLAS");
+		//if (myModel != nullptr)
+		//{
+		//	myModel->Render(aOrientation, aCameraPosition);
+		//}
+		//else if (myModelAnimated != nullptr)
+		//{
+		//	myModelAnimated->Render(aOrientation);
+		//}
 	}
 
 	void ModelProxy::SetModel(Model* aModel)

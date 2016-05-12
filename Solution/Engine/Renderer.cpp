@@ -93,7 +93,7 @@ namespace Prism
 		//aScene->SetViewCamera(*oldCamera);
 		aScene->SetCamera(*aShadowSpotLight->GetCamera());
 
-		aScene->Render();
+		aScene->RenderDepth();
 
 		context->OMSetRenderTargets(1, &originalRenderTargetView, originalDepthStencilView);
 		context->RSSetViewports(1, &oldVp);

@@ -85,7 +85,7 @@ void Prism::Text::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<
 	myEffect->SetPosAndScale(aPosition, aScale);
 	myEffect->SetColor(aColor);
 
-	BaseModel::Render();
+	BaseModel::Render(false);
 
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 }
@@ -114,7 +114,7 @@ void Prism::Text::Render(const Camera* aCamera, const CU::Matrix44<float>& aOrie
 	myEffect->SetPosAndScale({ 0.f, 0.f }, { 200.f, 200.f });
 	myEffect->SetColor(aColor);
 
-	BaseModel::Render();
+	BaseModel::Render(false);
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 }
 
@@ -142,7 +142,7 @@ void Prism::Text::Render(const Camera* aCamera, const CU::Matrix44<float>& aOrie
 	myEffect->SetPosAndScale({ 0.1f, 0.9f }, aScale);
 	myEffect->SetColor(aColor);
 
-	BaseModel::Render();
+	BaseModel::Render(false);
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 }
 

@@ -115,7 +115,7 @@ void Prism::Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector
 	myEffect->SetColor(aColor);
 	myEffect->SetSpriteOrientation(myOrientation);
 
-	BaseModel::Render();
+	BaseModel::Render(false);
 
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 }

@@ -13,6 +13,7 @@ namespace Prism
 	class Renderer;
 	class Scene;
 	class SpriteProxy;
+	class SpotLightShadow;
 };
 
 class PhysicsComponent;
@@ -58,6 +59,7 @@ private:
 	Prism::Scene* myScene;
 	Prism::DeferredRenderer* myDeferredRenderer;
 	Prism::Renderer* myFullscreenRenderer;
+	Prism::SpotLightShadow* myShadowLight;
 	SmartCamera* mySmartCamera;
 	CU::Matrix44<float> dummyMatrix;
 

@@ -28,10 +28,10 @@ namespace Prism
 		void AddModel(Model* aModel, const CU::Matrix44<float>& aWorldMatrix
 			, const CU::Vector3<float>& aScale, float aHeight);
 
-		void Render();
+		void Render(bool aIsOnlyDepth);
 
 	private:
-		void RenderModel(Model* aModel, Effect* aEffect);
+		void RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth);
 
 		const Camera* myCamera;
 

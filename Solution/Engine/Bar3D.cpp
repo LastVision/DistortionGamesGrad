@@ -50,11 +50,11 @@ namespace Prism
 		myEffect->SetColor(aColor);
 		//BaseModel::Render();
 
-		Render();
+		Render(false);
 		Prism::Engine::GetInstance()->SetRasterizeState(eRasterizer::CULL_BACK);
 	}
 
-	void Bar3D::Render()
+	void Bar3D::Render(bool aIsOnlyDepth)
 	{
 
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);

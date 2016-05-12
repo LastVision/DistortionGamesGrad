@@ -76,7 +76,7 @@ namespace Prism
 				myProxy.myModelAnimated->SetTechniqueName(oldTechnique + "_DEPTHONLY");
 
 				myProxy.GetEffect()->SetBones(myBones);
-				RenderModelAnimated(myProxy.myModelAnimated, myOrientation, aCamera, myHierarchy);
+				RenderModelAnimated(myProxy.myModelAnimated, myOrientation, aCamera, myHierarchy, false);
 
 				myProxy.myModelAnimated->SetTechniqueName(oldTechnique);
 			}
@@ -87,14 +87,14 @@ namespace Prism
 		}
 	}
 
-	void Instance::Render(const Camera& aCamera, InstancingHelper& aInstancingHelper)
+	void Instance::Render(const Camera& aCamera, InstancingHelper& aInstancingHelper, bool aIsOnlyDepth)
 	{
 
 		if (myShouldRender == true && myProxy.IsLoaded())
 		{
 			if (myProxy.IsAnimated() == true)
 			{
-				if (aCamera.GetFrustum().Inside(myOrientation.GetPos(), myProxy.myModelAnimated->GetRadius()) == true)
+				if (aIsOnlyDepth == true || aCamera.GetFrustum().Inside(myOrientation.GetPos(), myProxy.myModelAnimated->GetRadius()) == true)
 				{
 					if (myShouldUseSpecialFoV == true)
 					{
@@ -108,12 +108,12 @@ namespace Prism
 					myProxy.GetEffect()->SetCameraPosition(aCamera.GetOrientation().GetPos());
 
 					myProxy.GetEffect()->SetBones(myBones);
-					RenderModelAnimated(myProxy.myModelAnimated, myOrientation, aCamera, myHierarchy);
+					RenderModelAnimated(myProxy.myModelAnimated, myOrientation, aCamera, myHierarchy, aIsOnlyDepth);
 				}
 			}
 			else
 			{
-				if (aCamera.GetFrustum().Inside(myOrientation.GetPos(), myProxy.myModel->GetRadius()) == true)
+				if (aIsOnlyDepth == true || aCamera.GetFrustum().Inside(myOrientation.GetPos(), myProxy.myModel->GetRadius()) == true)
 				{
 					AddModelToInstancingHelper(myProxy.myModel, aInstancingHelper);
 				}
@@ -135,18 +135,18 @@ namespace Prism
 	}
 
 	void Instance::RenderModelAnimated(ModelAnimated* aModel, const CU::Matrix44<float>& aParent
-		, const Camera& aCamera, TransformationNodeInstance& aHierarchy)
+		, const Camera& aCamera, TransformationNodeInstance& aHierarchy, bool aIsOnlyDepth)
 	{
 		if (aModel->myIsNULLObject == false)
 		{
-			aModel->Render(aHierarchy.GetTransformation() * aParent);
+			aModel->Render(aHierarchy.GetTransformation() * aParent, aIsOnlyDepth);
 		}
 
 		for (int i = 0; i < aHierarchy.GetChildren().Size(); ++i)
 		{
 			DL_ASSERT_EXP(aModel->myChildren[i] != nullptr, "Missmatch number of TransformationNodes and number of Models");
 
-			RenderModelAnimated(aModel->myChildren[i], aHierarchy.GetTransformation() * aParent, aCamera, *aHierarchy.GetChildren()[i]);
+			RenderModelAnimated(aModel->myChildren[i], aHierarchy.GetTransformation() * aParent, aCamera, *aHierarchy.GetChildren()[i], aIsOnlyDepth);
 		}
 	}
 

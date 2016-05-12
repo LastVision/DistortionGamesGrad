@@ -315,51 +315,52 @@ namespace Prism
 
 	void Model::Render(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
 	{
-		if (myIsLodGroup == true)
-		{
-			float lengthBetweenCameraAndModel = CU::Length(aCameraPosition - aOrientation.GetPos());
-			int level = 0;
+		DL_ASSERT("REMOVED BY FABIAN AND NIKLAS");
+		//if (myIsLodGroup == true)
+		//{
+		//	float lengthBetweenCameraAndModel = CU::Length(aCameraPosition - aOrientation.GetPos());
+		//	int level = 0;
 
-			Model* toRender = nullptr;
-			for (int i = myChildren.Size() - 1; i >= 0; i--)
-			{
-				LodGroup* group = myLodGroup;
-				double threshold = group->myThreshHolds[i];
-				threshold /= 100;
-				if (threshold <= lengthBetweenCameraAndModel)
-				{
-					toRender = myChildren[i];
-					level = i;
-					break;
-				}
-			}
+		//	Model* toRender = nullptr;
+		//	for (int i = myChildren.Size() - 1; i >= 0; i--)
+		//	{
+		//		LodGroup* group = myLodGroup;
+		//		double threshold = group->myThreshHolds[i];
+		//		threshold /= 100;
+		//		if (threshold <= lengthBetweenCameraAndModel)
+		//		{
+		//			toRender = myChildren[i];
+		//			level = i;
+		//			break;
+		//		}
+		//	}
 
-			if (toRender)
-			{
-				toRender->Render(aOrientation, aCameraPosition);
-			}
-		}
-		else
-		{
-			if (myIsNULLObject == false)
-			{
-				float blendFactor[4];
-				blendFactor[0] = 0.f;
-				blendFactor[1] = 0.f;
-				blendFactor[2] = 0.f;
-				blendFactor[3] = 0.f;
+		//	if (toRender)
+		//	{
+		//		toRender->Render(aOrientation, aCameraPosition);
+		//	}
+		//}
+		//else
+		//{
+		//	if (myIsNULLObject == false)
+		//	{
+		//		float blendFactor[4];
+		//		blendFactor[0] = 0.f;
+		//		blendFactor[1] = 0.f;
+		//		blendFactor[2] = 0.f;
+		//		blendFactor[3] = 0.f;
 
-				myEffect->SetBlendState(NULL, blendFactor);
-				myEffect->SetWorldMatrix(aOrientation);
+		//		myEffect->SetBlendState(NULL, blendFactor);
+		//		myEffect->SetWorldMatrix(aOrientation);
 
-				BaseModel::Render();
-			}
+		//		BaseModel::Render();
+		//	}
 
-			for (int i = 0; i < myChildren.Size(); ++i)
-			{
-				myChildren[i]->Render(myChildTransforms[i] * aOrientation, aCameraPosition);
-			}
-		}
+		//	for (int i = 0; i < myChildren.Size(); ++i)
+		//	{
+		//		myChildren[i]->Render(myChildTransforms[i] * aOrientation, aCameraPosition);
+		//	}
+		//}
 	}
 
 	void Model::DeActivateSurfaces()
