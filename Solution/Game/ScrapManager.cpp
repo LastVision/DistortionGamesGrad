@@ -242,9 +242,9 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		CU::Vector3<float> offset;
 
 		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-		offset.z = 0.5f;
+		offset.y = 0.5f;
 		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-		offset.z = 0.5f;
+		offset.y = -0.5f;
 		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
