@@ -105,13 +105,9 @@ namespace Prism
 		RenderDeferred(aScene);
 
 
-		ID3D11RenderTargetView* targets[2];
-		targets[0] = myFinishedSceneTexture->GetRenderTargetView();
-		targets[1] = myGBufferData.myEmissiveTexture->GetRenderTargetView();
-		
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(2, targets
+		ID3D11RenderTargetView* targets = myFinishedSceneTexture->GetRenderTargetView();
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &targets
 			, myDepthStencilTexture->GetDepthStencilView());
-
 
 		aParticleEmitterManager->RenderEmitters(0);
 
@@ -261,11 +257,14 @@ namespace Prism
 		renderTarget = myFinishedTexture->GetRenderTargetView();
 #endif
 
-		context->OMSetRenderTargets(1, &renderTarget, myDepthStencilTexture->GetDepthStencilView());
-		context->ClearRenderTargetView(renderTarget, myClearColor);
 		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		context->ClearRenderTargetView(renderTarget, myClearColor);
+		context->OMSetRenderTargets(1, &renderTarget, Engine::GetInstance()->GetDepthView());
 
-			RenderAmbientPass(aScene);
+		RenderAmbientPass(aScene);
+
+		context->OMSetRenderTargets(1, &renderTarget, myDepthStencilTexture->GetDepthStencilView());
+
 
 #ifdef USE_LIGHT
 		myPointLightPass->Render(aScene, *myGBufferData, myCubemap);

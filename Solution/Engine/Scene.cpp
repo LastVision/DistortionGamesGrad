@@ -38,9 +38,6 @@ namespace Prism
 
 	void Scene::Render()
 	{
-		UpdateLights();
-
-
 		for (int i = 0; i < myInstances.Size(); ++i)
 		{
 			myInstances[i]->Render(*myCamera, *myInstancingHelper);
