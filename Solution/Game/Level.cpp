@@ -175,7 +175,7 @@ void Level::Render()
 		if (player->GetComponent<MovementComponent>() != nullptr)
 		{
 			player->GetComponent<MovementComponent>()->Render();
-}
+		}
 	}
 }
 

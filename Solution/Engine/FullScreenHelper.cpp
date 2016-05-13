@@ -21,7 +21,6 @@ namespace Prism
 		mySource = myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 	}
 
-
 	void BloomData::OnEffectLoad()
 	{
 		myBloomVariable = myBloomEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
