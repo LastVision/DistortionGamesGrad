@@ -20,7 +20,7 @@ public:
 	StateStack();
 	~StateStack();
 
-	void PushSubGameState(GameState* aSubGameState);
+	void PushSubGameState(GameState* aSubGameState, bool aShouldPause = true);
 	void PushMainGameState(GameState* aMainGameState);
 	bool UpdateCurrentState(const float& aDeltaTime);
 	void RenderCurrentState();

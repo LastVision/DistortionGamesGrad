@@ -8,10 +8,15 @@ namespace GUI
 	class Cursor;
 }
 
+namespace CU
+{
+	class ControllerInput;
+}
+
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
-	LevelSelectState();
+	LevelSelectState(CU::ControllerInput* aController);
 	~LevelSelectState();
 
 	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
@@ -20,6 +25,7 @@ public:
 	const eStateStatus Update(const float& aDeltaTime) override;
 	void Render() override;
 	void ResumeState() override;
+	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
@@ -27,5 +33,7 @@ public:
 private:
 
 	GUI::GUIManager* myGUIManager;
+
+	CU::ControllerInput* myController;
 };
 

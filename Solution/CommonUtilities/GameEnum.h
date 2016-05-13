@@ -11,6 +11,7 @@ enum class eScrapPart
 	HEAD,
 	BODY,
 	LEGS,
+	GIBS,
 	_COUNT
 };
 
@@ -135,13 +136,13 @@ enum class eComponentType
 	MOVEMENT,
 	PHYSICS,
 	SAW_BLADE,
-	SOUND,
 	SPIKE,
 	STEAM,
 	PLAYER,
 	PLAYER_GRAPHICS,
 	SCORE,
 	BOUNCE,
+	SOUND,
 	_COUNT,
 };
 

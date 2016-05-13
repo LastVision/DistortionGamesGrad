@@ -198,6 +198,9 @@
     <ClCompile Include="GBufferData.cpp">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClCompile>
+    <ClCompile Include="EmitterManager.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -446,6 +449,9 @@
     </ClInclude>
     <ClInclude Include="GBufferData.h">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterManager.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

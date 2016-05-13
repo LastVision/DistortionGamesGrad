@@ -205,7 +205,6 @@
     <ClInclude Include="ConsoleHelp.h" />
     <ClInclude Include="ConsoleHistoryManager.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="InGameState.h" />
@@ -228,8 +227,8 @@
     <ClCompile Include="ConsoleHelp.cpp" />
     <ClCompile Include="ConsoleHistoryManager.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
@@ -272,9 +271,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Memory\Memory.vcxproj">
       <Project>{25945336-03d1-42a6-8764-7ef11dbc42e6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ParticleSystem\ParticleSystem.vcxproj">
-      <Project>{f9457655-c0bd-4c0f-a7f9-1197da5c5c6a}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Physics\Physics.vcxproj">
       <Project>{269b4029-985d-43a9-ad41-903389c1070d}</Project>

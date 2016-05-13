@@ -19,13 +19,14 @@ namespace Prism
 	class SpriteProxy;
 	class SpotLightShadow;
 
+	class EmitterManager;
 	class DeferredRenderer : public BaseModel
 	{
 	public:
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight);
+		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
 		void OnResize(float aWidth, float aHeight);
 

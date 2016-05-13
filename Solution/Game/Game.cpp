@@ -6,6 +6,7 @@
 #include <ColoursForBG.h>
 #include <CommonHelper.h>
 #include "Console.h"
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <DebugFont.h>
 #include <Engine.h>
@@ -54,6 +55,8 @@ Game::Game()
 
 	SetCursorPos(Prism::Engine::GetInstance()->GetWindowSizeInt().x / 2, Prism::Engine::GetInstance()->GetWindowSizeInt().y / 2);
 	myStateStack.SetCursor(myCursor);
+
+	myController = new CU::ControllerInput(eControllerID::Controller1);
 }
 
 Game::~Game()
@@ -61,6 +64,7 @@ Game::~Game()
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myCursor);
+	SAFE_DELETE(myController);
 	Prism::Audio::AudioInterface::Destroy();
 	Prism::StreakDataContainer::Destroy();
 	Prism::ParticleDataContainer::Destroy();
@@ -70,7 +74,7 @@ Game::~Game()
 	Prism::DebugDrawer::Destroy();
 	EntityFactory::Destroy();
 	PostMaster::Destroy();
-//	NetworkManager::Destroy();
+	//	NetworkManager::Destroy();
 }
 
 bool Game::Init(HWND& aHwnd)
@@ -88,7 +92,12 @@ bool Game::Init(HWND& aHwnd)
 
 
 	//Console::GetInstance(); // needed to create console here
-	myStateStack.PushMainGameState(new LevelSelectState);
+	//myStateStack.PushMainGameState(new LevelSelectState(myController));
+#ifdef RELEASE_BUILD
+	myStateStack.PushMainGameState(new MainMenuState(myController));
+#else
+	myStateStack.PushMainGameState(new LevelSelectState(myController));
+#endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
 	GAME_LOG("Init Successful");
@@ -106,7 +115,7 @@ bool Game::Update()
 
 	myTimerManager->Update();
 	Prism::Audio::AudioInterface::GetInstance()->Update();
-	
+
 	float deltaTime = myTimerManager->GetMasterTimer().GetTime().GetFrameTime();
 	Prism::Engine::GetInstance()->Update(deltaTime);
 
@@ -152,7 +161,7 @@ bool Game::Update()
 #endif
 	myCursor->Update();
 	myCursor->Render();
-	
+
 	Prism::DebugDrawer::GetInstance()->RenderTextToScreen(); //Have to be last
 	return true;
 }
@@ -183,6 +192,10 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::START_LEVEL:
 		SET_RUNTIME(false);
 		myStateStack.PushMainGameState(new InGameState(aMessage.myID));
+		break;
+	case eOnClickEvent::LEVEL_SELECT:
+		SET_RUNTIME(false);
+		myStateStack.PushMainGameState(new LevelSelectState(myController));
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;

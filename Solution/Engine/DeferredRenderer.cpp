@@ -17,7 +17,7 @@
 #include "SpotLightShadow.h"
 #include "SpotLightTextureProjection.h"
 #include <XMLReader.h>
-
+#include "EmitterManager.h"
 namespace Prism
 {
 	DeferredRenderer::DeferredRenderer()
@@ -84,7 +84,7 @@ namespace Prism
 		SAFE_DELETE(mySpotLightTextureProjectionPass);
 	}
 
-	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight)
+	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
 	{
 		Engine::GetInstance()->GetContex()->RSSetViewports(1, myViewPort);
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myDepthStencilTexture->GetDepthStencilView()
@@ -104,6 +104,18 @@ namespace Prism
 
 		RenderDeferred(aScene);
 
+
+		ID3D11RenderTargetView* targets[2];
+		targets[0] = myFinishedSceneTexture->GetRenderTargetView();
+		targets[1] = myGBufferData.myEmissiveTexture->GetRenderTargetView();
+		
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(2, targets
+			, myDepthStencilTexture->GetDepthStencilView());
+
+
+		aParticleEmitterManager->RenderEmitters(0);
+
+
 #ifdef SHADOWS
 		RenderShadows(aShadowLight, aScene->GetCamera());
 #endif
@@ -111,6 +123,8 @@ namespace Prism
 
 	void DeferredRenderer::RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera)
 	{
+		ActivateBuffers();
+		Prism::EffectContainer::GetInstance()->SetShadowDepth(aShadowLight);
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
 		context->ClearRenderTargetView(backbuffer, myClearColor);
@@ -251,7 +265,7 @@ namespace Prism
 		context->ClearRenderTargetView(renderTarget, myClearColor);
 		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-		RenderAmbientPass(aScene);
+			RenderAmbientPass(aScene);
 
 #ifdef USE_LIGHT
 		myPointLightPass->Render(aScene, *myGBufferData, myCubemap);

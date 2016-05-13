@@ -56,7 +56,7 @@ Level::Level(Prism::Camera& aCamera)
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
 	ScrapManager::Create(myScene);
-	myEmitterManager = new EmitterManager();
+	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
 	myDeferredRenderer = new Prism::DeferredRenderer();
@@ -164,12 +164,11 @@ void Level::Render()
 	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 	//myBackground->Render(myWindowSize * 0.5f);
 	//myScene->Render();
-	myDeferredRenderer->Render(myScene, myBackground, myShadowLight);
+	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
 	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
 		, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 
-	myEmitterManager->RenderEmitters(myDeferredRenderer->GetDepthStencilTexture());
 
 	for each(Entity* player in myPlayers)
 	{
@@ -370,6 +369,11 @@ void Level::EndState()
 }
 
 void Level::ResumeState()
+{
+
+}
+
+void Level::PauseState()
 {
 
 }

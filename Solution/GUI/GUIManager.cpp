@@ -16,6 +16,9 @@ namespace GUI
 		, myMousePosition({ 0.f, 0.f })
 		, myCamera(aCamera)
 		, myLevelID(aLeveID)
+		, myButtons(16)
+		, myUseController(false)
+		, myControllerButtonIndex(0)
 	{
 		myWindowSize = { 1920.f, 1080.f }; // XML coordinates respond to this resolution, will be resized
 
@@ -29,6 +32,7 @@ namespace GUI
 
 	GUIManager::~GUIManager()
 	{
+		myButtons.RemoveAll();
 		SAFE_DELETE(myWidgets);
 		myActiveWidget = nullptr;
 	}
@@ -128,6 +132,37 @@ namespace GUI
 		myCursor->SetShouldRender(aShouldRender);
 	}
 
+	void GUIManager::SelectNextButton()
+	{
+		myButtons[myControllerButtonIndex]->OnMouseExit();
+
+		myControllerButtonIndex++;
+		if (myControllerButtonIndex > myButtons.Size() - 1)
+		{
+			myControllerButtonIndex = 0;
+		}
+
+		myButtons[myControllerButtonIndex]->OnMouseEnter();
+	}
+
+	void GUIManager::SelectPreviousButton()
+	{
+		myButtons[myControllerButtonIndex]->OnMouseExit();
+
+		myControllerButtonIndex--;
+		if (myControllerButtonIndex < 0)
+		{
+			myControllerButtonIndex = myButtons.Size() - 1;
+		}
+
+		myButtons[myControllerButtonIndex]->OnMouseEnter();
+	}
+
+	void GUIManager::PressSelectedButton()
+	{
+		myButtons[myControllerButtonIndex]->OnLeftMouseUp();
+	}
+
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{
 		std::string path = "";
@@ -210,6 +245,7 @@ namespace GUI
 				{
 					ButtonWidget* button = new ButtonWidget(&aReader, widgetElement);
 					container->AddWidget(button);
+					myButtons.Add(button);
 				}
 				else if (type == "sprite")
 				{
