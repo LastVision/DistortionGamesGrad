@@ -6,6 +6,7 @@
 #include "LoseBodyPartNote.h"
 #include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
+#include "PollingStation.h"
 #include <PlayerActiveMessage.h>
 #include <Scene.h>
 #include <ScrapMessage.h>
@@ -20,6 +21,7 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myEntityOrientation(aEntityOrientation)
 	, myScene(aScene)
 	, myPlayerID(aPlayerID)
+	, myShowArrow(false)
 {
 }
 
@@ -54,7 +56,7 @@ void PlayerGraphicsComponent::Init()
 	{
 		myArrow = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModel(myData.myPlayerTwoArrow, myData.myShader), myArrowOrientation);
 	}
-
+	myArrow->SetShouldRender(false);
 
 	while (Prism::ModelLoader::GetInstance()->IsLoading())
 		;
@@ -88,7 +90,7 @@ void PlayerGraphicsComponent::Activate()
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
-	myArrow->SetShouldRender(true);
+	//myArrow->SetShouldRender(true);
 }
 
 
@@ -131,6 +133,17 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
 
 	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
+
+	if (PollingStation::GetInstance()->GetPlayersAlive() > 1 && myShowArrow == false)
+	{
+		myShowArrow = true;
+		myArrow->SetShouldRender(true);
+	}
+	else if (PollingStation::GetInstance()->GetPlayersAlive() < 2 && myShowArrow == true)
+	{
+		myShowArrow = false;
+		myArrow->SetShouldRender(false);
+	}
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)

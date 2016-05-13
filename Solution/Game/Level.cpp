@@ -19,6 +19,7 @@
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
 #include <PlayerComponent.h>
+#include <PollingStation.h>
 #include <PostMaster.h>
 #include <Renderer.h>
 #include <ReturnToMenuMessage.h>
@@ -65,6 +66,8 @@ Level::Level(Prism::Camera& aCamera)
 	Prism::ModelLoader::GetInstance()->UnPause();
 
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
+
+	PollingStation::Create();
 }
 
 Level::~Level()
@@ -82,7 +85,7 @@ Level::~Level()
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
-
+	PollingStation::Destroy();
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
@@ -120,11 +123,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myIsActiveState = false;
 		return eStateStatus::ePopMainState;
 	}
-
+	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
 	{
 		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
 		{
+			++playersAlive;
 			player->Update(aDeltaTime);
 		}
 		else
@@ -132,7 +136,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 			player->GetComponent<InputComponent>()->Update(aDeltaTime);
 		}
 	}
-
+	PollingStation::GetInstance()->SetPlayersAlive(playersAlive);
 	for each(Entity* entity in myEntities)
 	{
 		entity->Update(aDeltaTime);

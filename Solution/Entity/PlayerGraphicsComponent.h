@@ -39,6 +39,7 @@ private:
 
 	Prism::Scene* myScene;
 	Prism::Instance* myArrow;
+	bool myShowArrow;
 
 	CU::Matrix44<float> myArrowOrientation;
 

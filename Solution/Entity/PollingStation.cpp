@@ -5,12 +5,17 @@
 PollingStation* PollingStation::myInstance = nullptr;
 PollingStation* PollingStation::GetInstance()
 {
+	DL_ASSERT_EXP(myInstance != nullptr, "POLLINGSTATION NOT CREATED YET, RUN CREATE");
+	return myInstance;
+}
+
+void PollingStation::Create()
+{
+	DL_ASSERT_EXP(myInstance == nullptr, "POLLINGSTATION ALREADY CREATED");
 	if (myInstance == nullptr)
 	{
 		myInstance = new PollingStation();
 	}
-
-	return myInstance;
 }
 
 void PollingStation::Destroy()
@@ -19,6 +24,7 @@ void PollingStation::Destroy()
 }
 
 PollingStation::PollingStation()
+	: myPlayersAlive(0)
 {
 }
 
