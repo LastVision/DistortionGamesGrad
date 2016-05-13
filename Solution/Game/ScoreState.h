@@ -1,10 +1,12 @@
 #pragma once
 #include "GameState.h"
 
+class Score;
+class ScoreInfo;
 class ScoreState : public GameState
 {
 public:
-	ScoreState();
+	ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo);
 	~ScoreState();
 
 	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
@@ -15,5 +17,8 @@ public:
 	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
 
+private:
+	const CU::GrowingArray<const Score*>& myScores;
+	const ScoreInfo& myScoreInfo;
 };
 

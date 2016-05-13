@@ -149,7 +149,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			myStateStack->PushSubGameState(new ScoreState());
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
 		}
 	}
 
@@ -301,7 +301,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
-					myStateStack->PushSubGameState(new ScoreState());
+					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
 				}
 
 			}
