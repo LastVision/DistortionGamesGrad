@@ -177,11 +177,26 @@
     <ClCompile Include="TextProxy.cpp">
       <Filter>Rendering\Text</Filter>
     </ClCompile>
-    <ClCompile Include="CubeMapGenerator.cpp">
-      <Filter>Rendering\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="SpotLightTextureProjection.cpp">
       <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPasses.cpp">
+      <Filter>Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowPass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
+    <ClCompile Include="AmbientPass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightPass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLightPass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
+    <ClCompile Include="GBufferData.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -408,14 +423,29 @@
     <ClInclude Include="TextProxy.h">
       <Filter>Rendering\Text</Filter>
     </ClInclude>
-    <ClInclude Include="CubeMapGenerator.h">
-      <Filter>Rendering\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="SpotLightTextureProjection.h">
       <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="AnimationJoint.h">
       <Filter>Rendering\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPasses.h">
+      <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowPass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="AmbientPass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightPass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLightPass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="GBufferData.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -472,6 +502,9 @@
     </Filter>
     <Filter Include="Rendering\Renderer">
       <UniqueIdentifier>{9eae83a0-4dc4-4207-9000-7994f620f042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Renderer\DeferredPasses">
+      <UniqueIdentifier>{144b4a39-8db1-46ed-9eb4-7f5686b646c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

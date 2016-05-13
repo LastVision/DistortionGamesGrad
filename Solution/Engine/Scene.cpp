@@ -97,24 +97,6 @@ namespace Prism
 		myInstancingHelper->SetCamera(myCamera);
 	}
 
-	void Scene::UpdateLights()
-	{
-		//for (int i = 0; i < myDirectionalLights.Size(); ++i)
-		//{
-		//	myDirectionalLights[i]->Update();
-		//}
-		//
-		//for (int i = 0; i < myAmbientPointLights.Size(); ++i)
-		//{
-		//	myAmbientPointLights[i]->Update();
-		//}
-		//
-		//for (int i = 0; i < mySpotLights.Size(); ++i)
-		//{
-		//	mySpotLights[i]->Update();
-		//}
-	}
-
 	void Scene::RemoveInstance(Instance* aInstance)
 	{
 		myInstances.RemoveCyclic(aInstance);

@@ -255,6 +255,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AmbientPass.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationCurve.cpp" />
     <ClCompile Include="AnimationNode.cpp" />
@@ -265,8 +266,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube3D.cpp" />
     <ClCompile Include="Cube3DRenderer.cpp" />
-    <ClCompile Include="CubeMapGenerator.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
+    <ClCompile Include="DeferredPasses.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DGFXLoader.cpp" />
     <ClCompile Include="DirectX.cpp" />
@@ -288,6 +289,7 @@
     <ClCompile Include="FontProxy.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="FullScreenHelper.cpp" />
+    <ClCompile Include="GBufferData.cpp" />
     <ClCompile Include="HierarchyBone.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="InstancingHelper.cpp" />
@@ -295,9 +297,12 @@
     <ClCompile Include="Line3DRenderer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelAnimated.cpp" />
+    <ClCompile Include="PointLightPass.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="ShadowPass.cpp" />
+    <ClCompile Include="SpotLightPass.cpp" />
     <ClCompile Include="SpotLightShadow.cpp" />
     <ClCompile Include="SpotLightTextureProjection.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -338,6 +343,7 @@
     <ClCompile Include="TransformationNodeInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AmbientPass.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationCurve.h" />
     <ClInclude Include="AnimationData.h" />
@@ -351,8 +357,8 @@
     <ClInclude Include="CharacterData.h" />
     <ClInclude Include="Cube3D.h" />
     <ClInclude Include="Cube3DRenderer.h" />
-    <ClInclude Include="CubeMapGenerator.h" />
     <ClInclude Include="DebugDrawer.h" />
+    <ClInclude Include="DeferredPasses.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DGFXFileFormat.h" />
     <ClInclude Include="DGFXLoader.h" />
@@ -371,6 +377,7 @@
     <ClInclude Include="FontProxy.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="FullScreenHelper.h" />
+    <ClInclude Include="GBufferData.h" />
     <ClInclude Include="HierarchyBone.h" />
     <ClInclude Include="IModelFactory.h" />
     <ClInclude Include="IndexBufferWrapper.h" />
@@ -383,9 +390,12 @@
     <ClInclude Include="LodStructs.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelAnimated.h" />
+    <ClInclude Include="PointLightPass.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="ShadowPass.h" />
+    <ClInclude Include="SpotLightPass.h" />
     <ClInclude Include="SpotLightShadow.h" />
     <ClInclude Include="SpotLightTextureProjection.h" />
     <ClInclude Include="Sprite.h" />

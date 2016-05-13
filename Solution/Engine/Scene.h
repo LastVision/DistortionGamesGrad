@@ -26,7 +26,6 @@ namespace Prism
 
 		void Render();
 		void RenderDepth();
-		void UpdateLights();
 
 		void AddInstance(Instance* aInstance);
 		void AddLight(DirectionalLight* aLight);
