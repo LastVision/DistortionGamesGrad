@@ -131,19 +131,46 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
+	
 
-	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
+
+
 
 	if (PollingStation::GetInstance()->GetPlayersAlive() > 1 && myShowArrow == false)
 	{
 		myShowArrow = true;
 		myArrow->SetShouldRender(true);
+		myLerping = 0.f;
 	}
 	else if (PollingStation::GetInstance()->GetPlayersAlive() < 2 && myShowArrow == true)
 	{
 		myShowArrow = false;
+		
+		myLerping = 0.f;
+	}
+
+	myLerping += aDeltaTime * 4.f;
+
+	float scale = 0.f;
+	if (myShowArrow == true)
+	{
+		scale = CU::Math::Lerp(0.f, 1.f, myLerping);
+		scale = min(1.f, scale); 
+	}
+	else
+	{
+		scale = CU::Math::Lerp(1.f, 0.f, myLerping);
+		scale = max(0.f, scale);
+	}
+
+	if (myShowArrow == false && scale <= 0.f)
+	{
 		myArrow->SetShouldRender(false);
 	}
+
+
+	myArrow->SetScale(CU::Vector3<float>(scale, scale, scale));
+	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
 }
 
 void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)

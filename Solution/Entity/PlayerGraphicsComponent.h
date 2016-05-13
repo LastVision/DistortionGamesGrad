@@ -40,6 +40,7 @@ private:
 	Prism::Scene* myScene;
 	Prism::Instance* myArrow;
 	bool myShowArrow;
+	float myLerping;
 
 	CU::Matrix44<float> myArrowOrientation;
 
