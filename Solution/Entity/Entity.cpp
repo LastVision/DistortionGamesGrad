@@ -69,21 +69,35 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myPhysicsData.myExistsInEntity == true)
 	{
-		if (aEntityData.myAnimationData.myExistsInEntity == true)
+		std::string objPath = aEntityData.myPhysicsData.myObjPath;
+		if (objPath.size() > 0)
 		{
-			myComponents[static_cast<int>(eComponentType::PHYSICS)] = new PhysicsComponent(*this, aEntityData.myPhysicsData
-				, aEntityData.myAnimationData.myModelPath);
-		}
-		else if (aEntityData.myGraphicsData.myExistsInEntity == true)
-		{
-			myComponents[static_cast<int>(eComponentType::PHYSICS)] = new PhysicsComponent(*this, aEntityData.myPhysicsData
-				, aEntityData.myGraphicsData.myModelPath);
+			DL_ASSERT_EXP(aEntityData.myAnimationData.myExistsInEntity == false &&
+				aEntityData.myGraphicsData.myExistsInEntity == false, "Cant have both objpath in physicscomponent and a graphics/animation component");
 		}
 		else
 		{
-			myComponents[static_cast<int>(eComponentType::PHYSICS)] = new PhysicsComponent(*this, aEntityData.myPhysicsData
-				, "no path");
+			if (aEntityData.myAnimationData.myExistsInEntity == true)
+			{
+				objPath = aEntityData.myAnimationData.myModelPath;
+			}
+			else if (aEntityData.myGraphicsData.myExistsInEntity == true)
+			{
+				objPath = aEntityData.myGraphicsData.myModelPath;
+			}
+			else
+			{
+				if (aEntityData.myPlayerData.myExistsInEntity == false)
+				{
+					DL_ASSERT("Physics component missing obj path or a graphics/animation component");
+				}
+
+				objPath = "no path";
+			}
 		}
+
+		myComponents[static_cast<int>(eComponentType::PHYSICS)] = new PhysicsComponent(*this, aEntityData.myPhysicsData
+			, objPath);
 	}
 
 	if (aEntityData.myInputData.myExistsInEntity == true)

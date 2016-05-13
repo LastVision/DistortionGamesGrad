@@ -155,6 +155,12 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 		//DL_ASSERT(CU::Concatenate("Invalid phyics-type on %s %s", entityType.c_str(), entitySubType.c_str()));
 		DL_ASSERT("Failed to load PhysicsComponent");
 	}
+
+	tinyxml2::XMLElement* objPathElement = aDocument.FindFirstChild(aSourceElement, "objPath");
+	if (objPathElement != nullptr)
+	{
+		aDocument.ForceReadAttribute(objPathElement, "path", aOutputData.myObjPath);
+	}
 }
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, TriggerComponentData& aOutputData)

@@ -82,6 +82,11 @@ void InGameState::EndState()
 
 const eStateStatus InGameState::Update(const float&)
 {
+	if (myStateStatus != eStateStatus::eKeepState)
+	{
+		return myStateStatus;
+	}
+
 	SET_RUNTIME(false);
 	Level* level = nullptr;
 	if (myLevelFactory->LoadLevel(level) == true)
