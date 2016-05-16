@@ -130,6 +130,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	ScrapManager::GetInstance()->Update(aDeltaTime);
 
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
+	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+	}
+
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 	{
 		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());

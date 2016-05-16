@@ -22,6 +22,8 @@
 #include <Cursor.h>
 #include <FinishLevelMessage.h>
 
+#include "VictoryState.h"
+
 InGameState::InGameState(int aLevelID)
 	: myGUIManager(nullptr)
 	, myLevelToLoad(aLevelID)
@@ -96,7 +98,7 @@ const eStateStatus InGameState::Update(const float&)
 	}
 	else
 	{
-		return eStateStatus::ePopMainState;
+		myStateStack->PushSubGameState(new VictoryState());
 		//Game over, push "win"-state
 	}
 
