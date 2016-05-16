@@ -180,9 +180,6 @@
     <ClCompile Include="SpotLightTextureProjection.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="DeferredPasses.cpp">
-      <Filter>Rendering\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowPass.cpp">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClCompile>
@@ -200,6 +197,12 @@
     </ClCompile>
     <ClCompile Include="EmitterManager.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredPasses.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Decal.cpp">
+      <Filter>Rendering\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +435,6 @@
     <ClInclude Include="AnimationJoint.h">
       <Filter>Rendering\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="DeferredPasses.h">
-      <Filter>Rendering\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="ShadowPass.h">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
@@ -452,6 +452,12 @@
     </ClInclude>
     <ClInclude Include="EmitterManager.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredPasses.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Decal.h">
+      <Filter>Rendering\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

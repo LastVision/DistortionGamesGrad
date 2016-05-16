@@ -24,7 +24,7 @@ namespace Prism
 		~Instance();
 
 		void Update(float aDelta);
-		void Render(const Camera& aCamera);
+		void RenderDecal(const Camera& aCamera);
 		void Render(const Camera& aCamera, InstancingHelper& aInstancingHelper, bool aIsOnlyDepth = false);
 
 		CU::Vector3<float> GetPosition() const;

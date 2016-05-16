@@ -55,35 +55,15 @@ namespace Prism
 		}
 	}
 
-	void Instance::Render(const Camera& aCamera)
+	void Instance::RenderDecal(const Camera& aCamera)
 	{
 		if (myShouldRender == true && myProxy.IsLoaded())
 		{
-			if (myShouldUseSpecialFoV == true)
-			{
-				myProxy.GetEffect()->SetViewProjectionMatrix(aCamera.GetSpecialFoVViewProjection());
-			}
-			else
-			{
-				myProxy.GetEffect()->SetViewProjectionMatrix(aCamera.GetViewProjection());
-			}
+			myProxy.GetEffect()->SetViewProjectionMatrix(aCamera.GetViewProjection());
 			myProxy.GetEffect()->SetScaleVector(myScale);
 			myProxy.GetEffect()->SetCameraPosition(aCamera.GetOrientation().GetPos());
 
-			if (myProxy.IsAnimated() == true)
-			{
-				std::string oldTechnique = myProxy.myModelAnimated->GetTechniqueName();
-				myProxy.myModelAnimated->SetTechniqueName(oldTechnique + "_DEPTHONLY");
-
-				myProxy.GetEffect()->SetBones(myBones);
-				RenderModelAnimated(myProxy.myModelAnimated, myOrientation, aCamera, myHierarchy, false);
-
-				myProxy.myModelAnimated->SetTechniqueName(oldTechnique);
-			}
-			else
-			{
-				myProxy.Render(myOrientation, aCamera.GetOrientation().GetPos());
-			}
+			myProxy.RenderDecal(myOrientation, aCamera.GetOrientation().GetPos());
 		}
 	}
 

@@ -313,54 +313,26 @@ namespace Prism
 		}
 	}
 
-	void Model::Render(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
+	void Model::RenderDecal(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
 	{
-		DL_ASSERT("REMOVED BY FABIAN AND NIKLAS");
-		//if (myIsLodGroup == true)
-		//{
-		//	float lengthBetweenCameraAndModel = CU::Length(aCameraPosition - aOrientation.GetPos());
-		//	int level = 0;
+		if (myIsNULLObject == false)
+		{
+			float blendFactor[4];
+			blendFactor[0] = 0.f;
+			blendFactor[1] = 0.f;
+			blendFactor[2] = 0.f;
+			blendFactor[3] = 0.f;
 
-		//	Model* toRender = nullptr;
-		//	for (int i = myChildren.Size() - 1; i >= 0; i--)
-		//	{
-		//		LodGroup* group = myLodGroup;
-		//		double threshold = group->myThreshHolds[i];
-		//		threshold /= 100;
-		//		if (threshold <= lengthBetweenCameraAndModel)
-		//		{
-		//			toRender = myChildren[i];
-		//			level = i;
-		//			break;
-		//		}
-		//	}
+			myEffect->SetBlendState(NULL, blendFactor);
+			myEffect->SetWorldMatrix(aOrientation);
 
-		//	if (toRender)
-		//	{
-		//		toRender->Render(aOrientation, aCameraPosition);
-		//	}
-		//}
-		//else
-		//{
-		//	if (myIsNULLObject == false)
-		//	{
-		//		float blendFactor[4];
-		//		blendFactor[0] = 0.f;
-		//		blendFactor[1] = 0.f;
-		//		blendFactor[2] = 0.f;
-		//		blendFactor[3] = 0.f;
+			BaseModel::Render(false);
+		}
 
-		//		myEffect->SetBlendState(NULL, blendFactor);
-		//		myEffect->SetWorldMatrix(aOrientation);
-
-		//		BaseModel::Render();
-		//	}
-
-		//	for (int i = 0; i < myChildren.Size(); ++i)
-		//	{
-		//		myChildren[i]->Render(myChildTransforms[i] * aOrientation, aCameraPosition);
-		//	}
-		//}
+		for (int i = 0; i < myChildren.Size(); ++i)
+		{
+			myChildren[i]->RenderDecal(myChildTransforms[i] * aOrientation, aCameraPosition);
+		}
 	}
 
 	void Model::DeActivateSurfaces()
