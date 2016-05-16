@@ -30,6 +30,9 @@
       <Filter>Widget</Filter>
     </ClInclude>
     <ClInclude Include="GUIManager3D.h" />
+    <ClInclude Include="ScoreWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,5 +56,8 @@
       <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="GUIManager3D.cpp" />
+    <ClCompile Include="ScoreWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
