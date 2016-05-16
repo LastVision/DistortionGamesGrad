@@ -43,12 +43,14 @@
     <ClCompile Include="ScoreState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
-    <ClCompile Include="ScrapManager.cpp" />
     <ClCompile Include="GameState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
     <ClCompile Include="SplashState.cpp">
       <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrapManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,10 +102,12 @@
     <ClInclude Include="ScoreState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
-    <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="SplashState.h">
       <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrapManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
