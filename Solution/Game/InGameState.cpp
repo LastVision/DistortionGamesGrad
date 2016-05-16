@@ -53,10 +53,11 @@ InGameState::~InGameState()
 	SAFE_DELETE(myText);
 }
 
-void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	myIsLetThrough = false;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myStateStatus = eStateStatus::eKeepState;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(false);
