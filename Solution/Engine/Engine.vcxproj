@@ -298,6 +298,7 @@
     <ClCompile Include="Line3DRenderer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelAnimated.cpp" />
+    <ClCompile Include="ParticlePass.cpp" />
     <ClCompile Include="PointLightPass.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="LodStructs.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelAnimated.h" />
+    <ClInclude Include="ParticlePass.h" />
     <ClInclude Include="PointLightPass.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Renderer.h" />

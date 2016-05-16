@@ -201,6 +201,9 @@
     <ClCompile Include="EmitterManager.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="ParticlePass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -452,6 +455,9 @@
     </ClInclude>
     <ClInclude Include="EmitterManager.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticlePass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

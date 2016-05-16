@@ -50,6 +50,7 @@ namespace Prism
 		Texture* myCubemap;
 		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
+		Texture* myParticleTexture;
 
 		RenderToScreenData myRenderToScreenData;
 		AmbientPass* myAmbientPass;
