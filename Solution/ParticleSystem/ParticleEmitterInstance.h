@@ -162,6 +162,7 @@ namespace Prism
 	inline void ParticleEmitterInstance::SetEmitterLifeTime(float aLifeTime)
 	{
 		myEmitterLife = aLifeTime;
+		myStates[EMITTERLIFE] = TRUE;
 	}
 
 	inline void ParticleEmitterInstance::SetRotation(const CU::Vector3<float>& aRotation)
