@@ -205,6 +205,7 @@
     <ClInclude Include="ConsoleHelp.h" />
     <ClInclude Include="ConsoleHistoryManager.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="CreditMenuState.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="InGameState.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="ConsoleHelp.cpp" />
     <ClCompile Include="ConsoleHistoryManager.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="CreditMenuState.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="InGameState.cpp" />

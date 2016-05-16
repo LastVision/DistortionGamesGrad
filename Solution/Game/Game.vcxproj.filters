@@ -49,6 +49,9 @@
     <ClCompile Include="SplashState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="CreditMenuState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
     <ClCompile Include="ScrapManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
@@ -104,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="SplashState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditMenuState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="ScrapManager.h">

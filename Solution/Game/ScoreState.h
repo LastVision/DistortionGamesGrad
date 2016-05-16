@@ -18,6 +18,8 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 private:
+	GUI::GUIManager* myGUIManager;
+
 	const CU::GrowingArray<const Score*>& myScores;
 	const ScoreInfo& myScoreInfo;
 };
