@@ -87,10 +87,10 @@ namespace Launcher
 			myResolutionList.Items.Add("Automatic");
 			myResolutionList.SelectedIndex = 4;
 
-            //myQualityList.Items.Add("Low");
-            //myQualityList.Items.Add("Medium");
-            //myQualityList.Items.Add("High");
-            //myQualityList.SelectedIndex = 1;
+			//myQualityList.Items.Add("Low");
+			//myQualityList.Items.Add("Medium");
+			//myQualityList.Items.Add("High");
+			//myQualityList.SelectedIndex = 1;
 
 			//aaDropdown.Items.Add("MSAA x1");
 			//aaDropdown.Items.Add("MSAA x2");
@@ -162,8 +162,8 @@ namespace Launcher
 
 		private void WriteQualityToFile(BinaryWriter writer)
 		{
-            //Int32 quality = myQualityList.SelectedIndex;
-            //writer.Write(quality);
+			//Int32 quality = myQualityList.SelectedIndex;
+			//writer.Write(quality);
 		}
 
 		void WriteResolutionToFile(BinaryWriter aWriter)
@@ -243,7 +243,7 @@ namespace Launcher
 
 		void ReadResolutionFromFile(BinaryReader aReader)
 		{
-			myResolutionList.SelectedIndex = 3;
+			myResolutionList.SelectedIndex = 4;
 		}
 
 		void ReadMSAAFromFile(BinaryReader aReader)
