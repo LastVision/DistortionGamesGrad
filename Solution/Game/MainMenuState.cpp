@@ -83,7 +83,6 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 {
 	if (myHasRunOnce == false)
 	{
-		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", false));
 		SET_RUNTIME(false);
@@ -164,7 +163,6 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	case eOnClickEvent::CREDITS:
-		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new CreditMenuState());
 		break;
