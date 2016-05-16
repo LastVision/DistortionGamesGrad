@@ -79,7 +79,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		if (type == eEntityType::SCRAP) return;
 
 		myHasContact = true;
-		if (type != eEntityType::BOUNCER)
+		if (type != eEntityType::BOUNCER && type != eEntityType::PLAYER)
 		{
 			myMovementComponent.GetEntity().SendNote(ShouldDieNote());
 		}
