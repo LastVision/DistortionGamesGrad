@@ -82,14 +82,29 @@ namespace Prism
 		myWorldMatrix->SetMatrix(&aWorldMatrix.myMatrix[0]);
 	}
 
+	void Effect::SetWorldMatrixInverted(const CU::Matrix44<float>& aWorldMatrix)
+	{
+		myWorldMatrixInverted->SetMatrix(&aWorldMatrix.myMatrix[0]);
+	}
+
 	void Effect::SetViewMatrix(const CU::Matrix44<float>& aViewMatrix)
 	{
 		myViewMatrix->SetMatrix(&aViewMatrix.myMatrix[0]);
 	}
 
+	void Effect::SetViewMatrixNotInverted(const CU::Matrix44<float>& aViewMatrix)
+	{
+		myViewMatrixNotInverted->SetMatrix(&aViewMatrix.myMatrix[0]);
+	}
+
 	void Effect::SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix)
 	{
 		myProjectionMatrix->SetMatrix(&aProjectionMatrix.myMatrix[0]);
+	}
+
+	void Effect::SetProjectionMatrixInverted(const CU::Matrix44<float>& aProjectionMatrix)
+	{
+		myProjectionMatrixInverted->SetMatrix(&aProjectionMatrix.myMatrix[0]);
 	}
 
 	void Effect::SetViewProjectionMatrix(const CU::Matrix44<float>& aMatrix)
@@ -105,6 +120,11 @@ namespace Prism
 	void Effect::SetTexture(Texture* aTexture)
 	{
 		myTexture->SetResource(aTexture ? aTexture->GetShaderView() : nullptr);
+	}
+
+	void Effect::SetDepthTexture(Texture* aTexture)
+	{
+		myDepthTexture->SetResource(aTexture ? aTexture->GetDepthStencilShaderView() : nullptr);
 	}
 
 	void Effect::SetAmbientHue(CU::Vector4f aVector)
@@ -305,6 +325,12 @@ namespace Prism
 			return false;
 		}
 
+		myWorldMatrixInverted = myEffect->GetVariableByName("WorldInverted")->AsMatrix();
+		if (myWorldMatrixInverted->IsValid() == false)
+		{
+			myWorldMatrixInverted = nullptr;
+		}
+
 		myViewMatrix = myEffect->GetVariableByName("View")->AsMatrix();
 		if (myViewMatrix->IsValid() == false)
 		{
@@ -312,11 +338,23 @@ namespace Prism
 			return false;
 		}
 
+		myViewMatrixNotInverted = myEffect->GetVariableByName("NotInvertedView")->AsMatrix();
+		if (myViewMatrixNotInverted->IsValid() == false)
+		{
+			myViewMatrixNotInverted = nullptr;
+		}
+
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		if (myProjectionMatrix->IsValid() == false)
 		{
 			DL_MESSAGE_BOX("Failed to get ProjectionMatrix", "Effect Error", MB_ICONWARNING);
 			return false;
+		}
+
+		myProjectionMatrixInverted = myEffect->GetVariableByName("InvertedProjection")->AsMatrix();
+		if (myProjectionMatrixInverted->IsValid() == false)
+		{
+			myProjectionMatrixInverted = nullptr;
 		}
 
 		myViewProjectionMatrix = myEffect->GetVariableByName("ViewProjection")->AsMatrix();
@@ -361,6 +399,12 @@ namespace Prism
 		if (myTexture->IsValid() == false)
 		{
 			myTexture = nullptr;
+		}
+
+		myDepthTexture = myEffect->GetVariableByName("DepthTexture")->AsShaderResource();
+		if (myDepthTexture->IsValid() == false)
+		{
+			myDepthTexture = nullptr;
 		}
 
 		myFogOfWarTexture = myEffect->GetVariableByName("FogOfWarTexture")->AsShaderResource();

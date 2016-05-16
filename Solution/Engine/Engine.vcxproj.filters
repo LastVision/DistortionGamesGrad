@@ -201,7 +201,7 @@
     <ClCompile Include="DeferredPasses.cpp">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClCompile>
-    <ClCompile Include="Decal.cpp">
+    <ClCompile Include="DecalPass.cpp">
       <Filter>Rendering\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -456,7 +456,10 @@
     <ClInclude Include="DeferredPasses.h">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
-    <ClInclude Include="Decal.h">
+    <ClInclude Include="DecalInfo.h">
+      <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalPass.h">
       <Filter>Rendering\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

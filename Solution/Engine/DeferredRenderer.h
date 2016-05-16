@@ -13,6 +13,7 @@ namespace Prism
 	class SpotLightPass;
 	class GBufferData;
 
+	class DecalPass;
 	class Effect;
 	class Scene;
 	class Texture;
@@ -25,6 +26,8 @@ namespace Prism
 	public:
 		DeferredRenderer();
 		~DeferredRenderer();
+
+		void AddDecal(const CU::Vector3<float>& aPosition, const std::string& aPath);
 
 		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
@@ -59,6 +62,8 @@ namespace Prism
 		ShadowPass myShadowPass;
 		GBufferData* myGBufferData;
 		D3D11_VIEWPORT* myViewPort;
+
+		DecalPass* myDecal;
 
 		float myClearColor[4];
 	};

@@ -55,7 +55,7 @@ namespace Prism
 		}
 	}
 
-	void Instance::RenderDecal(const Camera& aCamera)
+	void Instance::Render(const Camera& aCamera)
 	{
 		if (myShouldRender == true && myProxy.IsLoaded())
 		{
@@ -67,9 +67,8 @@ namespace Prism
 		}
 	}
 
-	void Instance::Render(const Camera& aCamera, InstancingHelper& aInstancingHelper, bool aIsOnlyDepth)
+	void Instance::RenderInstanced(const Camera& aCamera, InstancingHelper& aInstancingHelper, bool aIsOnlyDepth)
 	{
-
 		if (myShouldRender == true && myProxy.IsLoaded())
 		{
 			if (myProxy.IsAnimated() == true)
