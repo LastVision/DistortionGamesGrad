@@ -46,6 +46,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myBackground(nullptr)
 	, myPlayersPlaying(0)
 	, myScores(4)
+	, myCurrentCountdownSprite(9)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -67,11 +68,22 @@ Level::Level(Prism::Camera& aCamera)
 
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
 
+	CU::Vector2<float> size(256.f, 256.f);
+	std::string texturePath("Data/Resource/Texture/Countdown/T_countdown_");
+	for (int i = 0; i < 10; ++i)
+	{
+		myCountdownSprites[i] = Prism::ModelLoader::GetInstance()->LoadSprite(texturePath + std::to_string(i + 1) + ".dds", size, size * 0.5f);
+	}
+
 	PollingStation::Create();
 }
 
 Level::~Level()
 {
+	for (int i = 0; i < 10; ++i)
+	{
+		SAFE_DELETE(myCountdownSprites[i]);
+	}
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
 	ScrapManager::Destroy();
@@ -146,6 +158,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	if (myPlayerWinCount >= 1)
 	{
 		myTimeToLevelChange -= aDeltaTime;
+		myCurrentCountdownSprite = int(myTimeToLevelChange);
 		if (myTimeToLevelChange < 0.f)
 		{
 			SET_RUNTIME(false);
@@ -181,6 +194,12 @@ void Level::Render()
 		{
 			player->GetComponent<MovementComponent>()->Render();
 		}
+	}
+
+	if (myPlayerWinCount >= 1)
+	{
+		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
+		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 }
 

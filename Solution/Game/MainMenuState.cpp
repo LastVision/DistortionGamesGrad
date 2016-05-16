@@ -12,6 +12,7 @@
 #include <PostMaster.h>
 #include <PollingStation.h>
 #include "StateStackProxy.h"
+#include "SplashState.h"
 #include <SpriteProxy.h>
 
 MainMenuState::MainMenuState()
@@ -81,9 +82,14 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 {
 	if (myHasRunOnce == false)
 	{
+		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", myController, false));
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", myController, true));
 		myHasRunOnce = true;
 	}
-	else 
+	else
 	{
 		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 		{
@@ -152,7 +158,7 @@ void MainMenuState::OnResize(int aWidth, int aHeight)
 void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
-{
+	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
