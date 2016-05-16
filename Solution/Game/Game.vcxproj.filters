@@ -47,6 +47,9 @@
     <ClCompile Include="GameState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="SplashState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -99,6 +102,9 @@
     </ClInclude>
     <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScoreInfo.h" />
+    <ClInclude Include="SplashState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

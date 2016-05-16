@@ -105,10 +105,11 @@ Level::~Level()
 	Prism::PhysicsInterface::Destroy();
 }
 
-void Level::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
-	myCursor = aCursor;
 	myStateStack = aStateStackProxy;
+	myController = aController;
+	myCursor = aCursor;
 	myIsLetThrough = false;
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;

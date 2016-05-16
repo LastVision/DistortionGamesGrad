@@ -12,7 +12,7 @@
 namespace CU
 {
 	const std::string group("/Distortion Games/");
-	const std::string game("Graduation/");
+	const std::string game("SpareParty/");
 
 	static bool canSave;
 

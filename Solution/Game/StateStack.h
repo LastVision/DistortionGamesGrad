@@ -4,6 +4,7 @@
 namespace CU
 {
 	class InputWrapper;
+	class ControllerInput;
 }
 
 namespace GUI
@@ -33,6 +34,7 @@ public:
 
 private:
 	CU::GrowingArray<CU::GrowingArray<GameState*, int>, int> myGameStates;
+	CU::ControllerInput* myController;
 	GUI::Cursor* myCursor;
 
 	void PopSubGameState();

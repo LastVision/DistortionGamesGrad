@@ -17,9 +17,10 @@ ScoreState::~ScoreState()
 {
 }
 
-void ScoreState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myCursor = aCursor;
 
 	myStateStatus = eStateStatus::eKeepState;
