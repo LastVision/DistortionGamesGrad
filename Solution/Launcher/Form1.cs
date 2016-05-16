@@ -19,9 +19,8 @@ namespace Launcher
 		private string myConfigPath = "Data\\Setting\\SET_config.bin";
 		private string myExePath = "Application_Release.exe";
 		private string myLogo = "bin\\Data\\Resource\\Texture\\Logo\\T_launcher_logo.png";
-		private string myGameName = "Graduation";
+		private string myGameName = "SpareParty";
 
-		private Process myServer = new Process();
 		private Process myGame = new Process();
 
 		enum eResolutions
@@ -88,10 +87,10 @@ namespace Launcher
 			myResolutionList.Items.Add("Automatic");
 			myResolutionList.SelectedIndex = 4;
 
-			myQualityList.Items.Add("Low");
-			myQualityList.Items.Add("Medium");
-			myQualityList.Items.Add("High");
-			myQualityList.SelectedIndex = 1;
+			//myQualityList.Items.Add("Low");
+			//myQualityList.Items.Add("Medium");
+			//myQualityList.Items.Add("High");
+			//myQualityList.SelectedIndex = 1;
 
 			//aaDropdown.Items.Add("MSAA x1");
 			//aaDropdown.Items.Add("MSAA x2");
@@ -133,7 +132,6 @@ namespace Launcher
 				WriteMSAAToFile(writer);
 				WriterWindowedToFile(writer);
 				WriteQualityToFile(writer);
-                WriteJoinServer(writer, 0);
 			}
 
 			ProcessStartInfo processInfo = new ProcessStartInfo();
@@ -162,15 +160,10 @@ namespace Launcher
 			}
 		}
 
-        private void WriteJoinServer(BinaryWriter writer, Int32 aFlag)
-        {
-            writer.Write(aFlag);
-        }
-
 		private void WriteQualityToFile(BinaryWriter writer)
 		{
-			Int32 quality = myQualityList.SelectedIndex;
-			writer.Write(quality);
+			//Int32 quality = myQualityList.SelectedIndex;
+			//writer.Write(quality);
 		}
 
 		void WriteResolutionToFile(BinaryWriter aWriter)
@@ -250,7 +243,7 @@ namespace Launcher
 
 		void ReadResolutionFromFile(BinaryReader aReader)
 		{
-			myResolutionList.SelectedIndex = 3;
+			myResolutionList.SelectedIndex = 4;
 		}
 
 		void ReadMSAAFromFile(BinaryReader aReader)
