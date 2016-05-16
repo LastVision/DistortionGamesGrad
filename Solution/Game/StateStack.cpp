@@ -1,12 +1,14 @@
 #include "stdafx.h"
 
+#include <ControllerInput.h>
 #include "StateStack.h"
 #include <DL_Assert.h>
 #include "GameState.h"
 #include <ModelLoader.h>
 
 StateStack::StateStack()
-	: myCursor(nullptr)
+	: myController(new CU::ControllerInput(eControllerID::Controller1))
+	, myCursor(nullptr)
 	, myShouldRender(true)
 {
 	myMainIndex = -1;
@@ -18,6 +20,7 @@ StateStack::StateStack()
 
 StateStack::~StateStack()
 {
+	SAFE_DELETE(myController);
 	delete myStateStackProxy;
 }
 
@@ -76,7 +79,7 @@ void StateStack::PushSubGameState(GameState* aSubGameState, bool aShouldPause)
 
 	myGameStates[myMainIndex].Add(aSubGameState);
 	//Prism::ModelLoader::GetInstance()->Pause();
-	aSubGameState->InitState(myStateStackProxy, myCursor);
+	aSubGameState->InitState(myStateStackProxy, myController, myCursor);
 	//Prism::ModelLoader::GetInstance()->UnPause();
 	
 	SET_RUNTIME(true);
@@ -101,6 +104,7 @@ void StateStack::PushMainGameState(GameState* aMainGameState)
 bool StateStack::UpdateCurrentState(const float& aDeltaTime)
 {
 	myShouldRender = true;
+	myController->Update(aDeltaTime);
 
 	switch (myGameStates[myMainIndex][mySubIndex]->Update(aDeltaTime))
 	{

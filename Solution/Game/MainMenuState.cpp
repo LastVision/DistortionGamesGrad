@@ -14,7 +14,7 @@
 #include "StateStackProxy.h"
 #include <SpriteProxy.h>
 
-MainMenuState::MainMenuState(CU::ControllerInput* aController)
+MainMenuState::MainMenuState()
 	: myLogoPosition(0.f, 0.f)
 	, myLogoAlpha(0.f)
 	, myMenuAlpha(0.f)
@@ -25,7 +25,6 @@ MainMenuState::MainMenuState(CU::ControllerInput* aController)
 	, myLogoDone(false)
 	, myGUIManager(nullptr)
 	, myHasRunOnce(false)
-	, myController(aController)
 {
 	CU::Vector2<float> logoSize(1024.f, 256.f);
 	myLogo = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/MainMenu/T_gamelogo.dds"
@@ -55,12 +54,13 @@ MainMenuState::~MainMenuState()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
-void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myCursor = aCursor;
 		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 
@@ -114,8 +114,6 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 		myDustAlpha = fmaxf(myLogoAlpha - 2.5f, 0.f);
 		myDustAlpha *= 3.f;
 		myDustAlpha = fminf(myDustAlpha, 1.f);
-
-		myController->Update(aDeltaTime);
 
 		HandleControllerInMenu(myController, myGUIManager);
 

@@ -16,10 +16,10 @@ namespace CU
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
-	LevelSelectState(CU::ControllerInput* aController);
+	LevelSelectState();
 	~LevelSelectState();
 
-	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
+	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
 	void EndState() override;
 
 	const eStateStatus Update(const float& aDeltaTime) override;

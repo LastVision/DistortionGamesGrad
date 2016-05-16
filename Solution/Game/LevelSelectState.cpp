@@ -7,8 +7,7 @@
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 
-LevelSelectState::LevelSelectState(CU::ControllerInput* aController)
-	: myController(aController)
+LevelSelectState::LevelSelectState()
 {
 	myControllerUpIsDown = false;
 	myControllerDownIsDown = false;
@@ -23,10 +22,11 @@ LevelSelectState::~LevelSelectState()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
-void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
-	myCursor = aCursor;
 	myStateStack = aStateStackProxy;
+	myController = aController;
+	myCursor = aCursor;
 	myStateStatus = eStateStatus::eKeepState;
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
@@ -42,7 +42,6 @@ void LevelSelectState::EndState()
 
 const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 {
-	myController->Update(aDeltaTime);
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 	{
 		myIsActiveState = false;

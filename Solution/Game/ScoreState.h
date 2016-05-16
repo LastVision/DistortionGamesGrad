@@ -9,7 +9,7 @@ public:
 	ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo);
 	~ScoreState();
 
-	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
+	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
 	void EndState() override;
 	const eStateStatus Update(const float& aDeltaTime) override;
 	void Render() override;

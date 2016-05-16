@@ -55,8 +55,6 @@ Game::Game()
 
 	SetCursorPos(Prism::Engine::GetInstance()->GetWindowSizeInt().x / 2, Prism::Engine::GetInstance()->GetWindowSizeInt().y / 2);
 	myStateStack.SetCursor(myCursor);
-
-	myController = new CU::ControllerInput(eControllerID::Controller1);
 }
 
 Game::~Game()
@@ -64,7 +62,6 @@ Game::~Game()
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myCursor);
-	SAFE_DELETE(myController);
 	Prism::Audio::AudioInterface::Destroy();
 	Prism::StreakDataContainer::Destroy();
 	Prism::ParticleDataContainer::Destroy();
@@ -94,9 +91,9 @@ bool Game::Init(HWND& aHwnd)
 	//Console::GetInstance(); // needed to create console here
 	//myStateStack.PushMainGameState(new LevelSelectState(myController));
 #ifdef RELEASE_BUILD
-	myStateStack.PushMainGameState(new MainMenuState(myController));
+	myStateStack.PushMainGameState(new MainMenuState());
 #else
-	myStateStack.PushMainGameState(new LevelSelectState(myController));
+	myStateStack.PushMainGameState(new LevelSelectState());
 #endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
@@ -195,7 +192,7 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	case eOnClickEvent::LEVEL_SELECT:
 		SET_RUNTIME(false);
-		myStateStack.PushMainGameState(new LevelSelectState(myController));
+		myStateStack.PushMainGameState(new LevelSelectState());
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;

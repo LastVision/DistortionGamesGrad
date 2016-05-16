@@ -44,8 +44,6 @@ private:
 	StateStack myStateStack;
 	CU::TimerManager* myTimerManager;
 
-	CU::ControllerInput* myController;
-
 	bool myLockMouse;
 	bool myShowSystemInfo;
 	bool myIsComplete;
