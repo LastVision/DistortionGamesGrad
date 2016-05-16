@@ -18,6 +18,7 @@
 #include "SpotLightTextureProjection.h"
 #include <XMLReader.h>
 #include "EmitterManager.h"
+#include "ParticlePass.h"
 namespace Prism
 {
 	DeferredRenderer::DeferredRenderer()
@@ -68,10 +69,19 @@ namespace Prism
 		myFinishedSceneTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+
+		myParticleTexture = new Texture();
+		myParticleTexture->Init(windowSize.x, windowSize.y
+			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R8G8B8A8_UNORM);
+
 	}
 
 	DeferredRenderer::~DeferredRenderer()
 	{
+		SAFE_DELETE(myParticleTexture);
+
 		SAFE_DELETE(myFinishedTexture);
 		SAFE_DELETE(myFinishedSceneTexture);
 		SAFE_DELETE(myViewPort);
@@ -104,13 +114,9 @@ namespace Prism
 
 		RenderDeferred(aScene);
 
+		RenderParticles(aParticleEmitterManager);
 
-		ID3D11RenderTargetView* targets = myFinishedSceneTexture->GetRenderTargetView();
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &targets
-			, myDepthStencilTexture->GetDepthStencilView());
-
-		aParticleEmitterManager->RenderEmitters(0);
-
+		//Set Normal State
 
 #ifdef SHADOWS
 		RenderShadows(aShadowLight, aScene->GetCamera());
@@ -146,6 +152,7 @@ namespace Prism
 		myGBufferData->myDepthTexture->Resize(aWidth, aHeight);
 		myDepthStencilTexture->Resize(aWidth, aHeight);
 		myFinishedTexture->Resize(aWidth, aHeight);
+		myParticleTexture->Resize(aWidth, aHeight);
 	}
 
 	void DeferredRenderer::SetCubeMap(const std::string& aFilePath)
@@ -297,4 +304,35 @@ namespace Prism
 		myShadowPass.OnEffectLoad();
 		myShadowPass.myEffect->AddListener(&myShadowPass);
 	}
+
+	void DeferredRenderer::RenderParticles(EmitterManager* aParticleEmitterManager)
+	{
+		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(rt, myClearColor);
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &rt, myDepthStencilTexture->GetDepthStencilView());
+		aParticleEmitterManager->RenderEmitters(0);
+
+		ActivateBuffers();
+
+
+#ifdef SHADOWS
+		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+#else
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
+#endif
+		ID3D11DepthStencilView* depth = Engine::GetInstance()->GetDepthView();
+
+		Engine::GetInstance()->GetContex()->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, depth);
+
+		myRenderToScreenData.mySource->SetResource(myParticleTexture->GetShaderView());
+
+		Render(myRenderToScreenData.myEffect, "Render_Particle");
+
+		myRenderToScreenData.mySource->SetResource(NULL);
+
+
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myDepthStencilTexture->GetDepthStencilView());
+	}
+
 }

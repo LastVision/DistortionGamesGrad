@@ -427,6 +427,12 @@ namespace Prism
 		myFadeData.myIsFading = true;
 	}
 
+
+	void Engine::SetBlendState(const eDirectXBlendState& aBlendState)
+	{
+		myDirectX->SetBlendState(aBlendState);
+	}
+
 	bool Engine::WindowSetup(HWND& aHwnd, WNDPROC aWindowProc)
 	{
 		WNDCLASSEX wcex;

@@ -25,6 +25,14 @@ namespace Prism
 		_COUNT,
 	};
 
+	enum class eDirectXBlendState
+	{
+		ALPHA,
+		NO_ALPHA,
+		PARTICLE_BLEND,
+		_COUNT,
+	};
+
 	enum class eOctreeType
 	{
 		NOT_IN_OCTREE,

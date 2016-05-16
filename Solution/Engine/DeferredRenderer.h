@@ -12,6 +12,7 @@ namespace Prism
 	class PointLightPass;
 	class SpotLightPass;
 	class GBufferData;
+	class ParticlePass;
 
 	class Effect;
 	class Scene;
@@ -36,6 +37,9 @@ namespace Prism
 		Texture* GetEmissiveTexture();
 		Texture* GetDepthStencilTexture();
 
+
+
+
 	private:
 		void InitFullscreenQuad();
 		void CreateVertices();
@@ -46,12 +50,15 @@ namespace Prism
 
 		void SetupShadowData();
 
+		void RenderParticles(EmitterManager* aParticleEmitterManager);
+
 		Texture* myDepthStencilTexture;
 		Texture* myCubemap;
 		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
 		Texture* myParticleTexture;
 
+		ParticlePass* myParticlePass;
 		RenderToScreenData myRenderToScreenData;
 		AmbientPass* myAmbientPass;
 		PointLightPass* myPointLightPass;
