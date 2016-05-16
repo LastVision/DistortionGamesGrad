@@ -62,7 +62,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myStateStack = aStateStackProxy;
 	myController = aController;
 	myCursor = aCursor;
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 
 
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
