@@ -5,7 +5,6 @@
 #include <Engine.h>
 #include "GUIManager.h"
 #include "../InputWrapper/InputWrapper.h"
-#include "ScoreWidget.h"
 #include "SpriteWidget.h"
 #include "WidgetContainer.h"
 
@@ -251,11 +250,6 @@ namespace GUI
 				else if (type == "sprite")
 				{
 					SpriteWidget* widget = new SpriteWidget(&aReader, widgetElement);
-					container->AddWidget(widget);
-				}
-				else if (type == "score")
-				{
-					ScoreWidget* widget = new ScoreWidget(&aReader, widgetElement);
 					container->AddWidget(widget);
 				}
 				else

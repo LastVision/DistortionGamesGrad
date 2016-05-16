@@ -215,6 +215,7 @@
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="ScoreState.h" />
+    <ClInclude Include="ScoreWidget.h" />
     <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScriptInterface.h" />
     <ClInclude Include="SmartCamera.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="LevelSelectState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="ScoreState.cpp" />
+    <ClCompile Include="ScoreWidget.cpp" />
     <ClCompile Include="ScrapManager.cpp" />
     <ClCompile Include="ScriptInterface.cpp" />
     <ClCompile Include="SmartCamera.cpp" />

@@ -6,12 +6,17 @@
 #include "Score.h"
 #include "ScoreInfo.h"
 #include "ScoreState.h"
-
+#include "ScoreWidget.h"
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo)
 	: myScores(someScores)
 	, myScoreInfo(aScoreInfo)
+	, myScoreWidgets(4)
 {
+	for each (const Score* score in myScores)
+	{
+		myScoreWidgets.Add(new ScoreWidget(score));
+	}
 }
 
 
@@ -43,6 +48,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopMainState;
 	}
 
+	for each (ScoreWidget* widget in myScoreWidgets)
+	{
+		widget->Update(aDeltaTime);
+	}
+
 	HandleControllerInMenu(myController, myGUIManager);
 
 	myGUIManager->Update(aDeltaTime);
@@ -55,6 +65,11 @@ void ScoreState::Render()
 	{
 		DEBUG_PRINT(score->myDeathCount);
 		DEBUG_PRINT(score->myTime);
+	}
+
+	for each (ScoreWidget* widget in myScoreWidgets)
+	{
+		widget->Render(CU::Vector2<float>());
 	}
 
 	myGUIManager->Render();
