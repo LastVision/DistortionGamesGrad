@@ -55,6 +55,9 @@
     <ClCompile Include="ScrapManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
+    <ClCompile Include="VictoryState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -114,6 +117,9 @@
     </ClInclude>
     <ClInclude Include="ScrapManager.h">
       <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryState.h">
+      <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
