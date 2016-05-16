@@ -63,7 +63,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myStateStack = aStateStackProxy;
 	myController = aController;
 	myCursor = aCursor;
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 
 
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
@@ -84,12 +84,12 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 	{
 		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", false));
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", myController, false));
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", true));
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", myController, true));
 		myHasRunOnce = true;
 	}
-	else 
+	else
 	{
 		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 		{
@@ -158,7 +158,7 @@ void MainMenuState::OnResize(int aWidth, int aHeight)
 void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
-{
+	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
 		break;

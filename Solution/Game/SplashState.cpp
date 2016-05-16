@@ -43,10 +43,11 @@ SplashState::~SplashState()
 {
 }
 
-void SplashState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void SplashState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	myIsLetThrough = false;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	CU::Matrix44<float> orientation;
 	myCamera = new Prism::Camera(orientation);
 	myCursor = aCursor;
