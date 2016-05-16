@@ -198,7 +198,8 @@ void Level::Render()
 
 	if (myPlayerWinCount >= 1)
 	{
-		myCountdownSprites[myCurrentCountdownSprite]->Render(myWindowSize * 0.5f);
+		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
+		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 }
 
