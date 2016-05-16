@@ -23,6 +23,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 ScoreState::~ScoreState()
 {
 	SAFE_DELETE(myGUIManager);
+	myScoreWidgets.DeleteAll();
 }
 
 void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
