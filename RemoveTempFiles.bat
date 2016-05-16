@@ -1,8 +1,8 @@
 rd /s /q temp
 rd /s /q Solution\ipch
 
-del Solution\FPS.sdf
-del /A:H Solution\FPS.suo
+del Solution\Graduation.sdf
+del /A:H Solution\Graduation.v12.suo
 
 rd /s /q Tools\LogReader\LogReader\LogReader\obj
 rd /s /q Tools\ModelViewer\ModelViewer\obj
