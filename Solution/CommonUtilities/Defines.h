@@ -49,4 +49,4 @@
 
 #define UPGRADE_COLOR { 0.7f, 0.7f, 0.2f, 1.f }
 
-//#define SHADOWS
+#define SHADOWS
