@@ -49,11 +49,11 @@
     <ClCompile Include="SplashState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
-    <ClCompile Include="ScrapManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="CreditMenuState.cpp">
       <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrapManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,11 +109,11 @@
     <ClInclude Include="SplashState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
-    <ClInclude Include="ScrapManager.h">
-      <Filter>Managers</Filter>
-    </ClInclude>
     <ClInclude Include="CreditMenuState.h">
       <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrapManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
