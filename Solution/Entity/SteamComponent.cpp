@@ -92,6 +92,12 @@ void SteamComponent::SetSteamVariables(float aSteamInterval, float aSteamTime, f
 	if (mySteamInterval == 0.f && mySteamTime == 0.f)
 	{
 		myIsConstant = true;
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp()));
+		SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+		if (soundComp != nullptr)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Steam", soundComp->GetAudioSFXID());
+		}
 	}
 
 	myCurrentSteamTime = mySteamTime;
