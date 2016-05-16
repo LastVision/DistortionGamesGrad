@@ -215,6 +215,7 @@
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="ScoreState.h" />
+    <ClInclude Include="ScoreWidget.h" />
     <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScriptInterface.h" />
     <ClInclude Include="SmartCamera.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="StateStack.h" />
     <ClInclude Include="StateStackProxy.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="VictoryState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleBackspace.cpp" />
@@ -238,6 +240,7 @@
     <ClCompile Include="LevelSelectState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="ScoreState.cpp" />
+    <ClCompile Include="ScoreWidget.cpp" />
     <ClCompile Include="ScrapManager.cpp" />
     <ClCompile Include="ScriptInterface.cpp" />
     <ClCompile Include="SmartCamera.cpp" />
@@ -256,6 +259,7 @@
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DataExporter|Win32'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="VictoryState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Audio\Audio.vcxproj">

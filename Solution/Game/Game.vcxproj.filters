@@ -55,6 +55,10 @@
     <ClCompile Include="ScrapManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
+    <ClCompile Include="VictoryState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -115,6 +119,10 @@
     <ClInclude Include="ScrapManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
+    <ClInclude Include="VictoryState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
