@@ -152,6 +152,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::LEVEL_SELECT, myId);
 		}
+		else if (clickEvent == "credits")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::CREDITS);
+		}
 		else if (clickEvent == "quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::GAME_QUIT);

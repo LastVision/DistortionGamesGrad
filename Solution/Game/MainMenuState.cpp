@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <AudioInterface.h>
 #include <Camera.h>
+#include "CreditMenuState.h"
 #include <Cursor.h>
 #include <ControllerInput.h>
 #include <GUIManager.h>
@@ -84,9 +85,9 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 	{
 		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", myController, false));
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", false));
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", myController, true));
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", true));
 		myHasRunOnce = true;
 	}
 	else
@@ -161,6 +162,11 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::CREDITS:
+		PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new CreditMenuState());
 		break;
 	}
 }
