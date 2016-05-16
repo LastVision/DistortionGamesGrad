@@ -74,6 +74,9 @@ private:
 
 	Prism::EmitterManager* myEmitterManager;
 
+	Prism::SpriteProxy* myCountdownSprites[10];
+	int myCurrentCountdownSprite;
+
 
 	CU::Vector3<float> mySpawnPosition;
 	CU::Vector2<float> myWindowSize;
