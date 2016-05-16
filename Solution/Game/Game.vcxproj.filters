@@ -50,6 +50,9 @@
     <ClCompile Include="SplashState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="CreditMenuState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -103,6 +106,9 @@
     <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="SplashState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditMenuState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>
