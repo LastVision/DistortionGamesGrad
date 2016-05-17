@@ -36,6 +36,8 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myIsLetThrough = true;
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, -1);
+
+	InitControllerInMenu(myController, myGUIManager);
 }
 
 void ScoreState::EndState()

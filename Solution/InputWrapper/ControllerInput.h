@@ -64,8 +64,8 @@ namespace CU
 
 		const int GetControllerID() const;
 
-	private:
 		bool CheckConnection();
+	private:
 
 		unsigned int ConvertInput(const eXboxButton& aButton);
 		//float ConvertInput()
