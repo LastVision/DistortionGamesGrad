@@ -64,6 +64,7 @@ void LevelSelectState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
+	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 }
 
