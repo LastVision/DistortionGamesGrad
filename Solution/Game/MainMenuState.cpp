@@ -73,6 +73,8 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	OnResize(windowSize.x, windowSize.y);
 	myHasRunOnce = false;
 	myCursor->SetShouldRender(true);
+
+	InitControllerInMenu(myController, myGUIManager);
 }
 
 void MainMenuState::EndState()

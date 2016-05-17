@@ -18,7 +18,8 @@ namespace GUI
 		, myLevelID(aLeveID)
 		, myButtons(16)
 		, myUseController(false)
-		, myControllerButtonIndex(0)
+		, myControllerButtonIndexX(0)
+		, myControllerButtonIndexY(0)
 	{
 		myWindowSize = { 1920.f, 1080.f }; // XML coordinates respond to this resolution, will be resized
 
@@ -132,35 +133,77 @@ namespace GUI
 		myCursor->SetShouldRender(aShouldRender);
 	}
 
-	void GUIManager::SelectNextButton()
+	void GUIManager::SelectNextButtonX()
 	{
-		myButtons[myControllerButtonIndex]->OnMouseExit();
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
-		myControllerButtonIndex++;
-		if (myControllerButtonIndex > myButtons.Size() - 1)
+		myControllerButtonIndexX++;
+		if (myControllerButtonIndexX > myButtons.Size() - 1)
 		{
-			myControllerButtonIndex = 0;
+			myControllerButtonIndexX = 0;
 		}
 
-		myButtons[myControllerButtonIndex]->OnMouseEnter();
-	}
-
-	void GUIManager::SelectPreviousButton()
-	{
-		myButtons[myControllerButtonIndex]->OnMouseExit();
-
-		myControllerButtonIndex--;
-		if (myControllerButtonIndex < 0)
+		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
 		{
-			myControllerButtonIndex = myButtons.Size() - 1;
+			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
 		}
 
-		myButtons[myControllerButtonIndex]->OnMouseEnter();
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
+
+	void GUIManager::SelectPreviousButtonX()
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+
+		myControllerButtonIndexX--;
+		if (myControllerButtonIndexX < 0)
+		{
+			myControllerButtonIndexX = myButtons.Size() - 1;
+		}
+
+		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
+		{
+			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+		}
+
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
+	}
+
+	void GUIManager::SelectNextButtonY()
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+
+		myControllerButtonIndexY++;
+		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
+		{
+			myControllerButtonIndexY = 0;
+		}
+
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
+	}
+
+	void GUIManager::SelectPreviousButtonY()
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+
+		myControllerButtonIndexY--;
+		if (myControllerButtonIndexY < 0)
+		{
+			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+		}
+
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
+	}
+
 
 	void GUIManager::PressSelectedButton()
 	{
-		myButtons[myControllerButtonIndex]->OnLeftMouseUp();
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnLeftMouseUp();
+	}
+
+	void GUIManager::HoverSelectedButton()
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
@@ -245,7 +288,22 @@ namespace GUI
 				{
 					ButtonWidget* widget = new ButtonWidget(&aReader, widgetElement);
 					container->AddWidget(widget);
-					myButtons.Add(widget);
+
+					if (myButtons.Size() == 0 || widget->GetPosition().y > myButtons.GetLast().GetLast()->GetPosition().y)
+					{
+						myButtons.Add(CU::GrowingArray<ButtonWidget*>(8));
+						myButtons.GetLast().Add(widget);
+					}
+					else if (widget->GetPosition().x > myButtons.GetLast().GetLast()->GetPosition().x)
+					{
+						myButtons.GetLast().Add(widget);
+					}
+					else
+					{
+						myButtons.Add(CU::GrowingArray<ButtonWidget*>(8));
+						myButtons.GetLast().Add(widget);
+					}
+
 				}
 				else if (type == "sprite")
 				{

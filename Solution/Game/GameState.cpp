@@ -13,32 +13,74 @@ void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GU
 			aManager->PressSelectedButton();
 		}
 
+		float controllerX = aController->LeftThumbstickX();
 		float controllerY = aController->LeftThumbstickY();
 
 		if (controllerY >= 0.5f)
 		{
-			if (myControllerUpIsDown == false)
+			if (myControllerYUpIsDown == false)
 			{
-				myControllerUpIsDown = true;
-				aManager->SelectPreviousButton();
+				myControllerYUpIsDown = true;
+				aManager->SelectPreviousButtonX();
 			}
 		}
 		else
 		{
-			myControllerUpIsDown = false;
+			myControllerYUpIsDown = false;
 		}
 
 		if (controllerY <= -0.5f)
 		{
-			if (myControllerDownIsDown == false)
+			if (myControllerYDownIsDown == false)
 			{
-				myControllerDownIsDown = true;
-				aManager->SelectNextButton();
+				myControllerYDownIsDown = true;
+				aManager->SelectNextButtonX();
 			}
 		}
 		else
 		{
-			myControllerDownIsDown = false;
+			myControllerYDownIsDown = false;
 		}
+
+		if (controllerX >= 0.5f)
+		{
+			if (myControllerXUpIsDown == false)
+			{
+				myControllerXUpIsDown = true;
+				aManager->SelectNextButtonY();
+			}
+		}
+		else
+		{
+			myControllerXUpIsDown = false;
+		}
+
+		if (controllerX <= -0.5f)
+		{
+			if (myControllerXDownIsDown == false)
+			{
+				myControllerXDownIsDown = true;
+				aManager->SelectPreviousButtonY();
+			}
+		}
+		else
+		{
+			myControllerXDownIsDown = false;
+		}
+	}
+}
+
+void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager)
+{
+	aController->Update(0.f);
+
+	myControllerXUpIsDown = false;
+	myControllerXDownIsDown = false;
+	myControllerYUpIsDown = false;
+	myControllerYDownIsDown = false;
+
+	if (aController->CheckConnection())
+	{
+		aManager->HoverSelectedButton();
 	}
 }
