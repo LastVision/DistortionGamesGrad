@@ -45,10 +45,10 @@ protected:
 	bool myIsLetThrough;
 	bool myIsActiveState;
 
-	bool myControllerXUpIsDown;
-	bool myControllerXDownIsDown;
-	bool myControllerYUpIsDown;
-	bool myControllerYDownIsDown;
+	bool myControllerPressedRight;
+	bool myControllerPressedLeft;
+	bool myControllerPressedUp;
+	bool myControllerPressedDown;
 };
 
 inline GameState::~GameState()

@@ -54,10 +54,10 @@ namespace GUI
 
 		void SetMouseShouldRender(bool aShouldRender);
 
-		void SelectNextButtonX();
-		void SelectPreviousButtonX();
-		void SelectNextButtonY();
-		void SelectPreviousButtonY();
+		void SelectButtonDown();
+		void SelectButtonUp();
+		void SelectButtonRight();
+		void SelectButtonLeft();
 		void PressSelectedButton();
 		void HoverSelectedButton();
 

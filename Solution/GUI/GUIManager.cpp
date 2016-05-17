@@ -133,13 +133,18 @@ namespace GUI
 		myCursor->SetShouldRender(aShouldRender);
 	}
 
-	void GUIManager::SelectNextButtonX()
+	void GUIManager::SelectButtonDown()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexX++;
 		if (myControllerButtonIndexX > myButtons.Size() - 1)
 		{
+			if (true)
+			{
+
+			}
+
 			myControllerButtonIndexX = 0;
 		}
 
@@ -151,7 +156,7 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectPreviousButtonX()
+	void GUIManager::SelectButtonUp()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
@@ -169,7 +174,7 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectNextButtonY()
+	void GUIManager::SelectButtonRight()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
@@ -182,7 +187,7 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectPreviousButtonY()
+	void GUIManager::SelectButtonLeft()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
@@ -194,7 +199,6 @@ namespace GUI
 
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
-
 
 	void GUIManager::PressSelectedButton()
 	{
