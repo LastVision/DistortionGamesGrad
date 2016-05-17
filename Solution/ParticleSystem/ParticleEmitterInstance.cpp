@@ -332,23 +332,6 @@ namespace Prism
 				myOrientation.SetPos(myEntity->GetOrientation().GetPos());
 			}
 
-			//if (myRotation.x > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.x) * aDeltaTime) * myOrientation;
-			//}
-
-			//if (myRotation.y > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.y) * aDeltaTime) * myOrientation;
-			//}
-
-
-			//if (myRotation.z > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.z) * aDeltaTime) * myOrientation;
-			//}
-
-
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
 			{
 				EmitParticle(myOrientation);

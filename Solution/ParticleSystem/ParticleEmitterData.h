@@ -4,6 +4,12 @@
 struct ID3D11InputLayout;
 struct _D3DX11_TECHNIQUE_DESC;
 
+
+namespace tinyxml2
+{
+	class XMLElement;
+}
+
 namespace Prism
 {
 	class ParticleEmitterInstance;
@@ -27,6 +33,12 @@ namespace Prism
 
 		void CreateInputLayout();
 		
+
+		void ReadParticleData(tinyxml2::XMLElement* anElement);
+		void ReadEmitterData(tinyxml2::XMLElement* anElement);
+
+
+
 		Texture*				myTexture;
 		Effect*					myEffect;
 		ID3D11InputLayout*		myInputLayout;
@@ -41,11 +53,12 @@ namespace Prism
 		std::string	myTextureName;
 
 		CU::Vector3f myEmitterSize;
-		CU::Vector2<float> myVariation;
-		CU::Vector2<float> myParticleRotation;
+		CU::Vector3f myMinDirection;
+		CU::Vector3f myMaxDirection;
 
-		float myEmissionAngle;
-		float myAngleVariation;
+		CU::Vector2<float> myParticleRotation;
+		CU::Vector2<float> myMinMaxSpeed;
+
 		float myRotationDelta;
 		float myEmitterLifeTime;
 		float myEmissionRate;

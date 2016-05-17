@@ -18,8 +18,6 @@ namespace Prism
 		, myFileName("not initialized")
 		, myEffectName("not initialized")
 		, myTextureName("not initialized")
-		, myEmissionAngle(0.f)
-		, myAngleVariation(0.f)
 		, myRotationDelta(0.f)
 		, myEmitterLifeTime(0.f)
 		, myEmissionRate(0.f)
@@ -55,27 +53,17 @@ namespace Prism
 		element = read.ForceFindFirstChild(emitter, "Texture");
 		read.ReadAttribute(element, "filepath", myTextureName);
 
-		element = read.ForceFindFirstChild(emitter, "ActiveAtStart");
-		read.ReadAttribute(element, "value", myIsActiveAtStart);
-
-		element = read.ForceFindFirstChild(emitter, "CircleEmitter");
-		read.ReadAttribute(element, "value", myIsCircle);
-
-		element = read.ForceFindFirstChild(emitter, "HollowEmitter");
-		read.ReadAttribute(element, "value", myIsHollow);
-
-		element = read.FindFirstChild(emitter, "SphereEmitter");
-		if (element != nullptr)
-		{
-			read.ReadAttribute(element, "value", myIsSphere);
-		}
+		element = read.ForceFindFirstChild(emitter, "EmitterFlags");
+		read.ReadAttribute(element, "activeAtStart", myIsActiveAtStart);
+		read.ReadAttribute(element, "circleEmitter", myIsCircle);
+		read.ReadAttribute(element, "hollowEmitter", myIsHollow);
 
 		element = read.ForceFindFirstChild(emitter, "EmitterSize");
 		read.ReadAttribute(element, "x", "y", "z", myEmitterSize);
 		myEmitterSize *= 0.5f;
 
 		element = read.ForceFindFirstChild(emitter, "EmitterLifeTime");
-		read.ReadAttribute(element, "value", myEmitterLifeTime);
+		read.ForceReadAttribute(element, "value", myEmitterLifeTime);
 		if (myEmitterLifeTime < 0)
 		{
 			myUseEmitterLifeTime = false;
@@ -86,51 +74,52 @@ namespace Prism
 		}
 
 		element = read.ForceFindFirstChild(emitter, "ParticleRotationDelta");
-		read.ReadAttribute(element, "value", myRotationDelta);
+		read.ForceReadAttribute(element, "value", myRotationDelta);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleRotation");
-		read.ReadAttribute(element, "min", myParticleRotation.x);
-		read.ReadAttribute(element, "max", myParticleRotation.y);
+		read.ForceReadAttribute(element, "min", myParticleRotation.x);
+		read.ForceReadAttribute(element, "max", myParticleRotation.y);
 
+		element = read.ForceFindFirstChild(emitter, "MinDirection");
+		read.ForceReadAttribute(element, "x", "y", "z", myMinDirection);
 
-		element = read.ForceFindFirstChild(emitter, "EmissionVariation");
-		read.ReadAttribute(element, "yAxis", myVariation.x);
-		read.ReadAttribute(element, "zAxis", myVariation.y);
+		element = read.ForceFindFirstChild(emitter, "MaxDirection");
+		read.ForceReadAttribute(element, "x", "y", "z", myMinDirection);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleStartColor");
-		read.ReadAttribute(element, "r", "g", "b", myData.myStartColor);
+		read.ForceReadAttribute(element, "r", "g", "b", myData.myStartColor);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleEndColor");
-		read.ReadAttribute(element, "r", "g", "b", myData.myEndColor);
+		read.ForceReadAttribute(element, "r", "g", "b", myData.myEndColor);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleLifeTime");
-		read.ReadAttribute(element, "value", myData.myParticleLifeTime);
+		read.ForceReadAttribute(element, "value", myData.myParticleLifeTime);
 
 		element = read.ForceFindFirstChild(emitter, "EmittsPerSecond");
-		read.ReadAttribute(element, "value", myEmissionRate);
+		read.ForceReadAttribute(element, "value", myEmissionRate);
 		myEmissionRate = 1 / myEmissionRate;
 
 		element = read.ForceFindFirstChild(emitter, "ParticlesPerEmitt");
-		read.ReadAttribute(element, "value", myParticlesPerEmitt);
+		read.ForceReadAttribute(element, "value", myParticlesPerEmitt);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleScale");
-		read.ReadAttribute(element, "min", myData.myMinStartSize);
-		read.ReadAttribute(element, "max", myData.myMaxStartSize);
+		read.ForceReadAttribute(element, "min", myData.myMinStartSize);
+		read.ForceReadAttribute(element, "max", myData.myMaxStartSize);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleSizeDelta");
-		read.ReadAttribute(element, "value", myData.mySizeDelta);
+		read.ForceReadAttribute(element, "value", myData.mySizeDelta);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleAlphaStart");
-		read.ReadAttribute(element, "value", myData.myStartAlpha);
+		read.ForceReadAttribute(element, "value", myData.myStartAlpha);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleAlphaDelta");
-		read.ReadAttribute(element, "value", myData.myAlphaDelta);
+		read.ForceReadAttribute(element, "value", myData.myAlphaDelta);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleSpeed");
-		read.ReadAttribute(element, "value", myData.mySpeed);
+		read.ForceReadAttribute(element, "value", myData.mySpeed);
 
 		element = read.ForceFindFirstChild(emitter, "ParticleSpeedDelta");
-		read.ReadAttribute(element, "value", myData.mySpeedDelta);
+		read.ForceReadAttribute(element, "value", myData.mySpeedDelta);
 
 		read.CloseDocument();
 
@@ -170,4 +159,15 @@ namespace Prism
 		DL_ASSERT_EXP(!FAILED(hr), "[ParticleEmitterData](CreateInputLayout) : Failed to Create InputLayout!");
 		Engine::GetInstance()->SetDebugName(myInputLayout, "ParticleEmitterData::myInputLayout");
 	}
+
+	void ParticleEmitterData::ReadParticleData(tinyxml2::XMLElement* anElement)
+	{
+
+	}
+
+	void ParticleEmitterData::ReadEmitterData(tinyxml2::XMLElement* anElement)
+	{
+
+	}
+
 }
