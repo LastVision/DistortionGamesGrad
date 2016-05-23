@@ -81,6 +81,9 @@ namespace Prism
 
 
 		myDecal = new DecalPass();
+
+		myBackgroundEffect =
+			EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_render_background.fx");
 	}
 
 	DeferredRenderer::~DeferredRenderer()
@@ -104,13 +107,12 @@ namespace Prism
 	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath)
 	{
 		SET_RUNTIME(false);
-		bool addDecalsHereWhenThreadSafe = true;
-		//myDecal->AddDecal(aPosition, aDirection, aPath);
-		//myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
+		myDecal->AddDecal(aPosition, aDirection, aPath);
+		myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
 		SET_RUNTIME(true);
 	}
 
-	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
+	void DeferredRenderer::Render(Scene* aScene, Texture* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
 	{
 		Engine::GetInstance()->GetContex()->RSSetViewports(1, myViewPort);
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(myDepthStencilTexture->GetDepthStencilView()
@@ -118,13 +120,6 @@ namespace Prism
 		
 		myGBufferData->Clear(myClearColor);
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
-
-		if (aBackground != nullptr)
-		{
-			aBackground->Render(Engine::GetInstance()->GetWindowSize() * 0.5f);
-		}
-
-		//aScene->Render();
 
 		aScene->RenderStatic();
 		ID3D11RenderTargetView* target = myGBufferData->myAlbedoTexture->GetRenderTargetView();
@@ -141,11 +136,11 @@ namespace Prism
 
 		RenderParticles(aParticleEmitterManager);
 
-		//Set Normal State
-
 #ifdef SHADOWS
 		RenderShadows(aShadowLight, aScene->GetCamera());
 #endif
+
+		RenderBackground(aBackground);
 	}
 
 	void DeferredRenderer::RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera)
@@ -319,6 +314,20 @@ namespace Prism
 		}
 
 		myAmbientPass->RemoveDataFromGPU();
+	}
+
+	void DeferredRenderer::RenderBackground(Texture* aBackground)
+	{
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
+
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, Engine::GetInstance()->GetDepthView());
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+
+		myBackgroundEffect->SetTexture(aBackground);
+		myBackgroundEffect->SetDepthTexture(myDepthStencilTexture);
+		Render(myBackgroundEffect);
+
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 	}
 
 	void DeferredRenderer::SetupShadowData()
