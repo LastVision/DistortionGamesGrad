@@ -132,12 +132,14 @@ void InGameState::OnResize(int aWidth, int aHeight)
 
 void InGameState::ReceiveMessage(const OnClickMessage& aMessage)
 {
-	// not used yet, should be for when pressing quit in ingame menu
-
 	switch (aMessage.myEvent)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::RESTART_LEVEL:
+		SET_RUNTIME(false);
+		myLevelFactory->RestartLevel();
 		break;
 	}
 }

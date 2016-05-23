@@ -40,6 +40,11 @@ bool LevelFactory::LoadLevel(Level*& aLevelOut)
 	return true;
 }
 
+void LevelFactory::RestartLevel()
+{
+	myCurrentLevelID--;
+}
+
 Level* LevelFactory::LoadCurrentLevel()
 {
 	Level* level = ReadLevel(myLevelPaths[myCurrentLevelID]);

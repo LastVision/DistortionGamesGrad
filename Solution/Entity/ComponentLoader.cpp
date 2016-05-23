@@ -75,7 +75,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	float angleEpsilonDegree;
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "AngleEpsilon"), "value", angleEpsilonDegree);
 	aOutputData.myAngleEpsilon = CU::Math::DegreeToRad(angleEpsilonDegree);
-	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkSpeed"), "value", aOutputData.myWalkSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkSpeedWithLegs"), "value", aOutputData.myWalkSpeedWithLegs);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkSpeedWithoutLegs"), "value", aOutputData.myWalkSpeedWithoutLegs);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "WalkDrag"), "value", aOutputData.myWalkDrag);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashAimTime"), "value", aOutputData.myDashAimTime);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashFlyTime"), "value", aOutputData.myDashFlyTime);
@@ -227,6 +228,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DeathSpeed"), "value", aOutputData.myDeathSpeed);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LoseHeadSpeed"), "value", aOutputData.myLoseHeadSpeed);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "HeadDistance"), "value", aOutputData.myHeadDistance);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LoseLegsSpeed"), "value", aOutputData.myLoseLegsSpeed);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "LegsDistance"), "value", aOutputData.myLegsDistance);
 }
 
 int ComponentLoader::ConvertToTriggerEnum(std::string aName)

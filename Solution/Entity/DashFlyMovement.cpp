@@ -4,6 +4,7 @@
 #include "MovementComponent.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
+#include "PlayerGraphicsComponent.h"
 #include "ShouldDieNote.h"
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -104,9 +105,15 @@ void DashFlyMovement::HandleContact()
 	CU::Vector3<float> down(0.f, -1.f, 0.f);
 	CU::Vector3<float> up(0.f, 1.f, 0.f);
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs * 0.8f, myRaycastHandler
+	float raycastLengthWithLegs = GC::PlayerHeightWithLegs * 0.8f;
+	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+	{
+		raycastLengthWithLegs *= 0.8f;
+	}
+
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, raycastLengthWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
-	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs* 0.8f, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, raycastLengthWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
 	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler

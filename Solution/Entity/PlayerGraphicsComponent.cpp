@@ -189,8 +189,19 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		myHead.SetActive(false);
 		break;
 	case eScrapPart::LEGS:
-		myRightLeg.SetActive(false);
-		myLeftLeg.SetActive(false);
+		if (myLeftLeg.GetActive() == true)
+		{
+			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+			myLeftLeg.SetActive(false);
+		}
+
+		if (myRightLeg.GetActive() == true)
+		{
+			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+			myRightLeg.SetActive(false);
+		}
 		break;
 	default:
 		DL_ASSERT("Unknown body part, see a doctor.");

@@ -31,6 +31,8 @@ public:
 	void ReceiveNote(const SpawnNote& aMessage) override;
 	void ReceiveNote(const DeathNote& aMessage) override;
 
+	bool GetLegsActive() const;
+
 private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;
@@ -64,4 +66,9 @@ inline eComponentType PlayerGraphicsComponent::GetTypeStatic()
 inline eComponentType PlayerGraphicsComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline bool PlayerGraphicsComponent::GetLegsActive() const
+{
+	return myRightLeg.GetActive();
 }
