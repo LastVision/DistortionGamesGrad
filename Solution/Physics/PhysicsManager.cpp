@@ -557,7 +557,8 @@ namespace Prism
 
 	void PhysicsManager::AddForce(physx::PxRigidDynamic* aDynamicBody, const CU::Vector3<float>& aDirection, float aMagnitude)
 	{
-		myForceJobs[myCurrentIndex].Add(ForceJob(aDynamicBody, aDirection, aMagnitude));
+		//myForceJobs[myCurrentIndex].Add(ForceJob(aDynamicBody, aDirection, aMagnitude));
+		AddForce(ForceJob(aDynamicBody, aDirection, aMagnitude));
 	}
 
 	void PhysicsManager::AddForce(const ForceJob& aForceJob)
@@ -577,22 +578,26 @@ namespace Prism
 
 	void PhysicsManager::TeleportToPosition(physx::PxRigidDynamic* aDynamicBody, const CU::Vector3<float>& aPosition)
 	{
-		myPositionJobs[myCurrentIndex].Add(PositionJob(aDynamicBody, aPosition, PositionJobType::TELEPORT));
+		//myPositionJobs[myCurrentIndex].Add(PositionJob(aDynamicBody, aPosition, PositionJobType::TELEPORT));
+		SetPosition(PositionJob(aDynamicBody, aPosition, PositionJobType::TELEPORT));
 	}
 
 	void PhysicsManager::TeleportToPosition(physx::PxRigidStatic * aStaticBody, const CU::Vector3<float>& aPosition)
 	{
-		myPositionJobs[myCurrentIndex].Add(PositionJob(aStaticBody, aPosition, PositionJobType::TELEPORT));
+		//myPositionJobs[myCurrentIndex].Add(PositionJob(aStaticBody, aPosition, PositionJobType::TELEPORT));
+		SetPosition(PositionJob(aStaticBody, aPosition, PositionJobType::TELEPORT));
 	}
 
 	void PhysicsManager::TeleportToPosition(int aID, const CU::Vector3<float>& aPosition)
 	{
-		myPositionJobs[myCurrentIndex].Add(PositionJob(aID, aPosition, PositionJobType::TELEPORT));
+		//myPositionJobs[myCurrentIndex].Add(PositionJob(aID, aPosition, PositionJobType::TELEPORT));
+		SetPosition(PositionJob(aID, aPosition, PositionJobType::TELEPORT));
 	}
 
 	void PhysicsManager::MoveToPosition(physx::PxRigidDynamic* aDynamicBody, const CU::Vector3<float>& aPosition)
 	{
-		myPositionJobs[myCurrentIndex].Add(PositionJob(aDynamicBody, aPosition, PositionJobType::MOVE));
+		//myPositionJobs[myCurrentIndex].Add(PositionJob(aDynamicBody, aPosition, PositionJobType::MOVE));
+		SetPosition(PositionJob(aDynamicBody, aPosition, PositionJobType::MOVE));
 	}
 
 	void PhysicsManager::SetPosition(const PositionJob& aPositionJob)
@@ -936,12 +941,14 @@ namespace Prism
 
 	void PhysicsManager::Add(physx::PxRigidDynamic* aDynamic)
 	{
-		myActorsToAdd[myCurrentIndex].Add(aDynamic);
+		//myActorsToAdd[myCurrentIndex].Add(aDynamic);
+		GetScene()->addActor(*aDynamic);
 	}
 
 	void PhysicsManager::Add(physx::PxRigidStatic* aStatic)
 	{
-		myActorsToAdd[myCurrentIndex].Add(aStatic);
+		//myActorsToAdd[myCurrentIndex].Add(aStatic);
+		GetScene()->addActor(*aStatic);
 	}
 
 	void PhysicsManager::Add(int aCapsuleID)
@@ -953,8 +960,8 @@ namespace Prism
 	{
 		if (aDynamic != nullptr && aDynamic->getScene() != nullptr)
 		{
-			//GetScene()->removeActor(*aDynamic);
-			myActorsToRemove[myCurrentIndex].Add(aDynamic);
+			GetScene()->removeActor(*aDynamic);
+			//myActorsToRemove[myCurrentIndex].Add(aDynamic);
 			for (int i = 0; i < myPhysicsComponentCallbacks.Size(); ++i)
 			{
 				if (myPhysicsComponentCallbacks[i].myData == &aData)
@@ -970,8 +977,8 @@ namespace Prism
 	{
 		if (aStatic != nullptr && aStatic->getScene() != nullptr)
 		{
-			//GetScene()->removeActor(*aStatic);
-			myActorsToRemove[myCurrentIndex].Add(aStatic);
+			GetScene()->removeActor(*aStatic);
+			//myActorsToRemove[myCurrentIndex].Add(aStatic);
 			for (int i = 0; i < myPhysicsComponentCallbacks.Size(); ++i)
 			{
 				if (myPhysicsComponentCallbacks[i].myData == &aData)
