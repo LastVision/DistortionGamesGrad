@@ -1,11 +1,13 @@
 #include "stdafx.h"
-#include <Cursor.h>
+
+#include <ControllerInput.h>
 #include "CreditMenuState.h"
-#include "PostMaster.h"
-#include "GUIManager.h"
-#include "InputWrapper.h"
-#include "OnClickMessage.h"
+#include <Cursor.h>
 #include "InGameState.h"
+#include "InputWrapper.h"
+#include "GUIManager.h"
+#include "OnClickMessage.h"
+#include "PostMaster.h"
 
 CreditMenuState::CreditMenuState(float aShowTimer)
 	: myGUIManager(nullptr)
@@ -59,7 +61,7 @@ const eStateStatus CreditMenuState::Update(const float& aDeltaTime)
 	}
 	CU::InputWrapper* input = CU::InputWrapper::GetInstance();
 	if (input->KeyDown(DIK_ESCAPE) == true || input->KeyDown(DIK_SPACE) == true || input->KeyDown(DIK_RETURN) == true
-		|| input->MouseUp(0) == true || input->MouseUp(1) == true)
+		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A))
 	{
 		myStateStatus = eStateStatus::ePopMainState;
 	}
