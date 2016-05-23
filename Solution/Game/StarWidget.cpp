@@ -36,10 +36,13 @@ void StarWidget::Render(const CU::Vector2<float>& aParentPosition)
 	{
 		myBackground->Render(myPosition + aParentPosition);
 
-		float alpha = fmaxf(0, myTime);
-		Tweener<float> tweener;
-		float scale = tweener.DoTween(alpha, 0, 1.f, 1.f, eTweenType::SINUS_HALF);
-		myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(scale, scale));
+		if (myActive == true)
+		{
+			float alpha = fmaxf(0, myTime);
+			Tweener<float> tweener;
+			float scale = tweener.DoTween(alpha, 0, 1.f, 1.f, eTweenType::SINUS_HALF);
+			myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(scale, scale));
+		}
 	}
 }
 

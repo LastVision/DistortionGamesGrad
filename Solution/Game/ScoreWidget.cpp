@@ -13,6 +13,8 @@
 #include <sstream>
 #include "StarWidget.h"
 
+#include <InputWrapper.h>
+
 ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
 	: GUI::Widget()
 	, myScore(aScore)
@@ -29,10 +31,9 @@ ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
 
 	myGoalValue = CalculateGoalValue();
 
-	for (int i = 0; i < 3; ++i)
-	{
-		myStars.Add(new StarWidget(true, i));
-	}
+	myStars.Add(new StarWidget(myGoalValue > 0.f, 0));
+	myStars.Add(new StarWidget(myGoalValue > 0.5f, 1));
+	myStars.Add(new StarWidget(myGoalValue >= 1.f, 2));
 
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_score_window_background.dds", mySize, mySize / 2.f);
 }
@@ -64,7 +65,7 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 		myBackground->Render(myPosition + aParentPosition);
 		myBar->Render(myPosition + aParentPosition);
 		
-		CU::Vector2<float> starOffset(138.f, -100.f);
+		CU::Vector2<float> starOffset(138.f, -200.f);
 
 		for (int i = 0; i < myStars.Size(); ++i)
 		{
@@ -87,10 +88,18 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 			ss.precision(4);
 		}
 
-		ss << "Your time: " << myScore->myTime << std::endl;
-		ss << "Death count: " << myScore->myDeathCount;
+		ss << "Your time: " << myScore->myTime << " sec" << std::endl;
+		ss << "You died " << myScore->myDeathCount << " time";
+		if (myScore->myDeathCount != 1)
+		{
+			ss << "s";
+		}
 
 		Prism::Engine::GetInstance()->PrintText(ss.str(), aParentPosition + myPosition + CU::Vector2<float>(-100.f, 120.f), Prism::eTextType::RELEASE_TEXT);
+
+		Prism::Engine::GetInstance()->PrintText(CU::Concatenate("%i sec          %i sec          %i sec"
+			, int(myScoreInfo.myLongTime), int(myScoreInfo.myMediumTime), int(myScoreInfo.myShortTime))
+			, aParentPosition + myPosition + CU::Vector2<float>(-243.f, -50.f), Prism::eTextType::RELEASE_TEXT);
 	}
 }
 

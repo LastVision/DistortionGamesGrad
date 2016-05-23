@@ -135,13 +135,26 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 				highestScore.myDeathCount = score->myDeathCount;
 			}
 		}
-		if (currentScore.myTime == 0 || highestScore.myTime <= currentScore.myTime)
+
+		if (currentScore.myTime < highestScore.myTime)
 		{
-			file << aLevelID << std::endl << highestScore.myTime << std::endl;
+			highestScore.myTime = currentScore.myTime;
 		}
-		else
+
+		int stars = 0;
+		if (highestScore.myTime < myScoreInfo.myShortTime)
 		{
-			file << aLevelID << std::endl << currentScore.myTime << std::endl;
+			stars = 3;
 		}
+		else if (highestScore.myTime < myScoreInfo.myMediumTime)
+		{
+			stars = 2;
+		}
+		else if (highestScore.myTime < myScoreInfo.myLongTime)
+		{
+			stars = 1;
+		}
+
+		file << aLevelID << std::endl << highestScore.myTime << std::endl << stars << std::endl;
 	}
 }
