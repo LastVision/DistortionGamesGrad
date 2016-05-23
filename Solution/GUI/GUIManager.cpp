@@ -243,14 +243,14 @@ namespace GUI
 
 				if (type == "button")
 				{
-					ButtonWidget* button = new ButtonWidget(&aReader, widgetElement);
-					container->AddWidget(button);
-					myButtons.Add(button);
+					ButtonWidget* widget = new ButtonWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
+					myButtons.Add(widget);
 				}
 				else if (type == "sprite")
 				{
-					SpriteWidget* spriteWidget = new SpriteWidget(&aReader, widgetElement);
-					container->AddWidget(spriteWidget);
+					SpriteWidget* widget = new SpriteWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
 				}
 				else
 				{

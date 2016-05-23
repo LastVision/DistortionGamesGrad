@@ -22,6 +22,8 @@
 #include <Cursor.h>
 #include <FinishLevelMessage.h>
 
+#include "VictoryState.h"
+
 InGameState::InGameState(int aLevelID)
 	: myGUIManager(nullptr)
 	, myLevelToLoad(aLevelID)
@@ -53,10 +55,11 @@ InGameState::~InGameState()
 	SAFE_DELETE(myText);
 }
 
-void InGameState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	myIsLetThrough = false;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myStateStatus = eStateStatus::eKeepState;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(false);
@@ -95,7 +98,7 @@ const eStateStatus InGameState::Update(const float&)
 	}
 	else
 	{
-		return eStateStatus::ePopMainState;
+		myStateStack->PushSubGameState(new VictoryState());
 		//Game over, push "win"-state
 	}
 

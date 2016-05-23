@@ -55,7 +55,7 @@ namespace Prism
 
 		void SetRasterizeState(eRasterizer aState);
 		eRasterizer GetRasterizerState() const;
-
+		void SetBlendState(const eDirectXBlendState& aBlendState);
 	private:
 		void operator=(const DirectX&) = delete;
 
@@ -67,7 +67,7 @@ namespace Prism
 		bool D3DSetupRasterizerStates();
 		bool D3DSetupDepthStencilStates();
 		void D3DGetRefreshRate(unsigned int& aNumerator, unsigned int& aDenominator);
-
+		void CreateBlendStates();
 		ID3D11Device* myDevice;
 		ID3D11DeviceContext* myContext;
 		ID3D11Debug* myDebugInterface;
@@ -83,6 +83,8 @@ namespace Prism
 
 		ID3D11RasterizerState* myRasterizerStates[static_cast<int>(eRasterizer::_COUNT)];
 		ID3D11DepthStencilState* myDepthStencilStates[static_cast<int>(eDepthStencil::_COUNT)];
+		ID3D11BlendState* myBlendStates[static_cast<int>(eDirectXBlendState::_COUNT)];
+
 
 		D3D11_VIEWPORT* myViewPort;
 

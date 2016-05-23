@@ -30,7 +30,7 @@ public:
 	Level(Prism::Camera& aCamera);
 	~Level();
 
-	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
+	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
 
 	const eStateStatus Update(const float& aDeltaTime) override;
 	void Render() override;
@@ -74,6 +74,9 @@ private:
 	ScoreInfo* myScoreInfo;
 
 	Prism::EmitterManager* myEmitterManager;
+
+	Prism::SpriteProxy* myCountdownSprites[10];
+	int myCurrentCountdownSprite;
 
 
 	CU::Vector3<float> mySpawnPosition;

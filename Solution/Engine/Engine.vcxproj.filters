@@ -198,6 +198,9 @@
     <ClCompile Include="EmitterManager.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="ParticlePass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
     <ClCompile Include="DeferredPasses.cpp">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClCompile>
@@ -452,6 +455,9 @@
     </ClInclude>
     <ClInclude Include="EmitterManager.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticlePass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
     <ClInclude Include="DeferredPasses.h">
       <Filter>Rendering\Renderer\DeferredPasses</Filter>

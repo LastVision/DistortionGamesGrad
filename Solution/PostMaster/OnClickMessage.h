@@ -6,6 +6,7 @@ enum class eOnClickEvent
 	START_LEVEL, 
 	LEVEL_SELECT,
 	GAME_QUIT,
+	CREDITS,
 };
 
 struct OnClickMessage : public Message

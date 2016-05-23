@@ -43,10 +43,22 @@
     <ClCompile Include="ScoreState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
-    <ClCompile Include="ScrapManager.cpp" />
     <ClCompile Include="GameState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="SplashState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditMenuState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrapManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="VictoryState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -97,8 +109,20 @@
     <ClInclude Include="ScoreState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
-    <ClInclude Include="ScrapManager.h" />
     <ClInclude Include="ScoreInfo.h" />
+    <ClInclude Include="SplashState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditMenuState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrapManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

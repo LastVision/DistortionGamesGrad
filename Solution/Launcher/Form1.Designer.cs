@@ -33,10 +33,10 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.myQualityList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.myResolutionList = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.myQualityList = new System.Windows.Forms.ComboBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
@@ -76,8 +76,8 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.myQualityList);
+            this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.myResolutionList);
             this.panel3.Controls.Add(this.button1);
@@ -86,23 +86,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(584, 71);
             this.panel3.TabIndex = 8;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(139, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Quality";
-            // 
-            // myQualityList
-            // 
-            this.myQualityList.FormattingEnabled = true;
-            this.myQualityList.Location = new System.Drawing.Point(139, 25);
-            this.myQualityList.Name = "myQualityList";
-            this.myQualityList.Size = new System.Drawing.Size(121, 21);
-            this.myQualityList.TabIndex = 3;
             // 
             // label1
             // 
@@ -120,6 +103,23 @@
             this.myResolutionList.Name = "myResolutionList";
             this.myResolutionList.Size = new System.Drawing.Size(121, 21);
             this.myResolutionList.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(144, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(39, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Quality";
+            // 
+            // myQualityList
+            // 
+            this.myQualityList.FormattingEnabled = true;
+            this.myQualityList.Location = new System.Drawing.Point(147, 25);
+            this.myQualityList.Name = "myQualityList";
+            this.myQualityList.Size = new System.Drawing.Size(121, 21);
+            this.myQualityList.TabIndex = 4;
             // 
             // Form1
             // 
@@ -150,8 +150,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox myResolutionList;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox myQualityList;
+        private System.Windows.Forms.Label label2;
     }
 }
 

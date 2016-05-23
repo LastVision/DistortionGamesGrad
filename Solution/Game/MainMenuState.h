@@ -19,14 +19,13 @@ namespace GUI
 	class Cursor;
 }
 
-
 class MainMenuState : public GameState, public Subscriber
 {
 public:
-	MainMenuState(CU::ControllerInput* aController);
+	MainMenuState();
 	~MainMenuState();
 
-	void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) override;
+	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
 	void EndState() override;
 
 	const eStateStatus Update(const float& aDeltaTime) override;
@@ -40,8 +39,6 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
-
-	CU::ControllerInput* myController;
 
 	Tweener<float> myTweener;
 	CU::Vector2<float> myLogoStartPosition;

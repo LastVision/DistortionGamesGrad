@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <AudioInterface.h>
 #include <Camera.h>
+#include "CreditMenuState.h"
 #include <Cursor.h>
 #include <ControllerInput.h>
 #include <GUIManager.h>
@@ -12,9 +13,10 @@
 #include <PostMaster.h>
 #include <PollingStation.h>
 #include "StateStackProxy.h"
+#include "SplashState.h"
 #include <SpriteProxy.h>
 
-MainMenuState::MainMenuState(CU::ControllerInput* aController)
+MainMenuState::MainMenuState()
 	: myLogoPosition(0.f, 0.f)
 	, myLogoAlpha(0.f)
 	, myMenuAlpha(0.f)
@@ -25,7 +27,6 @@ MainMenuState::MainMenuState(CU::ControllerInput* aController)
 	, myLogoDone(false)
 	, myGUIManager(nullptr)
 	, myHasRunOnce(false)
-	, myController(aController)
 {
 	CU::Vector2<float> logoSize(1024.f, 256.f);
 	myLogo = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/MainMenu/T_gamelogo.dds"
@@ -55,14 +56,15 @@ MainMenuState::~MainMenuState()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
-void MainMenuState::InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor)
+void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myCursor = aCursor;
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 
 
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
@@ -81,9 +83,13 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 {
 	if (myHasRunOnce == false)
 	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_our.dds", false));
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new SplashState("Data/Resource/Texture/Menu/Splash/T_logo_other.dds", true));
 		myHasRunOnce = true;
 	}
-	else 
+	else
 	{
 		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 		{
@@ -114,8 +120,6 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 		myDustAlpha = fmaxf(myLogoAlpha - 2.5f, 0.f);
 		myDustAlpha *= 3.f;
 		myDustAlpha = fminf(myDustAlpha, 1.f);
-
-		myController->Update(aDeltaTime);
 
 		HandleControllerInMenu(myController, myGUIManager);
 
@@ -154,9 +158,13 @@ void MainMenuState::OnResize(int aWidth, int aHeight)
 void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
-{
+	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::CREDITS:
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new CreditMenuState());
 		break;
 	}
 }

@@ -196,6 +196,16 @@ namespace Prism
 	}
 
 
+	void DirectX::SetBlendState(const eDirectXBlendState& aBlendState)
+	{
+		float blend[4];
+		blend[0] = 0.f;
+		blend[1] = 0.f;
+		blend[2] = 0.f;
+		blend[3] = 0.f;
+		myContext->OMSetBlendState(myBlendStates[static_cast<int>(aBlendState)], blend, 0xFFFFFFFF);
+	}
+
 	bool DirectX::D3DSetup()
 	{
 		if (D3DSwapChainSetup() == false)
@@ -230,7 +240,7 @@ namespace Prism
 
 		SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		SetRasterizeState(eRasterizer::CULL_BACK);
-
+		CreateBlendStates();
 
 		DIRECTX_LOG("DirectX Setup Successful");
 		return true;
@@ -518,4 +528,54 @@ namespace Prism
 		SAFE_RELEASE(adapter);
 		SAFE_RELEASE(factory);
 	}
+
+	void DirectX::CreateBlendStates()
+	{
+		D3D11_BLEND_DESC blendDesc;
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		blendDesc.IndependentBlendEnable = FALSE;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eDirectXBlendState::ALPHA)]);
+		SetDebugName(myBlendStates[static_cast<int>(eDirectXBlendState::ALPHA)], "ALPHA_BLEND BlendState");
+
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		blendDesc.IndependentBlendEnable = FALSE;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eDirectXBlendState::PARTICLE_BLEND)]);
+		SetDebugName(myBlendStates[static_cast<int>(eDirectXBlendState::PARTICLE_BLEND)], "PARTICLE_BLEND BlendState");
+
+
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		blendDesc.IndependentBlendEnable = FALSE;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eDirectXBlendState::NO_ALPHA)]);
+		SetDebugName(myBlendStates[static_cast<int>(eDirectXBlendState::NO_ALPHA)], "NO_ALPHA BlendState");
+	}
+
 }

@@ -22,7 +22,7 @@ public:
 
 	virtual ~GameState();
 
-	virtual void InitState(StateStackProxy* aStateStackProxy, GUI::Cursor* aCursor) = 0;
+	virtual void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) = 0;
 	virtual void EndState() = 0;
 	
 	virtual const eStateStatus Update(const float& aDeltaTime) = 0;
@@ -37,6 +37,7 @@ public:
 
 protected:
 
+	CU::ControllerInput* myController;
 	GUI::Cursor* myCursor;
 	StateStackProxy* myStateStack;
 	eStateStatus myStateStatus;

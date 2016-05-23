@@ -103,7 +103,7 @@ namespace Prism
 
 		bool myWireframeShouldShow;
 		volatile bool myIsLoading;
-
+		void SetBlendState(const eDirectXBlendState& aBlendState);
 	private:
 		struct FadeData
 		{
