@@ -7,8 +7,9 @@
 #include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScoreWidget.h"
+#include <fstream>
 
-ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo)
+ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
 	, myScoreInfo(aScoreInfo)
 	, myScoreWidgets(4)
@@ -17,7 +18,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	{
 		myScoreWidgets.Add(new ScoreWidget(score));
 	}
-}
+	SaveScoreToFile(aLevelID);
+ }
 
 
 ScoreState::~ScoreState()
@@ -88,4 +90,37 @@ void ScoreState::PauseState()
 
 void ScoreState::OnResize(int, int)
 {
+}
+
+void ScoreState::SaveScoreToFile(const int aLevelID)
+{
+	CU::BuildFoldersInPath(CU::GetMyDocumentFolderPath() + "Data/Score/");
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
+	Score currentScore;
+	int levelID = 0;
+	file >> levelID >> currentScore.myTime;
+	file.close();
+
+	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
+	if (file.is_open() == true)
+	{
+		Score highestScore;
+		for each (const Score* score in myScores)
+		{
+			if (highestScore.myTime < score->myTime)
+			{
+				highestScore.myTime = score->myTime;
+				highestScore.myDeathCount = score->myDeathCount;
+			}
+		}
+		if (currentScore.myTime == 0 || highestScore.myTime <= currentScore.myTime)
+		{
+			file << aLevelID << std::endl << highestScore.myTime << std::endl;
+		}
+		else
+		{
+			file << aLevelID << std::endl << currentScore.myTime << std::endl;
+		}
+	}
 }

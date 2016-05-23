@@ -27,7 +27,7 @@ struct ScoreInfo;
 class Level : public Subscriber, public GameState
 {
 public:
-	Level(Prism::Camera& aCamera);
+	Level(Prism::Camera& aCamera, const int aLevelID);
 	~Level();
 
 	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
@@ -84,6 +84,7 @@ private:
 	short myPlayerWinCount;
 	short myPlayersPlaying;
 	int myLevelToChangeToID;
+	const int myLevelID;
 };
 
 inline Prism::Scene* Level::GetScene() const
