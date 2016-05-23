@@ -78,11 +78,11 @@ void PlayerGraphicsComponent::Init()
 	myWalkAnimation.CreateJoints(myData.myWalkAnimation);
 	myFlyAnimation.CreateJoints(myData.myFlyAnimation);
 
-	myScene->AddInstance(myBody.myInstance);
-	myScene->AddInstance(myLeftLeg.myInstance);
-	myScene->AddInstance(myRightLeg.myInstance);
-	myScene->AddInstance(myHead.myInstance);
-	myScene->AddInstance(myArrow);
+	myScene->AddInstance(myBody.myInstance, true);
+	myScene->AddInstance(myLeftLeg.myInstance, true);
+	myScene->AddInstance(myRightLeg.myInstance, true);
+	myScene->AddInstance(myHead.myInstance, true);
+	myScene->AddInstance(myArrow, true);
 
 	myCurrentAnimation = &myIdleAnimation;
 }
