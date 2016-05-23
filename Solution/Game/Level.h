@@ -47,6 +47,7 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 	void ReceiveMessage(const OnPlayerJoin& aMessage) override;
+	void ReceiveMessage(const OnDeathMessage& aMessage) override;
 
 	Prism::Scene* GetScene() const;
 	void Add(Entity* anEntity);

@@ -4,6 +4,7 @@
 #include "MovementComponent.h"
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
+#include "PlayerGraphicsComponent.h"
 #include "PostMaster.h"
 #include "ShouldDieNote.h"
 #include "WalkMovement.h"
@@ -128,10 +129,18 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 		}
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
+
+		float walkOffset = GC::PlayerHeightWithLegs;
+		if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+		{
+			walkOffset *= 0.8f;
+		}
+
+
 		resetPos.z = 0.f;
 		if (aHitNormal.y > 0.f)
 		{
-			resetPos.y = aHitPosition.y + GC::PlayerHeightWithLegs;
+			resetPos.y = aHitPosition.y + walkOffset;
 		}
 		else if (aDirection.x > 0)
 		{
@@ -206,8 +215,12 @@ void WalkMovement::Walk(float aDeltaTime)
 	if (fabs(myDirectionTarget.x) > myData.myDeadZone)
 	{
 		CU::Vector2<float> target(CU::GetNormalized(myDirectionTarget));
-
-		myVelocity.x = myDirectionTarget.x * myData.myWalkSpeed * aDeltaTime;
+		float walkSpeed = myData.myWalkSpeedWithLegs;
+		if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+		{
+			walkSpeed = myData.myWalkSpeedWithoutLegs;
+		}
+		myVelocity.x = myDirectionTarget.x * walkSpeed * aDeltaTime;
 	}
 
 	if (myVelocity.x < 0

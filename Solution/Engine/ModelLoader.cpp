@@ -287,7 +287,7 @@ namespace Prism
 		myBuffers[myInactiveBuffer].Add(newData);
 		myCanCopyArray = true;
 #else
-		bool lightMesh = aEffectPath.find("light_mesh") != std::string::npos;
+		bool lightMesh = aEffectPath.find("light_mesh") != std::string::npos || aEffectPath.find("decal") != std::string::npos;
 		Model* model = nullptr;
 		model = myModelFactory->LoadModel(aModelPath);
 		model->SetEffect(EffectContainer::GetInstance()->GetEffect(aEffectPath));
@@ -617,7 +617,7 @@ namespace Prism
 		model->SetEffect(EffectContainer::GetInstance()->GetEffect(someData.myEffectPath));
 		model->myFileName = someData.myResourcePath;
 
-		bool lightMesh = someData.myEffectPath.find("light_mesh") != std::string::npos;
+		bool lightMesh = someData.myEffectPath.find("light_mesh") != std::string::npos || someData.myEffectPath.find("decal") != std::string::npos;
 		model->Init(GetInstancedCount(someData.myResourcePath), lightMesh);
 
 		someData.myModelProxy->SetModel(model);

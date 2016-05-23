@@ -40,7 +40,7 @@ namespace Prism
 	{
 		for (int i = 0; i < myInstances.Size(); ++i)
 		{
-			myInstances[i]->Render(*myCamera, *myInstancingHelper);
+			myInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper);
 		}
 		
 		myInstancingHelper->Render(false);
@@ -50,7 +50,7 @@ namespace Prism
 	{
 		for (int i = 0; i < myInstances.Size(); ++i)
 		{
-			myInstances[i]->Render(*myCamera, *myInstancingHelper, true);
+			myInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
 		}
 
 		myInstancingHelper->Render(true);

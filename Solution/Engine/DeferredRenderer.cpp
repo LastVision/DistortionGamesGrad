@@ -18,6 +18,9 @@
 #include "SpotLightTextureProjection.h"
 #include <XMLReader.h>
 #include "EmitterManager.h"
+
+#include "DecalPass.h"
+
 #include "ParticlePass.h"
 namespace Prism
 {
@@ -76,6 +79,8 @@ namespace Prism
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
+
+		myDecal = new DecalPass();
 	}
 
 	DeferredRenderer::~DeferredRenderer()
@@ -92,6 +97,16 @@ namespace Prism
 		SAFE_DELETE(myPointLightPass);
 		SAFE_DELETE(mySpotLightPass);
 		SAFE_DELETE(mySpotLightTextureProjectionPass);
+
+		SAFE_DELETE(myDecal);
+	}
+
+	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath)
+	{
+		SET_RUNTIME(false);
+		myDecal->AddDecal(aPosition, aDirection, aPath);
+		myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
+		SET_RUNTIME(true);
 	}
 
 	void DeferredRenderer::Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
@@ -109,6 +124,11 @@ namespace Prism
 		}
 
 		aScene->Render();
+
+		ID3D11RenderTargetView* target = myGBufferData->myAlbedoTexture->GetRenderTargetView();
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
+			, Engine::GetInstance()->GetDepthView());
+		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture);
 
 		ActivateBuffers();
 
@@ -327,7 +347,7 @@ namespace Prism
 
 		myRenderToScreenData.mySource->SetResource(myParticleTexture->GetShaderView());
 
-		Render(myRenderToScreenData.myEffect, "Render_Particle");
+		//Render(myRenderToScreenData.myEffect, "Render_Particle");
 
 		myRenderToScreenData.mySource->SetResource(NULL);
 

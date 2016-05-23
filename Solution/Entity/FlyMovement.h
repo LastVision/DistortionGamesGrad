@@ -30,12 +30,16 @@ public:
 	void HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
 
+	void HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
+
 
 private:
 	void operator=(FlyMovement&) = delete;
 
 	void RaycastBody();
 	void RaycastHead();
+	void RaycastLegs();
 	void Drag(float aDeltaTime);
 	void Rotate(float aDeltaTime);
 	void Translate();
@@ -44,6 +48,9 @@ private:
 
 	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
 		, const CU::Vector3<float>&)> myRaycastHandlerHead;
+
+	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
+		, const CU::Vector3<float>&)> myRaycastHandlerLegs;
 
 	bool myHasContact;
 };
