@@ -189,16 +189,6 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-
-	static float totalTime = 0.f;
-	totalTime += aDeltaTime;// *0.25f;
-
-	CU::Vector4<float> pos = myPointLights[0]->GetPosition();
-	
-	//myPointLights[0]->SetPosition(pos.GetVector3() + CU::Vector3<float>(cos(totalTime)*0.1f, 0.f, 0.f));
-	myPointLights[0]->SetPosition(myPlayers[0]->GetOrientation().GetPos() + CU::Vector3<float>(0.f, 0.f, -1.5f));
-	myPointLights[0]->Update();
-
 	return myStateStatus;
 }
 
