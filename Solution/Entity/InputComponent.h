@@ -32,6 +32,7 @@ public:
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
+	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	bool GetIsActive();
 	void ResetIsInLevel();
 
@@ -47,6 +48,9 @@ private:
 	CU::Matrix44<float>& myOrientation;
 	bool myIsFlipped;
 	bool myIsInLevel;
+
+	float myTimeToSpawn;
+	bool myIntendToSpawn;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()
