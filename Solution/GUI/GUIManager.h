@@ -54,9 +54,12 @@ namespace GUI
 
 		void SetMouseShouldRender(bool aShouldRender);
 
-		void SelectNextButton();
-		void SelectPreviousButton();
+		void SelectButtonDown();
+		void SelectButtonUp();
+		void SelectButtonRight();
+		void SelectButtonLeft();
 		void PressSelectedButton();
+		void HoverSelectedButton();
 
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);
@@ -71,7 +74,7 @@ namespace GUI
 
 		WidgetContainer* myWidgets;
 
-		CU::GrowingArray<ButtonWidget*> myButtons;
+		CU::GrowingArray<CU::GrowingArray<ButtonWidget*>> myButtons;
 
 		const Prism::Camera* myCamera;
 
@@ -83,7 +86,8 @@ namespace GUI
 
 		int myLevelID;
 
-		int myControllerButtonIndex;
+		int myControllerButtonIndexX;
+		int myControllerButtonIndexY;
 		bool myUseController;
 	};
 

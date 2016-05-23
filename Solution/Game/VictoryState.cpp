@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "CreditMenuState.h"
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
@@ -51,7 +52,8 @@ const eStateStatus VictoryState::Update(const float& aDeltaTime)
 	if (input->KeyDown(DIK_ESCAPE) == true || input->KeyDown(DIK_SPACE) == true || input->KeyDown(DIK_RETURN) == true
 		|| input->MouseUp(0) == true || input->MouseUp(1) == true)
 	{
-		myStateStatus = eStateStatus::ePopMainState;
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new CreditMenuState());
 	}
 	myGUIManager->Update(aDeltaTime);
 

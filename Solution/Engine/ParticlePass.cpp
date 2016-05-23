@@ -1,12 +1,26 @@
 #include "stdafx.h"
 #include "ParticlePass.h"
+#include "EffectContainer.h"
 
-
-ParticlePass::ParticlePass()
+namespace Prism
 {
-}
+	ParticlePass::ParticlePass()
+	{
+	}
 
 
-ParticlePass::~ParticlePass()
-{
-}
+	ParticlePass::~ParticlePass()
+	{
+	}
+
+	Effect* ParticlePass::GetEffect()
+	{
+		return myEffect;
+	}
+
+	ID3DX11EffectShaderResourceVariable* ParticlePass::GetShaderResource()
+	{
+		return myTexture;
+	}
+
+};
