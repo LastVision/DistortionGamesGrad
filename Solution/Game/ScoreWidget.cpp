@@ -10,6 +10,7 @@
 #include "ScoreInfo.h"
 #include "ScoreWidget.h"
 #include <SpriteProxy.h>
+#include <sstream>
 #include "StarWidget.h"
 
 ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
@@ -69,6 +70,27 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 		{
 			myStars[i]->Render(myPosition + aParentPosition + CU::Vector2<float>(i * starOffset.x, starOffset.y) - CU::Vector2<float>(starOffset.x, 0.f));
 		}
+
+		std::stringstream ss;
+
+
+		if (myScore->myTime < 1.f)
+		{
+			ss.precision(2);
+		}
+		else if (myScore->myTime < 10.f)
+		{
+			ss.precision(3);
+		}
+		else
+		{
+			ss.precision(4);
+		}
+
+		ss << "Your time: " << myScore->myTime << std::endl;
+		ss << "Death count: " << myScore->myDeathCount;
+
+		Prism::Engine::GetInstance()->PrintText(ss.str(), aParentPosition + myPosition + CU::Vector2<float>(-100.f, 120.f), Prism::eTextType::RELEASE_TEXT);
 	}
 }
 
