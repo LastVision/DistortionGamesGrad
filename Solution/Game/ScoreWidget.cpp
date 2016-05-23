@@ -20,7 +20,7 @@ ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
 	, myCurrentValue(0.f)
 {
 	mySize = CU::Vector2<float>(512.f, 512.f);
-	myPosition = CU::Vector2<float>(960.f, 540.f);
+	myPosition = CU::Vector2<float>(694.f, 540.f);
 
 	myBar = new GUI::BarWidget(myMaxValue, myCurrentValue, CU::Vector2<float>(512.f, 64.f), CU::Vector4<float>(1.f, 1.f, 1.f, 1.f));
 
@@ -57,6 +57,7 @@ void ScoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2
 {
 	GUI::Widget::OnResize(aNewSize, anOldSize);
 	myBackground->SetSize(mySize, mySize / 2.f);
+	myBar->OnResize(aNewSize, anOldSize);
 }
 
 float ScoreWidget::CalculateGoalValue()
@@ -71,8 +72,23 @@ float ScoreWidget::CalculateGoalValue()
 	}
 	if (myScore->myTime < myScoreInfo.myMediumTime)
 	{
-		return 0.5f + 0.5f * (myScore->myTime - myScoreInfo.myMediumTime) / (myScoreInfo.myMediumTime - myScoreInfo.myShortTime);
+		float score = myScore->myTime - myScoreInfo.myShortTime;
+
+		score /= (myScoreInfo.myMediumTime - myScoreInfo.myShortTime);
+
+		score = 1.f - score;
+		score *= 0.5f;
+		score += 0.5f;
+
+		return score;
 	}
 
-	return 0.5f * myScore->myTime / (myScoreInfo.myLongTime - myScoreInfo.myMediumTime);
+	float score = myScore->myTime - myScoreInfo.myMediumTime;
+
+	score /= (myScoreInfo.myLongTime - myScoreInfo.myMediumTime);
+
+	score = 1.f - score;
+	score *= 0.5f;
+
+	return score;
 }
