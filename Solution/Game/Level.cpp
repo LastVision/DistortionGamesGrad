@@ -38,7 +38,7 @@
 #include <OnPlayerLevelComplete.h>
 #include <OnDeathMessage.h>
 
-Level::Level(Prism::Camera& aCamera)
+Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
@@ -49,6 +49,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayersPlaying(0)
 	, myScores(4)
 	, myCurrentCountdownSprite(9)
+	, myLevelID(aLevelID)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -136,7 +137,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
@@ -172,7 +173,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 		}
 	}
 
@@ -331,7 +332,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
-					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 				}
 
 			}

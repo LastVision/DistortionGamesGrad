@@ -85,7 +85,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
-	Level* level = new Level(myCamera);
+	Level* level = new Level(myCamera, myCurrentLevelID);
 
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);

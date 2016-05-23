@@ -11,7 +11,7 @@ struct ScoreInfo;
 class ScoreState : public GameState, public Subscriber
 {
 public:
-	ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo);
+	ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID);
 	~ScoreState();
 
 	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
@@ -26,6 +26,8 @@ public:
 private:
 	void operator=(const ScoreState&) = delete;
 	GUI::GUIManager* myGUIManager;
+
+	void SaveScoreToFile(const int aLevelID);
 
 	const CU::GrowingArray<const Score*>& myScores;
 	const ScoreInfo& myScoreInfo;
