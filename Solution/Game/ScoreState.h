@@ -28,6 +28,7 @@ private:
 	GUI::GUIManager* myGUIManager;
 
 	void SaveScoreToFile(const int aLevelID);
+	void SaveUnlockedLevels(const int aLevelID);
 
 	const CU::GrowingArray<const Score*>& myScores;
 	const ScoreInfo& myScoreInfo;

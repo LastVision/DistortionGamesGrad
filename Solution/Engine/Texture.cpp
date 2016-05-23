@@ -190,10 +190,10 @@ namespace Prism
 				, "Failed to load texture", MB_ICONWARNING);
 #endif
 
-			ModelLoader::GetInstance()->Pause();
+			//ModelLoader::GetInstance()->Pause();
 			hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice()
 				, "Data/Resource/Texture/T_missing_texture.dds", NULL, NULL, &myShaderView, NULL);
-			ModelLoader::GetInstance()->UnPause();
+			//ModelLoader::GetInstance()->UnPause();
 
 			myFileName = "Data/Resource/Texture/T_missing_texture.dds";
 			if (FAILED(hr) != S_OK)

@@ -32,6 +32,8 @@ public:
 
 private:
 
+	CU::GrowingArray<bool> RetriveUnlockedLevelsFromFile();
+
 	GUI::GUIManager* myGUIManager;
 
 	CU::ControllerInput* myController;
