@@ -90,7 +90,6 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
 	Level* level = new Level(myCamera, myCurrentLevelID);
-
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);
 	LoadProps(level, reader, levelElement);
@@ -100,9 +99,11 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadBouncers(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 
+	level->CreatePlayers();
+
 	reader.CloseDocument();
 
-	level->CreatePlayers();
+	
 	return level;
 }
 
