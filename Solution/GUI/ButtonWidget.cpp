@@ -146,7 +146,17 @@ namespace GUI
 		if (clickEvent == "start_level")
 		{
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
+			myButtonText = std::to_string(myId + 1);
+			myIsTextButton = true;
 			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
+		}
+		else if (clickEvent == "restart_level")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::RESTART_LEVEL);
+		}
+		else if (clickEvent == "next_level")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::NEXT_LEVEL);
 		}
 		else if (clickEvent == "level_select")
 		{

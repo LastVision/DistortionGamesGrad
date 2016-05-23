@@ -34,6 +34,7 @@ public:
 	const bool& IsLetThroughRender() const;
 
 	void HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager);
+	void InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager);
 
 protected:
 
@@ -44,8 +45,10 @@ protected:
 	bool myIsLetThrough;
 	bool myIsActiveState;
 
-	bool myControllerUpIsDown;
-	bool myControllerDownIsDown;
+	bool myControllerPressedRight;
+	bool myControllerPressedLeft;
+	bool myControllerPressedUp;
+	bool myControllerPressedDown;
 };
 
 inline GameState::~GameState()
