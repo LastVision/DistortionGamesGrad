@@ -1,9 +1,10 @@
 #pragma once
 #include "GameState.h"
 
-class Score;
-class ScoreInfo;
 class ScoreWidget;
+
+struct Score;
+struct ScoreInfo;
 
 class ScoreState : public GameState
 {
@@ -20,6 +21,7 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 private:
+	void operator=(const ScoreState&) = delete;
 	GUI::GUIManager* myGUIManager;
 
 	const CU::GrowingArray<const Score*>& myScores;

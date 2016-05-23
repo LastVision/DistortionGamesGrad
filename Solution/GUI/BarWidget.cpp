@@ -3,24 +3,6 @@
 
 namespace GUI
 {
-	BarWidget::BarWidget(const int& aMaxValue, const int& aCurrentValue, CU::Vector2<float> aSize, CU::Vector4<float> aColor)
-		: Widget()
-		, myMaxValueInt(&aMaxValue)
-		, myCurrentValueInt(&aCurrentValue)
-		, myIsFloat(false)
-		, myColor(aColor)
-	{
-		mySize = aSize;
-
-		CU::Vector2<float> backgroundSize = mySize + 8.f;
-
-		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-			"Data/Resource/Texture/UI/T_healthbar_background.dds", mySize, mySize / 2.f);
-
-		myValueSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-			"Data/Resource/Texture/UI/T_healthbar_value.dds", mySize, mySize / 2.f);
-	}
-
 	BarWidget::BarWidget(const float& aMaxValue, const float& aCurrentValue, CU::Vector2<float> aSize, CU::Vector4<float> aColor)
 		: myMaxValueFloat(&aMaxValue)
 		, myCurrentValueFloat(&aCurrentValue)
@@ -32,10 +14,10 @@ namespace GUI
 		CU::Vector2<float> backgroundSize = mySize + 8.f;
 
 		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-			"Data/Resource/Texture/UI/T_healthbar_background.dds", mySize, mySize / 2.f);
+			"Data/Resource/Texture/Menu/ScoreScreen/T_bar_background.dds", mySize, mySize / 2.f);
 
 		myValueSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
-			"Data/Resource/Texture/UI/T_healthbar_value.dds", mySize, mySize / 2.f);
+			"Data/Resource/Texture/Menu/ScoreScreen/T_bar_fill.dds", mySize, mySize / 2.f);
 	}
 
 	BarWidget::~BarWidget()

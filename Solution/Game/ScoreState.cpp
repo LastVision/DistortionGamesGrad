@@ -15,7 +15,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 {
 	for each (const Score* score in myScores)
 	{
-		myScoreWidgets.Add(new ScoreWidget(score));
+		myScoreWidgets.Add(new ScoreWidget(score, myScoreInfo));
 	}
 }
 

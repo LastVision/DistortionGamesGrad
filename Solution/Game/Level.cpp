@@ -122,9 +122,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #endif
 	mySmartCamera->Update(aDeltaTime);
 	
-	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
-	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
-	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
 	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
 		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
 
