@@ -197,6 +197,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 	return myStateStatus;
 }
 
@@ -338,6 +341,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
+				first->GetComponent<ScoreComponent>()->ReachedGoal();
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
