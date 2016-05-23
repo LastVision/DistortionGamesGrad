@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <ControllerInput.h>
+#include "CreditMenuState.h"
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
@@ -22,6 +24,7 @@ void VictoryState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerIn
 	myIsLetThrough = false;
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
+	myController = aController;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(true);
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen.xml", nullptr, -1);
@@ -49,9 +52,10 @@ const eStateStatus VictoryState::Update(const float& aDeltaTime)
 {
 	CU::InputWrapper* input = CU::InputWrapper::GetInstance();
 	if (input->KeyDown(DIK_ESCAPE) == true || input->KeyDown(DIK_SPACE) == true || input->KeyDown(DIK_RETURN) == true
-		|| input->MouseUp(0) == true || input->MouseUp(1) == true)
+		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A))
 	{
-		myStateStatus = eStateStatus::ePopMainState;
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new CreditMenuState());
 	}
 	myGUIManager->Update(aDeltaTime);
 

@@ -140,11 +140,6 @@ namespace GUI
 		myControllerButtonIndexX++;
 		if (myControllerButtonIndexX > myButtons.Size() - 1)
 		{
-			if (true)
-			{
-
-			}
-
 			myControllerButtonIndexX = 0;
 		}
 
@@ -181,7 +176,17 @@ namespace GUI
 		myControllerButtonIndexY++;
 		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
 		{
-			myControllerButtonIndexY = 0;
+			if (myControllerButtonIndexX < myButtons.Size() &&
+				myButtons[myControllerButtonIndexX].Size() > 1 && 
+				myButtons[myControllerButtonIndexX + 1].Size() > 1)
+			{
+				myControllerButtonIndexX++;
+				myControllerButtonIndexY = 0;
+			}
+			else
+			{
+				myControllerButtonIndexY--;
+			}
 		}
 
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
@@ -194,7 +199,17 @@ namespace GUI
 		myControllerButtonIndexY--;
 		if (myControllerButtonIndexY < 0)
 		{
-			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+			if (myControllerButtonIndexX > 0 &&
+				myButtons[myControllerButtonIndexX].Size() > 1 &&
+				myButtons[myControllerButtonIndexX - 1].Size() > 1)
+			{
+				myControllerButtonIndexX--;
+				myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+			}
+			else
+			{
+				myControllerButtonIndexY++;
+			}
 		}
 
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
