@@ -347,7 +347,7 @@ namespace Prism
 
 		myRenderToScreenData.mySource->SetResource(myParticleTexture->GetShaderView());
 
-		Render(myRenderToScreenData.myEffect, "Render_Particle");
+		//Render(myRenderToScreenData.myEffect, "Render_Particle");
 
 		myRenderToScreenData.mySource->SetResource(NULL);
 
