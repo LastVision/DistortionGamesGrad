@@ -189,6 +189,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 	return myStateStatus;
 }
 
