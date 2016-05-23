@@ -60,7 +60,7 @@ void ScoreWidget::Update(float aDeltaTime)
 
 void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 {
-	if (myIsVisible == true)
+	if (myIsVisible == true && myScore->myActive == true)
 	{
 		myBackground->Render(myPosition + aParentPosition);
 		myBar->Render(myPosition + aParentPosition);
