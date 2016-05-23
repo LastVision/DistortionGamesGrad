@@ -27,7 +27,7 @@ namespace Prism
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void AddDecal(const CU::Vector3<float>& aPosition, const std::string& aPath);
+		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath);
 
 		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);

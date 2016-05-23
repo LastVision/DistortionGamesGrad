@@ -165,6 +165,11 @@ namespace Prism
 		myGradiantDirection->SetFloatVector(&aDirection.x);
 	}
 
+	void Effect::SetDecalDirection(const CU::Vector3<float>& aDirection)
+	{
+		myDecalDirection->SetFloatVector(&aDirection.x);
+	}
+
 	void Effect::SetPosAndScale(const CU::Vector2<float>& aPos
 		, const CU::Vector2<float>& aScale)
 	{
@@ -495,6 +500,12 @@ namespace Prism
 		if (myGradiantDirection->IsValid() == false)
 		{
 			myGradiantDirection = nullptr;
+		}
+
+		myDecalDirection = myEffect->GetVariableByName("DecalDirection")->AsVector();
+		if (myDecalDirection->IsValid() == false)
+		{
+			myDecalDirection = nullptr;
 		}
 
 		return true;

@@ -14,11 +14,11 @@ namespace Prism
 		ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Decals/SM_decal_box.fbx", "Data/Resource/Shader/S_effect_deferred_decal.fx");
 		myInstance = new Instance(*model, myOrientation);
 
-		myOrientation.SetRight(CU::Vector3<float>(3.f, 0.f, 0.f));
-		myOrientation.SetUp(CU::Vector3<float>(0.f, 3.f, 0.f));
-		myOrientation.SetForward(CU::Vector3<float>(0.f, 0.f, 6.f));
+		//myOrientation.SetRight(CU::Vector3<float>(3.f, 0.f, 0.f));
+		//myOrientation.SetUp(CU::Vector3<float>(0.f, 3.f, 0.f));
+		//myOrientation.SetForward(CU::Vector3<float>(0.f, 0.f, 6.f));
 
-		AddDecal({ 0.f, 0.f, 0.f }, "Data/Resource/Texture/Decal/T_decal_test.dds");
+		AddDecal({ 0.f, 0.f, 0.f }, { 0.f, -1.f, 0.f }, "Data/Resource/Texture/Decal/T_decal_test.dds");
 	}
 
 
@@ -27,10 +27,11 @@ namespace Prism
 		SAFE_DELETE(myInstance);
 	}
 
-	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const std::string& aTexturePath)
+	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath)
 	{
 		DecalInfo info;
 		info.myPosition = aPosition;
+		info.myDirection = aDirection;
 		info.myTexture = TextureContainer::GetInstance()->GetTexture(aTexturePath);
 		myDecals.Add(info);
 	}
@@ -55,6 +56,7 @@ namespace Prism
 				myOrientation.SetPos(info.myPosition);
 				effect->SetWorldMatrixInverted(CU::InverseSimple(myOrientation));
 				effect->SetTexture(info.myTexture);
+				effect->SetDecalDirection(info.myDirection);
 				myInstance->Render(aCamera);
 			}
 			

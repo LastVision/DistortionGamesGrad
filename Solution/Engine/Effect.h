@@ -75,6 +75,8 @@ namespace Prism
 		void SetGradiantValue(float aValue);
 		void SetGradiantDirection(const CU::Vector2<float>& aDirection);
 
+		void SetDecalDirection(const CU::Vector3<float>& aDirection);
+
 	private:
 		ID3DX11Effect* myEffect;
 		ID3DX11EffectTechnique* myTechnique;
@@ -125,6 +127,8 @@ namespace Prism
 
 		ID3DX11EffectScalarVariable* myGradiantValue;
 		ID3DX11EffectVectorVariable* myGradiantDirection;
+
+		ID3DX11EffectVectorVariable* myDecalDirection;
 	};
 
 

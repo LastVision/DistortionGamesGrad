@@ -401,7 +401,7 @@ void Level::ReceiveMessage(const OnDeathMessage& aMessage)
 	{
 		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
-			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), "Data/Resource/Texture/Decal/T_decal_test.dds");
+			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight(), "Data/Resource/Texture/Decal/T_decal_test.dds");
 		}
 	}
 }

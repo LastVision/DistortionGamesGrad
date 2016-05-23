@@ -14,7 +14,7 @@ namespace Prism
 		DecalPass();
 		~DecalPass();
 
-		void AddDecal(const CU::Vector3<float>& aPosition, const std::string& aTexturePath);
+		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath);
 		void Render(const Camera& aCamera, Texture* aDepthTexture);
 
 	private:
