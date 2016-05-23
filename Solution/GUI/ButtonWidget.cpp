@@ -17,7 +17,9 @@ namespace GUI
 		, myClickEvent(nullptr)
 		, myHoverText("")
 		, myIsTextButton(false)
+		, myCanBeClicked(true)
 		, myId(-1)
+		, myColor(1.f, 1.f, 1.f, 1.f)
 	{
 		std::string spritePathNormal = "";
 		std::string spritePathHover = "";
@@ -71,7 +73,7 @@ namespace GUI
 	{
 		if (myIsVisible == true)
 		{
-			myImageCurrent->Render(myPosition + aParentPosition);
+			myImageCurrent->Render(myPosition + aParentPosition, { 1.f, 1.f }, myColor);
 
 			if (myIsTextButton == true)
 			{
@@ -148,6 +150,13 @@ namespace GUI
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
 			myButtonText = std::to_string(myId + 1);
 			myIsTextButton = true;
+
+			//if (myId == locked?? )
+			//{
+			//	myColor = { 0.5f, 0.5f, 0.5f, 1.f };
+			//	myCanBeClicked = false;
+			//}
+
 			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
 		}
 		else if (clickEvent == "restart_level")
@@ -196,8 +205,15 @@ namespace GUI
 	{
 		if (myClickEvent != nullptr)
 		{
-			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonClick", 0);
-			PostMaster::GetInstance()->SendMessage(*myClickEvent);
+			if (myCanBeClicked == true)
+			{
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonClick", 0);
+				PostMaster::GetInstance()->SendMessage(*myClickEvent);
+			}
+			else
+			{
+				// nope sound
+			}
 		}
 	}
 }
