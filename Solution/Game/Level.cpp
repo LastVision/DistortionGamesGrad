@@ -25,6 +25,7 @@
 #include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
+#include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -95,6 +96,7 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
+	SAFE_DELETE(myScoreInfo);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -124,9 +126,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #endif
 	mySmartCamera->Update(aDeltaTime);
 	
-	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
-	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
-	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
 	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
 		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
 
@@ -438,4 +440,10 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)
+{
+	DL_ASSERT_EXP(myScoreInfo == nullptr, "Can't create Score Info twice.");
+	myScoreInfo = new ScoreInfo(aShortTime, aMediumTime, aLongTime);
 }

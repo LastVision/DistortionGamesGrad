@@ -19,7 +19,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 {
 	for each (const Score* score in myScores)
 	{
-		myScoreWidgets.Add(new ScoreWidget(score));
+		myScoreWidgets.Add(new ScoreWidget(score, myScoreInfo));
 	}
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
@@ -82,9 +82,9 @@ void ScoreState::Render()
 		DEBUG_PRINT(score->myTime);
 	}
 
-	for each (ScoreWidget* widget in myScoreWidgets)
+	for (int i = 0; i < myScoreWidgets.Size(); ++i)
 	{
-		widget->Render(CU::Vector2<float>());
+		myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
 	}
 
 	myGUIManager->Render();

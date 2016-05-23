@@ -2,9 +2,11 @@
 #include "GameState.h"
 #include <Subscriber.h>
 
-class Score;
-class ScoreInfo;
 class ScoreWidget;
+
+
+struct Score;
+struct ScoreInfo;
 
 class ScoreState : public GameState, public Subscriber
 {
@@ -22,6 +24,7 @@ public:
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 
 private:
+	void operator=(const ScoreState&) = delete;
 	GUI::GUIManager* myGUIManager;
 
 	void SaveScoreToFile(const int aLevelID);

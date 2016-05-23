@@ -9,9 +9,10 @@
 #include "LevelFactory.h"
 #include <PhysicsInterface.h>
 #include <SawBladeComponent.h>
-#include <XMLReader.h>
+#include "ScoreInfo.h"
 #include <SteamComponent.h>
 #include <TriggerComponent.h>
+#include <XMLReader.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
@@ -110,6 +111,16 @@ void LevelFactory::LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XM
 	std::string cubeMap;
 	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "cubemap"), "source", cubeMap);
 	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
+
+	float shortTime;
+	float mediumTime;
+	float longTime;
+
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "short", shortTime);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "medium", mediumTime);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "long", longTime);
+
+	aLevel->CreateScoreInfo(shortTime, mediumTime, longTime);
 }
 
 void LevelFactory::LoadProps(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)

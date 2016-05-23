@@ -44,11 +44,14 @@ namespace GUI
 	protected:
 		void Click();
 
+		CU::Vector4<float> myColor;
+
 		int myId;
 
 		std::string myHoverText;
 		std::string myButtonText;
 		bool myIsTextButton;
+		bool myCanBeClicked;
 		
 		Prism::SpriteProxy* myImageNormal;
 		Prism::SpriteProxy* myImagePressed;
