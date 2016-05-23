@@ -18,6 +18,8 @@ public:
 
 	const Score* GetScore() const;
 
+	void ReachedGoal();
+
 private:
 	Score myScore;
 };

@@ -31,9 +31,18 @@ ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
 
 	myGoalValue = CalculateGoalValue();
 
-	myStars.Add(new StarWidget(myGoalValue > 0.f, 0));
-	myStars.Add(new StarWidget(myGoalValue > 0.5f, 1));
-	myStars.Add(new StarWidget(myGoalValue >= 1.f, 2));
+	if (myScore->myReachedGoal == true)
+	{
+		myStars.Add(new StarWidget(myGoalValue > 0.f, 0));
+		myStars.Add(new StarWidget(myGoalValue > 0.5f, 1));
+		myStars.Add(new StarWidget(myGoalValue >= 1.f, 2));
+	}
+	else
+	{
+		myStars.Add(new StarWidget(false, 0));
+		myStars.Add(new StarWidget(false, 1));
+		myStars.Add(new StarWidget(false, 2));
+	}
 
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_score_window_background.dds", mySize, mySize / 2.f);
 }
@@ -88,7 +97,17 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 			ss.precision(4);
 		}
 
-		ss << "Your time: " << myScore->myTime << " sec" << std::endl;
+		ss << "Your time: ";
+		if (myScore->myReachedGoal == true)
+		{
+			ss << myScore->myTime;
+		}
+		else
+		{
+			ss << "--";
+		}
+		ss << " sec" << std::endl;
+
 		ss << "You died " << myScore->myDeathCount << " time";
 		if (myScore->myDeathCount != 1)
 		{
@@ -116,6 +135,10 @@ void ScoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2
 
 float ScoreWidget::CalculateGoalValue()
 {
+	if (myScore->myReachedGoal == false)
+	{
+		return 0.f;
+	}
 	if (myScore->myTime < myScoreInfo.myShortTime)
 	{
 		return 1.f;

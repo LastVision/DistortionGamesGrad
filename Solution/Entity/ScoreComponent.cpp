@@ -26,3 +26,8 @@ void ScoreComponent::ReceiveNote(const SpawnNote&)
 	myScore.myActive = true;
 	myScore.myTime = 0;
 }
+
+void ScoreComponent::ReachedGoal()
+{
+	myScore.myReachedGoal = true;
+}
