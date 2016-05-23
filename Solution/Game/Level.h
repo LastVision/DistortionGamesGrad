@@ -55,6 +55,7 @@ public:
 	void CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime);
 	void Add(Prism::PointLight* aLight);
 	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
+	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
 private:
 	void operator=(Level&) = delete;
@@ -83,7 +84,7 @@ private:
 	Prism::SpriteProxy* myCountdownSprites[10];
 	int myCurrentCountdownSprite;
 
-
+	CU::Vector2<float> mySpawnVelocity;
 	CU::Vector3<float> mySpawnPosition;
 	CU::Vector2<float> myWindowSize;
 	float myTimeToLevelChange;
@@ -101,4 +102,9 @@ inline Prism::Scene* Level::GetScene() const
 inline void Level::SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition)
 {
 	mySpawnPosition = aSpawnPosition;
+}
+
+inline void Level::SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity)
+{
+	mySpawnVelocity = aSpawnVelocity;
 }

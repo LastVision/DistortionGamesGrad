@@ -124,6 +124,11 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	myIsLetThrough = false;
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
+
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		myPlayers[i]->GetComponent<MovementComponent>()->SetSpawnVelocity(mySpawnVelocity);
+	}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
