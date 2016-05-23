@@ -22,6 +22,7 @@ namespace GUI
 		void operator=(BarWidget&) = delete;
 
 		Prism::SpriteProxy* myBackgroundSprite;
+		Prism::SpriteProxy* myForegroundSprite;
 		Prism::SpriteProxy* myValueSprite;
 
 		bool myIsFloat;

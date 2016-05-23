@@ -38,7 +38,7 @@ ScoreWidget::~ScoreWidget()
 
 void ScoreWidget::Update(float aDeltaTime)
 {
-	myCurrentValue += aDeltaTime;
+	myCurrentValue += aDeltaTime * 0.1f;
 	myCurrentValue = fminf(myCurrentValue, myGoalValue);
 
 	myBar->Update(aDeltaTime);

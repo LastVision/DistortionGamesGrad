@@ -15,7 +15,8 @@ namespace GUI
 
 		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
 			"Data/Resource/Texture/Menu/ScoreScreen/T_bar_background.dds", mySize, mySize / 2.f);
-
+		myForegroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
+			"Data/Resource/Texture/Menu/ScoreScreen/T_bar_foreground.dds", mySize, mySize / 2.f);
 		myValueSprite = Prism::ModelLoader::GetInstance()->LoadSprite(
 			"Data/Resource/Texture/Menu/ScoreScreen/T_bar_fill.dds", mySize, mySize / 2.f);
 	}
@@ -23,6 +24,7 @@ namespace GUI
 	BarWidget::~BarWidget()
 	{
 		SAFE_DELETE(myBackgroundSprite);
+		SAFE_DELETE(myForegroundSprite);
 		SAFE_DELETE(myValueSprite);
 	}
 
@@ -50,6 +52,7 @@ namespace GUI
 	{
 		myBackgroundSprite->Render(myPosition + aParentPosition);
 		myValueSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, myColor);
+		myForegroundSprite->Render(myPosition + aParentPosition);
 	}
 
 	void BarWidget::OnResize(const CU::Vector2<float>& aNewWindowSize, const CU::Vector2<float>& anOldWindowSize)

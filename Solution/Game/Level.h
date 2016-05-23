@@ -50,6 +50,7 @@ public:
 
 	Prism::Scene* GetScene() const;
 	void Add(Entity* anEntity);
+	void CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime);
 	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
 
 private:

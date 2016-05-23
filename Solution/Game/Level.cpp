@@ -25,6 +25,7 @@
 #include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
+#include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -93,6 +94,7 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
+	SAFE_DELETE(myScoreInfo);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -424,4 +426,10 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)
+{
+	DL_ASSERT_EXP(myScoreInfo == nullptr, "Can't create Score Info twice.");
+	myScoreInfo = new ScoreInfo(aShortTime, aMediumTime, aLongTime);
 }
