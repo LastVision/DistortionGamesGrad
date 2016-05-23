@@ -97,20 +97,23 @@ CU::GrowingArray<bool> LevelSelectState::RetriveUnlockedLevelsFromFile()
 	std::fstream file;
 	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
 
-	int levelID;
-	bool isUnlocked = false;
-	bool isEndOfFile = false;
-	while (isEndOfFile == false)
+	if (file.is_open() == true)
 	{
-		if (file.eof())
+		int levelID;
+		bool isUnlocked = false;
+		bool isEndOfFile = false;
+		while (isEndOfFile == false)
 		{
-			isEndOfFile = true;
-			break;
+			if (file.eof())
+			{
+				isEndOfFile = true;
+				break;
+			}
+			file >> levelID >> isUnlocked;
+			toReturn.Add(isUnlocked);
 		}
-		file >> levelID >> isUnlocked;
-		toReturn.Add(isUnlocked);
-	}
 
-	file.close();
+		file.close();
+	}
 	return toReturn;
 }
