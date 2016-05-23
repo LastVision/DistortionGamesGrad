@@ -23,6 +23,8 @@ public:
 
 	bool LoadLevel(Level*& aLevelOut);
 
+	void RestartLevel();
+
 private:
 	void operator=(LevelFactory&) = delete;
 	Level* LoadCurrentLevel();

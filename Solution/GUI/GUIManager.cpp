@@ -176,7 +176,7 @@ namespace GUI
 		myControllerButtonIndexY++;
 		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
 		{
-			if (myControllerButtonIndexX < myButtons.Size() &&
+			if (myControllerButtonIndexX + 1 < myButtons.Size() &&
 				myButtons[myControllerButtonIndexX].Size() > 1 && 
 				myButtons[myControllerButtonIndexX + 1].Size() > 1)
 			{

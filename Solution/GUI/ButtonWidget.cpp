@@ -150,6 +150,14 @@ namespace GUI
 			myIsTextButton = true;
 			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
 		}
+		else if (clickEvent == "restart_level")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::RESTART_LEVEL);
+		}
+		else if (clickEvent == "next_level")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::NEXT_LEVEL);
+		}
 		else if (clickEvent == "level_select")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::LEVEL_SELECT, myId);
