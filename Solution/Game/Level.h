@@ -28,7 +28,7 @@ struct ScoreInfo;
 class Level : public Subscriber, public GameState
 {
 public:
-	Level(Prism::Camera& aCamera);
+	Level(Prism::Camera& aCamera, const int aLevelID);
 	~Level();
 
 	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
@@ -52,6 +52,7 @@ public:
 
 	Prism::Scene* GetScene() const;
 	void Add(Entity* anEntity);
+	void CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime);
 	void Add(Prism::PointLight* aLight);
 	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
 
@@ -87,6 +88,7 @@ private:
 	short myPlayerWinCount;
 	short myPlayersPlaying;
 	int myLevelToChangeToID;
+	const int myLevelID;
 };
 
 inline Prism::Scene* Level::GetScene() const

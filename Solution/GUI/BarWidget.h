@@ -11,7 +11,6 @@ namespace GUI
 	class BarWidget : public Widget
 	{
 	public:
-		BarWidget(const int& aMaxValue, const int& aCurrentValue, CU::Vector2<float> aSize, CU::Vector4<float> aColor);
 		BarWidget(const float& aMaxValue, const float& aCurrentValue, CU::Vector2<float> aSize, CU::Vector4<float> aColor);
 		~BarWidget();
 
@@ -23,6 +22,7 @@ namespace GUI
 		void operator=(BarWidget&) = delete;
 
 		Prism::SpriteProxy* myBackgroundSprite;
+		Prism::SpriteProxy* myForegroundSprite;
 		Prism::SpriteProxy* myValueSprite;
 
 		bool myIsFloat;

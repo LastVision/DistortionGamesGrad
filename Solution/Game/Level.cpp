@@ -25,6 +25,7 @@
 #include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
+#include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -40,7 +41,7 @@
 
 #include <PointLight.h>
 
-Level::Level(Prism::Camera& aCamera)
+Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
@@ -51,6 +52,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayersPlaying(0)
 	, myScores(4)
 	, myCurrentCountdownSprite(9)
+	, myLevelID(aLevelID)
 	, myPointLights(32)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
@@ -98,6 +100,7 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
+	SAFE_DELETE(myScoreInfo);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
@@ -127,10 +130,10 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
 	mySmartCamera->Update(aDeltaTime);
-
-	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
-	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
-	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	
+	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
 	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
 		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
 
@@ -139,7 +142,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
@@ -175,7 +178,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 		}
 	}
 
@@ -344,7 +347,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
-					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 				}
 
 			}
@@ -452,6 +455,12 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)
+{
+	DL_ASSERT_EXP(myScoreInfo == nullptr, "Can't create Score Info twice.");
+	myScoreInfo = new ScoreInfo(aShortTime, aMediumTime, aLongTime);
 }
 
 void Level::Add(Prism::PointLight* aLight)

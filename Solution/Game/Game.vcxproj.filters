@@ -59,6 +59,7 @@
       <Filter>StateStack</Filter>
     </ClCompile>
     <ClCompile Include="ScoreWidget.cpp" />
+    <ClCompile Include="StarWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -123,6 +124,7 @@
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="ScoreWidget.h" />
+    <ClInclude Include="StarWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

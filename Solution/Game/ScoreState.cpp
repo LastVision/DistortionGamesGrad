@@ -10,16 +10,19 @@
 #include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScoreWidget.h"
+#include <fstream>
 
-ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo)
+ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
 	, myScoreInfo(aScoreInfo)
 	, myScoreWidgets(4)
 {
 	for each (const Score* score in myScores)
 	{
-		myScoreWidgets.Add(new ScoreWidget(score));
+		myScoreWidgets.Add(new ScoreWidget(score, myScoreInfo));
 	}
+	SaveScoreToFile(aLevelID);
+	SaveUnlockedLevels(aLevelID);
 }
 
 
@@ -79,9 +82,9 @@ void ScoreState::Render()
 		DEBUG_PRINT(score->myTime);
 	}
 
-	for each (ScoreWidget* widget in myScoreWidgets)
+	for (int i = 0; i < myScoreWidgets.Size(); ++i)
 	{
-		widget->Render(CU::Vector2<float>());
+		myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
 	}
 
 	myGUIManager->Render();
@@ -109,4 +112,94 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
+}
+
+void ScoreState::SaveScoreToFile(const int aLevelID)
+{
+	CU::BuildFoldersInPath(CU::GetMyDocumentFolderPath() + "Data/Score/");
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
+	Score currentScore;
+	int levelID = 0;
+	file >> levelID >> currentScore.myTime;
+	file.close();
+
+	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
+	if (file.is_open() == true)
+	{
+		Score highestScore;
+		for each (const Score* score in myScores)
+		{
+			if (highestScore.myTime < score->myTime)
+			{
+				highestScore.myTime = score->myTime;
+				highestScore.myDeathCount = score->myDeathCount;
+			}
+		}
+
+		if (currentScore.myTime < highestScore.myTime)
+		{
+			highestScore.myTime = currentScore.myTime;
+		}
+
+		int stars = 0;
+		if (highestScore.myTime < myScoreInfo.myShortTime)
+		{
+			stars = 3;
+		}
+		else if (highestScore.myTime < myScoreInfo.myMediumTime)
+		{
+			stars = 2;
+		}
+		else if (highestScore.myTime < myScoreInfo.myLongTime)
+		{
+			stars = 1;
+		}
+
+		file << aLevelID << std::endl << highestScore.myTime << std::endl << stars << std::endl;
+	}
+	file.close();
+}
+
+void ScoreState::SaveUnlockedLevels(const int aLevelID)
+{
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+	Score currentScore;
+	CU::GrowingArray<bool> unlockedLevels(64);
+	int levelID = 0;
+	bool isUnlocked = false;
+	bool isEndOfFile = false;
+	while (isEndOfFile == false)
+	{
+		if (file.eof())
+		{
+			isEndOfFile = true;
+			break;
+		}
+		file >> levelID >> isUnlocked;
+		unlockedLevels.Add(isUnlocked);
+	}
+	file.close();
+
+	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::out);
+	if (file.is_open() == true)
+	{
+		for (int i = 0; i < unlockedLevels.Size(); ++i)
+		{
+			if (i + 1 == aLevelID + 1)
+			{
+				unlockedLevels[i] = true;
+			}
+			if (i == 0)
+			{
+				file << i + 1 << std::endl << unlockedLevels[i];
+			}
+			else
+			{
+				file << std::endl << i + 1 << std::endl << unlockedLevels[i];
+			}
+		}
+	}
+	file.close();
 }
