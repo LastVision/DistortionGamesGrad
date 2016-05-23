@@ -13,6 +13,7 @@
 #include <SteamComponent.h>
 #include <TriggerComponent.h>
 #include <XMLReader.h>
+#include <PointLight.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
@@ -97,6 +98,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSawBlades(level, reader, levelElement);
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
+	LoadPointLights(level, reader, levelElement);
 
 	reader.CloseDocument();
 
@@ -294,6 +296,37 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 		entity->GetComponent<BounceComponent>()->SetForce(force);
 
 		aLevel->Add(entity);
+	}
+}
+
+void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "pointlight"); lightElement != nullptr;
+		lightElement = aReader.FindNextElement(lightElement, "pointlight"))
+	{
+		CU::Vector3<float> position;
+		CU::Vector4<float> color;
+		float range;
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "X", position.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Y", position.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Z", position.z);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "R", color.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
+
+		unsigned int gid(UINT32_MAX);
+
+		Prism::PointLight* light = new Prism::PointLight(gid, false);
+		light->SetPosition(position);
+		light->SetColor(color);
+		light->SetRange(range);
+		light->Update();
+		aLevel->Add(light);
 	}
 }
 
