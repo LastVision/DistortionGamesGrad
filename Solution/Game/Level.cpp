@@ -37,6 +37,9 @@
 #include <OnPlayerLevelComplete.h>
 #include <OnDeathMessage.h>
 
+
+#include <PointLight.h>
+
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myEntities(1024)
@@ -48,6 +51,7 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayersPlaying(0)
 	, myScores(4)
 	, myCurrentCountdownSprite(9)
+	, myPointLights(32)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -96,6 +100,7 @@ Level::~Level()
 	SAFE_DELETE(myFullscreenRenderer);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+	myPointLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -122,7 +127,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
 	mySmartCamera->Update(aDeltaTime);
-	
+
 	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
 	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
 	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
@@ -180,6 +185,16 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
+
+
+	static float totalTime = 0.f;
+	totalTime += aDeltaTime;// *0.25f;
+
+	CU::Vector4<float> pos = myPointLights[0]->GetPosition();
+	
+	//myPointLights[0]->SetPosition(pos.GetVector3() + CU::Vector3<float>(cos(totalTime)*0.1f, 0.f, 0.f));
+	myPointLights[0]->SetPosition(myPlayers[0]->GetOrientation().GetPos() + CU::Vector3<float>(0.f, 0.f, -1.5f));
+	myPointLights[0]->Update();
 
 	return myStateStatus;
 }
@@ -437,4 +452,10 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+void Level::Add(Prism::PointLight* aLight)
+{
+	myPointLights.Add(aLight);
+	myScene->AddLight(aLight);
 }
