@@ -16,6 +16,8 @@ namespace GUI
 	class BarWidget;
 }
 
+class StarWidget;
+
 struct Score;
 
 class ScoreWidget : public GUI::Widget
@@ -36,6 +38,7 @@ private:
 	const ScoreInfo& myScoreInfo;
 	Prism::SpriteProxy* myBackground;
 	GUI::BarWidget* myBar;
+	CU::GrowingArray<StarWidget*> myStars;
 	float myMaxValue;
 	float myCurrentValue;
 	float myGoalValue;
