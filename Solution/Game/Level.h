@@ -72,6 +72,8 @@ private:
 
 	CU::GrowingArray<Entity*> myPlayers;
 	CU::GrowingArray<Entity*> myEntities;
+	CU::GrowingArray<Prism::PointLight*> myPlayerPointLights;
+
 
 	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;

@@ -54,6 +54,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myCurrentCountdownSprite(9)
 	, myLevelID(aLevelID)
 	, myPointLights(32)
+	, myPlayerPointLights(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -104,6 +105,7 @@ Level::~Level()
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
+	myPlayerPointLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -182,9 +184,15 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		}
 	}
 
-	for each(Entity* player in myPlayers)
+	
+	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
+		Entity* player = myPlayers[i];
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos() );
+		light->Update();
 	}
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
@@ -393,6 +401,12 @@ void Level::CreatePlayers()
 	for each(Entity* player in myPlayers)
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
+
+		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
+		light->SetRange(4.f);
+		myPlayerPointLights.Add(light);
+		myScene->AddLight(light);
 	}
 
 	mySmartCamera->AddOrientation(&player->GetOrientation());
