@@ -3,6 +3,7 @@
 #include <ModelLoader.h>
 #include "StarWidget.h"
 #include <SpriteProxy.h>
+#include <Tweener.h>
 
 StarWidget::StarWidget(bool anActive, int anID)
 	: GUI::Widget()
@@ -11,7 +12,7 @@ StarWidget::StarWidget(bool anActive, int anID)
 {
 	mySize = CU::Vector2<float>(128.f, 128.f);
 
-	myTime = static_cast<float>(-myID);
+	myTime = static_cast<float>(-myID) * 1.f - 1.5f;
 	
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_star_background.dds", mySize, mySize / 2.f);
 	myStar = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_star.dds", mySize, mySize / 2.f);
@@ -25,7 +26,7 @@ StarWidget::~StarWidget()
 
 void StarWidget::Update(float aDeltaTime)
 {
-	myTime += aDeltaTime;
+	myTime += aDeltaTime * 2.f;
 	myTime = fminf(1.f, myTime);
 }
 
@@ -34,7 +35,11 @@ void StarWidget::Render(const CU::Vector2<float>& aParentPosition)
 	if (myIsVisible == true)
 	{
 		myBackground->Render(myPosition + aParentPosition);
-		myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(fmaxf(0, myTime), fmaxf(0, myTime)));
+
+		float alpha = fmaxf(0, myTime);
+		Tweener<float> tweener;
+		float scale = tweener.DoTween(alpha, 0, 1.f, 1.f, eTweenType::SINUS_HALF);
+		myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(scale, scale));
 	}
 }
 
