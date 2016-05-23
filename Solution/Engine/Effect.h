@@ -33,11 +33,15 @@ namespace Prism
 		bool Init(const std::string& aEffectFile);
 		void SetScaleVector(const CU::Vector3<float>& aScaleVector);
 		void SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix);
+		void SetWorldMatrixInverted(const CU::Matrix44<float>& aWorldMatrix);
 		void SetViewMatrix(const CU::Matrix44<float>& aViewMatrix);
+		void SetViewMatrixNotInverted(const CU::Matrix44<float>& aViewMatrix);
 		void SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix);
+		void SetProjectionMatrixInverted(const CU::Matrix44<float>& aProjectionMatrix);
 		void SetViewProjectionMatrix(const CU::Matrix44<float>& aMatrix);
 		void SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask = 0xFFFFFFFF);
 		void SetTexture(Texture* aTexture);
+		void SetDepthTexture(Texture* aTexture);
 		void SetPosAndScale(const CU::Vector2<float>& aPos
 			, const CU::Vector2<float>& aScale = { 1.f, 1.f });
 		void SetColor(const CU::Vector4<float>& aColor);
@@ -71,14 +75,19 @@ namespace Prism
 		void SetGradiantValue(float aValue);
 		void SetGradiantDirection(const CU::Vector2<float>& aDirection);
 
+		void SetDecalDirection(const CU::Vector3<float>& aDirection);
+
 	private:
 		ID3DX11Effect* myEffect;
 		ID3DX11EffectTechnique* myTechnique;
 
 		ID3DX11EffectVectorVariable* myCameraPosition;
 		ID3DX11EffectMatrixVariable* myProjectionMatrix;
+		ID3DX11EffectMatrixVariable* myProjectionMatrixInverted;
 		ID3DX11EffectMatrixVariable* myViewMatrix;
+		ID3DX11EffectMatrixVariable* myViewMatrixNotInverted;
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
+		ID3DX11EffectMatrixVariable* myWorldMatrixInverted;
 		ID3DX11EffectMatrixVariable* myViewProjectionMatrix;
 		ID3DX11EffectMatrixVariable* myShadowMVP;
 
@@ -96,6 +105,7 @@ namespace Prism
 		ID3DX11EffectVariable* mySpotLight;
 
 		ID3DX11EffectShaderResourceVariable* myTexture;
+		ID3DX11EffectShaderResourceVariable* myDepthTexture;
 		ID3DX11EffectShaderResourceVariable* myFogOfWarTexture;
 		ID3DX11EffectShaderResourceVariable* myShadowDepthTexture;
 
@@ -117,6 +127,8 @@ namespace Prism
 
 		ID3DX11EffectScalarVariable* myGradiantValue;
 		ID3DX11EffectVectorVariable* myGradiantDirection;
+
+		ID3DX11EffectVectorVariable* myDecalDirection;
 	};
 
 

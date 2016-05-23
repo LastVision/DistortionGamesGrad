@@ -13,17 +13,12 @@ namespace Prism
 	{
 	}
 
-	void ModelProxy::Render(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
+	void ModelProxy::RenderDecal(const CU::Matrix44<float>& aOrientation, const CU::Vector3<float>& aCameraPosition)
 	{
-		DL_ASSERT("REMOVED BY FABIAN AND NIKLAS");
-		//if (myModel != nullptr)
-		//{
-		//	myModel->Render(aOrientation, aCameraPosition);
-		//}
-		//else if (myModelAnimated != nullptr)
-		//{
-		//	myModelAnimated->Render(aOrientation);
-		//}
+		if (myModel != nullptr)
+		{
+			myModel->RenderDecal(aOrientation, aCameraPosition);
+		}
 	}
 
 	void ModelProxy::SetModel(Model* aModel)

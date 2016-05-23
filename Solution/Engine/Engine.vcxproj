@@ -267,6 +267,7 @@
     <ClCompile Include="Cube3D.cpp" />
     <ClCompile Include="Cube3DRenderer.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
+    <ClCompile Include="DecalPass.cpp" />
     <ClCompile Include="DeferredPasses.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DGFXLoader.cpp" />
@@ -360,6 +361,8 @@
     <ClInclude Include="Cube3D.h" />
     <ClInclude Include="Cube3DRenderer.h" />
     <ClInclude Include="DebugDrawer.h" />
+    <ClInclude Include="DecalPass.h" />
+    <ClInclude Include="DecalInfo.h" />
     <ClInclude Include="DeferredPasses.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DGFXFileFormat.h" />

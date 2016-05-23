@@ -1,11 +1,12 @@
 #pragma once
 #include "GameState.h"
+#include <Subscriber.h>
 
 class Score;
 class ScoreInfo;
 class ScoreWidget;
 
-class ScoreState : public GameState
+class ScoreState : public GameState, public Subscriber
 {
 public:
 	ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo);
@@ -18,6 +19,7 @@ public:
 	void ResumeState() override;
 	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
+	void ReceiveMessage(const OnClickMessage& aMessage) override;
 
 private:
 	GUI::GUIManager* myGUIManager;
