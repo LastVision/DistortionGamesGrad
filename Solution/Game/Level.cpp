@@ -36,6 +36,7 @@
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -57,7 +58,7 @@ Level::Level(Prism::Camera& aCamera)
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
 	ScrapManager::Create(myScene);
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
@@ -190,6 +191,7 @@ void Level::Render()
 	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 	//myBackground->Render(myWindowSize * 0.5f);
 	//myScene->Render();
+
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
 	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
@@ -419,6 +421,17 @@ void Level::OnResize(int aWidth, int aHeight)
 void Level::ReceiveMessage(const OnPlayerJoin&)
 {
 	myPlayersPlaying++;
+}
+
+void Level::ReceiveMessage(const OnDeathMessage& aMessage)
+{
+	for each(Entity* player in myPlayers)
+	{
+		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight(), "Data/Resource/Texture/Decal/T_decal_test.dds");
+		}
+	}
 }
 
 void Level::Add(Entity* anEntity)

@@ -111,6 +111,8 @@ namespace Prism
 				myFadeData.myCurrentTime = 0.f;
 			}
 		}
+
+		EffectContainer::GetInstance()->Update(aDeltaTime);
 	}
 
 	void Engine::Render()
