@@ -356,6 +356,10 @@ void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2:
 
 	aLevel->Add(entity);
 
+	CU::Vector2<float> spawnVelocity;
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "X", spawnVelocity.x);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "Y", spawnVelocity.y);
+	aLevel->SetSpawnVelocity(spawnVelocity);
 }
 
 void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)

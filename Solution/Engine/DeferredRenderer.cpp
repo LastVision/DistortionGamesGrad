@@ -104,8 +104,9 @@ namespace Prism
 	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath)
 	{
 		SET_RUNTIME(false);
-		myDecal->AddDecal(aPosition, aDirection, aPath);
-		myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
+		bool addDecalsHereWhenThreadSafe = true;
+		//myDecal->AddDecal(aPosition, aDirection, aPath);
+		//myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
 		SET_RUNTIME(true);
 	}
 

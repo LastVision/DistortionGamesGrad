@@ -33,5 +33,7 @@ private:
 	const CU::GrowingArray<const Score*>& myScores;
 	const ScoreInfo& myScoreInfo;
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
+
+	float myTimer;
 };
 
