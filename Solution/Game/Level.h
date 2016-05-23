@@ -16,6 +16,7 @@ namespace Prism
 	class SpotLightShadow;
 	class EmitterManager;
 	class PointLight;
+	class Texture;
 };
 
 class PhysicsComponent;
@@ -60,7 +61,7 @@ public:
 private:
 	void operator=(Level&) = delete;
 
-	Prism::SpriteProxy* myBackground;
+	Prism::Texture* myBackground;
 
 	Prism::Camera& myCamera;
 	Prism::Scene* myScene;
