@@ -123,12 +123,16 @@ namespace Prism
 			aBackground->Render(Engine::GetInstance()->GetWindowSize() * 0.5f);
 		}
 
-		aScene->Render();
+		//aScene->Render();
 
+		aScene->RenderStatic();
 		ID3D11RenderTargetView* target = myGBufferData->myAlbedoTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
 			, Engine::GetInstance()->GetDepthView());
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture);
+
+		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
+		aScene->RenderDynamic();
 
 		ActivateBuffers();
 
