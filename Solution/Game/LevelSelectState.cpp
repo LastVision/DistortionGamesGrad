@@ -31,6 +31,8 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+
+	RetriveUnlockedLevelsFromFile();
 }
 
 void LevelSelectState::EndState()
@@ -86,4 +88,29 @@ void LevelSelectState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
+}
+
+CU::GrowingArray<bool> LevelSelectState::RetriveUnlockedLevelsFromFile()
+{
+	CU::GrowingArray<bool> toReturn(64);
+
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+
+	int levelID;
+	bool isUnlocked = false;
+	bool isEndOfFile = false;
+	while (isEndOfFile == false)
+	{
+		if (file.eof())
+		{
+			isEndOfFile = true;
+			break;
+		}
+		file >> levelID >> isUnlocked;
+		toReturn.Add(isUnlocked);
+	}
+
+	file.close();
+	return toReturn;
 }

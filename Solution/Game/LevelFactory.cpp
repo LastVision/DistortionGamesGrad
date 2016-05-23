@@ -17,6 +17,7 @@ LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCa
 	: myCamera(aCamera)
 	, myCurrentLevelID(aLevel)
 	, myFinalLevelID(0)
+	, myHasCreatedUnlockedLevels(true)
 {
 	ReadLevelList(aLevelListPath);
 }
@@ -69,10 +70,12 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 	{
 		reader.ForceReadAttribute(element, "ID", ID);
 		reader.ForceReadAttribute(element, "path", levelPath);
+		AddLevelToUnlockedLevelFile(ID);
 		myLevelPaths[ID] = levelPath;
 
 		myFinalLevelID = max(myFinalLevelID, ID);
 	}
+	myHasCreatedUnlockedLevels = true;
 	reader.CloseDocument();
 }
 
@@ -319,4 +322,39 @@ void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aEl
 	aRotation.x = CU::Math::DegreeToRad(aRotation.x);
 	aRotation.y = CU::Math::DegreeToRad(aRotation.y);
 	aRotation.z = CU::Math::DegreeToRad(aRotation.z);
+}
+
+void LevelFactory::AddLevelToUnlockedLevelFile(const int aLevelID)
+{
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+	if (file.peek() == std::ifstream::traits_type::eof())
+	{
+		myHasCreatedUnlockedLevels = false;
+	}
+	file.close();
+	if (myHasCreatedUnlockedLevels == false)
+	{
+		std::ios::openmode mode = std::ios::binary | std::ios::app | std::ios::out;
+		if (aLevelID == 1)
+		{
+			mode = std::ios::binary | std::ios::out;
+		}
+		file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", mode);
+		if (file.is_open() == true)
+		{
+			if (myHasCreatedUnlockedLevels == false)
+			{
+				if (aLevelID == 1)
+				{
+					file << aLevelID << std::endl << true;
+				}
+				else
+				{
+					file << std::endl << aLevelID << std::endl << false;
+				}
+			}
+		}
+		file.close();
+	}
 }
