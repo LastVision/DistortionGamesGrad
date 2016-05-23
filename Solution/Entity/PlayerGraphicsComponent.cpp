@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <algorithm>
 #include <AnimationSystem.h>
 #include <ModelLoader.h>
 #include <Instance.h>
@@ -39,8 +40,10 @@ void PlayerGraphicsComponent::Init()
 
 	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
 
+	std::string body(myData.myBody);
+	std::replace(body.begin(), body.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myBody.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myBody, myData.myShader), myBody.myOrientation);
+		*Prism::ModelLoader::GetInstance()->LoadModel(body, myData.myShader), myBody.myOrientation);
 	myLeftLeg.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myLeftLeg, myData.myShader), myLeftLeg.myOrientation);
 	myRightLeg.myInstance = new Prism::Instance(
