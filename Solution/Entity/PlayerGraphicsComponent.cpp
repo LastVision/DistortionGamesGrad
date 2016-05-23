@@ -44,12 +44,21 @@ void PlayerGraphicsComponent::Init()
 	std::replace(body.begin(), body.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myBody.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(body, myData.myShader), myBody.myOrientation);
+
+	std::string leftLeg(myData.myLeftLeg);
+	std::replace(leftLeg.begin(), leftLeg.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myLeftLeg.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myLeftLeg, myData.myShader), myLeftLeg.myOrientation);
+		*Prism::ModelLoader::GetInstance()->LoadModel(leftLeg, myData.myShader), myLeftLeg.myOrientation);
+
+	std::string rightLeg(myData.myRightLeg);
+	std::replace(rightLeg.begin(), rightLeg.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myRightLeg.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myRightLeg, myData.myShader), myRightLeg.myOrientation);
+		*Prism::ModelLoader::GetInstance()->LoadModel(rightLeg, myData.myShader), myRightLeg.myOrientation);
+
+	std::string head(myData.myHead);
+	std::replace(head.begin(), head.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myHead.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(myData.myHead, myData.myShader), myHead.myOrientation);
+		*Prism::ModelLoader::GetInstance()->LoadModel(head, myData.myShader), myHead.myOrientation);
 
 	if (myPlayerID == 1)
 	{
