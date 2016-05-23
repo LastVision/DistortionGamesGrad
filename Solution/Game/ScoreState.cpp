@@ -16,6 +16,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	: myScores(someScores)
 	, myScoreInfo(aScoreInfo)
 	, myScoreWidgets(4)
+	, myTimer(2.f)
 {
 	for each (const Score* score in myScores)
 	{
@@ -63,14 +64,19 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 	//	return eStateStatus::ePopMainState;
 	//}
 
+	myTimer -= aDeltaTime;
+
 	for each (ScoreWidget* widget in myScoreWidgets)
 	{
 		widget->Update(aDeltaTime);
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	if (myTimer < 0)
+	{
+		HandleControllerInMenu(myController, myGUIManager);
 
-	myGUIManager->Update(aDeltaTime);
+		myGUIManager->Update(aDeltaTime);
+	}
 	return myStateStatus;
 }
 
@@ -82,12 +88,16 @@ void ScoreState::Render()
 		DEBUG_PRINT(score->myTime);
 	}
 
+	if (myTimer < 0)
+	{
+		myGUIManager->Render();
+	}
+
 	for (int i = 0; i < myScoreWidgets.Size(); ++i)
 	{
 		myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
 	}
 
-	myGUIManager->Render();
 }
 
 void ScoreState::ResumeState()
