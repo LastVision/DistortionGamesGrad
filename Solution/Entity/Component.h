@@ -4,6 +4,7 @@
 class Entity;
 
 struct BounceNote;
+struct CharacterAnimationNote;
 struct ContactNote;
 struct CollisionNote;
 struct DeathNote;
@@ -21,6 +22,7 @@ public:
 	virtual void Reset();
 
 	virtual void ReceiveNote(const BounceNote&) {}
+	virtual void ReceiveNote(const CharacterAnimationNote&) {}
 	virtual void ReceiveNote(const CollisionNote&) {}
 	virtual void ReceiveNote(const ContactNote&) {}
 	virtual void ReceiveNote(const DeathNote&) {}

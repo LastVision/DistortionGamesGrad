@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <AnimationSystem.h>
+#include "CharacterAnimationNote.h"
 #include <ModelLoader.h>
 #include <Instance.h>
 #include "LoseBodyPartNote.h"
@@ -23,7 +24,8 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myScene(aScene)
 	, myPlayerID(aPlayerID)
 	, myShowArrow(false)
-	, myPreviousAnimation(eCharacterAnimationType::IDLE)
+	, myPreviousAnimation(eCharacterAnimationType::FLY)
+	, myCurrentAnimationType(eCharacterAnimationType::FLY)
 {
 }
 
@@ -79,6 +81,8 @@ void PlayerGraphicsComponent::Init()
 	myIdleAnimation.CreateJoints(myData.myIdleAnimation);
 	myWalkAnimation.CreateJoints(myData.myWalkAnimation);
 	myFlyAnimation.CreateJoints(myData.myFlyAnimation);
+	myDashAimAnimation.CreateJoints(myData.myDashAimAnimation);
+	myDashFlyAnimation.CreateJoints(myData.myDashFlyAnimation);
 
 	myScene->AddInstance(myBody.myInstance, true);
 	myScene->AddInstance(myLeftLeg.myInstance, true);
@@ -231,4 +235,34 @@ void PlayerGraphicsComponent::ReceiveNote(const SpawnNote&)
 void PlayerGraphicsComponent::ReceiveNote(const DeathNote&)
 {
 	Reset();
+}
+
+
+void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage)
+{
+	//if (myPreviousAnimation != aMessage.myAnimationType)
+	//{
+		myPreviousAnimation = myCurrentAnimationType;
+
+		switch (aMessage.myAnimationType)
+		{
+		case eCharacterAnimationType::IDLE:
+			myCurrentAnimation = &myIdleAnimation;
+			break;
+		case eCharacterAnimationType::WALK:
+			myCurrentAnimation = &myWalkAnimation;
+			break;
+		case eCharacterAnimationType::FLY:
+			myCurrentAnimation = &myFlyAnimation;
+			break;
+		case eCharacterAnimationType::DASH_AIM:
+			myCurrentAnimation = &myDashAimAnimation;
+			break;
+		case eCharacterAnimationType::DASH_FLY:
+			myCurrentAnimation = &myDashFlyAnimation;
+			break;
+		}
+
+		myCurrentAnimationType = aMessage.myAnimationType;
+	//}
 }

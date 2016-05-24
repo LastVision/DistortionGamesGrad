@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <AudioInterface.h>
+#include "CharacterAnimationNote.h"
 #include "DashAimMovement.h"
 #include "DashFlyMovement.h"
 #include "FlyMovement.h"
@@ -136,6 +137,29 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	}
 	myCurrentMovement = aState;
 	myMovements[myCurrentMovement]->Activate(velocityToState);
+
+	switch (myCurrentMovement)
+	{
+	case MovementComponent::FLY:
+		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::FLY));
+		break;
+	case MovementComponent::WALK:
+		if (velocityToState.x > 0.f)
+		{
+			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
+		}
+		else
+		{
+			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
+		}
+		break;
+	case MovementComponent::DASH_AIM:
+		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::DASH_AIM));
+		break;
+	case MovementComponent::DASH_FLY:
+		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::DASH_FLY));
+		break;
+	}
 }
 
 void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)

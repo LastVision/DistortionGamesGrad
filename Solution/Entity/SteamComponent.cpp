@@ -16,8 +16,7 @@ SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU:
 	, mySteamTime(0.f)
 	, myIsConstant(true)
 {
-	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aScene, myEntity.GetOrientation().GetPos(), aRotation);
-
+	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aScene, myEntity.GetOrientation().GetPos(), { 0.f, aRotation.y, aRotation.z });
 
 	//mySteam->AddToScene();
 	mySteam->GetComponent<PhysicsComponent>()->AddToScene();

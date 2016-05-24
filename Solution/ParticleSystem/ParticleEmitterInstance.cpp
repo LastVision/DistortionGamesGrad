@@ -21,9 +21,6 @@ namespace Prism
 		, myLiveParticleCount(0)
 		, myOverrideDirection(false)
 		, myParticleToGraphicsCard(256)
-		, myDrawDebugLines(false)
-		, myShouldRender(false)
-		, myHasRoom(false)
 	{
 		myStates.reset();
 		myParticleEmitterData = someData;
@@ -88,24 +85,7 @@ namespace Prism
 			myParticleEmitterData->myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, context);
 			context->Draw(toGraphicsCard, 0);
 		}
-
-		if (myDrawDebugLines == true)
-		{
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[0], myPoints[1], eColorDebug::RED, eColorDebug::BLUE);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[1], myPoints[3], eColorDebug::BLUE, eColorDebug::GREEN);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[3], myPoints[2], eColorDebug::GREEN, eColorDebug::YELLOW);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[2], myPoints[0], eColorDebug::YELLOW, eColorDebug::RED);
-
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[0], myPoints[7], eColorDebug::RED, eColorDebug::BLUE);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[1], myPoints[6], eColorDebug::BLUE, eColorDebug::GREEN);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[3], myPoints[4], eColorDebug::GREEN, eColorDebug::YELLOW);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[2], myPoints[5], eColorDebug::YELLOW, eColorDebug::RED);
-
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[4], myPoints[5], eColorDebug::RED, eColorDebug::BLUE);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[5], myPoints[7], eColorDebug::BLUE, eColorDebug::GREEN);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[7], myPoints[6], eColorDebug::GREEN, eColorDebug::YELLOW);
-			Prism::DebugDrawer::GetInstance()->RenderLine3D(myPoints[6], myPoints[4], eColorDebug::YELLOW, eColorDebug::RED);
-		}
+		myParticleEmitterData->myEffect->SetTexture(NULL);
 	}
 
 	void ParticleEmitterInstance::Update(float aDeltaTime)
@@ -172,84 +152,16 @@ namespace Prism
 			myStates[SPHERE] = FALSE;
 		}
 
-
+		if (myParticleEmitterData->myUseAlphaDelta == true)
+		{
+			myStates[USE_ALPHA_DELTA] = TRUE;
+		}
+		else
+		{
+			myStates[USE_ALPHA_DELTA] = FALSE;
+		}
 
 		myEmitterLife = myParticleEmitterData->myEmitterLifeTime;
-		CreatePoints();
-	}
-
-	CU::Vector3f ParticleEmitterInstance::CalculateDirection(float aYVariation, float aZVariation)
-	{
-		float radius = myParticleEmitterData->myEmitterSize.z;
-
-		if (myParticleEmitterData->myEmitterSize.x > myParticleEmitterData->myEmitterSize.z)
-		{
-			radius = myParticleEmitterData->myEmitterSize.x;
-		}
-
-		float toRad = aYVariation * 0.5f;
-		float toRad2 = aZVariation * 0.5f;
-
-
-		CU::Vector3<float> toReturn;
-		int toRand = static_cast<int>(CU::Math::DegreeToRad(toRad) * 10000.f);
-		int toRand2 = static_cast<int>(CU::Math::DegreeToRad(toRad2) * 10000.f);
-
-		float angle = 0.f;
-		float otherAngle = 0.f;
-
-		if (toRand > 0.f)
-		{
-			angle = static_cast<float>(rand() % toRand) / 10000.f;
-		}
-		if (toRand2 > 0.f)
-		{
-			otherAngle = static_cast<float>(rand() % toRand2) / 10000.f;
-		}
-
-		toReturn.x = radius * cosf(angle);
-		toReturn.y = radius * sinf(angle);
-		toReturn.z = radius * sinf(otherAngle);
-
-		if (aYVariation >= 90.f && aYVariation <= 270.f)
-		{
-			toReturn.x = CU::Math::RandomRange(-toReturn.x, toReturn.x);
-		}
-
-		if (aZVariation >= 90.f && aZVariation <= 270.f)
-		{
-			toReturn.z = CU::Math::RandomRange(-toReturn.z, toReturn.z);
-		}
-
-		toReturn.y = CU::Math::RandomRange(-toReturn.y, toReturn.y);
-
-		return toReturn;
-	}
-
-	void ParticleEmitterInstance::CreatePoints()
-	{
-		myPoints[0] = myOrientation.GetPos() - myParticleEmitterData->myEmitterSize;
-
-		myPoints[1] = myOrientation.GetPos() - myParticleEmitterData->myEmitterSize;
-		myPoints[1].x = myOrientation.GetPos().x + myParticleEmitterData->myEmitterSize.x;
-
-		myPoints[2] = myOrientation.GetPos() - myParticleEmitterData->myEmitterSize;
-		myPoints[2].y = myOrientation.GetPos().y + myParticleEmitterData->myEmitterSize.y;
-
-		myPoints[3] = myOrientation.GetPos() + myParticleEmitterData->myEmitterSize;
-		myPoints[3].z = myOrientation.GetPos().z - myParticleEmitterData->myEmitterSize.z;
-
-
-		myPoints[4] = myOrientation.GetPos() + myParticleEmitterData->myEmitterSize;
-
-		myPoints[5] = myOrientation.GetPos() + myParticleEmitterData->myEmitterSize;
-		myPoints[5].x = myOrientation.GetPos().x - myParticleEmitterData->myEmitterSize.x;
-
-		myPoints[6] = myOrientation.GetPos() + myParticleEmitterData->myEmitterSize;
-		myPoints[6].y = myOrientation.GetPos().y - myParticleEmitterData->myEmitterSize.y;
-
-		myPoints[7] = myOrientation.GetPos() - myParticleEmitterData->myEmitterSize;
-		myPoints[7].z = myOrientation.GetPos().z + myParticleEmitterData->myEmitterSize.z;
 	}
 
 	void ParticleEmitterInstance::CreateVertexBuffer()
@@ -332,23 +244,6 @@ namespace Prism
 				myOrientation.SetPos(myEntity->GetOrientation().GetPos());
 			}
 
-			//if (myRotation.x > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.x) * aDeltaTime) * myOrientation;
-			//}
-
-			//if (myRotation.y > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.y) * aDeltaTime) * myOrientation;
-			//}
-
-
-			//if (myRotation.z > 0.f)
-			//{
-			//	myOrientation = CU::Matrix44f::CreateRotateAroundX(CU::Math::DegreeToRad(myRotation.z) * aDeltaTime) * myOrientation;
-			//}
-
-
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
 			{
 				EmitParticle(myOrientation);
@@ -362,7 +257,6 @@ namespace Prism
 				if (myEmitterLife <= 0.f && myLiveParticleCount <= 0)
 				{
 					myStates[ACTIVE] = FALSE;
-					myDrawDebugLines = false;
 				}
 			}
 		}
@@ -399,9 +293,15 @@ namespace Prism
 				gfxParticle.mySize += (particleData.mySizeDelta / myParticleEmitterData->myData.myParticleLifeTime) * aDeltaTime;
 			}
 
-			gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
-
-			gfxParticle.myAlpha = CU::Math::CapValue(0.f, 1.f, gfxParticle.myAlpha);
+			if (myStates[USE_ALPHA_DELTA] == TRUE)
+			{
+				gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
+			}
+			else if (myStates[USE_ALPHA_DELTA] == FALSE)
+			{
+				gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
+				gfxParticle.myAlpha = gfxParticle.myLifeTime / particleData.myParticleLifeTime;
+			}
 
 			gfxParticle.myColor.x += myDiffColor.x  * aDeltaTime;
 			gfxParticle.myColor.y += myDiffColor.y  * aDeltaTime;
@@ -410,7 +310,7 @@ namespace Prism
 			gfxParticle.myRotation += gfxParticle.myRotation * (logicParticle.myRotationDelta * aDeltaTime);
 
 
-			if (gfxParticle.myLifeTime < 0.0f && logicParticle.myIsAlive == true)
+			if ((gfxParticle.myAlpha < 0.0f && gfxParticle.myLifeTime < 0.0f) && logicParticle.myIsAlive == true)
 			{
 				myLiveParticleCount--;
 				logicParticle.myIsAlive = false;
@@ -444,8 +344,9 @@ namespace Prism
 			logicParticle.myDirection = myDirection;
 			if (myOverrideDirection == false)
 			{
-				logicParticle.myDirection = CalculateDirection(myParticleEmitterData->myVariation.x,
-					myParticleEmitterData->myVariation.y);
+
+				logicParticle.myDirection = CU::Math::RandomVector(myParticleEmitterData->myMinDirection
+					, myParticleEmitterData->myMaxDirection);
 			}
 
 #pragma	region		Shape
@@ -485,58 +386,31 @@ namespace Prism
 			gfxParticle.mySize = CU::Math::RandomRange(myParticleEmitterData->myData.myMinStartSize
 				, myParticleEmitterData->myData.myMaxStartSize);
 
-			//gfxParticle.mySize = myParticleScaling;
-
 			logicParticle.myIsAlive = true;
 
-
 			logicParticle.myRotation = CU::Math::RandomRange(myParticleEmitterData->myParticleRotation.x, myParticleEmitterData->myParticleRotation.y);
-
 			gfxParticle.myRotation = logicParticle.myRotation;
 
 			logicParticle.myRotationDelta = myParticleEmitterData->myRotationDelta;
-
-
 			myParticleIndex += 1;
 		}
 	}
 
 	CU::Vector3<float> ParticleEmitterInstance::CreateCirclePositions()
 	{
-		float radius = myParticleEmitterData->myEmitterSize.z;
-
-		if (myParticleEmitterData->myEmitterSize.x > myParticleEmitterData->myEmitterSize.z)
-		{
-			radius = myParticleEmitterData->myEmitterSize.x;
-		}
-
-		CU::Vector3<float> toReturn;
-
-		int a = static_cast<int>((4 * M_PI_2)) * 10000;
-
-		float angle = static_cast<float>(rand() % a) / 10000.f;
-
-		toReturn.x = radius * cosf(angle);
-		toReturn.y = 0.f;
-		toReturn.z = radius * sinf(angle);
-
+		CU::Vector3f toReturn = CreateSpherePositions();
+		toReturn.z = 0.f;
+		CU::Vector3f toNormalize = toReturn - myOrientation.GetPos();
+		CU::Normalize(toNormalize);
+		myLogicalParticles[myParticleIndex].myDirection = toReturn;
 		return toReturn;
 	}
 
 	CU::Vector3<float> ParticleEmitterInstance::CreateSpherePositions()
 	{
-		float radius = myParticleEmitterData->myEmitterSize.z;
-
-		if (myParticleEmitterData->myEmitterSize.x > myParticleEmitterData->myEmitterSize.z)
-		{
-			radius = myParticleEmitterData->myEmitterSize.x;
-		}
-
 		CU::Vector3<float> toReturn;
 
-		toReturn = CU::Math::RandomVector(CU::Matrix44f().GetPos() - myParticleEmitterData->myEmitterSize
-			, CU::Matrix44f().GetPos() + myParticleEmitterData->myEmitterSize);
-
+		toReturn = CU::Math::RandomVector(-myParticleEmitterData->myEmitterSize, myParticleEmitterData->myEmitterSize);
 		CU::Normalize(toReturn);
 		return toReturn;
 	}
@@ -551,23 +425,23 @@ namespace Prism
 		{
 		case 1: //top
 			toReturn.x = CU::Math::RandomRange(-size.x, size.x);
-			toReturn.y = 0.f;
-			toReturn.z = size.z;
+			toReturn.y = size.y;
+			toReturn.z = 0.f;
 			break;
 		case 2: //bot
 			toReturn.x = -size.x;
-			toReturn.y = 0.f;
-			toReturn.z = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.y = CU::Math::RandomRange(-size.y, size.y);
+			toReturn.z = 0.f;
 			break;
 		case 3: //bot
 			toReturn.x = CU::Math::RandomRange(-size.x, size.x);
-			toReturn.y = 0.f;
-			toReturn.z = -size.z;
+			toReturn.y = -size.y;
+			toReturn.z = 0.f;
 			break;
 		case 4: //top
 			toReturn.x = size.x;
-			toReturn.y = 0.f;
-			toReturn.z = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.y = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.z = 0.f;
 			break;
 		default:
 			break;
@@ -579,7 +453,6 @@ namespace Prism
 	void ParticleEmitterInstance::Activate(bool aShouldRender)
 	{
 		Reset();
-		myShouldRender = aShouldRender;
 		myStates[ACTIVE] = TRUE;
 	}
 
@@ -596,17 +469,6 @@ namespace Prism
 	void ParticleEmitterInstance::SetEntity(Entity* anEntity)
 	{
 		myEntity = anEntity;
-	}
-
-
-	void ParticleEmitterInstance::SetHasRoom(bool aHasRoom)
-	{
-		myHasRoom = aHasRoom;
-	}
-
-	bool ParticleEmitterInstance::GetHasRoom()
-	{
-		return myHasRoom;
 	}
 
 	CU::Vector3<float> ParticleEmitterInstance::GetPosition() const
