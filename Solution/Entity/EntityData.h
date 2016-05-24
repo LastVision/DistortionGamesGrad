@@ -16,6 +16,10 @@
 
 struct EntityData
 {
+	EntityData()
+		: myShowDecal(true)
+	{}
+
 	eEntityType myType;
 	AnimationComponentData myAnimationData;
 	BounceComponentData myBounceData;
@@ -31,4 +35,5 @@ struct EntityData
 	SteamComponentData mySteamData;
 	PlayerComponentData myPlayerData;
 	std::string mySubType;
+	bool myShowDecal;
 };

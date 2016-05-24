@@ -39,6 +39,7 @@
 #include <OnDeathMessage.h>
 #include <TextureContainer.h>
 #include <PointLight.h>
+#include <EmitterMessage.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -55,6 +56,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myPointLights(32)
 	, myPlayerPointLights(4)
 	, myScrapManagers(4)
+	, myDirectionalLights(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -111,6 +113,7 @@ Level::~Level()
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
 	myPlayerPointLights.DeleteAll();
+	myDirectionalLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -140,6 +143,9 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
+	//myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
@@ -212,8 +218,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
-	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 
 	return myStateStatus;
 }
@@ -359,6 +364,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
 				first->GetComponent<ScoreComponent>()->ReachedGoal();
 
@@ -482,6 +488,13 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+
+void Level::Add(Prism::DirectionalLight* aLight)
+{
+	myDirectionalLights.Add(aLight);
+	myScene->AddLight(aLight);
 }
 
 void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)

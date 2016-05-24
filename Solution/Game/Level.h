@@ -10,6 +10,7 @@ namespace Prism
 {
 	class Camera;
 	class DeferredRenderer;
+	class DirectionalLight;
 	class Renderer;
 	class Scene;
 	class SpriteProxy;
@@ -55,6 +56,7 @@ public:
 	void Add(Entity* anEntity);
 	void CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime);
 	void Add(Prism::PointLight* aLight);
+	void Add(Prism::DirectionalLight* aLight);
 	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
 	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
@@ -69,6 +71,7 @@ private:
 	Prism::Renderer* myFullscreenRenderer;
 	Prism::SpotLightShadow* myShadowLight;
 	CU::GrowingArray<Prism::PointLight*> myPointLights;
+	CU::GrowingArray<Prism::DirectionalLight*> myDirectionalLights;
 	SmartCamera* mySmartCamera;
 	CU::Matrix44<float> dummyMatrix;
 

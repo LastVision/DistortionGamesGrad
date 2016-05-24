@@ -111,7 +111,7 @@ namespace GUI
 
 			if (myIsTextButton == true)
 			{
-				Prism::Engine::GetInstance()->PrintText(myButtonText, { aParentPosition.x + myPosition.x - 10.f, aParentPosition.y + myPosition.y  - 10.f}, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myButtonText, { aParentPosition.x + myPosition.x - 10.f, aParentPosition.y + myPosition.y - 10.f }, Prism::eTextType::RELEASE_TEXT);
 			}
 
 			if (myImageCurrent == myImageHover && myHoverText != "")
@@ -232,6 +232,20 @@ namespace GUI
 			{
 				myIsVisible = false;
 			}
+		}
+	}
+
+	void ButtonWidget::SetActive(const bool aActiveFlag)
+	{
+		if (aActiveFlag == true)
+		{
+			myColor = { 1.f, 1.f, 1.f, 1.f };
+			myCanBeClicked = true;
+		}
+		else
+		{
+			myColor = { 0.5f, 0.5f, 0.5f, 1.f };
+			myCanBeClicked = false;
 		}
 	}
 

@@ -3,6 +3,7 @@
 #include "..\DL_Debug\DL_Debug.h"
 #include "Vector.h"
 #include <string>
+#include "CommonHelper.h"
 
 //#define tinyxml2::XMLElement* tinyxml2::tinyxml2::XMLElement**
 
