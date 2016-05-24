@@ -81,99 +81,103 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 	entityDocument.OpenDocument(aEntityPath);
 
 	tinyxml2::XMLElement* rootElement = entityDocument.ForceFindFirstChild("root");
-	tinyxml2::XMLElement* entityElement = entityDocument.ForceFindFirstChild(rootElement, "Entity");
+	//tinyxml2::XMLElement* entityElement = entityDocument.ForceFindFirstChild(rootElement, "Entity");
 
-	EntityData newData;
-	std::string entityType;
-	std::string entitySubType;
-	newData.mySubType = "";
-	entityDocument.ForceReadAttribute(entityElement, "type", entityType);
-	newData.myType = EntityEnumConverter::ConvertStringToEntityType(CU::ToLower(entityType));
-
-	entityDocument.ReadAttribute(entityElement, "subType", entitySubType);
-
-	newData.mySubType = CU::ToLower(entitySubType);
-
-
-	for (tinyxml2::XMLElement* e = entityDocument.FindFirstChild(entityElement); e != nullptr;
-		e = entityDocument.FindNextElement(e))
+	for (tinyxml2::XMLElement* entityElement = entityDocument.ForceFindFirstChild(rootElement, "Entity"); entityElement != nullptr;
+		entityElement = entityDocument.FindNextElement(entityElement))
 	{
-		std::string elementName = CU::ToLower(e->Name());
-		
-		if (elementName == CU::ToLower("AnimationComponent"))
-		{
-			if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You have a GraphicsComponent so you can't have a AnimationComponent");
-			if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You already have a AnimationComponent");
 
-			myComponentLoader->Load(entityDocument, e, newData.myAnimationData);
-		}
-		else if (elementName == CU::ToLower("GraphicsComponent"))
-		{
-			if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You have a AnimationComponent so you can't have a GraphicsComponent");
-			if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You already have a GraphicsComponent");
+		EntityData newData;
+		std::string entityType;
+		std::string entitySubType;
+		newData.mySubType = "";
+		entityDocument.ForceReadAttribute(entityElement, "type", entityType);
+		newData.myType = EntityEnumConverter::ConvertStringToEntityType(CU::ToLower(entityType));
 
-			myComponentLoader->Load(entityDocument, e, newData.myGraphicsData);
-		}
-		else if (elementName == CU::ToLower("InputComponent"))
+		entityDocument.ReadAttribute(entityElement, "subType", entitySubType);
+
+		newData.mySubType = CU::ToLower(entitySubType);
+
+
+		for (tinyxml2::XMLElement* e = entityDocument.FindFirstChild(entityElement); e != nullptr;
+			e = entityDocument.FindNextElement(e))
 		{
-			myComponentLoader->Load(entityDocument, e, newData.myInputData);
+			std::string elementName = CU::ToLower(e->Name());
+
+			if (elementName == CU::ToLower("AnimationComponent"))
+			{
+				if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You have a GraphicsComponent so you can't have a AnimationComponent");
+				if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You already have a AnimationComponent");
+
+				myComponentLoader->Load(entityDocument, e, newData.myAnimationData);
+			}
+			else if (elementName == CU::ToLower("GraphicsComponent"))
+			{
+				if (newData.myAnimationData.myExistsInEntity == true) DL_ASSERT("You have a AnimationComponent so you can't have a GraphicsComponent");
+				if (newData.myGraphicsData.myExistsInEntity == true) DL_ASSERT("You already have a GraphicsComponent");
+
+				myComponentLoader->Load(entityDocument, e, newData.myGraphicsData);
+			}
+			else if (elementName == CU::ToLower("InputComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myInputData);
+			}
+			else if (elementName == CU::ToLower("MovementComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myMovementData);
+			}
+			else if (elementName == CU::ToLower("TriggerComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myTriggerData);
+			}
+			else if (elementName == CU::ToLower("PhysicsComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myPhysicsData);
+			}
+			else if (elementName == CU::ToLower("SoundComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.mySoundData);
+			}
+			else if (elementName == CU::ToLower("SawBladeComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.mySawBladeData);
+			}
+			else if (elementName == CU::ToLower("PlayerGraphicsComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myPlayerGraphicsData);
+			}
+			else if (elementName == CU::ToLower("SteamComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.mySteamData);
+			}
+			else if (elementName == CU::ToLower("ScoreComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myScoreData);
+			}
+			else if (elementName == CU::ToLower("PlayerComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myPlayerData);
+			}
+			else if (elementName == CU::ToLower("BounceComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myBounceData);
+			}
+			else
+			{
+				std::string errorMessage = "The component " + elementName +
+					" is not Supported. Please check if you spelled correctly.";
+				DL_ASSERT(errorMessage.c_str());
+			}
 		}
-		else if (elementName == CU::ToLower("MovementComponent"))
+		if (newData.mySubType != "")
 		{
-			myComponentLoader->Load(entityDocument, e, newData.myMovementData);
-		}
-		else if (elementName == CU::ToLower("TriggerComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myTriggerData);
-		}
-		else if (elementName == CU::ToLower("PhysicsComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myPhysicsData);
-		}
-		else if (elementName == CU::ToLower("SoundComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.mySoundData);
-		}
-		else if (elementName == CU::ToLower("SawBladeComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.mySawBladeData);
-		}
-		else if (elementName == CU::ToLower("PlayerGraphicsComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myPlayerGraphicsData);
-		}
-		else if (elementName == CU::ToLower("SteamComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.mySteamData);
-		}
-		else if (elementName == CU::ToLower("ScoreComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myScoreData);
-		}
-		else if (elementName == CU::ToLower("PlayerComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myPlayerData);
-		}
-		else if (elementName == CU::ToLower("BounceComponent"))
-		{
-			myComponentLoader->Load(entityDocument, e, newData.myBounceData);
+			myLoadedSubEntityData[newData.mySubType] = newData;
 		}
 		else
 		{
-			std::string errorMessage = "The component " + elementName +
-				" is not Supported. Please check if you spelled correctly.";
-			DL_ASSERT(errorMessage.c_str());
+			myLoadedEntityData[newData.myType] = newData;
 		}
 	}
-	if (newData.mySubType != "")
-	{
-		myLoadedSubEntityData[newData.mySubType] = newData;
-	}
-	else
-	{
-		myLoadedEntityData[newData.myType] = newData;
-	}
-
 	entityDocument.CloseDocument();
 }
 
