@@ -12,6 +12,7 @@
 #include "WalkMovement.h"
 #include <PostMaster.h>
 #include <EmitterMessage.h>
+
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
 	, myData(aData)
