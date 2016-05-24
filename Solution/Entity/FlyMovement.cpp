@@ -150,8 +150,8 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	}
 }
 
-void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed)
 	{
@@ -159,8 +159,8 @@ void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vect
 	}
 }
 
-void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed)
 	{
