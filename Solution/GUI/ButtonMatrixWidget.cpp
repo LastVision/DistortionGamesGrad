@@ -55,7 +55,7 @@ namespace GUI
 				std::to_string(i + 1), "", GetAmountOfStarsFromFile(i + 1));
 			if (buttonEventType == "start_level")
 			{
-				button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, i + 1));
+				button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, i));
 			}
 			myButtonMatrix.Add(button);
 			x++;
