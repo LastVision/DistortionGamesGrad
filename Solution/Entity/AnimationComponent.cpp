@@ -47,7 +47,7 @@ void AnimationComponent::Update(float aDeltaTime)
 	}
 }
 
-void AnimationComponent::ReceiveNote(const BounceNote& aMessage)
+void AnimationComponent::ReceiveNote(const BounceNote&)
 {
 	myInstance->ResetAnimationTime(0.f);
 	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();

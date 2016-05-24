@@ -13,8 +13,6 @@ namespace CU
 	class ControllerInput;
 }
 
-class StarWidget;
-
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
@@ -40,6 +38,5 @@ private:
 	GUI::GUIManager* myGUIManager;
 
 	CU::ControllerInput* myController;
-	CU::GrowingArray<StarWidget*> myStars;
 };
 

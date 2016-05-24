@@ -12,10 +12,10 @@ namespace GUI
 			const CU::Vector2<float>& aStarPosition, const CU::Vector2<float>& aStarOffest,
 			const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath,
 			const std::string& aButtonText = "default", const std::string& aHoverText = "", const int someStars = 0);
-		~LevelButtonWidget();
+		virtual ~LevelButtonWidget();
 
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
-		void Update(const float aDeltaTime) override;
+		void Update(float aDeltaTime) override;
 
 	private:
 		CU::GrowingArray<StarWidget*> myStars;

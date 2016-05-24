@@ -9,6 +9,7 @@ struct D3D11_VIEWPORT;
 namespace Prism
 {
 	class AmbientPass;
+	class DirectionalLightPass;
 	class PointLightPass;
 	class SpotLightPass;
 	class GBufferData;
@@ -48,6 +49,7 @@ namespace Prism
 		void RenderDeferred(Scene* aScene);
 		void RenderAmbientPass(Scene* aScene);
 		void RenderBackground(Texture* aBackground);
+		void RenderDirectionalLights(Scene* aScene);
 
 		void SetupShadowData();
 
@@ -63,6 +65,7 @@ namespace Prism
 		RenderToScreenData myRenderToScreenData;
 		AmbientPass* myAmbientPass;
 		PointLightPass* myPointLightPass;
+		DirectionalLightPass* myDirectionalLightPass;
 		SpotLightPass* mySpotLightPass;
 		SpotLightPass* mySpotLightTextureProjectionPass;
 		ShadowPass myShadowPass;

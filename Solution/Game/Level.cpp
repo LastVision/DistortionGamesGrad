@@ -55,6 +55,8 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myLevelID(aLevelID)
 	, myPointLights(32)
 	, myPlayerPointLights(4)
+	, myScrapManagers(4)
+	, myDirectionalLights(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -65,7 +67,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
-	ScrapManager::Create(myScene);
+
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
@@ -84,6 +86,8 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	}
 
 	PollingStation::Create();
+
+
 }
 
 Level::~Level()
@@ -94,7 +98,10 @@ Level::~Level()
 	}
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
-	ScrapManager::Destroy();
+	for (int i = 0; i < myScrapManagers.Size(); ++i)
+	{
+		SAFE_DELETE(myScrapManagers[i]);
+	}
 	SAFE_DELETE(myShadowLight);
 	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
@@ -106,6 +113,7 @@ Level::~Level()
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
 	myPlayerPointLights.DeleteAll();
+	myDirectionalLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -128,11 +136,16 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
 		myPlayers[i]->GetComponent<MovementComponent>()->SetSpawnVelocity(mySpawnVelocity);
-}
+
+		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
+	}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
+	//myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
@@ -144,7 +157,10 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
 		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
 
-	ScrapManager::GetInstance()->Update(aDeltaTime);
+	for (int i = 0; i < myScrapManagers.Size(); ++i)
+	{
+		myScrapManagers[i]->Update(aDeltaTime);
+	}
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
@@ -202,8 +218,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
-	myShadowLight->GetCamera()->Update(aDeltaTime);
+
 
 	return myStateStatus;
 }
@@ -294,6 +309,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 	Entity* second = &aSecond->GetEntity();
 	if (first->GetType() == eEntityType::PLAYER)
 	{
+		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
 		if (aHasEntered == true)
 		{
 			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
@@ -304,11 +320,14 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SAW_BLADE:
 			if (aHasEntered == true)
 			{
+				
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()
+					, playerID));
 
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()));
+					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()
+					, playerID));
 
 				first->SendNote(ShouldDieNote());
 			}
@@ -317,10 +336,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (aHasEntered == true)
 			{
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }));
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				first->SendNote(ShouldDieNote());
 			}
@@ -469,6 +488,13 @@ void Level::Add(Entity* anEntity)
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+
+void Level::Add(Prism::DirectionalLight* aLight)
+{
+	myDirectionalLights.Add(aLight);
+	myScene->AddLight(aLight);
 }
 
 void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)

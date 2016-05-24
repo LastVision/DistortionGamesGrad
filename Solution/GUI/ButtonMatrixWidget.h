@@ -19,24 +19,24 @@ namespace GUI
 		ButtonMatrixWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement);
 		~ButtonMatrixWidget();
 
-		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
-
-		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
-
-		bool IsInside(const CU::Vector2<float>& aPosition) const override;
-
-		const CU::GrowingArray<ButtonWidget*>& GetButtons() const;
+		const CU::GrowingArray<ButtonWidget*>& GetButtons(const int aRow) const;
+		const CU::Vector2<int>& GetSize() const;
 	private:
 		const int GetAmountOfStarsFromFile(const int aLevelID);
+		CU::GrowingArray<bool> RetrieveUnlockedLevelsFromFile();
 
-
-		CU::GrowingArray<ButtonWidget*> myButtonMatrix;
+		CU::GrowingArray<CU::GrowingArray<ButtonWidget*>> myButtonMatrix;
 		CU::GrowingArray<StarWidget*> myStarMatrix;
 		CU::Vector2<int> myButtonMatrixIndex;
 	};
 
-	inline const CU::GrowingArray<ButtonWidget*>& ButtonMatrixWidget::GetButtons() const
+	inline const CU::GrowingArray<ButtonWidget*>& ButtonMatrixWidget::GetButtons(const int aRow) const
 	{
-		return myButtonMatrix;
+		return myButtonMatrix[aRow];
+	}
+
+	inline const CU::Vector2<int>& ButtonMatrixWidget::GetSize() const
+	{
+		return myButtonMatrixIndex;
 	}
 }

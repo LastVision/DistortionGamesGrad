@@ -244,5 +244,8 @@
     <ClInclude Include="LoseBodyPartNote.h">
       <Filter>Notes</Filter>
     </ClInclude>
+    <ClInclude Include="CharacterAnimationNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -23,9 +23,9 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myScene(aScene)
 	, myPlayerID(aPlayerID)
 	, myShowArrow(false)
+	, myPreviousAnimation(eCharacterAnimationType::IDLE)
 {
 }
-
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
 {
@@ -37,6 +37,8 @@ void PlayerGraphicsComponent::Init()
 	myIdleAnimation.CreateAnimation(myData.myIdleAnimation, myData.myAnimationShader, myEntityOrientation);
 	myWalkAnimation.CreateAnimation(myData.myWalkAnimation, myData.myAnimationShader, myEntityOrientation);
 	myFlyAnimation.CreateAnimation(myData.myFlyAnimation, myData.myAnimationShader, myEntityOrientation);
+	myDashAimAnimation.CreateAnimation(myData.myDashAimAnimation, myData.myAnimationShader, myEntityOrientation);
+	myDashFlyAnimation.CreateAnimation(myData.myDashFlyAnimation, myData.myAnimationShader, myEntityOrientation);
 
 	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
 
@@ -196,7 +198,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		if (myHead.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		}
 		myHead.SetActive(false);
 		break;
@@ -204,14 +206,14 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		if (myLeftLeg.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myLeftLeg.SetActive(false);
 		}
 
 		if (myRightLeg.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myRightLeg.SetActive(false);
 		}
 		break;

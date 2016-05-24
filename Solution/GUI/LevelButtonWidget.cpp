@@ -24,6 +24,7 @@ namespace GUI
 
 	LevelButtonWidget::~LevelButtonWidget()
 	{
+		myStars.DeleteAll();
 	}
 
 	void LevelButtonWidget::Render(const CU::Vector2<float>& aParentPosition)
@@ -38,7 +39,7 @@ namespace GUI
 		}
 	}
 
-	void LevelButtonWidget::Update(const float aDeltaTime)
+	void LevelButtonWidget::Update(float aDeltaTime)
 	{
 		__super::Update(aDeltaTime);
 		for each(StarWidget* star in myStars)

@@ -1,9 +1,11 @@
 #pragma once
 #include <AnimationJoint.h>
 #include "Component.h"
+#include <GameEnum.h>
 #include <Matrix.h>
 #include "PlayerBody.h"
 #include <Subscriber.h>
+
 struct PlayerGraphicsComponentData;
 
 namespace Prism
@@ -54,8 +56,12 @@ private:
 	BodyAnimation myIdleAnimation;
 	BodyAnimation myWalkAnimation;
 	BodyAnimation myFlyAnimation;
+	BodyAnimation myDashAimAnimation;
+	BodyAnimation myDashFlyAnimation;
 
 	BodyAnimation* myCurrentAnimation;
+
+	eCharacterAnimationType myPreviousAnimation;
 };
 
 inline eComponentType PlayerGraphicsComponent::GetTypeStatic()

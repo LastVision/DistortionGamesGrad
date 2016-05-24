@@ -207,6 +207,9 @@
     <ClCompile Include="DecalPass.cpp">
       <Filter>Rendering\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="DirectionalLightPass.cpp">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -467,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="DecalPass.h">
       <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLightPass.h">
+      <Filter>Rendering\Renderer\DeferredPasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

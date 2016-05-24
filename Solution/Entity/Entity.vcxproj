@@ -167,6 +167,7 @@
     <ClInclude Include="BounceComponent.h" />
     <ClInclude Include="BounceComponentData.h" />
     <ClInclude Include="BounceNote.h" />
+    <ClInclude Include="CharacterAnimationNote.h" />
     <ClInclude Include="CollisionNote.h" />
     <ClInclude Include="ContactNote.h" />
     <ClInclude Include="DashAimMovement.h" />

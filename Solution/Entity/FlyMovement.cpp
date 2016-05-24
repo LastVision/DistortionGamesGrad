@@ -150,21 +150,28 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	}
 }
 
-void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed)
 	{
-		myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
+		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP
+			|| aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+		{
+			myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
+		}
 	}
 }
 
-void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed)
 	{
-		myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
+		{
+			myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "ContactNote.h"
+#include <GameEnum.h>
 #include "Subscriber.h"
 
 struct MovementComponentData;

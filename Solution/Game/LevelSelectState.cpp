@@ -9,14 +9,12 @@
 #include <WidgetContainer.h>
 
 LevelSelectState::LevelSelectState() 
-	: myStars(64)
 {
 }
 
 LevelSelectState::~LevelSelectState()
 {
 	SAFE_DELETE(myGUIManager);
-	myStars.DeleteAll();
 	myStateStack = nullptr;
 	myCursor = nullptr;
 	myController = nullptr;

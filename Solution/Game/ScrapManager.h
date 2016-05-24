@@ -10,9 +10,8 @@ namespace Prism
 class ScrapManager : public Subscriber
 {
 public:
-	static void Create(Prism::Scene* aScene);
-	static void Destroy();
-	static ScrapManager* GetInstance();
+	ScrapManager(Prism::Scene* aScene, int aPlayerID);
+	~ScrapManager();
 
 	void Update(float aDeltaTime);
 	void SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosition, const CU::Vector2<float>& aVelocity);
@@ -21,11 +20,7 @@ public:
 
 
 private:
-	ScrapManager(Prism::Scene* aScene);
-	~ScrapManager();
-
-	static ScrapManager* myInstance;
-
+	int myPlayerID;
 	void CreateHeads();
 	void CreateLegs();
 	void CreateBodies();

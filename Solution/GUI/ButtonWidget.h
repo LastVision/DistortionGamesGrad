@@ -23,7 +23,7 @@ namespace GUI
 		ButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition, 
 			const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath, 
 			const std::string& aButtonText = "default", const std::string& = "");
-		~ButtonWidget();
+		virtual ~ButtonWidget();
 
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
 
@@ -44,6 +44,7 @@ namespace GUI
 
 		void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut) override;
 
+		void SetActive(const bool aActiveFlag);
 	protected:
 		void Click();
 
