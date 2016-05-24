@@ -13,7 +13,7 @@ public:
 
 	virtual void Init(){};
 
-	virtual void Update(float aDeltaTime) = 0;
+	virtual void Update(float aDeltaTime, bool aShouldCollide) = 0;
 	virtual void Render() {}
 	virtual void ReceiveNote(const ContactNote& aNote) = 0;
 	virtual void SetDirectionTarget(const CU::Vector2<float>& aDirection) = 0;

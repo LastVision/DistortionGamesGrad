@@ -8,7 +8,7 @@ public:
 	~DashFlyMovement();
 
 	void Reset() override;
-	void Update(float aDeltaTime) override;
+	void Update(float aDeltaTime, bool aShouldCollide) override;
 
 	void ReceiveNote(const ContactNote& aNote) override;
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;

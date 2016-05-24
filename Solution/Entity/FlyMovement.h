@@ -15,7 +15,7 @@ public:
 	void Init() override;
 	void Reset() override;
 
-	void Update(float aDeltaTime) override;
+	void Update(float aDeltaTime, bool aShouldCollide) override;
 	void SetDirectionTarget(const CU::Vector2<float>& aDirection) override;
 	void Impulse() override;
 	void Impulse(const CU::Vector2<float>& aVelocity) override;

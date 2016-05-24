@@ -43,11 +43,14 @@ void FlyMovement::Reset()
 	myVelocity = CU::Vector2<float>();
 }
 
-void FlyMovement::Update(float aDeltaTime)
+void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 {
-	RaycastBody();
-	RaycastHead();
-	RaycastLegs();
+	if (aShouldCollide == true)
+	{
+		RaycastBody();
+		RaycastHead();
+		RaycastLegs();
+	}
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
 	Drag(aDeltaTime);
