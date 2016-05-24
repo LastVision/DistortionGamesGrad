@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include "ButtonMatrixWidget.h"
 #include "ButtonWidget.h"
 #include <CommonHelper.h>
 #include "Cursor.h"
@@ -327,6 +329,19 @@ namespace GUI
 				else if (type == "sprite")
 				{
 					SpriteWidget* widget = new SpriteWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
+				}
+				else if (type == "buttonMatrix")
+				{
+					ButtonMatrixWidget* widget = new ButtonMatrixWidget(&aReader, widgetElement);
+					for (int row = 0; row < widget->GetSize().y; ++row)
+					{
+						myButtons.Add(widget->GetButtons(row));
+						for each(ButtonWidget* button in widget->GetButtons(row))
+						{
+							container->AddWidget(button);
+						}
+					}
 					container->AddWidget(widget);
 				}
 				else

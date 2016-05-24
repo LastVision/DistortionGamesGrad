@@ -7,10 +7,9 @@
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
 
-ScrapManager* ScrapManager::myInstance = nullptr;
-
-ScrapManager::ScrapManager(Prism::Scene* aScene)
-	: myHeads(16)
+ScrapManager::ScrapManager(Prism::Scene* aScene, int aPlayerID)
+	: myPlayerID(aPlayerID)
+	, myHeads(16)
 	, myLiveHeads(16)
 	, myHeadIndex(0)
 	, myLegs(16)
@@ -53,25 +52,6 @@ ScrapManager::~ScrapManager()
 		SAFE_DELETE(myGibs[i].myScrewNut);
 		SAFE_DELETE(myGibs[i].mySpring);
 	}
-}
-
-
-void ScrapManager::Create(Prism::Scene* aScene)
-{
-	DL_ASSERT_EXP(myInstance == nullptr, "Tried to create ScrapManager while it already existed!");
-	myInstance = new ScrapManager(aScene);
-}
-
-void ScrapManager::Destroy()
-{
-	DL_ASSERT_EXP(myInstance != nullptr, "Tried to create ScrapManager while it already existed!");
-	SAFE_DELETE(myInstance);
-}
-
-ScrapManager* ScrapManager::GetInstance()
-{
-	DL_ASSERT_EXP(myInstance != nullptr, "ScrapManager were null!");
-	return myInstance;
 }
 
 void ScrapManager::Update(float aDeltaTime)
@@ -156,11 +136,19 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 			myLiveHeads.GetLast().myEntity->AddToScene();
 			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			
+			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
 		}
-		myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-		CU::Normalize(dir);
-		myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		else
+		{
+			myHeads[myHeadIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myHeads[myHeadIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		}
 		++myHeadIndex;
 		break;
 	}
@@ -181,11 +169,19 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 			myLiveBodies.GetLast().myEntity->AddToScene();
 			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			
+			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
 		}
-		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-		CU::Normalize(dir);
-		myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		else
+		{
+			myBodies[myBodyIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myBodies[myBodyIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		}
 		++myBodyIndex;
 		break;
 	}
@@ -206,11 +202,20 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 			myLiveLegs.GetLast().myEntity->AddToScene();
 			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+
+			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
 		}
-		myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-		CU::Normalize(dir);
-		myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		else
+		{
+			myLegs[myLegIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			myLegs[myLegIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+		}
+
 		++myLegIndex;
 		break;
 	}
@@ -237,21 +242,39 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddToScene();
 			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddToScene();
 			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddToScene();
+
+			CU::Vector3<float> offset;
+
+			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			offset.y = 0.5f;
+			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			offset.y = -0.5f;
+			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			dir.z = (rand() % 100) * 0.01f;
+			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		}
+		else
+		{
+			CU::Vector3<float> offset;
+
+			myGibs[myGibIndex].myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			offset.y = 0.5f;
+			myGibs[myGibIndex].myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			offset.y = -0.5f;
+			myGibs[myGibIndex].mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+			CU::Normalize(dir);
+			dir.z = (rand() % 100) * 0.01f;
+			myGibs[myGibIndex].myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+			myGibs[myGibIndex].myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+			myGibs[myGibIndex].mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
 		}
 
-		CU::Vector3<float> offset;
-
-		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-		offset.y = 0.5f;
-		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-		offset.y = -0.5f;
-		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-		CU::Normalize(dir);
-		dir.z = (rand() % 100) * 0.01f;
-		myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-		myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-		myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		
 		++myGibIndex;
 		break;
 	}
@@ -263,36 +286,46 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 {
-	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
-	SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+	if (myPlayerID == aMessage.myPlayerID)
+	{
+		SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
+		SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+	}
+
 }
 
 void ScrapManager::CreateHeads()
 {
+	std::string headName("head");
+	headName += std::to_string(myPlayerID);
 	for (int i = 0; i < myHeads.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "head", myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, headName, myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
 		myHeads.Add(toAdd);
 	}
 }
 
 void ScrapManager::CreateLegs()
 {
+	std::string legsName("legs");
+	legsName += std::to_string(myPlayerID);
 	for (int i = 0; i < myLegs.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "legs", myScene, { 1000.f, 100000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, legsName, myScene, { 1000.f, 100000.f + (i * 100.f), 10000.f });
 		myLegs.Add(toAdd);
 	}
 }
 
 void ScrapManager::CreateBodies()
 {
+	std::string bodyName("body");
+	bodyName += std::to_string(myPlayerID);
 	for (int i = 0; i < myBodies.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "body", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, bodyName, myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
 		myBodies.Add(toAdd);
 	}
 }

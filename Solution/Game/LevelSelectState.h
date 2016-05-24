@@ -32,7 +32,8 @@ public:
 
 private:
 
-	CU::GrowingArray<bool> RetriveUnlockedLevelsFromFile();
+	CU::GrowingArray<bool> RetrieveUnlockedLevelsFromFile();
+	const int GetAmountOfStarsFromFile(const int aLevelID);
 
 	GUI::GUIManager* myGUIManager;
 

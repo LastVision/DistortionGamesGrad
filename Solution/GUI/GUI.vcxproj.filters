@@ -30,6 +30,15 @@
       <Filter>Widget</Filter>
     </ClInclude>
     <ClInclude Include="GUIManager3D.h" />
+    <ClInclude Include="ButtonMatrixWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="StarWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelButtonWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,5 +62,14 @@
       <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="GUIManager3D.cpp" />
+    <ClCompile Include="ButtonMatrixWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="StarWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelButtonWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

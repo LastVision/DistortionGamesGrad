@@ -209,6 +209,8 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Idleanimation"), "path", aOutputData.myIdleAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Walkanimation"), "path", aOutputData.myWalkAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Flyanimation"), "path", aOutputData.myFlyAnimation);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashaimanimation"), "path", aOutputData.myDashAimAnimation);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashflyanimation"), "path", aOutputData.myDashFlyAnimation);
 }
 
 void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SteamComponentData& aOutputData)

@@ -20,22 +20,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BarWidget.h" />
+    <ClInclude Include="ButtonMatrixWidget.h" />
     <ClInclude Include="ButtonWidget.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="GUIManager.h" />
     <ClInclude Include="GUIManager3D.h" />
+    <ClInclude Include="LevelButtonWidget.h" />
     <ClInclude Include="SpriteWidget.h" />
+    <ClInclude Include="StarWidget.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BarWidget.cpp" />
+    <ClCompile Include="ButtonMatrixWidget.cpp" />
     <ClCompile Include="ButtonWidget.cpp" />
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="GUIManager3D.cpp" />
+    <ClCompile Include="LevelButtonWidget.cpp" />
     <ClCompile Include="SpriteWidget.cpp" />
+    <ClCompile Include="StarWidget.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

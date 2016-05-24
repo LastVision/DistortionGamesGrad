@@ -6,8 +6,9 @@
 #include <GUIManager.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
+#include <WidgetContainer.h>
 
-LevelSelectState::LevelSelectState()
+LevelSelectState::LevelSelectState() 
 {
 }
 
@@ -32,7 +33,7 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
-	RetriveUnlockedLevelsFromFile();
+	RetrieveUnlockedLevelsFromFile();
 }
 
 void LevelSelectState::EndState()
@@ -90,7 +91,7 @@ void LevelSelectState::ReceiveMessage(const OnClickMessage& aMessage)
 	}
 }
 
-CU::GrowingArray<bool> LevelSelectState::RetriveUnlockedLevelsFromFile()
+CU::GrowingArray<bool> LevelSelectState::RetrieveUnlockedLevelsFromFile()
 {
 	CU::GrowingArray<bool> toReturn(64);
 
@@ -111,6 +112,34 @@ CU::GrowingArray<bool> LevelSelectState::RetriveUnlockedLevelsFromFile()
 			}
 			file >> levelID >> isUnlocked;
 			toReturn.Add(isUnlocked);
+		}
+
+		file.close();
+	}
+	return toReturn;
+}
+
+const int LevelSelectState::GetAmountOfStarsFromFile(const int aLevelID)
+{
+	int toReturn = 0;
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID) + ".bin", std::ios::binary | std::ios::in);
+
+	if (file.is_open() == true)
+	{
+		int levelID = 0;
+		float time = 0;
+		int stars = 0;
+		bool isEndOfFile = false;
+		while (isEndOfFile == false)
+		{
+			if (file.eof())
+			{
+				isEndOfFile = true;
+				break;
+			}
+			file >> levelID >> time >> stars;
+			toReturn = stars;
 		}
 
 		file.close();
