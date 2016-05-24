@@ -23,6 +23,11 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::Update(float)
 {
+	CU::Vector3<float> position(myEntity.GetOrientation().GetPos());
+	if (position.x < 0.f || position.x > 66.f || position.y < 0.f || position.y > 36.f)
+	{
+		myEntity.SendNote(ShouldDieNote());
+	}
 }
 
 void PlayerComponent::EvaluateDeath()
