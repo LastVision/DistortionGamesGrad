@@ -107,6 +107,9 @@
     <ClCompile Include="BounceComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="StomperComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -246,6 +249,9 @@
     </ClInclude>
     <ClInclude Include="CharacterAnimationNote.h">
       <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="StomperComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
