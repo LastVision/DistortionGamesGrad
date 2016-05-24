@@ -66,6 +66,7 @@ private:
 	float myDeltaTime;
 
 	CU::Vector2<float> mySpawnVelocity;
+	float myCollisionTimer;
 };
 
 inline void MovementComponent::SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity)

@@ -146,7 +146,7 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
-	//myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
 	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 #ifndef THREAD_PHYSICS

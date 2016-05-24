@@ -20,6 +20,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myCurrentMovement(eMovementType::FLY)
 	, myDashCooldown(0.f)
 	, myDeltaTime(0.f)
+	, myCollisionTimer(0.f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
@@ -62,9 +63,12 @@ void MovementComponent::Update(float aDeltaTime)
 	DEBUG_PRINT(myEntity.GetOrientation().GetPos());
 	DEBUG_PRINT(CU::Length(GetVelocity()));
 
+	myCollisionTimer -= aDeltaTime;
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
-	myMovements[myCurrentMovement]->Update(aDeltaTime);
+
+	bool shouldCollide = myCollisionTimer <= 0.f;
+	myMovements[myCurrentMovement]->Update(aDeltaTime, shouldCollide);
 
 	if (myIsInSteam == true)
 	{
@@ -210,6 +214,7 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 
 void MovementComponent::ReceiveNote(const SpawnNote&)
 {
+	myCollisionTimer = 0.4f;
 	myCurrentMovement = eMovementType::FLY;
 	//mySpawnVelocity = { 0.05f, 0.01f };
 	myMovements[myCurrentMovement]->Activate(mySpawnVelocity);
