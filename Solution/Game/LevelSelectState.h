@@ -13,6 +13,8 @@ namespace CU
 	class ControllerInput;
 }
 
+class StarWidget;
+
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
@@ -32,10 +34,12 @@ public:
 
 private:
 
-	CU::GrowingArray<bool> RetriveUnlockedLevelsFromFile();
+	CU::GrowingArray<bool> RetrieveUnlockedLevelsFromFile();
+	const int GetAmountOfStarsFromFile(const int aLevelID);
 
 	GUI::GUIManager* myGUIManager;
 
 	CU::ControllerInput* myController;
+	CU::GrowingArray<StarWidget*> myStars;
 };
 
