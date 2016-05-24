@@ -42,6 +42,7 @@ public:
 	void ReceiveNote(const SpawnNote& aMessage) override;
 
 	const CU::Vector2<float>& GetVelocity() const;
+	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
@@ -58,7 +59,14 @@ private:
 	CU::Vector2<float> mySteamVelocity;
 
 	float myDeltaTime;
+
+	CU::Vector2<float> mySpawnVelocity;
 };
+
+inline void MovementComponent::SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity)
+{
+	mySpawnVelocity = aSpawnVelocity;
+}
 
 inline eComponentType MovementComponent::GetTypeStatic()
 {

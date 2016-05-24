@@ -13,6 +13,7 @@
 #include <SteamComponent.h>
 #include <TriggerComponent.h>
 #include <XMLReader.h>
+#include <PointLight.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
@@ -89,7 +90,6 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
 	Level* level = new Level(myCamera, myCurrentLevelID);
-
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);
 	LoadProps(level, reader, levelElement);
@@ -97,10 +97,13 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSawBlades(level, reader, levelElement);
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
+	LoadPointLights(level, reader, levelElement);
+
+	level->CreatePlayers();
 
 	reader.CloseDocument();
 
-	level->CreatePlayers();
+	
 	return level;
 }
 
@@ -297,6 +300,37 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 	}
 }
 
+void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "pointlight"); lightElement != nullptr;
+		lightElement = aReader.FindNextElement(lightElement, "pointlight"))
+	{
+		CU::Vector3<float> position;
+		CU::Vector4<float> color;
+		float range;
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "X", position.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Y", position.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Z", position.z);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "R", color.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
+
+		unsigned int gid(UINT32_MAX);
+
+		Prism::PointLight* light = new Prism::PointLight(gid, false);
+		light->SetPosition(position);
+		light->SetColor(color);
+		light->SetRange(range);
+		light->Update();
+		aLevel->Add(light);
+	}
+}
+
 void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	tinyxml2::XMLElement* spawnElement = aReader.ForceFindFirstChild(aElement, "spawnPoint");
@@ -322,6 +356,10 @@ void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2:
 
 	aLevel->Add(entity);
 
+	CU::Vector2<float> spawnVelocity;
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "X", spawnVelocity.x);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "Y", spawnVelocity.y);
+	aLevel->SetSpawnVelocity(spawnVelocity);
 }
 
 void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)

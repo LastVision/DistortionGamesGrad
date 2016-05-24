@@ -37,6 +37,8 @@
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
 #include <OnDeathMessage.h>
+#include <TextureContainer.h>
+#include <PointLight.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -50,6 +52,8 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myScores(4)
 	, myCurrentCountdownSprite(9)
 	, myLevelID(aLevelID)
+	, myPointLights(32)
+	, myPlayerPointLights(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -58,7 +62,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
-	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
+	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
 	ScrapManager::Create(myScene);
 	myEmitterManager = new Prism::EmitterManager();
@@ -99,6 +103,8 @@ Level::~Level()
 	SAFE_DELETE(myScoreInfo);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+	myPointLights.DeleteAll();
+	myPlayerPointLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -117,6 +123,11 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	myIsLetThrough = false;
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
+
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		myPlayers[i]->GetComponent<MovementComponent>()->SetSpawnVelocity(mySpawnVelocity);
+	}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -177,12 +188,21 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		}
 	}
 
-	for each(Entity* player in myPlayers)
+	
+	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
+		Entity* player = myPlayers[i];
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos() );
+		light->Update();
 	}
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
+
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 	return myStateStatus;
 }
@@ -325,6 +345,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				myPlayerWinCount++;
+				first->GetComponent<ScoreComponent>()->ReachedGoal();
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
@@ -388,6 +409,12 @@ void Level::CreatePlayers()
 	for each(Entity* player in myPlayers)
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
+
+		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
+		light->SetRange(4.f);
+		myPlayerPointLights.Add(light);
+		myScene->AddLight(light);
 	}
 
 	mySmartCamera->AddOrientation(&player->GetOrientation());
@@ -446,4 +473,10 @@ void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime
 {
 	DL_ASSERT_EXP(myScoreInfo == nullptr, "Can't create Score Info twice.");
 	myScoreInfo = new ScoreInfo(aShortTime, aMediumTime, aLongTime);
+}
+
+void Level::Add(Prism::PointLight* aLight)
+{
+	myPointLights.Add(aLight);
+	myScene->AddLight(aLight);
 }
