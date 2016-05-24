@@ -37,7 +37,8 @@ public:
 	void RightTriggerUp();
 
 	void SetState(eMovementType aState, const CU::Vector2<float>& aVelocity);
-	void SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity = { 0.f, 0.f });
+	void SetInSteam(bool aIsInSteam, float aForce = 1.f, float aSteamLength = 0.f, const CU::Vector2<float>& aDirection = { 0.f, 0.f }
+		, const CU::Vector3<float>& anOrigion = { 0.f, 0.f, 0.f });
 	void SetVelocity(const CU::Vector2<float>& aVelocity);
 	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
@@ -57,7 +58,10 @@ private:
 	float myDashCooldown;
 
 	bool myIsInSteam;
+	float mySteamLength;
 	CU::Vector2<float> mySteamVelocity;
+	CU::Vector3<float> mySteamOrigin;
+
 
 	float myDeltaTime;
 

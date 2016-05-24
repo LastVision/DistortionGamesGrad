@@ -274,14 +274,15 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
 				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
 				float force = firstTrigger->GetForce();
+				float SteamLength = first.GetComponent<PhysicsComponent>()->GetHeight();
 
 				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
 					second.GetComponent<MovementComponent>()->SetVelocity(currentVelocity * 0.5f);
 				}
 
-				second.GetComponent<MovementComponent>()->SetInSteam(true
-					, { first.GetOrientation().GetUp().x * force, first.GetOrientation().GetUp().y * force });
+				second.GetComponent<MovementComponent>()->SetInSteam(true, force, SteamLength
+					, { first.GetOrientation().GetUp().x, first.GetOrientation().GetUp().y }, first.GetOrientation().GetPos());
 				break;
 			}
 		}

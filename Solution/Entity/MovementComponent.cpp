@@ -68,7 +68,12 @@ void MovementComponent::Update(float aDeltaTime)
 
 	if (myIsInSteam == true)
 	{
-		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime);
+		float length = CU::Length(myEntity.GetOrientation().GetPos() - mySteamOrigin) - GC::PlayerRadius;
+		float dist = fmax(1.f - (length / mySteamLength), 0.f);
+		dist *= 1.f - myData.mySteamMinForce;
+		dist += myData.mySteamMinForce;
+
+		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime * dist);
 	}
 }
 
@@ -162,10 +167,22 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	}
 }
 
-void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)
+void MovementComponent::SetInSteam(bool aIsInSteam, float aForce, float aSteamLength
+	, const CU::Vector2<float>& aDirection, const CU::Vector3<float>& anOrigion)
 {
+	if (myIsInSteam == true && aIsInSteam == true)
+	{
+		mySteamVelocity.x += (aDirection.x * aForce) * aDirection.x;
+		mySteamVelocity.y += (aDirection.y * aForce) * aDirection.y;
+	}
+	else
+	{
+		mySteamVelocity = aForce * aDirection;
+	}
+
 	myIsInSteam = aIsInSteam;
-	mySteamVelocity = aVelocity;
+	mySteamOrigin = anOrigion;
+	mySteamLength = aSteamLength;
 
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
