@@ -60,6 +60,7 @@ namespace GUI
 				{
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
 				}
+#ifdef RELEASE_BUILD
 				if (index == 0)
 				{
 					button->SetActive(true);
@@ -72,6 +73,9 @@ namespace GUI
 				{
 					button->SetActive(unlockedlevels[index]);
 				}
+#else
+				button->SetActive(true);
+#endif
 				buttons.Add(button);
 				index++;
 			}
