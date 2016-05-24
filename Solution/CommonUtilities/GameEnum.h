@@ -152,6 +152,7 @@ enum class eComponentType
 	SCORE,
 	BOUNCE,
 	SOUND,
+	STOMPER,
 	_COUNT,
 };
 

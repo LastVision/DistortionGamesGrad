@@ -10,6 +10,7 @@
 #include "SoundComponentData.h"
 #include "SawBladeComponentData.h"
 #include "ScoreComponentData.h"
+#include "StomperComponentData.h"
 #include "SteamComponentData.h"
 #include "PlayerGraphicsComponentData.h"
 #include "PlayerComponentData.h"
@@ -33,6 +34,7 @@ struct EntityData
 	ScoreComponentData myScoreData;
 	PlayerGraphicsComponentData myPlayerGraphicsData;
 	SteamComponentData mySteamData;
+	StomperComponentData myStomperData;
 	PlayerComponentData myPlayerData;
 	std::string mySubType;
 	bool myShowDecal;

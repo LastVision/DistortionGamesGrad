@@ -253,5 +253,8 @@
     <ClInclude Include="StomperComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
+    <ClInclude Include="StomperComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

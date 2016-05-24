@@ -16,6 +16,7 @@
 #include "SawBladeComponent.h"
 #include "ScoreComponent.h"
 #include "SteamComponent.h"
+#include "StomperComponent.h"
 #include "SoundComponent.h"
 #include "TriggerComponent.h"
 
@@ -134,6 +135,11 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	if (aEntityData.myBounceData.myExistsInEntity == true)
 	{
 		myComponents[static_cast<int>(eComponentType::BOUNCE)] = new BounceComponent(*this);
+	}
+
+	if (aEntityData.myStomperData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
