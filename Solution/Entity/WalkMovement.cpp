@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CharacterAnimationNote.h"
 #include "ContactNote.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
@@ -12,6 +13,7 @@
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(true)
+	, myPreviousVelocity(0.f, 0.f)
 {
 }
 
@@ -29,6 +31,8 @@ void WalkMovement::Reset()
 
 void WalkMovement::Update(float aDeltaTime)
 {
+	myPreviousVelocity = myVelocity;
+
 	if (myHasContact == false)
 	{
 		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity);
@@ -43,6 +47,18 @@ void WalkMovement::Update(float aDeltaTime)
 	Walk(aDeltaTime);
 
 	Translate();
+
+	if (myVelocity.x != myPreviousVelocity.x)
+	{
+		if (myVelocity.x > 0.f)
+		{
+			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
+		}
+		else
+		{
+			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
+		}
+	}
 }
 
 void WalkMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
