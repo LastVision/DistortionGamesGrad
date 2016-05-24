@@ -401,15 +401,15 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
 				break;
 			case GOAL_POINT:
-				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID()]->GetComponent<InputComponent>()->GetIsActive() == false)
+				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID() - 1]->GetComponent<InputComponent>()->GetIsActive() == false)
 				{
+					if (myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) break;
 					TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 					DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 					PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetScrapBodyID() - 1));
 					myPlayerWinCount++;
 					//first->GetComponent<ScoreComponent>()
 					myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->ReachedGoal();
-
 					myLevelToChangeToID = firstTrigger->GetLevelID();
 					if (myPlayerWinCount >= myPlayersPlaying)
 					{
