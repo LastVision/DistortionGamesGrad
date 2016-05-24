@@ -33,6 +33,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myDelayedAddToScene(false)
 	, myStartPosition(aStartPosition)
 	, myStartRotation(aRotation)
+	, myScrapBodyID(-1)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
@@ -143,8 +144,16 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		}
 	}
 
-	Reset();
+	if (mySubType == "body1")
+	{
+		myScrapBodyID = 1;
+	}
+	else if (mySubType == "body2")
+	{
+		myScrapBodyID = 2;
+	}
 
+	Reset();
 };
 
 Entity::~Entity()

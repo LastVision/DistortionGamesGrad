@@ -184,6 +184,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		else
 		{
 			player->GetComponent<InputComponent>()->Update(aDeltaTime);
+			player->GetComponent<ScoreComponent>()->Update(aDeltaTime);
 		}
 	}
 	PollingStation::GetInstance()->SetPlayersAlive(playersAlive);
@@ -394,11 +395,25 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
 				break;
 			case GOAL_POINT:
-				//if (aSecond->GetSubtype() == "body")
-				//{
-				//	//finish level with this player part
-				//}
-				////break;
+				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID()]->GetComponent<InputComponent>()->GetIsActive() == false)
+				{
+					TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
+					DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
+					PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetScrapBodyID() - 1));
+					myPlayerWinCount++;
+					//first->GetComponent<ScoreComponent>()
+					myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->ReachedGoal();
+
+					myLevelToChangeToID = firstTrigger->GetLevelID();
+					if (myPlayerWinCount >= myPlayersPlaying)
+					{
+						PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+
+						SET_RUNTIME(false);
+						myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+					}
+				}
+				break;
 			default:
 				break;
 			}

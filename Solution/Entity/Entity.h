@@ -64,6 +64,8 @@ public:
 	void SetActive(bool aIsActive);
 	void SetDelayedAddToScene();
 
+	int GetScrapBodyID() const;
+
 private:
 	void operator=(Entity&) = delete;
 
@@ -76,6 +78,7 @@ private:
 	bool myIsActive;
 	bool myIsInScene;
 	std::string mySubType;
+	int myScrapBodyID;
 
 	Prism::Scene* myScene;
 
@@ -212,4 +215,9 @@ inline void Entity::SetDelayedAddToScene()
 {
 	myDelayAddToSceneTimer = 0.1f;
 	myDelayedAddToScene = true;
+}
+
+inline int Entity::GetScrapBodyID() const
+{
+	return myScrapBodyID;
 }
