@@ -39,6 +39,7 @@
 #include <OnDeathMessage.h>
 #include <TextureContainer.h>
 #include <PointLight.h>
+#include <EmitterMessage.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -218,7 +219,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-	
+
 
 	return myStateStatus;
 }
@@ -364,6 +365,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
 				first->GetComponent<ScoreComponent>()->ReachedGoal();
 

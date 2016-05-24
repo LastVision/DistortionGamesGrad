@@ -162,6 +162,10 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 			{
 				myComponentLoader->Load(entityDocument, e, newData.myBounceData);
 			}
+			else if (elementName == CU::ToLower("NoDecal"))
+			{
+				newData.myShowDecal = false;
+			}
 			else
 			{
 				std::string errorMessage = "The component " + elementName +

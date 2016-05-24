@@ -250,17 +250,11 @@ void Entity::AddToScene()
 
 	if (GetComponent<GraphicsComponent>() != nullptr && GetComponent<GraphicsComponent>()->GetInstance() != nullptr)
 	{
-		bool dynamic = false;
-		if (myEntityData.myPhysicsData.myExistsInEntity == true && myEntityData.myPhysicsData.myPhysicsType != ePhysics::STATIC)
-		{
-			dynamic = true;
-		}
-
-		myScene->AddInstance(GetComponent<GraphicsComponent>()->GetInstance(), dynamic);
+		myScene->AddInstance(GetComponent<GraphicsComponent>()->GetInstance(), !myEntityData.myShowDecal);
 	}
 	else if (GetComponent<AnimationComponent>() != nullptr && GetComponent<AnimationComponent>()->GetInstance() != nullptr)
 	{
-		myScene->AddInstance(GetComponent<AnimationComponent>()->GetInstance(), true);
+		myScene->AddInstance(GetComponent<AnimationComponent>()->GetInstance(), !myEntityData.myShowDecal);
 	}
 
 	myIsInScene = true;
