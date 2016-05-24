@@ -1,5 +1,6 @@
 #pragma once
-
+#define _USE_MATH_DEFINES // for C++
+#include <math.h>
 
 enum class eTweenType
 {

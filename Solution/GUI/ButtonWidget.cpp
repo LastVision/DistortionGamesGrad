@@ -60,6 +60,40 @@ namespace GUI
 		ReadEvent(aReader, anXMLElement);
 	}
 
+	ButtonWidget::ButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition,
+		const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath,
+		const std::string& aButtonText, const std::string& aHoverText)
+		: Widget()
+		, myImageNormal(nullptr)
+		, myImagePressed(nullptr)
+		, myImageHover(nullptr)
+		, myImageCurrent(nullptr)
+		, myClickEvent(nullptr)
+		, myHoverText(aHoverText)
+		, myIsTextButton(false)
+		, myCanBeClicked(true)
+		, myId(-1)
+		, myColor(1.f, 1.f, 1.f, 1.f)
+	{
+		mySize = aSize;
+		myPosition = aPosition;
+
+		myImageNormal = Prism::ModelLoader::GetInstance()->LoadSprite(aSpritePath, mySize, mySize / 2.f);
+		myImagePressed = Prism::ModelLoader::GetInstance()->LoadSprite(aSpritePressedPath, mySize, mySize / 2.f);
+		myImageHover = Prism::ModelLoader::GetInstance()->LoadSprite(aSpriteHoverPath, mySize, mySize / 2.f);
+		myImageCurrent = myImageNormal;
+
+		if (aButtonText == "default")
+		{
+			myIsVisible = false;
+		}
+		else
+		{
+			myButtonText = aButtonText;
+			myIsTextButton = true;
+		}
+	}
+
 	ButtonWidget::~ButtonWidget()
 	{
 		SAFE_DELETE(myImageNormal);
@@ -77,7 +111,7 @@ namespace GUI
 
 			if (myIsTextButton == true)
 			{
-				Prism::Engine::GetInstance()->PrintText(myButtonText, { aParentPosition.x + myPosition.x - mySize.x * 0.5f + 10.f, aParentPosition.y + myPosition.y - 10.f }, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myButtonText, { aParentPosition.x + myPosition.x - 10.f, aParentPosition.y + myPosition.y  - 10.f}, Prism::eTextType::RELEASE_TEXT);
 			}
 
 			if (myImageCurrent == myImageHover && myHoverText != "")
