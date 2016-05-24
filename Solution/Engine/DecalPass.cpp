@@ -42,11 +42,15 @@ namespace Prism
 		{
 			Effect* effect = myInstance->GetModel().GetEffect();
 			
-			effect->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
-			effect->SetViewMatrixNotInverted(aCamera.GetOrientation());
+			static CU::Matrix44<float> lastOrientation = aCamera.GetOrientation();
+
+			effect->SetViewMatrix(CU::InverseSimple(lastOrientation));
+			effect->SetViewMatrixNotInverted(lastOrientation);
 			effect->SetProjectionMatrix(aCamera.GetProjection());
 			effect->SetProjectionMatrixInverted(CU::InverseReal(aCamera.GetProjection()));
 			effect->SetDepthTexture(aDepthTexture);
+
+			lastOrientation = aCamera.GetOrientation();
 
 			for each (const DecalInfo& info in myDecals)
 			{

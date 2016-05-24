@@ -44,6 +44,7 @@ namespace Prism
 		const CU::GrowingArray<PointLight*>& GetPointLights(bool aUseRoomManager) const;
 		const CU::GrowingArray<SpotLight*>& GetSpotLights(bool aUseRoomManager) const;
 		const CU::GrowingArray<SpotLightTextureProjection*>& GetSpotLightsTextureProjection(bool aUseRoomManager) const;
+		const CU::GrowingArray<DirectionalLight*>& GetDirectionalLights() const;
 
 	private:
 		void operator=(Scene&) = delete;
