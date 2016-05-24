@@ -32,6 +32,7 @@ public:
 	void ReceiveNote(const LoseBodyPartNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
 	void ReceiveNote(const DeathNote& aMessage) override;
+	void ReceiveNote(const CharacterAnimationNote& aMessage) override;
 
 	bool GetLegsActive() const;
 
@@ -60,6 +61,7 @@ private:
 	BodyAnimation myDashFlyAnimation;
 
 	BodyAnimation* myCurrentAnimation;
+	eCharacterAnimationType myCurrentAnimationType; // debug syfte
 
 	eCharacterAnimationType myPreviousAnimation;
 };

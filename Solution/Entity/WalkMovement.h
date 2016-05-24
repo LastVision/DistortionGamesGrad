@@ -28,6 +28,8 @@ private:
 	void Walk(float aDeltaTime);
 	void Translate();
 
+	CU::Vector2<float> myPreviousVelocity;
+
 	bool myHasContact;
 };
 
