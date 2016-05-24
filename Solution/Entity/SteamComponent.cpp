@@ -15,13 +15,8 @@ SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU:
 	, mySteamInterval(0.f)
 	, mySteamTime(0.f)
 	, myIsConstant(true)
+	, mySteam(nullptr)
 {
-	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aScene, myEntity.GetOrientation().GetPos(), { 0.f, aRotation.y, aRotation.z });
-
-	//mySteam->AddToScene();
-	mySteam->GetComponent<PhysicsComponent>()->AddToScene();
-	//mySteam->GetComponent<PhysicsComponent>()->TeleportToPosition(mySteam->GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp()));
-	mySteam->GetComponent<PhysicsComponent>()->UpdateOrientationStatic();
 }
 
 SteamComponent::~SteamComponent()
@@ -81,8 +76,15 @@ void SteamComponent::Update(float aDeltaTime)
 	mySteam->Update(aDeltaTime);
 }
 
-void SteamComponent::SetSteamVariables(float aSteamInterval, float aSteamTime, float aDelayBeforeSteam)
+void SteamComponent::InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& aRotation, const std::string& aSteamSubType, float aSteamInterval, float aSteamTime, float aDelayBeforeSteam)
 {
+	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aSteamSubType, aScene, myEntity.GetOrientation().GetPos(), { 0.f, aRotation.y, aRotation.z });
+
+	//mySteam->AddToScene();
+	mySteam->GetComponent<PhysicsComponent>()->AddToScene();
+	//mySteam->GetComponent<PhysicsComponent>()->TeleportToPosition(mySteam->GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp()));
+	mySteam->GetComponent<PhysicsComponent>()->UpdateOrientationStatic();
+
 	mySteamInterval = aSteamInterval;
 	mySteamTime = aSteamTime;
 	myDelayBeforeSteam = aDelayBeforeSteam;

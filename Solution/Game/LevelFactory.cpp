@@ -242,31 +242,36 @@ void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::X
 		tinyxml2::XMLElement* steamTimeElement = aReader.FindFirstChild(entityElement, "steamTime");
 		tinyxml2::XMLElement* steamIntervalElement = aReader.FindFirstChild(entityElement, "steamInterval");
 		tinyxml2::XMLElement* steamDelayElement = aReader.FindFirstChild(entityElement, "steamDelay");
+		tinyxml2::XMLElement* steamSubTypeElement = aReader.FindFirstChild(entityElement, "steamSubType");
 
 		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
 		DL_ASSERT_EXP(forceElement != nullptr, "Steam vents need force in level XML");
 
 		aReader.ForceReadAttribute(forceElement, "value", force);
 
-		entity->GetComponent<SteamComponent>()->SetForce(force);
 
 		if (steamTimeElement != nullptr && steamIntervalElement != nullptr)
 		{
+			std::string steamType = "";
 			float steamTime = 0.f;
 			float steamInterval = 0.f;
 			float steamDelay = 0.f;
 
 			aReader.ForceReadAttribute(steamTimeElement, "value", steamTime);
 			aReader.ForceReadAttribute(steamIntervalElement, "value", steamInterval);
+			aReader.ForceReadAttribute(steamSubTypeElement, "type", steamType);
 
 			if (steamDelayElement != nullptr)
 			{
 				aReader.ForceReadAttribute(steamDelayElement, "value", steamDelay);
 			}
 
-			entity->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
+			entity->GetComponent<SteamComponent>()->InitSteam(aLevel->GetScene(), steamVentRotation, steamType, steamInterval, steamTime, steamDelay);
 
 		}
+
+		entity->GetComponent<SteamComponent>()->SetForce(force);
+
 		aLevel->Add(entity);
 	}
 }

@@ -17,7 +17,7 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
-	void SetSteamVariables(float aSteamInterval, float aSteamTime, float aDelayBeforeSteam);
+	void InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& aRotation, const std::string& aSteamSubType, float aSteamInterval, float aSteamTime, float aDelayBeforeSteam);
 
 	float GetForce() const;
 	void SetForce(float aForce);
