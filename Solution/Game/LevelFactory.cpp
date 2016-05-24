@@ -15,6 +15,7 @@
 #include <TriggerComponent.h>
 #include <XMLReader.h>
 #include <PointLight.h>
+#include <SpotLight.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
@@ -100,6 +101,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadBouncers(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
+	LoadSpotLights(level, reader, levelElement);
 
 	level->CreatePlayers();
 
@@ -355,6 +357,49 @@ void LevelFactory::LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tiny
 		Prism::DirectionalLight* light = new Prism::DirectionalLight();
 		light->SetColor(color);
 		light->SetDir(CU::Vector4<float>(direction, 0.f));
+		aLevel->Add(light);
+	}
+}
+
+void LevelFactory::LoadSpotLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "spotlight"); lightElement != nullptr;
+		lightElement = aReader.FindNextElement(lightElement, "spotlight"))
+	{
+		CU::Vector3<float> position;
+		CU::Vector3<float> rotation;
+		CU::Vector4<float> color;
+		float range;
+		float spotangle;
+
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "X", "Y", "Z", position);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "rotation"), "X", "Y", "Z", rotation);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "R", color.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "spotangle"), "value", spotangle);
+
+		unsigned int gid(UINT32_MAX);
+		Prism::SpotLight* light = new Prism::SpotLight(gid);
+		light->SetPosition(CU::Vector4<float>(position, 1.f));
+		light->SetColor(color);
+		light->SetRange(range);
+		light->SetAngle(CU::Math::DegreeToRad(spotangle / 2.f));
+
+		rotation.x = CU::Math::DegreeToRad(rotation.x);
+		rotation.y = CU::Math::DegreeToRad(rotation.y);
+		rotation.z = CU::Math::DegreeToRad(rotation.z);
+
+		light->PerformTransformation(CU::Matrix44f::CreateRotateAroundZ(rotation.z));
+		light->PerformTransformation(CU::Matrix44f::CreateRotateAroundX(rotation.x));
+		light->PerformTransformation(CU::Matrix44f::CreateRotateAroundY(rotation.y));
+
+		light->Update();
 		aLevel->Add(light);
 	}
 }

@@ -15,6 +15,7 @@ namespace Prism
 	class Scene;
 	class SpriteProxy;
 	class SpotLightShadow;
+	class SpotLight;
 	class EmitterManager;
 	class PointLight;
 	class Texture;
@@ -57,6 +58,7 @@ public:
 	void CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime);
 	void Add(Prism::PointLight* aLight);
 	void Add(Prism::DirectionalLight* aLight);
+	void Add(Prism::SpotLight* aLight);
 	void SetSpawnPosition(const CU::Vector3<float>& aSpawnPosition);
 	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
@@ -72,6 +74,7 @@ private:
 	Prism::SpotLightShadow* myShadowLight;
 	CU::GrowingArray<Prism::PointLight*> myPointLights;
 	CU::GrowingArray<Prism::DirectionalLight*> myDirectionalLights;
+	CU::GrowingArray<Prism::SpotLight*> mySpotLights;
 	SmartCamera* mySmartCamera;
 	CU::Matrix44<float> dummyMatrix;
 

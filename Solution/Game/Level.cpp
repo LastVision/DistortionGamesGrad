@@ -31,6 +31,7 @@
 #include <ScrapMessage.h>
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
+#include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
 #include <PlayerGraphicsComponent.h>
@@ -56,6 +57,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myPlayerPointLights(4)
 	, myScrapManagers(4)
 	, myDirectionalLights(4)
+	, mySpotLights(16)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -113,6 +115,7 @@ Level::~Level()
 	myPointLights.DeleteAll();
 	myPlayerPointLights.DeleteAll();
 	myDirectionalLights.DeleteAll();
+	mySpotLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -492,6 +495,12 @@ void Level::Add(Entity* anEntity)
 void Level::Add(Prism::DirectionalLight* aLight)
 {
 	myDirectionalLights.Add(aLight);
+	myScene->AddLight(aLight);
+}
+
+void Level::Add(Prism::SpotLight* aLight)
+{
+	mySpotLights.Add(aLight);
 	myScene->AddLight(aLight);
 }
 
