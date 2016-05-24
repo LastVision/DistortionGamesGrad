@@ -72,10 +72,6 @@ namespace Prism
 				for (int j = 0; j < emitterSize; ++j)
 				{
 					Prism::ParticleEmitterInstance* instance = emitterData->myEmitters[k][j];
-					if (CU::InputWrapper::GetInstance()->KeyDown(DIK_L) == true)
-					{
-						instance->ToggleDebugLines();
-					}
 					if (instance->IsActive() == false)
 					{
 						continue;
@@ -117,14 +113,7 @@ namespace Prism
 					{
 						CU::Vector3<float> pos = instance->GetPosition() - myCamera->GetOrientation().GetPos();
 						float length = CU::Length2(pos);
-
-						if (instance->GetHasRoom() || length < myCullDistance)
-						{
-							if (instance->GetShouldRender() == true)
-							{
-								instance->Render(aTexture);
-							}
-						}
+						instance->Render(aTexture);
 					}
 				}
 
@@ -263,7 +252,6 @@ namespace Prism
 		{
 			std::string entityPath = "";
 			rootDocument.ForceReadAttribute(e, "src", entityPath);
-			//bool allowManyParticles = true;
 			Prism::ParticleEmitterInstance* newEmitter;
 			newEmitter = new Prism::ParticleEmitterInstance(Prism::ParticleDataContainer::GetInstance()->
 				GetParticleData(entityPath), true);

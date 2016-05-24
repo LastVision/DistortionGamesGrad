@@ -67,6 +67,7 @@ namespace Prism
 		int	myParticlesPerEmitt;
 
 		bool myUseEmitterLifeTime;
+		bool myUseAlphaDelta;
 		bool myIsActiveAtStart;
 		bool myIsHollow;
 		bool myIsCircle;

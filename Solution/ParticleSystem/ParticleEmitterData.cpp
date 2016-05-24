@@ -144,6 +144,9 @@ namespace Prism
 		element = aReader->ForceFindFirstChild(anElement, "EmittsPerSecond");
 		aReader->ForceReadAttribute(element, "value", myEmissionRate);
 		myEmissionRate = 1 / myEmissionRate;
+
+		element = aReader->ForceFindFirstChild(anElement, "UseAlphaDelta");
+		aReader->ForceReadAttribute(element, "value", myUseAlphaDelta);
 	}
 
 	void ParticleEmitterData::CreateInputLayout()

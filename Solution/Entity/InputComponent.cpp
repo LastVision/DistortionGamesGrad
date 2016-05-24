@@ -63,7 +63,7 @@ void InputComponent::Update(float aDeltaTime)
 			myIsInLevel = true;
 			PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 		}
-
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", myOrientation.GetPos()));
 		myIntendToSpawn = false;
 		myEntity.SendNote(SpawnNote());
 		myIsActive = true;

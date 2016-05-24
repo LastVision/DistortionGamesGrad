@@ -43,14 +43,11 @@ namespace Prism
 		void SetShouldRender(bool aShouldRender);
 
 		void SetRotation(const CU::Vector3<float>& aRotation);
-		void SetHasRoom(bool aHasRoom);
-		bool GetHasRoom();
 		CU::Vector3<float> GetPosition() const;
 
 	private:
 
 		void Reset();
-		void CreatePoints();
 		void CreateVertexBuffer();
 
 		void UpdateEmitter(float aDeltaTime);
@@ -61,7 +58,6 @@ namespace Prism
 
 		int UpdateVertexBuffer();
 
-		CU::Vector3<float> CalculateDirection(float aYVariation, float aZVariation);
 		CU::Vector3<float> CreateCirclePositions();
 		CU::Vector3<float> CreateSpherePositions();
 		CU::Vector3<float> CreateHollowSquare();
@@ -90,9 +86,6 @@ namespace Prism
 		int myLiveParticleCount;
 
 		bool myOverrideDirection;
-		bool myShouldRender;
-		bool myDrawDebugLines;
-		bool myHasRoom;
 
 		Entity* myEntity;
 
@@ -103,6 +96,7 @@ namespace Prism
 			CIRCLE,
 			SPHERE,
 			EMITTERLIFE,
+			USE_ALPHA_DELTA,
 			_COUNT
 		};
 
@@ -115,21 +109,6 @@ namespace Prism
 		return myEntity;
 	}
 
-	inline void ParticleEmitterInstance::SetShouldRender(bool aShouldRender)
-	{
-		myShouldRender = aShouldRender;
-	}
-
-	inline void ParticleEmitterInstance::ToggleDebugLines()
-	{
-		myDrawDebugLines = !myDrawDebugLines;
-	}
-
-	inline bool ParticleEmitterInstance::GetShouldRender()
-	{
-		return myShouldRender;
-	}
-
 	inline void ParticleEmitterInstance::SetDirection(const CU::Vector3<float>& aDirection)
 	{
 		myOverrideDirection = true;
@@ -139,7 +118,6 @@ namespace Prism
 	inline void ParticleEmitterInstance::SetSize(const CU::Vector3f& aSize)
 	{
 		myParticleEmitterData->myEmitterSize = aSize * 0.5f;
-		CreatePoints();
 	}
 
 	inline bool ParticleEmitterInstance::IsActive()
