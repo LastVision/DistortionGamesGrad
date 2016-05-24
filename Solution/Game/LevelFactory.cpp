@@ -9,14 +9,17 @@
 #include "LevelFactory.h"
 #include <PhysicsInterface.h>
 #include <SawBladeComponent.h>
-#include <XMLReader.h>
+#include "ScoreInfo.h"
 #include <SteamComponent.h>
 #include <TriggerComponent.h>
+#include <XMLReader.h>
+#include <PointLight.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
 	, myCurrentLevelID(aLevel)
 	, myFinalLevelID(0)
+	, myHasCreatedUnlockedLevels(true)
 {
 	ReadLevelList(aLevelListPath);
 }
@@ -37,6 +40,11 @@ bool LevelFactory::LoadLevel(Level*& aLevelOut)
 
 	aLevelOut = LoadCurrentLevel();
 	return true;
+}
+
+void LevelFactory::RestartLevel()
+{
+	myCurrentLevelID--;
 }
 
 Level* LevelFactory::LoadCurrentLevel()
@@ -64,10 +72,12 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 	{
 		reader.ForceReadAttribute(element, "ID", ID);
 		reader.ForceReadAttribute(element, "path", levelPath);
+		AddLevelToUnlockedLevelFile(ID);
 		myLevelPaths[ID] = levelPath;
 
 		myFinalLevelID = max(myFinalLevelID, ID);
 	}
+	myHasCreatedUnlockedLevels = true;
 	reader.CloseDocument();
 }
 
@@ -79,8 +89,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("root");
 	levelElement = reader.ForceFindFirstChild(levelElement, "scene");
 
-	Level* level = new Level(myCamera);
-
+	Level* level = new Level(myCamera, myCurrentLevelID);
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);
 	LoadProps(level, reader, levelElement);
@@ -88,10 +97,13 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSawBlades(level, reader, levelElement);
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
+	LoadPointLights(level, reader, levelElement);
+
+	level->CreatePlayers();
 
 	reader.CloseDocument();
 
-	level->CreatePlayers();
+	
 	return level;
 }
 
@@ -102,6 +114,16 @@ void LevelFactory::LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XM
 	std::string cubeMap;
 	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "cubemap"), "source", cubeMap);
 	Prism::EffectContainer::GetInstance()->SetCubeMap(cubeMap);
+
+	float shortTime;
+	float mediumTime;
+	float longTime;
+
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "short", shortTime);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "medium", mediumTime);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(levelDataElement, "time"), "long", longTime);
+
+	aLevel->CreateScoreInfo(shortTime, mediumTime, longTime);
 }
 
 void LevelFactory::LoadProps(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
@@ -278,6 +300,37 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 	}
 }
 
+void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "pointlight"); lightElement != nullptr;
+		lightElement = aReader.FindNextElement(lightElement, "pointlight"))
+	{
+		CU::Vector3<float> position;
+		CU::Vector4<float> color;
+		float range;
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "X", position.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Y", position.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "position"), "Z", position.z);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "R", color.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
+
+		unsigned int gid(UINT32_MAX);
+
+		Prism::PointLight* light = new Prism::PointLight(gid, false);
+		light->SetPosition(position);
+		light->SetColor(color);
+		light->SetRange(range);
+		light->Update();
+		aLevel->Add(light);
+	}
+}
+
 void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	tinyxml2::XMLElement* spawnElement = aReader.ForceFindFirstChild(aElement, "spawnPoint");
@@ -303,6 +356,10 @@ void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2:
 
 	aLevel->Add(entity);
 
+	CU::Vector2<float> spawnVelocity;
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "X", spawnVelocity.x);
+	aReader.ForceReadAttribute(aReader.ForceFindFirstChild(spawnElement, "velocity"), "Y", spawnVelocity.y);
+	aLevel->SetSpawnVelocity(spawnVelocity);
 }
 
 void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale)
@@ -314,4 +371,39 @@ void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aEl
 	aRotation.x = CU::Math::DegreeToRad(aRotation.x);
 	aRotation.y = CU::Math::DegreeToRad(aRotation.y);
 	aRotation.z = CU::Math::DegreeToRad(aRotation.z);
+}
+
+void LevelFactory::AddLevelToUnlockedLevelFile(const int aLevelID)
+{
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+	if (file.peek() == std::ifstream::traits_type::eof())
+	{
+		myHasCreatedUnlockedLevels = false;
+	}
+	file.close();
+	if (myHasCreatedUnlockedLevels == false)
+	{
+		std::ios::openmode mode = std::ios::binary | std::ios::app | std::ios::out;
+		if (aLevelID == 1)
+		{
+			mode = std::ios::binary | std::ios::out;
+		}
+		file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", mode);
+		if (file.is_open() == true)
+		{
+			if (myHasCreatedUnlockedLevels == false)
+			{
+				if (aLevelID == 1)
+				{
+					file << aLevelID << std::endl << true;
+				}
+				else
+				{
+					file << std::endl << aLevelID << std::endl << false;
+				}
+			}
+		}
+		file.close();
+	}
 }

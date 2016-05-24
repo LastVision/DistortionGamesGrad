@@ -1,11 +1,13 @@
 #include "stdafx.h"
-#include <Cursor.h>
+
+#include <ControllerInput.h>
 #include "CreditMenuState.h"
-#include "PostMaster.h"
-#include "GUIManager.h"
-#include "InputWrapper.h"
-#include "OnClickMessage.h"
+#include <Cursor.h>
 #include "InGameState.h"
+#include "InputWrapper.h"
+#include "GUIManager.h"
+#include "OnClickMessage.h"
+#include "PostMaster.h"
 
 CreditMenuState::CreditMenuState(float aShowTimer)
 	: myGUIManager(nullptr)
@@ -29,12 +31,14 @@ void CreditMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controlle
 	myStateStatus = eStateStatus::eKeepState;
 	myStateStack = aStateStackProxy;
 	myCursor = aCursor;
+	myController = aController;
 	myCursor->SetShouldRender(true);
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_credit_screen.xml", nullptr, -1);
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 
+	InitControllerInMenu(myController, myGUIManager);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -57,10 +61,12 @@ const eStateStatus CreditMenuState::Update(const float& aDeltaTime)
 	}
 	CU::InputWrapper* input = CU::InputWrapper::GetInstance();
 	if (input->KeyDown(DIK_ESCAPE) == true || input->KeyDown(DIK_SPACE) == true || input->KeyDown(DIK_RETURN) == true
-		|| input->MouseUp(0) == true || input->MouseUp(1) == true)
+		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A))
 	{
 		myStateStatus = eStateStatus::ePopMainState;
 	}
+
+	HandleControllerInMenu(myController, myGUIManager);
 
 	myGUIManager->Update(aDeltaTime);
 
@@ -74,6 +80,7 @@ void CreditMenuState::Render()
 
 void CreditMenuState::ResumeState()
 {
+	InitControllerInMenu(myController, myGUIManager);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 

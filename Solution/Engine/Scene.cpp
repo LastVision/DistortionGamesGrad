@@ -19,7 +19,8 @@ namespace Prism
 {
 	Scene::Scene()
 		: myCamera(nullptr)
-		, myInstances(1024)
+		, myDynamicInstances(1024)
+		, myStaticInstances(1024)
 	{
 		myDirectionalLights.Init(4);
 		myPointLights.Init(128);
@@ -38,27 +39,57 @@ namespace Prism
 
 	void Scene::Render()
 	{
-		for (int i = 0; i < myInstances.Size(); ++i)
-		{
-			myInstances[i]->Render(*myCamera, *myInstancingHelper);
-		}
-		
-		myInstancingHelper->Render(false);
+		RenderStatic();
+		RenderDynamic();
 	}
 
 	void Scene::RenderDepth()
 	{
-		for (int i = 0; i < myInstances.Size(); ++i)
+		for (int i = 0; i < myStaticInstances.Size(); ++i)
 		{
-			myInstances[i]->Render(*myCamera, *myInstancingHelper, true);
+			myStaticInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
+		}
+
+		myInstancingHelper->Render(true);
+
+		for (int i = 0; i < myDynamicInstances.Size(); ++i)
+		{
+			myDynamicInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
 		}
 
 		myInstancingHelper->Render(true);
 	}
 
-	void Scene::AddInstance(Instance* aInstance)
+	void Scene::RenderStatic()
 	{
-		myInstances.Add(aInstance);
+		for (int i = 0; i < myStaticInstances.Size(); ++i)
+		{
+			myStaticInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper);
+		}
+
+		myInstancingHelper->Render(false);
+	}
+
+	void Scene::RenderDynamic()
+	{
+		for (int i = 0; i < myDynamicInstances.Size(); ++i)
+		{
+			myDynamicInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper);
+		}
+
+		myInstancingHelper->Render(false);
+	}
+
+	void Scene::AddInstance(Instance* aInstance, bool aDynamic)
+	{
+		if (aDynamic == true)
+		{
+			myDynamicInstances.Add(aInstance);
+		}
+		else
+		{
+			myStaticInstances.Add(aInstance);
+		}
 	}
 
 	void Scene::AddLight(DirectionalLight* aLight)
@@ -96,7 +127,17 @@ namespace Prism
 
 	void Scene::RemoveInstance(Instance* aInstance)
 	{
-		myInstances.RemoveCyclic(aInstance);
+		int index = myDynamicInstances.Find(aInstance);
+		if (index != myDynamicInstances.FoundNone)
+		{
+			myDynamicInstances.RemoveCyclicAtIndex(index);
+		}
+		else
+		{
+			index = myStaticInstances.Find(aInstance);
+			DL_ASSERT_EXP(index != myStaticInstances.FoundNone, "Couldnt find instance to remove");
+			myStaticInstances.RemoveCyclicAtIndex(index);
+		}
 	}
 
 	const CU::GrowingArray<PointLight*>& Scene::GetPointLights(bool) const

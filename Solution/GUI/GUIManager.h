@@ -54,10 +54,12 @@ namespace GUI
 
 		void SetMouseShouldRender(bool aShouldRender);
 
-		void SelectNextButtonX();
-		void SelectPreviousButtonX();
-		void SelectNextButtonY();
-		void SelectPreviousButtonY();
+		void SetSelectedButton(int aX, int aY);
+
+		void SelectButtonDown();
+		void SelectButtonUp();
+		void SelectButtonRight();
+		void SelectButtonLeft();
 		void PressSelectedButton();
 		void HoverSelectedButton();
 
@@ -99,5 +101,21 @@ namespace GUI
 	inline WidgetContainer* GUIManager::GetWidgetContainer()
 	{
 		return myWidgets;
+	}
+
+	inline void GUIManager::SetSelectedButton(int aX, int aY)
+	{
+		myControllerButtonIndexX = abs(aX);
+		myControllerButtonIndexY = abs(aY);
+
+		if (myControllerButtonIndexX > myButtons.Size() - 1)
+		{
+			myControllerButtonIndexX = myButtons.Size() - 1;
+		}
+
+		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
+		{
+			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+		}
 	}
 }

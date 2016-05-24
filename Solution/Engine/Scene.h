@@ -27,7 +27,10 @@ namespace Prism
 		void Render();
 		void RenderDepth();
 
-		void AddInstance(Instance* aInstance);
+		void RenderStatic();
+		void RenderDynamic();
+
+		void AddInstance(Instance* aInstance, bool aDynamic);
 		void AddLight(DirectionalLight* aLight);
 		void AddLight(PointLight* aLight);
 		void AddLight(SpotLight* aLight);
@@ -50,7 +53,8 @@ namespace Prism
 		CU::GrowingArray<PointLight*> myAmbientPointLights;
 		CU::GrowingArray<SpotLight*> mySpotLights;
 		CU::GrowingArray<SpotLightTextureProjection*> mySpotLightsTextureProjection;
-		CU::GrowingArray<Instance*> myInstances;
+		CU::GrowingArray<Instance*> myStaticInstances;
+		CU::GrowingArray<Instance*> myDynamicInstances;
 		
 		InstancingHelper* myInstancingHelper;
 

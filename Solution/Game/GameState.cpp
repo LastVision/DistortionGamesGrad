@@ -18,54 +18,54 @@ void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GU
 
 		if (controllerY >= 0.5f)
 		{
-			if (myControllerYUpIsDown == false)
+			if (myControllerPressedUp == false)
 			{
-				myControllerYUpIsDown = true;
-				aManager->SelectPreviousButtonX();
+				myControllerPressedUp = true;
+				aManager->SelectButtonUp();
 			}
 		}
 		else
 		{
-			myControllerYUpIsDown = false;
+			myControllerPressedUp = false;
 		}
 
 		if (controllerY <= -0.5f)
 		{
-			if (myControllerYDownIsDown == false)
+			if (myControllerPressedDown == false)
 			{
-				myControllerYDownIsDown = true;
-				aManager->SelectNextButtonX();
+				myControllerPressedDown = true;
+				aManager->SelectButtonDown();
 			}
 		}
 		else
 		{
-			myControllerYDownIsDown = false;
+			myControllerPressedDown = false;
 		}
 
 		if (controllerX >= 0.5f)
 		{
-			if (myControllerXUpIsDown == false)
+			if (myControllerPressedRight == false)
 			{
-				myControllerXUpIsDown = true;
-				aManager->SelectNextButtonY();
+				myControllerPressedRight = true;
+				aManager->SelectButtonRight();
 			}
 		}
 		else
 		{
-			myControllerXUpIsDown = false;
+			myControllerPressedRight = false;
 		}
 
 		if (controllerX <= -0.5f)
 		{
-			if (myControllerXDownIsDown == false)
+			if (myControllerPressedLeft == false)
 			{
-				myControllerXDownIsDown = true;
-				aManager->SelectPreviousButtonY();
+				myControllerPressedLeft = true;
+				aManager->SelectButtonLeft();
 			}
 		}
 		else
 		{
-			myControllerXDownIsDown = false;
+			myControllerPressedLeft = false;
 		}
 	}
 }
@@ -74,10 +74,10 @@ void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIM
 {
 	aController->Update(0.f);
 
-	myControllerXUpIsDown = false;
-	myControllerXDownIsDown = false;
-	myControllerYUpIsDown = false;
-	myControllerYDownIsDown = false;
+	myControllerPressedLeft = false;
+	myControllerPressedRight = false;
+	myControllerPressedUp = false;
+	myControllerPressedDown = false;
 
 	if (aController->CheckConnection())
 	{

@@ -24,7 +24,7 @@ DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix4
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/SM_arrow.fbx", "Data/Resource/Shader/S_effect_pbl_deferred.fx");
 	myArrow = new Prism::Instance(*model, myOrientation);
 
-	myScene->AddInstance(myArrow);
+	myScene->AddInstance(myArrow, true);
 	myArrow->SetShouldRender(false);
 
 

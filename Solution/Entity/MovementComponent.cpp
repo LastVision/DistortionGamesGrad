@@ -169,6 +169,7 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 void MovementComponent::ReceiveNote(const SpawnNote&)
 {
 	myCurrentMovement = eMovementType::FLY;
-	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
+	//mySpawnVelocity = { 0.05f, 0.01f };
+	myMovements[myCurrentMovement]->Activate(mySpawnVelocity);
 	//myEntity.ResetPosition();
 }

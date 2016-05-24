@@ -8,7 +8,8 @@ struct MovementComponentData
 	float myRotationSpeed = 0.f;
 	float myDeadZone = 0.f;
 	float myAngleEpsilon = 0.f;
-	float myWalkSpeed = 0.f;
+	float myWalkSpeedWithLegs = 0.f;
+	float myWalkSpeedWithoutLegs = 0.f;
 	float myWalkDrag = 0.f;
 	float myDashAimTime = 0.f;
 	float myDashFlyTime = 0.f;

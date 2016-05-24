@@ -22,8 +22,10 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myOrientation(aOrientation)
 	, myIsFlipped(false)
 	, myHasCompletedLevel(false)
+	, myTimeToSpawn(0.f)
+	, myIntendToSpawn(false)
 {
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE | eMessageType::PLAYER_ACTIVE);
 
 }
 
@@ -51,7 +53,22 @@ void InputComponent::Reset()
 
 void InputComponent::Update(float aDeltaTime)
 {
+	myTimeToSpawn -= aDeltaTime;
 	myController->Update(aDeltaTime);
+
+	if (myIntendToSpawn == true && myTimeToSpawn < 0.f)
+	{
+		if (myIsInLevel == false)
+		{
+			myIsInLevel = true;
+			PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
+		}
+
+		myIntendToSpawn = false;
+		myEntity.SendNote(SpawnNote());
+		myIsActive = true;
+		myMovement->Impulse();
+	}
 
 	if (myController->IsConnected() == true)
 	{
@@ -105,16 +122,9 @@ void InputComponent::Update(float aDeltaTime)
 			{
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
-					if (myIsInLevel == false)
-					{
-						myIsInLevel = true;
-						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
-					}
 
-					PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", myOrientation.GetPos()));
-					myEntity.SendNote(SpawnNote());
-					myIsActive = true;
-					myMovement->Impulse();
+
+					myIntendToSpawn = true;
 				}
 			}
 		}
@@ -159,6 +169,14 @@ void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
 		myHasCompletedLevel = true;
 		myEntity.GetComponent<PlayerGraphicsComponent>()->Reset();
 		myOrientation.SetPos({ -15, -15, 0 });
+	}
+}
+
+void InputComponent::ReceiveMessage(const PlayerActiveMessage& aMessage)
+{
+	if (myPlayerID != aMessage.myPlayerID)
+	{
+		myTimeToSpawn = 0.4f;
 	}
 }
 

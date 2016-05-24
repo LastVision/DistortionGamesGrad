@@ -133,7 +133,7 @@ namespace GUI
 		myCursor->SetShouldRender(aShouldRender);
 	}
 
-	void GUIManager::SelectNextButtonX()
+	void GUIManager::SelectButtonDown()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
@@ -151,7 +151,7 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectPreviousButtonX()
+	void GUIManager::SelectButtonUp()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
@@ -169,32 +169,51 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectNextButtonY()
+	void GUIManager::SelectButtonRight()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexY++;
 		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
 		{
-			myControllerButtonIndexY = 0;
+			if (myControllerButtonIndexX + 1 < myButtons.Size() &&
+				myButtons[myControllerButtonIndexX].Size() > 1 && 
+				myButtons[myControllerButtonIndexX + 1].Size() > 1)
+			{
+				myControllerButtonIndexX++;
+				myControllerButtonIndexY = 0;
+			}
+			else
+			{
+				myControllerButtonIndexY--;
+			}
 		}
 
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
-	void GUIManager::SelectPreviousButtonY()
+	void GUIManager::SelectButtonLeft()
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexY--;
 		if (myControllerButtonIndexY < 0)
 		{
-			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+			if (myControllerButtonIndexX > 0 &&
+				myButtons[myControllerButtonIndexX].Size() > 1 &&
+				myButtons[myControllerButtonIndexX - 1].Size() > 1)
+			{
+				myControllerButtonIndexX--;
+				myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
+			}
+			else
+			{
+				myControllerButtonIndexY++;
+			}
 		}
 
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
-
 
 	void GUIManager::PressSelectedButton()
 	{

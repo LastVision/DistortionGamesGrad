@@ -25,6 +25,7 @@
 #include <ReturnToMenuMessage.h>
 #include <Scene.h>
 #include <ScoreComponent.h>
+#include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -35,9 +36,12 @@
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
+#include <TextureContainer.h>
+#include <PointLight.h>
 #include <EmitterMessage.h>
 
-Level::Level(Prism::Camera& aCamera)
+Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
 	, myEntities(1024)
 	, myPlayers(2)
@@ -48,6 +52,9 @@ Level::Level(Prism::Camera& aCamera)
 	, myPlayersPlaying(0)
 	, myScores(4)
 	, myCurrentCountdownSprite(9)
+	, myLevelID(aLevelID)
+	, myPointLights(32)
+	, myPlayerPointLights(4)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -56,8 +63,8 @@ Level::Level(Prism::Camera& aCamera)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
-	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN);
+	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
 	ScrapManager::Create(myScene);
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
@@ -94,8 +101,11 @@ Level::~Level()
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
+	SAFE_DELETE(myScoreInfo);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
+	myPointLights.DeleteAll();
+	myPlayerPointLights.DeleteAll();
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
@@ -114,6 +124,11 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	myIsLetThrough = false;
 	myIsActiveState = true;
 	myStateStatus = eStateStatus::eKeepState;
+
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		myPlayers[i]->GetComponent<MovementComponent>()->SetSpawnVelocity(mySpawnVelocity);
+}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -123,9 +138,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #endif
 	mySmartCamera->Update(aDeltaTime);
 	
-	CU::Vector3<float>& cameraPos(mySmartCamera->GetOrientation().GetPos());
-	CU::Vector3<float>& cameraForward(mySmartCamera->GetOrientation().GetForward());
-	CU::Vector3<float>& cameraUp(mySmartCamera->GetOrientation().GetUp());
+	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
+	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
+	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
 	Prism::Audio::AudioInterface::GetInstance()->SetListenerPosition(cameraPos.x, cameraPos.y, cameraPos.z
 		, cameraForward.x, cameraForward.y, cameraForward.z, cameraUp.x, cameraUp.y, cameraUp.z);
 
@@ -134,7 +149,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
@@ -170,16 +185,25 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 		}
 	}
 
-	for each(Entity* player in myPlayers)
+	
+	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
+		Entity* player = myPlayers[i];
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos() );
+		light->Update();
 	}
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
+
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 	return myStateStatus;
 }
@@ -189,6 +213,7 @@ void Level::Render()
 	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 	//myBackground->Render(myWindowSize * 0.5f);
 	//myScene->Render();
+
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
 	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
@@ -322,6 +347,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
+				first->GetComponent<ScoreComponent>()->ReachedGoal();
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
@@ -329,7 +355,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
-					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo));
+					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 				}
 
 			}
@@ -385,6 +411,12 @@ void Level::CreatePlayers()
 	for each(Entity* player in myPlayers)
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
+
+		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
+		light->SetRange(4.f);
+		myPlayerPointLights.Add(light);
+		myScene->AddLight(light);
 	}
 
 	mySmartCamera->AddOrientation(&player->GetOrientation());
@@ -421,9 +453,32 @@ void Level::ReceiveMessage(const OnPlayerJoin&)
 	myPlayersPlaying++;
 }
 
+void Level::ReceiveMessage(const OnDeathMessage& aMessage)
+{
+	for each(Entity* player in myPlayers)
+	{
+		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
+		{
+			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight(), "Data/Resource/Texture/Decal/T_decal_test.dds");
+		}
+	}
+}
+
 void Level::Add(Entity* anEntity)
 {
 	myEntities.Add(anEntity);
 	myEntities.GetLast()->AddToScene();
 	myEntities.GetLast()->Reset();
+}
+
+void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)
+{
+	DL_ASSERT_EXP(myScoreInfo == nullptr, "Can't create Score Info twice.");
+	myScoreInfo = new ScoreInfo(aShortTime, aMediumTime, aLongTime);
+}
+
+void Level::Add(Prism::PointLight* aLight)
+{
+	myPointLights.Add(aLight);
+	myScene->AddLight(aLight);
 }

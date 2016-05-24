@@ -11,31 +11,11 @@ namespace Prism
 {
 	Renderer::Renderer()
 	{
-		myEngine = Engine::GetInstance();
-
 		CU::Vector2<float> screenSize(static_cast<float>(Engine::GetInstance()->GetWindowSize().x)
 			, static_cast<float>(Engine::GetInstance()->GetWindowSize().y));
 
-		for (int i = 0; i < MAX_NUMBER_OF_SCENES; ++i)
-		{
-			mySceneData[i].myScene = new Texture();
-			mySceneData[i].myScene->Init(screenSize.x, screenSize.y
-				, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-				, DXGI_FORMAT_R8G8B8A8_UNORM);
-
-			mySceneData[i].myFinished = new Texture();
-			mySceneData[i].myFinished->Init(screenSize.x, screenSize.y
-				, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-				, DXGI_FORMAT_R8G8B8A8_UNORM);
-		}
-
 		myFinalTexture = new Texture();
 		myFinalTexture->Init(screenSize.x, screenSize.y
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-
-		myCombineMiddleMan = new Texture();
-		myCombineMiddleMan->Init(screenSize.x, screenSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
@@ -46,8 +26,6 @@ namespace Prism
 		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
-		mySceneIndex = 0;
-
 		myShadowViewport = new D3D11_VIEWPORT[D3D11_VIEWPORT_AND_SCISSORRECT_MAX_INDEX];
 		myShadowViewport->Height = 1024 * 2;
 		myShadowViewport->Width = 1024 * 2;
@@ -57,17 +35,10 @@ namespace Prism
 		myShadowViewport->MaxDepth = 1;
 	}
 	
-	
 	Renderer::~Renderer()
 	{
 		SAFE_DELETE(myShadowViewport);
-		SAFE_DELETE(myCombineMiddleMan);
 		SAFE_DELETE(myFinalTexture);
-		for (int i = 0; i < MAX_NUMBER_OF_SCENES; ++i)
-		{
-			SAFE_DELETE(mySceneData[i].myScene);
-			SAFE_DELETE(mySceneData[i].myFinished);
-		}
 		SAFE_DELETE(myFullScreenHelper);
 	}
 
@@ -100,77 +71,15 @@ namespace Prism
 		aScene->SetCamera(*oldCamera);
 	}
 
-	void Renderer::BeginScene()
-	{
-		DL_ASSERT_EXP(mySceneIndex < MAX_NUMBER_OF_SCENES, "Tried to Begin to many Scenes");
-
-		SceneData& data = mySceneData[mySceneIndex];
-
-		ID3D11RenderTargetView* renderTarget = data.myScene->GetRenderTargetView();
-		ID3D11DepthStencilView* depth = data.myScene->GetDepthStencilView();
-		myEngine->GetContex()->ClearRenderTargetView(renderTarget, myClearColor);
-		myEngine->GetContex()->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		myEngine->GetContex()->OMSetRenderTargets(1, &renderTarget, depth);
-	}
-
-	void Renderer::EndScene(int)
-	{
-		DL_ASSERT_EXP(mySceneIndex < MAX_NUMBER_OF_SCENES, "Tried to Begin to many Scenes");
-
-		SceneData& data = mySceneData[mySceneIndex];
-
-		ID3D11RenderTargetView* renderTarget = data.myFinished->GetRenderTargetView();
-		myEngine->GetContex()->ClearRenderTargetView(renderTarget, myClearColor);
-
-		//myFullScreenHelper->Process(data.myScene, data.myFinished, aEffect, aFogOfWarTexture);
-
-		++mySceneIndex;
-	}
-	 
-	void Renderer::FinalRender()
-	{
-		myEngine->GetContex()->ClearRenderTargetView(myFinalTexture->GetRenderTargetView(), myClearColor);
-		
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
-
-		myFullScreenHelper->CombineTextures(mySceneData[0].myFinished, mySceneData[0].myScene
-			, mySceneData[1].myFinished, mySceneData[1].myScene, myFinalTexture);
-
-		
-		myFullScreenHelper->RenderToScreen(myFinalTexture, mySceneData[1].myScene);
-
-		mySceneIndex = 0;
-
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-	}
-
-
 	void Renderer::Render(Texture* aSource, Texture* aEmissiveTexture, Texture* aDepthStencilTexture, int aEffect)
 	{
-		myEngine->GetContex()->ClearRenderTargetView(myFinalTexture->GetRenderTargetView(), myClearColor);
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myFinalTexture->GetRenderTargetView(), myClearColor);
 
 		myFullScreenHelper->Process(aSource, myFinalTexture, aEmissiveTexture, aEffect);
 
 		myFullScreenHelper->RenderToScreen(myFinalTexture);
 
 		Engine::GetInstance()->SetDepthStencil(aDepthStencilTexture->GetDepthStencilView());
-	}
-
-	void Renderer::OnResize(float aWidth, float aHeight)
-	{
-		for (int i = 0; i < MAX_NUMBER_OF_SCENES; ++i)
-		{
-			mySceneData[i].myScene->Resize(aWidth, aHeight);
-
-			mySceneData[i].myFinished->Resize(aWidth, aHeight);
-		}
-
-		myFinalTexture->Resize(aWidth, aHeight);
-
-		myCombineMiddleMan->Resize(aWidth, aHeight);
-
-
-		myFullScreenHelper->OnResize(aWidth, aHeight);
 	}
 
 	void Renderer::SetRenderTargets(ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepthBuffer)
