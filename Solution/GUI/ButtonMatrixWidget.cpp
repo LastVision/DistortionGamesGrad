@@ -47,6 +47,7 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "staroffset"), "x", starOffset.x);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "staroffset"), "y", starOffset.y);
 		int index = 0;
+		CU::GrowingArray<bool> unlockedlevels = RetrieveUnlockedLevelsFromFile();
 		for (int y = 0; y < myButtonMatrixIndex.y; ++y)
 		{
 			CU::GrowingArray<ButtonWidget*> buttons(myButtonMatrixIndex.x);
@@ -58,6 +59,18 @@ namespace GUI
 				if (buttonEventType == "start_level")
 				{
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
+				}
+				if (index == 0)
+				{
+					button->SetActive(true);
+				}
+				else if (index >= unlockedlevels.Size())
+				{
+					button->SetActive(false);
+				}
+				else
+				{
+					button->SetActive(unlockedlevels[index]);
 				}
 				buttons.Add(button);
 				index++;

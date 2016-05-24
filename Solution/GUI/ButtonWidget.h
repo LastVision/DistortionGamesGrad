@@ -44,6 +44,7 @@ namespace GUI
 
 		void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut) override;
 
+		void SetActive(const bool aActiveFlag);
 	protected:
 		void Click();
 
