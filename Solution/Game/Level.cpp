@@ -402,6 +402,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			case GOAL_POINT:
 				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID() - 1]->GetComponent<InputComponent>()->GetIsActive() == false)
 				{
+					if (myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) break;
 					TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 					DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 					PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetScrapBodyID() - 1));
