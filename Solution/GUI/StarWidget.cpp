@@ -3,6 +3,7 @@
 #include <ModelLoader.h>
 #include "StarWidget.h"
 #include <SpriteProxy.h>
+
 #include <Tweener.h>
 
 StarWidget::StarWidget(bool anActive, int anID)

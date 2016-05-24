@@ -8,10 +8,10 @@
 #include <PostMaster.h>
 #include <Score.h>
 #include "ScoreInfo.h"
+#include <StarWidget.h>
 #include "ScoreWidget.h"
 #include <SpriteProxy.h>
 #include <sstream>
-#include "StarWidget.h"
 
 #include <InputWrapper.h>
 

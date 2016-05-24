@@ -220,7 +220,6 @@
     <ClInclude Include="ScriptInterface.h" />
     <ClInclude Include="SmartCamera.h" />
     <ClInclude Include="SplashState.h" />
-    <ClInclude Include="StarWidget.h" />
     <ClInclude Include="StateEnums.h" />
     <ClInclude Include="StateStack.h" />
     <ClInclude Include="StateStackProxy.h" />
@@ -246,7 +245,6 @@
     <ClCompile Include="ScriptInterface.cpp" />
     <ClCompile Include="SmartCamera.cpp" />
     <ClCompile Include="SplashState.cpp" />
-    <ClCompile Include="StarWidget.cpp" />
     <ClCompile Include="StateStack.cpp" />
     <ClCompile Include="StateStackProxy.cpp" />
     <ClCompile Include="stdafx.cpp">
