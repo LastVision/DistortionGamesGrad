@@ -154,4 +154,10 @@ namespace Prism
 	{
 		return mySpotLightsTextureProjection;
 	}
+
+	const CU::GrowingArray<DirectionalLight*>& Scene::GetDirectionalLights() const
+	{
+		return myDirectionalLights;
+	}
+
 }

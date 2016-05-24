@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "AmbientPass.h"
+#include "DirectionalLight.h"
+#include "DirectionalLightPass.h"
 #include "PointLightPass.h"
 #include "GBufferData.h"
 #include "SpotLightPass.h"
@@ -55,6 +57,7 @@ namespace Prism
 		myPointLightPass = new PointLightPass();
 		mySpotLightPass = new SpotLightPass("Data/Resource/Shader/S_effect_deferred_light_mesh_spot.fx");
 		mySpotLightTextureProjectionPass = new SpotLightPass("Data/Resource/Shader/S_effect_deferred_light_mesh_spot_textureprojection.fx");
+		myDirectionalLightPass = new DirectionalLightPass();
 
 		myGBufferData = new GBufferData();
 		SetupShadowData();
@@ -100,6 +103,7 @@ namespace Prism
 		SAFE_DELETE(myPointLightPass);
 		SAFE_DELETE(mySpotLightPass);
 		SAFE_DELETE(mySpotLightTextureProjectionPass);
+		SAFE_DELETE(myDirectionalLightPass);
 
 		SAFE_DELETE(myDecal);
 	}
@@ -159,8 +163,12 @@ namespace Prism
 		myShadowPass.myShadowDepth->SetResource(aShadowLight->GetTexture()->GetDepthStencilShaderView());
 		myShadowPass.myShadowMVP->SetMatrix(&aShadowLight->GetMVP().myMatrix[0]);
 		myShadowPass.myInvertedProjection->SetMatrix(&CU::InverseReal(aCamera->GetProjection()).myMatrix[0]);
-		myShadowPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
-		
+
+		static CU::Matrix44<float> lastOrientation = aCamera->GetOrientation();
+
+		myShadowPass.myNotInvertedView->SetMatrix(&lastOrientation.myMatrix[0]);
+		lastOrientation = aCamera->GetOrientation();
+
 		Render(myShadowPass.myEffect);
 	}
 
@@ -297,6 +305,9 @@ namespace Prism
 		myPointLightPass->Render(aScene, *myGBufferData, myCubemap);
 		mySpotLightPass->Render(aScene, *myGBufferData, myCubemap, false);
 		mySpotLightPass->Render(aScene, *myGBufferData, myCubemap, true);
+
+		ActivateBuffers();
+		RenderDirectionalLights(aScene);
 #endif
 	}
 
@@ -328,6 +339,28 @@ namespace Prism
 		Render(myBackgroundEffect);
 
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+	}
+
+	void DeferredRenderer::RenderDirectionalLights(Scene* aScene)
+	{
+		Engine::GetInstance()->RestoreViewPort();
+		myDirectionalLightPass->SendDataToGPU(*myGBufferData, myCubemap, *aScene->GetCamera());
+
+		const CU::GrowingArray<DirectionalLight*>& lights = aScene->GetDirectionalLights();
+
+		Engine::GetInstance()->SetRasterizeState(eRasterizer::NO_CULLING);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+
+		for (int i = 0; i < lights.Size(); ++i)
+		{
+			myDirectionalLightPass->SetLightData(lights[i]->GetData());
+			Render(myDirectionalLightPass->myEffect);
+		}
+
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		Engine::GetInstance()->SetRasterizeState(eRasterizer::CULL_BACK);
+
+		myDirectionalLightPass->RemoveDataFromGPU();
 	}
 
 	void DeferredRenderer::SetupShadowData()

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <BounceComponent.h>
+#include <DirectionalLight.h>
 #include <EffectContainer.h>
 #include <Engine.h>
 #include <EntityFactory.h>
@@ -98,6 +99,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
+	LoadDirectionalLights(level, reader, levelElement);
 
 	level->CreatePlayers();
 
@@ -327,6 +329,32 @@ void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::
 		light->SetColor(color);
 		light->SetRange(range);
 		light->Update();
+		aLevel->Add(light);
+	}
+}
+
+void LevelFactory::LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "directionallight"); lightElement != nullptr;
+		lightElement = aReader.FindNextElement(lightElement, "directionallight"))
+	{
+		CU::Vector3<float> direction;
+		CU::Vector4<float> color;
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "direction"), "X", direction.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "direction"), "Y", direction.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "direction"), "Z", direction.z);
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "R", color.x);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
+
+		unsigned int gid(UINT32_MAX);
+
+		Prism::DirectionalLight* light = new Prism::DirectionalLight();
+		light->SetColor(color);
+		light->SetDir(CU::Vector4<float>(direction, 0.f));
 		aLevel->Add(light);
 	}
 }

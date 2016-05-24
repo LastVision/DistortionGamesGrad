@@ -271,6 +271,7 @@
     <ClCompile Include="DeferredPasses.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DGFXLoader.cpp" />
+    <ClCompile Include="DirectionalLightPass.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DGFXFileFormat.h" />
     <ClInclude Include="DGFXLoader.h" />
+    <ClInclude Include="DirectionalLightPass.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />
