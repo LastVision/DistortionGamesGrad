@@ -140,7 +140,7 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	{
 		myPlayers[i]->GetComponent<MovementComponent>()->SetSpawnVelocity(mySpawnVelocity);
 
-		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID(), mySmartCamera));
+		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
 }
 
