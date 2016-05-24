@@ -30,7 +30,8 @@ void PlayerComponent::EvaluateDeath()
 	if (myShouldDie == true)
 	{
 		myShouldDie = false;
-		PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::BODY, myEntity.GetOrientation().GetPos(), { 0.f, 0.f }));
+		PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::BODY, myEntity.GetOrientation().GetPos()
+			, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		PostMaster::GetInstance()->SendMessage(OnDeathMessage(myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		myEntity.Reset();
 		myEntity.SendNote(DeathNote());

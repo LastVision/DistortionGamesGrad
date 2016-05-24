@@ -7,10 +7,9 @@
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
 
-ScrapManager* ScrapManager::myInstance = nullptr;
-
-ScrapManager::ScrapManager(Prism::Scene* aScene)
-	: myHeads(16)
+ScrapManager::ScrapManager(Prism::Scene* aScene, int aPlayerID)
+	: myPlayerID(aPlayerID)
+	, myHeads(16)
 	, myLiveHeads(16)
 	, myHeadIndex(0)
 	, myLegs(16)
@@ -53,25 +52,6 @@ ScrapManager::~ScrapManager()
 		SAFE_DELETE(myGibs[i].myScrewNut);
 		SAFE_DELETE(myGibs[i].mySpring);
 	}
-}
-
-
-void ScrapManager::Create(Prism::Scene* aScene)
-{
-	DL_ASSERT_EXP(myInstance == nullptr, "Tried to create ScrapManager while it already existed!");
-	myInstance = new ScrapManager(aScene);
-}
-
-void ScrapManager::Destroy()
-{
-	DL_ASSERT_EXP(myInstance != nullptr, "Tried to create ScrapManager while it already existed!");
-	SAFE_DELETE(myInstance);
-}
-
-ScrapManager* ScrapManager::GetInstance()
-{
-	DL_ASSERT_EXP(myInstance != nullptr, "ScrapManager were null!");
-	return myInstance;
 }
 
 void ScrapManager::Update(float aDeltaTime)
@@ -263,36 +243,46 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 
 void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 {
-	SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
-	SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+	if (myPlayerID == aMessage.myPlayerID)
+	{
+		SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
+		SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+	}
+
 }
 
 void ScrapManager::CreateHeads()
 {
+	std::string headName("head");
+	headName += std::to_string(myPlayerID);
 	for (int i = 0; i < myHeads.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "head", myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, headName, myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
 		myHeads.Add(toAdd);
 	}
 }
 
 void ScrapManager::CreateLegs()
 {
+	std::string legsName("legs");
+	legsName += std::to_string(myPlayerID);
 	for (int i = 0; i < myLegs.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "legs", myScene, { 1000.f, 100000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, legsName, myScene, { 1000.f, 100000.f + (i * 100.f), 10000.f });
 		myLegs.Add(toAdd);
 	}
 }
 
 void ScrapManager::CreateBodies()
 {
+	std::string bodyName("body");
+	bodyName += std::to_string(myPlayerID);
 	for (int i = 0; i < myBodies.GetCapacity(); ++i)
 	{
 		BodyPart toAdd;
-		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, "body", myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
+		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, bodyName, myScene, { 1000.f, 150000.f + (i * 100.f), 10000.f });
 		myBodies.Add(toAdd);
 	}
 }

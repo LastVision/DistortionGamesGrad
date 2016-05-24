@@ -76,7 +76,7 @@ private:
 	CU::GrowingArray<Entity*> myEntities;
 	CU::GrowingArray<Prism::PointLight*> myPlayerPointLights;
 
-
+	CU::GrowingArray<ScrapManager*> myScrapManagers;
 	CU::GrowingArray<const Score*> myScores;
 	ScoreInfo* myScoreInfo;
 

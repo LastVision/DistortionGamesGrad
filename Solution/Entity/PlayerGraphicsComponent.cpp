@@ -196,7 +196,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		if (myHead.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		}
 		myHead.SetActive(false);
 		break;
@@ -204,14 +204,14 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		if (myLeftLeg.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myLeftLeg.SetActive(false);
 		}
 
 		if (myRightLeg.GetActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>()));
+				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myRightLeg.SetActive(false);
 		}
 		break;
