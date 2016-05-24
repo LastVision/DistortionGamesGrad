@@ -9,6 +9,7 @@
 #include "ScoreComponentData.h"
 #include "SawBladeComponentData.h"
 #include "SteamComponentData.h"
+#include "StomperComponentData.h"
 #include "PlayerComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
@@ -212,13 +213,17 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashaimanimation"), "path", aOutputData.myDashAimAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashflyanimation"), "path", aOutputData.myDashFlyAnimation);
 }
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
 
 void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SteamComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, StomperComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }

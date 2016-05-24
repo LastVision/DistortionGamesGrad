@@ -150,6 +150,10 @@ void EntityFactory::LoadEntity(const char* aEntityPath)
 			{
 				myComponentLoader->Load(entityDocument, e, newData.mySteamData);
 			}
+			else if (elementName == CU::ToLower("StomperComponent"))
+			{
+				myComponentLoader->Load(entityDocument, e, newData.myStomperData);
+			}
 			else if (elementName == CU::ToLower("ScoreComponent"))
 			{
 				myComponentLoader->Load(entityDocument, e, newData.myScoreData);
