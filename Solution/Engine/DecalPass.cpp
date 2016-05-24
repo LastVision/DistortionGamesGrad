@@ -15,11 +15,7 @@ namespace Prism
 		//ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Decals/SM_decal_box_large.fbx", "Data/Resource/Shader/S_effect_deferred_decal.fx");
 		myInstance = new Instance(*model, myOrientation);
 
-		//myOrientation.SetRight(CU::Vector3<float>(3.f, 0.f, 0.f));
-		//myOrientation.SetUp(CU::Vector3<float>(0.f, 3.f, 0.f));
-		//myOrientation.SetForward(CU::Vector3<float>(0.f, 0.f, 6.f));
-
-		//AddDecal({ 0.f, 0.f, 0.f }, { 0.f, -1.f, 0.f }, "Data/Resource/Texture/Decal/T_decal_test.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
 	}
 
 

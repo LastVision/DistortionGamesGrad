@@ -30,7 +30,7 @@ namespace Prism
 
 		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath);
 
-		void Render(Scene* aScene, Prism::SpriteProxy* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
+		void Render(Scene* aScene, Texture* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
 		void OnResize(float aWidth, float aHeight);
 
@@ -40,9 +40,6 @@ namespace Prism
 		Texture* GetEmissiveTexture();
 		Texture* GetDepthStencilTexture();
 
-
-
-
 	private:
 		void InitFullscreenQuad();
 		void CreateVertices();
@@ -50,6 +47,7 @@ namespace Prism
 		void Render(Effect* aEffect, const std::string& aTechnique = "Render");
 		void RenderDeferred(Scene* aScene);
 		void RenderAmbientPass(Scene* aScene);
+		void RenderBackground(Texture* aBackground);
 
 		void SetupShadowData();
 
@@ -72,6 +70,7 @@ namespace Prism
 		D3D11_VIEWPORT* myViewPort;
 
 		DecalPass* myDecal;
+		Effect* myBackgroundEffect;
 
 		float myClearColor[4];
 	};

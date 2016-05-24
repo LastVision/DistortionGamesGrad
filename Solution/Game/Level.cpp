@@ -37,8 +37,7 @@
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
 #include <OnDeathMessage.h>
-
-
+#include <TextureContainer.h>
 #include <PointLight.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
@@ -64,7 +63,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
-	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/T_background.dds", myWindowSize, myWindowSize * 0.5f);
+	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
 
 	myEmitterManager = new Prism::EmitterManager();
