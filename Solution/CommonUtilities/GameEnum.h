@@ -6,6 +6,24 @@ enum class eGameType : unsigned char
 	MULTIPLAYER,
 };
 
+enum eMovementType
+{
+	FLY,
+	WALK,
+	DASH_AIM,
+	DASH_FLY,
+	_COUNT,
+};
+
+enum class eCharacterAnimationType
+{
+	IDLE,
+	WALK,
+	FLY,
+	DASH_AIM,
+	DASH_FLY,
+};
+
 enum class eScrapPart
 {
 	HEAD,

@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "ContactNote.h"
+#include <GameEnum.h>
 #include "Subscriber.h"
 
 struct MovementComponentData;
@@ -10,14 +11,6 @@ class Movement;
 class MovementComponent : public Component, public Subscriber
 {
 public:
-	enum eMovementType
-	{
-		FLY,
-		WALK,
-		DASH_AIM,
-		DASH_FLY,
-		_COUNT,
-	};
 
 	MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene);
 	~MovementComponent();
