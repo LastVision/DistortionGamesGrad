@@ -1,10 +1,11 @@
 #pragma once
+
 #include "ParticleData.h"
 
 struct ID3D11InputLayout;
 struct _D3DX11_TECHNIQUE_DESC;
 
-
+class XMLReader;
 namespace tinyxml2
 {
 	class XMLElement;
@@ -34,8 +35,8 @@ namespace Prism
 		void CreateInputLayout();
 		
 
-		void ReadParticleData(tinyxml2::XMLElement* anElement);
-		void ReadEmitterData(tinyxml2::XMLElement* anElement);
+		void ReadParticleData(XMLReader* aReader, tinyxml2::XMLElement* anElement);
+		void ReadEmitterData(XMLReader* aReader, tinyxml2::XMLElement* anElement);
 
 
 

@@ -35,6 +35,7 @@
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <OnPlayerLevelComplete.h>
+#include <EmitterMessage.h>
 
 Level::Level(Prism::Camera& aCamera)
 	: myCamera(aCamera)
@@ -319,6 +320,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
 				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
 				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();

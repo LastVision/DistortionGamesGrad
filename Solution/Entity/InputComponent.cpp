@@ -111,6 +111,7 @@ void InputComponent::Update(float aDeltaTime)
 						PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 					}
 
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", myOrientation.GetPos()));
 					myEntity.SendNote(SpawnNote());
 					myIsActive = true;
 					myMovement->Impulse();

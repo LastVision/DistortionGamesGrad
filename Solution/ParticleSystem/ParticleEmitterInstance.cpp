@@ -427,8 +427,9 @@ namespace Prism
 			logicParticle.myDirection = myDirection;
 			if (myOverrideDirection == false)
 			{
-				logicParticle.myDirection = CalculateDirection(myParticleEmitterData->myVariation.x,
-					myParticleEmitterData->myVariation.y);
+			
+				logicParticle.myDirection = CU::Math::RandomVector(myParticleEmitterData->myMinDirection
+					, myParticleEmitterData->myMaxDirection);
 			}
 
 #pragma	region		Shape
@@ -468,18 +469,12 @@ namespace Prism
 			gfxParticle.mySize = CU::Math::RandomRange(myParticleEmitterData->myData.myMinStartSize
 				, myParticleEmitterData->myData.myMaxStartSize);
 
-			//gfxParticle.mySize = myParticleScaling;
-
 			logicParticle.myIsAlive = true;
 
-
 			logicParticle.myRotation = CU::Math::RandomRange(myParticleEmitterData->myParticleRotation.x, myParticleEmitterData->myParticleRotation.y);
-
 			gfxParticle.myRotation = logicParticle.myRotation;
 
 			logicParticle.myRotationDelta = myParticleEmitterData->myRotationDelta;
-
-
 			myParticleIndex += 1;
 		}
 	}
@@ -500,8 +495,8 @@ namespace Prism
 		float angle = static_cast<float>(rand() % a) / 10000.f;
 
 		toReturn.x = radius * cosf(angle);
-		toReturn.y = 0.f;
-		toReturn.z = radius * sinf(angle);
+		toReturn.y = radius * sinf(angle);
+		toReturn.z = 0.f;
 
 		return toReturn;
 	}
@@ -534,23 +529,23 @@ namespace Prism
 		{
 		case 1: //top
 			toReturn.x = CU::Math::RandomRange(-size.x, size.x);
-			toReturn.y = 0.f;
-			toReturn.z = size.z;
+			toReturn.y = size.y;
+			toReturn.z = 0.f;
 			break;
 		case 2: //bot
 			toReturn.x = -size.x;
-			toReturn.y = 0.f;
-			toReturn.z = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.y = CU::Math::RandomRange(-size.y, size.y);
+			toReturn.z = 0.f;
 			break;
 		case 3: //bot
 			toReturn.x = CU::Math::RandomRange(-size.x, size.x);
-			toReturn.y = 0.f;
-			toReturn.z = -size.z;
+			toReturn.y = -size.y;
+			toReturn.z = 0.f;
 			break;
 		case 4: //top
 			toReturn.x = size.x;
-			toReturn.y = 0.f;
-			toReturn.z = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.y = CU::Math::RandomRange(-size.z, size.z);
+			toReturn.z = 0.f;
 			break;
 		default:
 			break;
