@@ -70,8 +70,8 @@ void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
 {
 }
 
-void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
-	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>&
+	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)

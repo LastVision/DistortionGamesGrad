@@ -334,10 +334,13 @@ namespace GUI
 				else if (type == "buttonMatrix")
 				{
 					ButtonMatrixWidget* widget = new ButtonMatrixWidget(&aReader, widgetElement);
-					myButtons.Add(widget->GetButtons());
-					for each(ButtonWidget* button in widget->GetButtons())
+					for (int row = 0; row < widget->GetSize().y; ++row)
 					{
-						container->AddWidget(button);
+						myButtons.Add(widget->GetButtons(row));
+						for each(ButtonWidget* button in widget->GetButtons(row))
+						{
+							container->AddWidget(button);
+						}
 					}
 					container->AddWidget(widget);
 				}

@@ -15,7 +15,7 @@ namespace GUI
 		virtual ~LevelButtonWidget();
 
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
-		void Update(const float aDeltaTime) override;
+		void Update(float aDeltaTime) override;
 
 	private:
 		CU::GrowingArray<StarWidget*> myStars;

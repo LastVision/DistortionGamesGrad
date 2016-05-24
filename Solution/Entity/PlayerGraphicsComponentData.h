@@ -16,6 +16,8 @@ struct PlayerGraphicsComponentData
 	std::string myIdleAnimation = "";
 	std::string myWalkAnimation = "";
 	std::string myFlyAnimation = "";
+	std::string myDashAimAnimation = "";
+	std::string myDashFlyAnimation = "";
 
 	std::string myPlayerOneArrow = "";
 	std::string myPlayerTwoArrow = "";

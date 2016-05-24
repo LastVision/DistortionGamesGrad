@@ -153,7 +153,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 		}
 
 		int stars = 0;
-		if (highestScore.myTime < myScoreInfo.myShortTime)
+		if (highestScore.myTime < myScoreInfo.myShortTime && highestScore.myTime > 0)
 		{
 			stars = 3;
 		}

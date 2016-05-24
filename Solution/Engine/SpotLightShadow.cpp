@@ -78,7 +78,7 @@ namespace Prism
 
 	void SpotLightShadow::UpdateOrientation()
 	{
-		myOrientation.SetPos(myPlayerOrientation.GetPos() + CU::Vector3<float>(90.f, 20.f, 0.f));
+		//myOrientation.SetPos(myPlayerOrientation.GetPos() + CU::Vector3<float>(90.f, 20.f, 0.f));
 	}
 
 	void SpotLightShadow::ClearTexture()

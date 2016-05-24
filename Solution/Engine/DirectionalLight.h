@@ -1,65 +1,58 @@
 #pragma once
 
+#include "LightStructs.h"
+
 namespace Prism
 {
 	class DirectionalLight
 	{
 	public:
-		void Update();
-
-		CU::Vector4<float> GetCurrentDir() const;
 		const CU::Vector4<float>& GetColor() const;
-		const CU::Vector3<float>& GetDir() const;
-
-		void PerformRotation(const CU::Matrix33<float>& aOrientation);
+		const CU::Vector4<float>& GetDir() const;
 
 		void SetColor(const CU::Vector4<float>& aVector);
-		void SetDir(const CU::Vector3<float>& aVector);
+		void SetDir(const CU::Vector4<float>& aVector);
+
+		const DirectionalLightData& GetData() const;
 
 	private:
+		void Update();
+
 		CU::Vector4<float> myColor;
 		CU::Vector4<float> myDirection;
-		CU::Vector3<float> myOriginalDirection;
-		CU::Matrix33<float> myOrientation;
+		DirectionalLightData myData;
 	};
-}
 
-inline void Prism::DirectionalLight::Update()
-{
-	CU::Vector3f newDir = myOriginalDirection * myOrientation;
+	inline void DirectionalLight::Update()
+	{
+		myData.myColor = GetColor();
+		myData.myDirection = GetDir();
+	}
 
-	myDirection = CU::Vector4<float>(newDir, 0);
-}
+	inline const CU::Vector4<float>& DirectionalLight::GetColor() const
+	{
+		return myColor;
+	}
 
-inline CU::Vector4<float> Prism::DirectionalLight::GetCurrentDir() const
-{
-	return myDirection;
-}
+	inline const CU::Vector4<float>& DirectionalLight::GetDir() const
+	{
+		return myDirection;
+	}
 
-inline const CU::Vector4<float>& Prism::DirectionalLight::GetColor() const
-{
-	return myColor;
-}
+	inline void DirectionalLight::SetColor(const CU::Vector4<float>& aVector)
+	{
+		myColor = aVector;
+		Update();
+	}
 
-inline const CU::Vector3<float>& Prism::DirectionalLight::GetDir() const
-{
-	return myOriginalDirection;
-}
+	inline void DirectionalLight::SetDir(const CU::Vector4<float>& aVector)
+	{
+		myDirection = aVector;
+		Update();
+	}
 
- 
-inline void Prism::DirectionalLight::PerformRotation(const CU::Matrix33<float>& aOrientation)
-{
-	myOrientation = aOrientation * myOrientation;
-}
-
- 
-inline void Prism::DirectionalLight::SetColor(const CU::Vector4<float>& aVector)
-{
-	myColor = aVector;
-}
-
-inline void Prism::DirectionalLight::SetDir(const CU::Vector3<float>& aVector)
-{
-	myOriginalDirection = aVector;
-	myDirection = CU::Vector4<float>(aVector, 0);
+	inline const DirectionalLightData& DirectionalLight::GetData() const
+	{
+		return myData;
+	}
 }
