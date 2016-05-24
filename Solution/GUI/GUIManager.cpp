@@ -339,6 +339,7 @@ namespace GUI
 					{
 						container->AddWidget(button);
 					}
+					container->AddWidget(widget);
 				}
 				else
 				{

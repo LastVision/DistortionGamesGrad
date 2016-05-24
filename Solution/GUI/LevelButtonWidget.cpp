@@ -24,6 +24,7 @@ namespace GUI
 
 	LevelButtonWidget::~LevelButtonWidget()
 	{
+		myStars.DeleteAll();
 	}
 
 	void LevelButtonWidget::Render(const CU::Vector2<float>& aParentPosition)

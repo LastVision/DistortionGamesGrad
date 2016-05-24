@@ -19,12 +19,6 @@ namespace GUI
 		ButtonMatrixWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement);
 		~ButtonMatrixWidget();
 
-		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
-
-		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
-
-		bool IsInside(const CU::Vector2<float>& aPosition) const override;
-
 		const CU::GrowingArray<ButtonWidget*>& GetButtons() const;
 	private:
 		const int GetAmountOfStarsFromFile(const int aLevelID);

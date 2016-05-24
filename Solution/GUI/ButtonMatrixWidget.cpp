@@ -67,39 +67,9 @@ namespace GUI
 		}
 	}
 
-
 	ButtonMatrixWidget::~ButtonMatrixWidget()
 	{
 		myButtonMatrix.DeleteAll();
-	}
-
-	void ButtonMatrixWidget::Render(const CU::Vector2<float>& ) 
-	{
-		/*for each(ButtonWidget* button in myButtonMatrix)
-		{
-			button->Render(myPosition + aParentPosition);
-		}*/
-	}
-
-	void ButtonMatrixWidget::OnResize(const CU::Vector2<float>& , const CU::Vector2<float>& ) 
-	{
-		/*Widget::OnResize(aNewSize, anOldSize);
-		for each(ButtonWidget* button in myButtonMatrix)
-		{
-			button->OnResize(aNewSize, anOldSize);
-		}*/
-	}
-
-	bool ButtonMatrixWidget::IsInside(const CU::Vector2<float>& ) const 
-	{ 
-		/*for each (ButtonWidget* button in myButtonMatrix)
-		{
-			if (button->IsInside(aPosition) == true)
-			{
-				return true;
-			}
-		}*/
-		return false;
 	}
 
 	const int ButtonMatrixWidget::GetAmountOfStarsFromFile(const int aLevelID)
