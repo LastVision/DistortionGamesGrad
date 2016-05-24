@@ -46,9 +46,26 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "starposition"), "y", starPosition.y);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "staroffset"), "x", starOffset.x);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "staroffset"), "y", starOffset.y);
-		int x = 0;
-		int y = 0;
-		for (int i = 0; i < myButtonMatrixIndex.x * myButtonMatrixIndex.y; ++i)
+		int index = 0;
+		for (int y = 0; y < myButtonMatrixIndex.y; ++y)
+		{
+			CU::GrowingArray<ButtonWidget*> buttons(myButtonMatrixIndex.x);
+			for (int x = 0; x < myButtonMatrixIndex.x; ++x)
+			{
+				ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x,
+					(-y * buttonSize.y + buttonOffset.y * -y) + myPosition.y }, starPosition, starOffset, spritePathNormal, spritePathHover, spritePathPressed,
+					std::to_string(index + 1), "", GetAmountOfStarsFromFile(index + 1));
+				if (buttonEventType == "start_level")
+				{
+					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
+				}
+				buttons.Add(button);
+				index++;
+			}
+			myButtonMatrix.Add(buttons);
+		}
+
+		/*for (int i = 0; i < myButtonMatrixIndex.x * myButtonMatrixIndex.y; ++i)
 		{
 			ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x, 
 				(y * buttonSize.y + buttonOffset.y * y) + myPosition.y }, starPosition, starOffset, spritePathNormal, spritePathHover, spritePathPressed, 
@@ -57,6 +74,7 @@ namespace GUI
 			{
 				button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, i));
 			}
+			
 			myButtonMatrix.Add(button);
 			x++;
 			if (x >= myButtonMatrixIndex.x)
@@ -64,12 +82,15 @@ namespace GUI
 				y--;
 				x = 0;
 			}
-		}
+		}*/
 	}
 
 	ButtonMatrixWidget::~ButtonMatrixWidget()
 	{
-		myButtonMatrix.DeleteAll();
+		for (int i = 0; i < myButtonMatrix.Size(); ++i)
+		{
+			myButtonMatrix[i].DeleteAll();
+		}
 	}
 
 	const int ButtonMatrixWidget::GetAmountOfStarsFromFile(const int aLevelID)
@@ -93,6 +114,34 @@ namespace GUI
 				}
 				file >> levelID >> time >> stars;
 				toReturn = stars;
+			}
+
+			file.close();
+		}
+		return toReturn;
+	}
+
+	CU::GrowingArray<bool> ButtonMatrixWidget::RetrieveUnlockedLevelsFromFile()
+	{
+		CU::GrowingArray<bool> toReturn(64);
+
+		std::fstream file;
+		file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+
+		if (file.is_open() == true)
+		{
+			int levelID;
+			bool isUnlocked = false;
+			bool isEndOfFile = false;
+			while (isEndOfFile == false)
+			{
+				if (file.eof())
+				{
+					isEndOfFile = true;
+					break;
+				}
+				file >> levelID >> isUnlocked;
+				toReturn.Add(isUnlocked);
 			}
 
 			file.close();
