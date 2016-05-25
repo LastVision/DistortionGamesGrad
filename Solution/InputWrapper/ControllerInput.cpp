@@ -6,6 +6,7 @@ namespace CU
 		: myIsConnected(false)
 		, myPrevLeftTrigger(0.f)
 		, myPrevRightTrigger(0.f)
+		, myIsVibrate(false)
 	{
 		//Set the controller ID (0 -> 3) 
 		myControllerID = aPlayer;
@@ -39,7 +40,7 @@ namespace CU
 		//	return false;
 	}
 
-	void ControllerInput::Update(float)
+	void ControllerInput::Update(float aDeltaTime)
 	{
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
 		memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
@@ -54,6 +55,25 @@ namespace CU
 			myIsConnected = true;
 		else
 			myIsConnected = false;
+
+		if (myIsVibrate == true)
+		{
+			if (myVibrationTime > 0.f)
+			{
+				myVibrationTime -= aDeltaTime;
+			}
+			else
+			{
+				myRightMotorValue = 0;
+				myLeftMotorValue = 0;
+				XINPUT_VIBRATION vibration;
+				ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+				vibration.wLeftMotorSpeed = myLeftMotorValue;
+				vibration.wRightMotorSpeed = myRightMotorValue;
+				XInputSetState(myControllerID, &vibration);
+				myIsVibrate = false;
+			}
+		}
 	}
 
 	const int ControllerInput::GetControllerID() const //Get the controllerID, required to controll a player (as an example)
@@ -122,15 +142,20 @@ namespace CU
 
 	void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)
 	{
+		myVibrationTime = someTime;
+		myRightMotorValue = aRightVal;
+		myLeftMotorValue = aLeftVal;
+
 		XINPUT_VIBRATION vibration;
 		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
 		vibration.wLeftMotorSpeed = myLeftMotorValue;
 		vibration.wRightMotorSpeed = myRightMotorValue;
 		XInputSetState(myControllerID, &vibration);
 
-		myVibrationTime = someTime;
-		myRightMotorValue = aRightVal;
-		myLeftMotorValue = aLeftVal;
+		if (myVibrationTime > 0.f)
+		{
+			myIsVibrate = true;
+		}
 	}
 
 	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)

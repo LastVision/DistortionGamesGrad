@@ -10,6 +10,7 @@
 #include "MainMenuState.h"
 #include <ModelLoader.h>
 #include <OnClickMessage.h>
+#include "OptionState.h"
 #include <PostMaster.h>
 #include <PollingStation.h>
 #include "StateStackProxy.h"
@@ -168,6 +169,10 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::CREDITS:
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new CreditMenuState());
+		break;
+	case eOnClickEvent::OPTIONS:
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new OptionState());
 		break;
 	}
 }

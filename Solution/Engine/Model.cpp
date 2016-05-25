@@ -67,10 +67,7 @@ namespace Prism
 	void Model::Init(int aMaxInstances, bool aLightMesh)
 	{
 		DL_ASSERT_EXP(myInited == false, "Tried to Init a model twice");
-		if (myFileName.find("decal") != myFileName.npos)
-		{
-			int apa = 5;
-		}
+
 		myMaxInstances = aMaxInstances;
 		if (myIsNULLObject == false)
 		{

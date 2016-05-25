@@ -6,8 +6,10 @@
 #include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
-#include "EmitterManager.h"
+#include <DirectionalLight.h>
 #include <DeferredRenderer.h>
+#include "EmitterManager.h"
+#include <EmitterMessage.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -15,6 +17,8 @@
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
+#include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
@@ -34,13 +38,12 @@
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
+#include <Texture.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
-#include <OnPlayerLevelComplete.h>
-#include <OnDeathMessage.h>
 #include <TextureContainer.h>
 #include <PointLight.h>
-#include <EmitterMessage.h>
+#include <VibrationNote.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -183,6 +186,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
 		{
 			++playersAlive;
+			player->GetComponent<InputComponent>()->SetPlayersWinCount(myPlayerWinCount);
 			player->Update(aDeltaTime);
 		}
 		else
@@ -197,11 +201,21 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		entity->Update(aDeltaTime);
 	}
 
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		Entity* player = myPlayers[i];
+		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos());
+		light->Update();
+	}
+
 	if (myPlayerWinCount >= 1)
 	{
 		myTimeToLevelChange -= aDeltaTime;
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
-		if (myTimeToLevelChange < 0.f)
+		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
@@ -210,15 +224,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	
-	for (int i = 0; i < myPlayers.Size(); ++i)
-	{
-		Entity* player = myPlayers[i];
-		player->GetComponent<PlayerComponent>()->EvaluateDeath();
-
-		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos() );
-		light->Update();
-	}
+	
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
@@ -418,24 +424,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
 				break;
 			case GOAL_POINT:
-				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID() - 1]->GetComponent<InputComponent>()->GetIsActive() == false)
-				{
-					if (myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) break;
-					TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
-					DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-					PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetScrapBodyID() - 1));
-					myPlayerWinCount++;
-					//first->GetComponent<ScoreComponent>()
-					myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->ReachedGoal();
-					myLevelToChangeToID = firstTrigger->GetLevelID();
-					if (myPlayerWinCount >= myPlayersPlaying)
-					{
-						PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-
-						SET_RUNTIME(false);
-						myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-					}
-				}
 				break;
 			default:
 				break;
@@ -467,7 +455,7 @@ void Level::CreatePlayers()
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
 
-		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
@@ -484,7 +472,10 @@ void Level::CreatePlayers()
 
 void Level::EndState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::ResumeState()
@@ -494,7 +485,10 @@ void Level::ResumeState()
 
 void Level::PauseState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::OnResize(int aWidth, int aHeight)

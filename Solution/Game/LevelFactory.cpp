@@ -370,9 +370,7 @@ void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::
 
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
 
-		unsigned int gid(UINT32_MAX);
-
-		Prism::PointLight* light = new Prism::PointLight(gid, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetPosition(position);
 		light->SetColor(color);
 		light->SetRange(range);
@@ -397,8 +395,6 @@ void LevelFactory::LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tiny
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
-
-		unsigned int gid(UINT32_MAX);
 
 		Prism::DirectionalLight* light = new Prism::DirectionalLight();
 		light->SetColor(color);

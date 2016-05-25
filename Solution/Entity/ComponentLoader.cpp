@@ -224,7 +224,7 @@ void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SteamComponentData
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, StomperComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, StomperComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }

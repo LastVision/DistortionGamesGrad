@@ -31,10 +31,13 @@ public:
 	bool GetIsFlipped() const;
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveNote(const DeathNote& aMessage) override;
+	void ReceiveNote(const VibrationNote& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	bool GetIsActive();
 	void ResetIsInLevel();
+
+	void SetPlayersWinCount(int aWinCount);
 
 private:
 
@@ -51,6 +54,8 @@ private:
 
 	float myTimeToSpawn;
 	bool myIntendToSpawn;
+
+	bool myAllowedToSpawn;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()
@@ -61,4 +66,9 @@ inline eComponentType InputComponent::GetTypeStatic()
 inline eComponentType InputComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline void InputComponent::SetPlayersWinCount(int aWinCount)
+{
+	myAllowedToSpawn = (aWinCount <= 0);
 }

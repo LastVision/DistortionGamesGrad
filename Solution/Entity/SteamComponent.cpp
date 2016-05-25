@@ -7,8 +7,7 @@
 #include "PhysicsComponent.h"
 #include <PostMaster.h>
 #include "SoundComponent.h"
-
-SteamComponent::SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation)
+SteamComponent::SteamComponent(Entity& anEntity)
 	: Component(anEntity)
 	, myCurrentSteamInterval(0.f)
 	, myCurrentSteamTime(0.f)

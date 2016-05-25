@@ -9,6 +9,8 @@ enum class eOnClickEvent
 	LEVEL_SELECT,
 	GAME_QUIT,
 	CREDITS,
+	OPTIONS,
+	OPTIONS_TOGGLE_VIBRATION,
 };
 
 struct OnClickMessage : public Message

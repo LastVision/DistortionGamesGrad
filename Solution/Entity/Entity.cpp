@@ -34,7 +34,6 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myDelayedAddToScene(false)
 	, myStartPosition(aStartPosition)
 	, myStartRotation(aRotation)
-	, myScrapBodyID(-1)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
@@ -119,7 +118,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.mySteamData.myExistsInEntity == true) // has to be after physics
 	{
-		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
+		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this);
 	}
 
 	if (aEntityData.myScoreData.myExistsInEntity == true)
@@ -148,15 +147,6 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		{
 			myComponents[i]->Init();
 		}
-	}
-
-	if (mySubType == "body1")
-	{
-		myScrapBodyID = 1;
-	}
-	else if (mySubType == "body2")
-	{
-		myScrapBodyID = 2;
 	}
 
 	Reset();

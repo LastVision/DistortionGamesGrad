@@ -219,4 +219,9 @@ void MovementComponent::ReceiveNote(const SpawnNote&)
 	//mySpawnVelocity = { 0.05f, 0.01f };
 	myMovements[myCurrentMovement]->Activate(mySpawnVelocity);
 	//myEntity.ResetPosition();
+
+	if (mySpawnVelocity.x < 0)
+	{
+		myEntity.GetComponent<InputComponent>()->SetIsFlipped(true);
+	}
 }

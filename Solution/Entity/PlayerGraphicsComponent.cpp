@@ -15,6 +15,7 @@
 #include <InputWrapper.h>
 #include "InputComponent.h"
 #include <OnDeathMessage.h>
+#include "VibrationNote.h"
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
@@ -203,6 +204,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 		}
 		myHead.SetActive(false);
 		break;
@@ -212,6 +214,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myLeftLeg.SetActive(false);
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 		}
 
 		if (myRightLeg.GetActive() == true)
@@ -219,6 +222,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myRightLeg.SetActive(false);
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 		}
 		break;
 	default:

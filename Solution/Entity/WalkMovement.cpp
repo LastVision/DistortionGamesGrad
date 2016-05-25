@@ -29,7 +29,7 @@ void WalkMovement::Reset()
 	myHasContact = true;
 }
 
-void WalkMovement::Update(float aDeltaTime, bool aShouldCollide)
+void WalkMovement::Update(float aDeltaTime, bool)
 {
 	myPreviousVelocity = myVelocity;
 

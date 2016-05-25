@@ -209,6 +209,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::CREDITS);
 		}
+		else if (clickEvent == "options")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS);
+		}
 		else if (clickEvent == "quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::GAME_QUIT);

@@ -8,6 +8,7 @@
 #include "GUIManager.h"
 #include "../InputWrapper/InputWrapper.h"
 #include "SpriteWidget.h"
+#include "ToggleBoxWidget.h"
 #include "WidgetContainer.h"
 
 namespace GUI
@@ -329,6 +330,11 @@ namespace GUI
 				else if (type == "sprite")
 				{
 					SpriteWidget* widget = new SpriteWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
+				}
+				else if (type == "toggleBox")
+				{
+					ToggleBoxWidget* widget = new ToggleBoxWidget(&aReader, widgetElement);
 					container->AddWidget(widget);
 				}
 				else if (type == "buttonMatrix")

@@ -112,7 +112,6 @@ namespace Prism
 					else
 					{
 						CU::Vector3<float> pos = instance->GetPosition() - myCamera->GetOrientation().GetPos();
-						float length = CU::Length2(pos);
 						instance->Render(aTexture);
 					}
 				}
