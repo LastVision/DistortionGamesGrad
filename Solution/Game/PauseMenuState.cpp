@@ -4,16 +4,16 @@
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
-#include "OptionState.h"
+#include "PauseMenuState.h"
 #include <PostMaster.h>
 
 
-OptionState::OptionState()
+PauseMenuState::PauseMenuState()
 {
 }
 
 
-OptionState::~OptionState()
+PauseMenuState::~PauseMenuState()
 {
 	SAFE_DELETE(myGUIManager);
 	myStateStack = nullptr;
@@ -22,7 +22,8 @@ OptionState::~OptionState()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 }
 
-void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
+
+void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
 	myStateStack = aStateStackProxy;
 	myController = aController;
@@ -34,16 +35,16 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
-	
+
 }
 
-void OptionState::EndState()
+void PauseMenuState::EndState()
 {
 	myIsActiveState = false;
 	myCursor->SetShouldRender(false);
 }
 
-const eStateStatus OptionState::Update(const float& aDeltaTime)
+const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 {
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
 	{
@@ -59,12 +60,12 @@ const eStateStatus OptionState::Update(const float& aDeltaTime)
 	return myStateStatus;
 }
 
-void OptionState::Render()
+void PauseMenuState::Render()
 {
 	myGUIManager->Render();
 }
 
-void OptionState::ResumeState()
+void PauseMenuState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
@@ -72,17 +73,17 @@ void OptionState::ResumeState()
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 }
 
-void OptionState::PauseState()
+void PauseMenuState::PauseState()
 {
 	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
-void OptionState::OnResize(int aWidth, int aHeight)
+void PauseMenuState::OnResize(int aWidth, int aHeight)
 {
 	myGUIManager->OnResize(aWidth, aHeight);
 }
 
-void OptionState::ReceiveMessage(const OnClickMessage& aMessage)
+void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{

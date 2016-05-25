@@ -62,6 +62,9 @@
     <ClCompile Include="OptionState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="PauseMenuState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="ScoreWidget.h" />
     <ClInclude Include="OptionState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenuState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>

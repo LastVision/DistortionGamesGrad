@@ -15,6 +15,7 @@
 #include "ShouldDieNote.h"
 
 #include "VibrationNote.h"
+#include <GameConstants.h>
 
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
@@ -163,7 +164,7 @@ void InputComponent::SetIsFlipped(bool aIsFlipped)
 void InputComponent::ReceiveNote(const DeathNote&)
 {
 	myIsActive = false;
-	if (myController->IsConnected() == true && myHasCompletedLevel == false)
+	if (myController->IsConnected() == true && myHasCompletedLevel == false && GC::OptionsUseViberations == true)
 	{
 		myController->Vibrate(32000, 16000, 0.5f);
 	}
@@ -171,7 +172,7 @@ void InputComponent::ReceiveNote(const DeathNote&)
 
 void InputComponent::ReceiveNote(const VibrationNote& aMessage)
 {
-	if (myController->IsConnected() == true)
+	if (myController->IsConnected() == true && GC::OptionsUseViberations == true)
 	{
 		myController->Vibrate(aMessage.myLeftMotorValue, aMessage.myRightMotorValue, aMessage.myTime);
 	}
