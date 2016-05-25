@@ -87,7 +87,7 @@ namespace GUI
 		{
 			myIsVisible = false;
 		}
-		else
+		else if (aButtonText != "")
 		{
 			myButtonText = aButtonText;
 			myIsTextButton = true;
@@ -132,7 +132,7 @@ namespace GUI
 	void ButtonWidget::OnLeftMouseUp()
 	{
 		Click();
-		myImageCurrent = myImageNormal;
+		myImageCurrent = myImageHover;
 	}
 
 	void ButtonWidget::OnMouseEnter()
@@ -213,9 +213,37 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS);
 		}
+		else if (clickEvent == "IncreaseVolume")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_VOLUME);
+		}
+		else if (clickEvent == "LowerVolume")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_DECREASE_VOLUME);
+		}
+		else if (clickEvent == "IncreaseMusic")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_MUSIC);
+		}
+		else if (clickEvent == "LowerMusic")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_DECREASE_MUSIC);
+		}
+		else if (clickEvent == "IncreaseVoice")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_VOICE);
+		}
+		else if (clickEvent == "LowerVoice")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_DECREASE_VOICE);
+		}
 		else if (clickEvent == "quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::GAME_QUIT);
+		}
+		else if (clickEvent == "returnToGame")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::RETURN_TO_GAME);
 		}
 		else
 		{

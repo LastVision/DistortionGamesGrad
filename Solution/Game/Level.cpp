@@ -39,6 +39,7 @@
 #include <OnPlayerLevelComplete.h>
 #include <OnDeathMessage.h>
 #include <TextureContainer.h>
+#include "PauseMenuState.h"
 #include <PointLight.h>
 #include <EmitterMessage.h>
 #include <VibrationNote.h>
@@ -172,11 +173,14 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || 
+		(myController->IsConnected() == true && myController->ButtonOnUp(eXboxButton::START)))
 	{
-		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
+		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopMainState;*/
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new PauseMenuState());
 	}
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)

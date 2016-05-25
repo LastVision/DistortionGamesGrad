@@ -133,6 +133,16 @@ namespace GUI
 			}
 
 		}
+		else if (clickEvent == "toggle_shadows")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_TOGGLE_SHADOWS, static_cast<int>(myToggledState));
+			myToggledState = GC::OptionsUseShadows;
+			myImageCurrent = myImageDeactive;
+			if (myToggledState == true)
+			{
+				myImageCurrent = myImageActive;
+			}
+		}
 		else
 		{
 			std::string message = "[ButtonWidget]: No onclick event named " + clickEvent;
@@ -172,7 +182,8 @@ namespace GUI
 			if (myCanBeClicked == true)
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonClick", 0);
-				if (myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_VIBRATION)
+				if (myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_VIBRATION ||
+					myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_SHADOWS)
 				{
 					PostMaster::GetInstance()->SendMessage(OnClickMessage(myClickEvent->myEvent, myToggledState));
 				}

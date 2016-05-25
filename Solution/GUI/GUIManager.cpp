@@ -9,6 +9,7 @@
 #include "../InputWrapper/InputWrapper.h"
 #include "SpriteWidget.h"
 #include "ToggleBoxWidget.h"
+#include "VolumeWidget.h"
 #include "WidgetContainer.h"
 
 namespace GUI
@@ -335,6 +336,16 @@ namespace GUI
 				else if (type == "toggleBox")
 				{
 					ToggleBoxWidget* widget = new ToggleBoxWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
+				}
+				else if (type == "volume")
+				{
+					VolumeWidget* widget = new VolumeWidget(&aReader, widgetElement);
+					myButtons.Add(CU::GrowingArray<ButtonWidget*>(2));
+					myButtons.GetLast().Add(widget->GetDecreseButton());
+					container->AddWidget(widget->GetDecreseButton());
+					myButtons.GetLast().Add(widget->GetIncreseButton());
+					container->AddWidget(widget->GetIncreseButton());
 					container->AddWidget(widget);
 				}
 				else if (type == "buttonMatrix")

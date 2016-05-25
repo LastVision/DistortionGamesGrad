@@ -30,4 +30,5 @@ public:
 	static float PlayerRadius;
 
 	static bool OptionsUseViberations;
+	static bool OptionsUseShadows;
 };

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
 #include "OptionState.h"
 #include <PostMaster.h>
-
+#include <Text.h>
 
 OptionState::OptionState()
 {
@@ -33,8 +34,6 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
-
-	
 }
 
 void OptionState::EndState()

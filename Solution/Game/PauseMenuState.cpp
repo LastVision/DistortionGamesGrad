@@ -4,6 +4,7 @@
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
+#include "OptionState.h"
 #include "PauseMenuState.h"
 #include <PostMaster.h>
 
@@ -30,7 +31,7 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myCursor = aCursor;
 	myStateStatus = eStateStatus::eKeepState;
 	myIsActiveState = true;
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_options.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_pause_menu.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
@@ -89,6 +90,13 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::RETURN_TO_GAME:
+		myStateStatus = eStateStatus::ePopSubState;
+		break;
+	case eOnClickEvent::OPTIONS:
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new OptionState());
 		break;
 	}
 }
