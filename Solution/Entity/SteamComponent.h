@@ -9,7 +9,7 @@ namespace Prism
 class SteamComponent : public Component
 {
 public:
-	SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation);
+	SteamComponent(Entity& anEntity);
 	~SteamComponent();
 
 	void Update(float aDeltaTime) override;

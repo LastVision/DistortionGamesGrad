@@ -54,7 +54,7 @@ namespace Prism
 		Prism::Engine::GetInstance()->SetRasterizeState(eRasterizer::CULL_BACK);
 	}
 
-	void Bar3D::Render(bool aIsOnlyDepth)
+	void Bar3D::Render(bool)
 	{
 
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);

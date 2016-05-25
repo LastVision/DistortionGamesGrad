@@ -6,8 +6,10 @@
 #include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
-#include "EmitterManager.h"
+#include <DirectionalLight.h>
 #include <DeferredRenderer.h>
+#include "EmitterManager.h"
+#include <EmitterMessage.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -15,6 +17,8 @@
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
+#include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
@@ -34,13 +38,11 @@
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
+#include <Texture.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
-#include <OnPlayerLevelComplete.h>
-#include <OnDeathMessage.h>
 #include <TextureContainer.h>
 #include <PointLight.h>
-#include <EmitterMessage.h>
 #include <VibrationNote.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
@@ -436,7 +438,7 @@ void Level::CreatePlayers()
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
 
-		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
