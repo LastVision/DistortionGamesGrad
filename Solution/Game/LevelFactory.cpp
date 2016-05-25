@@ -12,6 +12,7 @@
 #include <SawBladeComponent.h>
 #include "ScoreInfo.h"
 #include <SteamComponent.h>
+#include <StomperComponent.h>
 #include <TriggerComponent.h>
 #include <XMLReader.h>
 #include <PointLight.h>
@@ -99,6 +100,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSawBlades(level, reader, levelElement);
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
+	LoadStompers(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
 	LoadSpotLights(level, reader, levelElement);
@@ -304,6 +306,45 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 		aReader.ForceReadAttribute(forceElement, "value", force);
 
 		entity->GetComponent<BounceComponent>()->SetForce(force);
+
+		aLevel->Add(entity);
+	}
+}
+
+void LevelFactory::LoadStompers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "stomper_holder"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "stomper_holder"))
+	{
+		std::string stomperType;
+		CU::Vector3f stomperPosition;
+		CU::Vector3f stomperRotation;
+		CU::Vector3f stomperScale;
+		float timeBeforeStomp;
+		float timeStomperDown;
+		float stompSpeedOut;
+		float stompSpeedIn;
+		float distance;
+		float delayBeforeStomp;
+
+		aReader.ForceReadAttribute(entityElement, "stomperType", stomperType);
+
+		ReadOrientation(aReader, entityElement, stomperPosition, stomperRotation, stomperScale);
+
+		Entity* entity(EntityFactory::CreateEntity(eEntityType::STOMPER_HOLDER, CU::ToLower(stomperType),
+			aLevel->GetScene(), stomperPosition, stomperRotation, stomperScale));
+
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeBeforeStomp"), "value", timeBeforeStomp);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeStomperIsDown"), "value", timeStomperDown);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "stompSpeedOut"), "value", stompSpeedOut);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "stompSpeedIn"), "value", stompSpeedIn);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "distance"), "value", distance);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeDelay"), "value", delayBeforeStomp);
+
+		DL_ASSERT_EXP(entity->GetComponent<StomperComponent>() != nullptr, "stomper holders need stomper components to work");
+
+		entity->GetComponent<StomperComponent>()->InitStomper(timeBeforeStomp, timeStomperDown
+			, stompSpeedOut, stompSpeedIn, distance, delayBeforeStomp);
 
 		aLevel->Add(entity);
 	}

@@ -363,6 +363,23 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				}
 			}
 			break;
+		case eEntityType::STOMPER:
+			if (aHasEntered == true)
+			{
+ 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				
+				if (dot > 0.001f)
+				{
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					first->SendNote(ShouldDieNote());
+				}
+			}
+			break;
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{

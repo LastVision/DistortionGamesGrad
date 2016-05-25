@@ -38,6 +38,7 @@ private:
 	void LoadSawBlades(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
+	void LoadStompers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
 	void LoadSpotLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);

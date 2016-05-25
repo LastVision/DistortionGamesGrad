@@ -85,6 +85,8 @@ enum eEntityType
 	GOAL_POINT = 128,
 	STEAM_VENT = 256,
 	SCRAP = 512,
+	STOMPER = 1024,
+	STOMPER_HOLDER = 2048,
 	_COUNT,
 };
 
