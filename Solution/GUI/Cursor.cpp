@@ -9,6 +9,7 @@ namespace GUI
 		: myCurrentType(eCursorType::NORMAL)
 		, mySprites(8)
 		, myShouldRender(false)
+		, myIsUsingController(false)
 	{
 		myWindowSize.x = float(aWindowSize.x);
 		myWindowSize.y = float(aWindowSize.y);
@@ -18,6 +19,7 @@ namespace GUI
 		mySprites.Add(normalSprite);
 
 		myPosition = myWindowSize / 2.f;
+		myPreviousPosition = myPosition;
 
 		myPositionZeroToOne = myPosition / myWindowSize;
 
@@ -31,8 +33,10 @@ namespace GUI
 	void Cursor::Update()
 	{
 		// uncomment for software cursor:
-		//myPosition.x += myInputWrapper->GetMouseDX();
-		//myPosition.y -= myInputWrapper->GetMouseDY();
+		//myPosition.x += CU::InputWrapper::GetInstance()->GetMouseDX();
+		//myPosition.y -= CU::InputWrapper::GetInstance()->GetMouseDY();
+
+		myPreviousPosition = myPosition;
 
 		myPosition.x = CU::InputWrapper::GetInstance()->GetMousePosition().x;
 		myPosition.y = myWindowSize.y - CU::InputWrapper::GetInstance()->GetMousePosition().y;
@@ -40,11 +44,18 @@ namespace GUI
 		myPositionZeroToOne = myPosition / myWindowSize;
 		myPositionZeroToOne.x = CU::Clip(myPositionZeroToOne.x, 0, 1.f);
 		myPositionZeroToOne.y = CU::Clip(myPositionZeroToOne.y, 0, 1.f);
+
+		if (myIsUsingController == true
+			&& (CU::InputWrapper::GetInstance()->GetMouseDX() > 0.f
+			|| CU::InputWrapper::GetInstance()->GetMouseDY() > 0.f))
+		{
+			myIsUsingController = false;
+		}
 	}
 
 	void Cursor::Render()
 	{
-		if (myShouldRender == true)
+		if (myShouldRender == true && myIsUsingController == false)
 		{
 			mySprites[static_cast<int>(myCurrentType)]->Render(myPosition);
 		}

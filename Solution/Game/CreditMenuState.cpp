@@ -38,7 +38,7 @@ void CreditMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controlle
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -80,7 +80,7 @@ void CreditMenuState::Render()
 
 void CreditMenuState::ResumeState()
 {
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 

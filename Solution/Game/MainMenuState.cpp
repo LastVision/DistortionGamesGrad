@@ -75,7 +75,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myHasRunOnce = false;
 	myCursor->SetShouldRender(true);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 }
 
 void MainMenuState::EndState()
@@ -145,7 +145,7 @@ void MainMenuState::ResumeState()
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myCursor->SetShouldRender(true);
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 }
 
 void MainMenuState::PauseState()

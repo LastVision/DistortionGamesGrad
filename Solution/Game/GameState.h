@@ -34,7 +34,7 @@ public:
 	const bool& IsLetThroughRender() const;
 
 	void HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager);
-	void InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager);
+	void InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor);
 
 protected:
 
