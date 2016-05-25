@@ -108,7 +108,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 
-			if (dot > 0.001f)
+			if (abs(dot) > 0.001f)
 			{
 				return;
 			}
@@ -131,6 +131,20 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 				{
 					myVelocity.y = 0;
 					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+				}
+			}
+			else
+			{
+				float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
+
+				if (abs(dot) > 0.001f)
+				{
+					return;
+				}
+				else
+				{
+					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 				}
 			}
 		}
