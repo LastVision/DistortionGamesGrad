@@ -93,8 +93,8 @@ bool Game::Init(HWND& aHwnd)
 #ifdef RELEASE_BUILD
 	myStateStack.PushMainGameState(new MainMenuState());
 #else
-	//myStateStack.PushMainGameState(new LevelSelectState());
-	myStateStack.PushMainGameState(new MainMenuState());
+	myStateStack.PushMainGameState(new LevelSelectState());
+	//myStateStack.PushMainGameState(new MainMenuState());
 #endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
