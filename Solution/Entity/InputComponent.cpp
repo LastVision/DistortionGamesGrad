@@ -14,6 +14,8 @@
 #include <OnPlayerJoin.h>
 #include "ShouldDieNote.h"
 
+#include "VibrationNote.h"
+
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -160,6 +162,18 @@ void InputComponent::SetIsFlipped(bool aIsFlipped)
 void InputComponent::ReceiveNote(const DeathNote&)
 {
 	myIsActive = false;
+	if (myController->IsConnected() == true)
+	{
+		myController->Vibrate(32000, 16000, 0.5f);
+	}
+}
+
+void InputComponent::ReceiveNote(const VibrationNote& aMessage)
+{
+	if (myController->IsConnected() == true)
+	{
+		myController->Vibrate(aMessage.myLeftMotorValue, aMessage.myRightMotorValue, aMessage.myTime);
+	}
 }
 
 void InputComponent::ReceiveMessage(const OnPlayerLevelComplete& aMessage)
