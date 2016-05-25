@@ -29,7 +29,7 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myCursor = aCursor;
 	myStateStatus = eStateStatus::eKeepState;
 	myIsActiveState = true;
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_options.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);

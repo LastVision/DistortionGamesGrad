@@ -93,7 +93,8 @@ bool Game::Init(HWND& aHwnd)
 #ifdef RELEASE_BUILD
 	myStateStack.PushMainGameState(new MainMenuState());
 #else
-	myStateStack.PushMainGameState(new LevelSelectState());
+	//myStateStack.PushMainGameState(new LevelSelectState());
+	myStateStack.PushMainGameState(new MainMenuState());
 #endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
@@ -193,6 +194,9 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::LEVEL_SELECT:
 		SET_RUNTIME(false);
 		myStateStack.PushMainGameState(new LevelSelectState());
+		break;
+	case eOnClickEvent::OPTIONS_TOGGLE_VIBRATION:
+		GC::OptionsUseViberations = static_cast<bool>(aMessage.myID);
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;

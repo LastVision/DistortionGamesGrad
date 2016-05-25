@@ -28,4 +28,6 @@ public:
 
 	static float PlayerHeightWithLegs;
 	static float PlayerRadius;
+
+	static bool OptionsUseViberations;
 };
