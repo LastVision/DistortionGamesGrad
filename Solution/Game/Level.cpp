@@ -183,6 +183,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
 		{
 			++playersAlive;
+			player->GetComponent<InputComponent>()->SetPlayersWinCount(myPlayerWinCount);
 			player->Update(aDeltaTime);
 		}
 		else

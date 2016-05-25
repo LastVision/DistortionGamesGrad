@@ -37,6 +37,8 @@ public:
 	bool GetIsActive();
 	void ResetIsInLevel();
 
+	void SetPlayersWinCount(int aWinCount);
+
 private:
 
 	const InputComponentData& myComponentData;
@@ -52,6 +54,8 @@ private:
 
 	float myTimeToSpawn;
 	bool myIntendToSpawn;
+
+	bool myAllowedToSpawn;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()
@@ -62,4 +66,9 @@ inline eComponentType InputComponent::GetTypeStatic()
 inline eComponentType InputComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline void InputComponent::SetPlayersWinCount(int aWinCount)
+{
+	myAllowedToSpawn = (aWinCount <= 0);
 }

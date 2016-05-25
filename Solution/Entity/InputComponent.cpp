@@ -26,6 +26,7 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myHasCompletedLevel(false)
 	, myTimeToSpawn(0.f)
 	, myIntendToSpawn(false)
+	, myAllowedToSpawn(true)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE | eMessageType::PLAYER_ACTIVE);
 
@@ -58,7 +59,7 @@ void InputComponent::Update(float aDeltaTime)
 	myTimeToSpawn -= aDeltaTime;
 	myController->Update(aDeltaTime);
 
-	if (myIntendToSpawn == true && myTimeToSpawn < 0.f)
+	if (myAllowedToSpawn == true && myIntendToSpawn == true && myTimeToSpawn < 0.f)
 	{
 		if (myIsInLevel == false)
 		{
