@@ -66,7 +66,7 @@ namespace Prism
 		myParticleEmitterData = nullptr;
 	}
 
-	void ParticleEmitterInstance::Render(Texture* aTexture)
+	void ParticleEmitterInstance::Render(Texture*)
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
 		myParticleEmitterData->myEffect->SetTexture(TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName));
@@ -450,7 +450,7 @@ namespace Prism
 		return toReturn;
 	}
 
-	void ParticleEmitterInstance::Activate(bool aShouldRender)
+	void ParticleEmitterInstance::Activate(bool)
 	{
 		Reset();
 		myStates[ACTIVE] = TRUE;

@@ -7,7 +7,7 @@ struct VibrationNote
 		, myLeftMotorValue(aLeftMotorValue)
 		, myTime(aTime)
 		{}
-
+	void operator=(const VibrationNote&) = delete;
 	const unsigned short myRightMotorValue;
 	const unsigned short myLeftMotorValue;
 	const float myTime;

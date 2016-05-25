@@ -118,7 +118,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.mySteamData.myExistsInEntity == true) // has to be after physics
 	{
-		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
+		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this);
 	}
 
 	if (aEntityData.myScoreData.myExistsInEntity == true)
@@ -138,7 +138,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myStomperData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this);
+		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this, aScene, aRotation);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

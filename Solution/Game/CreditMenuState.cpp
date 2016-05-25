@@ -93,7 +93,6 @@ void CreditMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	if (myIsActiveState == true)
 	{
-		bool notDone = true;
 		switch (aMessage.myEvent)
 		{
 			/*case eOnClickEvent::GAME_START:

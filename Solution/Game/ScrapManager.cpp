@@ -58,58 +58,59 @@ void ScrapManager::Update(float aDeltaTime)
 {
 	for (int i = myLiveHeads.Size() - 1; i >= 0; --i)
 	{
-		myLiveHeads[i].myTimer += aDeltaTime;
-		myLiveHeads[i].myEntity->Update(aDeltaTime);
+		myLiveHeads[i]->myTimer += aDeltaTime;
+		myLiveHeads[i]->myEntity->Update(aDeltaTime);
 
-		if (myLiveHeads[i].myTimer >= myLiveHeads[i].myMaxTime)
+		if (myLiveHeads[i]->myTimer >= myLiveHeads[i]->myMaxTime)
 		{
-			myLiveHeads[i].myEntity->RemoveFromScene();
-			myLiveHeads[i].myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveHeads[i]->myEntity->RemoveFromScene();
+			//myLiveHeads[i]->myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveHeads.RemoveCyclicAtIndex(i);
 		}
 	}
+	DEBUG_PRINT(myLiveHeads.Size());
 
 	for (int i = myLiveBodies.Size() - 1; i >= 0; --i)
 	{
-		myLiveBodies[i].myTimer += aDeltaTime;
-		myLiveBodies[i].myEntity->Update(aDeltaTime);
+		myLiveBodies[i]->myTimer += aDeltaTime;
+		myLiveBodies[i]->myEntity->Update(aDeltaTime);
 
-		if (myLiveBodies[i].myTimer >= myLiveBodies[i].myMaxTime)
+		if (myLiveBodies[i]->myTimer >= myLiveBodies[i]->myMaxTime)
 		{
-			myLiveBodies[i].myEntity->RemoveFromScene();
-			myLiveBodies[i].myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveBodies[i]->myEntity->RemoveFromScene();
+			//myLiveBodies[i]->myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveBodies.RemoveCyclicAtIndex(i);
 		}
 	}
 
 	for (int i = myLiveLegs.Size() - 1; i >= 0; --i)
 	{
-		myLiveLegs[i].myTimer += aDeltaTime;
-		myLiveLegs[i].myEntity->Update(aDeltaTime);
+		myLiveLegs[i]->myTimer += aDeltaTime;
+		myLiveLegs[i]->myEntity->Update(aDeltaTime);
 
-		if (myLiveLegs[i].myTimer >= myLiveLegs[i].myMaxTime)
+		if (myLiveLegs[i]->myTimer >= myLiveLegs[i]->myMaxTime)
 		{
-			myLiveLegs[i].myEntity->RemoveFromScene();
-			myLiveLegs[i].myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveLegs[i]->myEntity->RemoveFromScene();
+			//myLiveLegs[i]->myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveLegs.RemoveCyclicAtIndex(i);
 		}
 	}
 
 	for (int i = myLiveGibs.Size() - 1; i >= 0; --i)
 	{
-		myLiveGibs[i].myTimer += aDeltaTime;
-		myLiveGibs[i].myScrew->Update(aDeltaTime);
-		myLiveGibs[i].myScrewNut->Update(aDeltaTime);
-		myLiveGibs[i].mySpring->Update(aDeltaTime);
+		myLiveGibs[i]->myTimer += aDeltaTime;
+		myLiveGibs[i]->myScrew->Update(aDeltaTime);
+		myLiveGibs[i]->myScrewNut->Update(aDeltaTime);
+		myLiveGibs[i]->mySpring->Update(aDeltaTime);
 
-		if (myLiveGibs[i].myTimer >= myLiveGibs[i].myMaxTime)
+		if (myLiveGibs[i]->myTimer >= myLiveGibs[i]->myMaxTime)
 		{
-			myLiveGibs[i].myScrew->RemoveFromScene();
-			myLiveGibs[i].myScrewNut->RemoveFromScene();
-			myLiveGibs[i].mySpring->RemoveFromScene();
-			myLiveGibs[i].myScrew->GetComponent<PhysicsComponent>()->RemoveFromScene();
-			myLiveGibs[i].myScrewNut->GetComponent<PhysicsComponent>()->RemoveFromScene();
-			myLiveGibs[i].mySpring->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			myLiveGibs[i]->myScrew->RemoveFromScene();
+			myLiveGibs[i]->myScrewNut->RemoveFromScene();
+			myLiveGibs[i]->mySpring->RemoveFromScene();
+			//myLiveGibs[i]->myScrew->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			//myLiveGibs[i]->myScrewNut->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			//myLiveGibs[i]->mySpring->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveGibs.RemoveCyclicAtIndex(i);
 		}
 	}
@@ -126,29 +127,27 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myHeadIndex = 0;
 		}
 
-		BodyPart toAdd; 
-		toAdd.myEntity = myHeads[myHeadIndex].myEntity;
-		toAdd.myMaxTime = myHeads[myHeadIndex].myMaxTime;
-		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		BodyPart* toAdd = &myHeads[myHeadIndex];
+		toAdd->myTimer = 0.f;
+		bool isAlreadyInScene = toAdd->myEntity->IsInScene();
 		if (isAlreadyInScene == false)
 		{
+			DL_ASSERT_EXP(myLiveHeads.Find(toAdd) == myLiveHeads.FoundNone, "ERROR");
 			myLiveHeads.Add(toAdd);
 
-			myLiveHeads.GetLast().myEntity->AddToScene();
-			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
-			
-			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myLiveHeads.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+			toAdd->myEntity->AddToScene();
+			if (toAdd->myEntity->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			}
 		}
-		else
-		{
-			myHeads[myHeadIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myHeads[myHeadIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		}
+
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+
+
 		++myHeadIndex;
 		break;
 	}
@@ -159,29 +158,25 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myBodyIndex = 0;
 		}
 
-		BodyPart toAdd;
-		toAdd.myEntity = myBodies[myBodyIndex].myEntity;
-		toAdd.myMaxTime = myBodies[myBodyIndex].myMaxTime;
-		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		BodyPart* toAdd = &myBodies[myBodyIndex];
+		toAdd->myTimer = 0.f;
+		bool isAlreadyInScene = toAdd->myEntity->IsInScene();
 		if (isAlreadyInScene == false)
 		{
 			myLiveBodies.Add(toAdd);
 
-			myLiveBodies.GetLast().myEntity->AddToScene();
-			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
-			
-			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myLiveBodies.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+			toAdd->myEntity->AddToScene();
+			if (toAdd->myEntity->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			}
 		}
-		else
-		{
-			myBodies[myBodyIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myBodies[myBodyIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		}
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
+
+
 		++myBodyIndex;
 		break;
 	}
@@ -192,29 +187,24 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myLegIndex = 0;
 		}
 
-		BodyPart toAdd;
-		toAdd.myEntity = myLegs[myLegIndex].myEntity;
-		toAdd.myMaxTime = myLegs[myLegIndex].myMaxTime;
-		bool isAlreadyInScene = toAdd.myEntity->IsInScene();
+		BodyPart* toAdd = &myLegs[myLegIndex];
+		toAdd->myTimer = 0.f;
+		bool isAlreadyInScene = toAdd->myEntity->IsInScene();
 		if (isAlreadyInScene == false)
 		{
 			myLiveLegs.Add(toAdd);
 
-			myLiveLegs.GetLast().myEntity->AddToScene();
-			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			toAdd->myEntity->AddToScene();
+			if (toAdd->myEntity->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->myEntity->GetComponent<PhysicsComponent>()->AddToScene();
+			}
+		}
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
 
-			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myLiveLegs.GetLast().myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		}
-		else
-		{
-			myLegs[myLegIndex].myEntity->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			myLegs[myLegIndex].myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-		}
 
 		++myLegIndex;
 		break;
@@ -226,59 +216,49 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myGibIndex = 0;
 		}
 
-		GibPart toAdd;
-		toAdd.myScrew = myGibs[myGibIndex].myScrew;
-		toAdd.myScrewNut = myGibs[myGibIndex].myScrewNut;
-		toAdd.mySpring = myGibs[myGibIndex].mySpring;
-		toAdd.myMaxTime = myGibs[myGibIndex].myMaxTime;
-		bool isAlreadyInScene = toAdd.myScrew->IsInScene();
+		GibPart* toAdd = &myGibs[myGibIndex];
+		toAdd->myTimer = 0.f;
+		bool isAlreadyInScene = toAdd->myScrew->IsInScene();
 		if (isAlreadyInScene == false)
 		{
 			myLiveGibs.Add(toAdd);
 
-			myLiveGibs.GetLast().myScrew->AddToScene();
-			myLiveGibs.GetLast().myScrewNut->AddToScene();
-			myLiveGibs.GetLast().mySpring->AddToScene();
-			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddToScene();
-			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddToScene();
-			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddToScene();
-
-			CU::Vector3<float> offset;
-
-			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			offset.y = 0.5f;
-			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			offset.y = -0.5f;
-			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			dir.z = (rand() % 100) * 0.01f;
-			myLiveGibs.GetLast().myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-			myLiveGibs.GetLast().myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-			myLiveGibs.GetLast().mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+			toAdd->myScrew->AddToScene();
+			toAdd->myScrewNut->AddToScene();
+			toAdd->mySpring->AddToScene();
+			if (toAdd->myScrew->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->myScrew->GetComponent<PhysicsComponent>()->AddToScene();
+			}
+			if (toAdd->myScrewNut->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->myScrewNut->GetComponent<PhysicsComponent>()->AddToScene();
+			}
+			if (toAdd->mySpring->GetComponent<PhysicsComponent>()->IsInScene() == false)
+			{
+				toAdd->mySpring->GetComponent<PhysicsComponent>()->AddToScene();
+			}
 		}
-		else
-		{
-			CU::Vector3<float> offset;
+		CU::Vector3<float> offset;
 
-			myGibs[myGibIndex].myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			offset.y = 0.5f;
-			myGibs[myGibIndex].myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			offset.y = -0.5f;
-			myGibs[myGibIndex].mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
-			CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
-			CU::Normalize(dir);
-			dir.z = (rand() % 100) * 0.01f;
-			myGibs[myGibIndex].myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-			myGibs[myGibIndex].myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-			myGibs[myGibIndex].mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-		}
+		toAdd->myScrew->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+		offset.y = 0.5f;
+		toAdd->myScrewNut->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+		offset.y = -0.5f;
+		toAdd->mySpring->GetComponent<PhysicsComponent>()->TeleportToPosition(aPosition + offset);
+		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
+		CU::Normalize(dir);
+		dir.z = (rand() % 100) * 0.01f;
+		toAdd->myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		toAdd->myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
+		toAdd->mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
 
-		
+
+
 		++myGibIndex;
 		break;
 	}
-		break;
+
 	default:
 		break;
 	}

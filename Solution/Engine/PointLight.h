@@ -10,7 +10,7 @@ namespace Prism
 	class PointLight
 	{
 	public:
-		PointLight(unsigned int aGID, bool aAmbientOnly);
+		PointLight(bool aAmbientOnly);
 		~PointLight();
 		void Render(const Camera& aCamera);
 		void Update();
@@ -28,7 +28,6 @@ namespace Prism
 
 		const PointLightData& GetLightData() const;
 	private:
-		unsigned int myGID;
 		CU::Vector4<float> myColor;
 		CU::Matrix44<float> myOrientation;
 

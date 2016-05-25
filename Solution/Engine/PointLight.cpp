@@ -9,9 +9,8 @@
 
 namespace Prism
 {
-	PointLight::PointLight(unsigned int aGID, bool aAmbientOnly)
-		: myGID(aGID)
-		, myAmbientOnly(aAmbientOnly)
+	PointLight::PointLight(bool aAmbientOnly)
+		: myAmbientOnly(aAmbientOnly)
 		, myRange(0)
 		, myLightMesh(nullptr)
 	{

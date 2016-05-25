@@ -6,8 +6,10 @@
 #include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
-#include "EmitterManager.h"
+#include <DirectionalLight.h>
 #include <DeferredRenderer.h>
+#include "EmitterManager.h"
+#include <EmitterMessage.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -15,6 +17,8 @@
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
+#include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
@@ -36,12 +40,9 @@
 #include <SpriteProxy.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
-#include <OnPlayerLevelComplete.h>
-#include <OnDeathMessage.h>
 #include <TextureContainer.h>
 #include "PauseMenuState.h"
 #include <PointLight.h>
-#include <EmitterMessage.h>
 #include <VibrationNote.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
@@ -371,6 +372,23 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				}
 			}
 			break;
+		case eEntityType::STOMPER:
+			if (aHasEntered == true)
+			{
+ 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				
+				if (dot > 0.001f)
+				{
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					first->SendNote(ShouldDieNote());
+				}
+			}
+			break;
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{
@@ -401,6 +419,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			switch (second->GetType())
 			{
 			case BOUNCER:
+				if (first->IsInScene() == true)
+				{
+					second->SendNote(BounceNote());
+				}
 			case STEAM:
 			case SPIKE:
 				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
@@ -440,7 +462,7 @@ void Level::CreatePlayers()
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
 
-		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);

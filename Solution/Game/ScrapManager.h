@@ -33,15 +33,15 @@ private:
 	};
 
 	CU::GrowingArray<BodyPart> myHeads;
-	CU::GrowingArray<BodyPart> myLiveHeads;
+	CU::GrowingArray<BodyPart*> myLiveHeads;
 	int myHeadIndex;
 
 	CU::GrowingArray<BodyPart> myLegs;
-	CU::GrowingArray<BodyPart> myLiveLegs;
+	CU::GrowingArray<BodyPart*> myLiveLegs;
 	int myLegIndex;
 
 	CU::GrowingArray<BodyPart> myBodies;
-	CU::GrowingArray<BodyPart> myLiveBodies;
+	CU::GrowingArray<BodyPart*> myLiveBodies;
 	int myBodyIndex;
 
 	void CreateGibs();
@@ -56,7 +56,7 @@ private:
 	};
 
 	CU::GrowingArray<GibPart> myGibs;
-	CU::GrowingArray<GibPart> myLiveGibs;
+	CU::GrowingArray<GibPart*> myLiveGibs;
 	int myGibIndex;
 
 	Prism::Scene* myScene;
