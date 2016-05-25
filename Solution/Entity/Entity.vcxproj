@@ -211,6 +211,7 @@
     <ClInclude Include="StomperComponentData.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
+    <ClInclude Include="VibrationNote.h" />
     <ClInclude Include="WalkMovement.h" />
   </ItemGroup>
   <ItemGroup>

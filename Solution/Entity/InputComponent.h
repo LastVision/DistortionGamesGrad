@@ -31,6 +31,7 @@ public:
 	bool GetIsFlipped() const;
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveNote(const DeathNote& aMessage) override;
+	void ReceiveNote(const VibrationNote& aMessage) override;
 	void ReceiveMessage(const OnPlayerLevelComplete& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	bool GetIsActive();
