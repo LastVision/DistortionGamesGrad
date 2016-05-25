@@ -11,7 +11,9 @@ namespace GUI
 	ToggleBoxWidget::ToggleBoxWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
 		: Widget()
 		, myImageActive(nullptr)
+		, myImageActiveHover(nullptr)
 		, myImageDeactive(nullptr)
+		, myImageDeactiveHover(nullptr)
 		, myImageCurrent(nullptr)
 		, myClickEvent(nullptr)
 		, myCanBeClicked(true)
@@ -21,6 +23,9 @@ namespace GUI
 	{
 		std::string spritePathActive = "";
 		std::string spritePathDeactive = "";
+
+		std::string spritePathActiveHover = "";
+		std::string spritePathDeactiveHover = "";
 
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "size"), "x", mySize.x);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "size"), "y", mySize.y);
@@ -40,9 +45,13 @@ namespace GUI
 		}
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spriteactive"), "path", spritePathActive);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spritedeactive"), "path", spritePathDeactive);
+		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spriteactivehover"), "path", spritePathActiveHover);
+		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spritedeactivehover"), "path", spritePathDeactiveHover);
 
 		myImageActive = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathActive, mySize, mySize / 2.f);
 		myImageDeactive = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathDeactive, mySize, mySize / 2.f);
+		myImageActiveHover = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathActiveHover, mySize, mySize / 2.f);
+		myImageDeactiveHover = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathDeactiveHover, mySize, mySize / 2.f);
 		myImageCurrent = myImageActive;
 
 		ReadEvent(aReader, anXMLElement);
@@ -52,7 +61,9 @@ namespace GUI
 	ToggleBoxWidget::~ToggleBoxWidget()
 	{
 		SAFE_DELETE(myImageActive);
+		SAFE_DELETE(myImageActiveHover);
 		SAFE_DELETE(myImageDeactive);
+		SAFE_DELETE(myImageDeactiveHover);
 		SAFE_DELETE(myClickEvent);
 		myImageCurrent = nullptr;
 	}
@@ -83,6 +94,24 @@ namespace GUI
 	{
 		myToggledState = !myToggledState;
 		Click();
+		myImageCurrent = myImageDeactiveHover;
+		if (myToggledState == true)
+		{
+			myImageCurrent = myImageActiveHover;
+		}
+	}
+
+	void ToggleBoxWidget::OnMouseEnter()
+	{
+		myImageCurrent = myImageDeactiveHover;
+		if (myToggledState == true)
+		{
+			myImageCurrent = myImageActiveHover;
+		}
+	}
+
+	void ToggleBoxWidget::OnMouseExit()
+	{
 		myImageCurrent = myImageDeactive;
 		if (myToggledState == true)
 		{

@@ -50,7 +50,7 @@ namespace GUI
 		CU::GrowingArray<bool> unlockedlevels = RetrieveUnlockedLevelsFromFile();
 		for (int y = 0; y < myButtonMatrixIndex.y; ++y)
 		{
-			CU::GrowingArray<ButtonWidget*> buttons(myButtonMatrixIndex.x);
+			CU::GrowingArray<Widget*> buttons(myButtonMatrixIndex.x);
 			for (int x = 0; x < myButtonMatrixIndex.x; ++x)
 			{
 				ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x,

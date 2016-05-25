@@ -314,7 +314,7 @@ namespace GUI
 
 					if (myButtons.Size() == 0 || widget->GetPosition().y > myButtons.GetLast().GetLast()->GetPosition().y)
 					{
-						myButtons.Add(CU::GrowingArray<ButtonWidget*>(8));
+						myButtons.Add(CU::GrowingArray<Widget*>(8));
 						myButtons.GetLast().Add(widget);
 					}
 					else if (widget->GetPosition().x > myButtons.GetLast().GetLast()->GetPosition().x)
@@ -323,7 +323,7 @@ namespace GUI
 					}
 					else
 					{
-						myButtons.Add(CU::GrowingArray<ButtonWidget*>(8));
+						myButtons.Add(CU::GrowingArray<Widget*>(8));
 						myButtons.GetLast().Add(widget);
 					}
 
@@ -336,12 +336,14 @@ namespace GUI
 				else if (type == "toggleBox")
 				{
 					ToggleBoxWidget* widget = new ToggleBoxWidget(&aReader, widgetElement);
+					myButtons.Add(CU::GrowingArray<Widget*>(1));
+					myButtons.GetLast().Add(widget);
 					container->AddWidget(widget);
 				}
 				else if (type == "volume")
 				{
 					VolumeWidget* widget = new VolumeWidget(&aReader, widgetElement);
-					myButtons.Add(CU::GrowingArray<ButtonWidget*>(2));
+					myButtons.Add(CU::GrowingArray<Widget*>(2));
 					myButtons.GetLast().Add(widget->GetDecreseButton());
 					container->AddWidget(widget->GetDecreseButton());
 					myButtons.GetLast().Add(widget->GetIncreseButton());
