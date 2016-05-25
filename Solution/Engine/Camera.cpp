@@ -72,7 +72,7 @@ namespace Prism
 		aWidth;
 		aHeight;
 		myFar = 1000.f;
-		myProjectionMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(90.f, 90.f, myNear, myFar);
+		myProjectionMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(160.f, 160.f, myNear, myFar);
 		myProjectionMatrixNonInverted = CU::InverseSimple(myProjectionMatrix);
 		myFrustum->OnResize(myNear, myFar);
 	}
