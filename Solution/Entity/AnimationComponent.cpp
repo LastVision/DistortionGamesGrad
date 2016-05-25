@@ -34,7 +34,7 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 
 AnimationComponent::~AnimationComponent()
 {
-	PostMaster::GetInstance()->Subscribe(this, 0);
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myInstance);
 }
 
