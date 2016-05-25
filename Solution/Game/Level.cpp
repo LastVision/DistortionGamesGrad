@@ -38,7 +38,6 @@
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
-#include <Texture.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <TextureContainer.h>
@@ -416,6 +415,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			switch (second->GetType())
 			{
 			case BOUNCER:
+				if (first->IsInScene() == true)
+				{
+					second->SendNote(BounceNote());
+				}
 			case STEAM:
 			case SPIKE:
 				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
