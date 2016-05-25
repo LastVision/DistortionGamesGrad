@@ -152,7 +152,10 @@ namespace CU
 		vibration.wRightMotorSpeed = myRightMotorValue;
 		XInputSetState(myControllerID, &vibration);
 
-		myIsVibrate = true;
+		if (myVibrationTime > 0.f)
+		{
+			myIsVibrate = true;
+		}
 	}
 
 	bool ControllerInput::ButtonWhileDown(eXboxButton aKey)

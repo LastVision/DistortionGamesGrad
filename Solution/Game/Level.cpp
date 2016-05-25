@@ -41,6 +41,7 @@
 #include <TextureContainer.h>
 #include <PointLight.h>
 #include <EmitterMessage.h>
+#include <VibrationNote.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -198,6 +199,16 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		entity->Update(aDeltaTime);
 	}
 
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		Entity* player = myPlayers[i];
+		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos());
+		light->Update();
+	}
+
 	if (myPlayerWinCount >= 1)
 	{
 		myTimeToLevelChange -= aDeltaTime;
@@ -211,15 +222,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	
-	for (int i = 0; i < myPlayers.Size(); ++i)
-	{
-		Entity* player = myPlayers[i];
-		player->GetComponent<PlayerComponent>()->EvaluateDeath();
-
-		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos() );
-		light->Update();
-	}
+	
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
@@ -450,7 +453,10 @@ void Level::CreatePlayers()
 
 void Level::EndState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::ResumeState()
@@ -460,7 +466,10 @@ void Level::ResumeState()
 
 void Level::PauseState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::OnResize(int aWidth, int aHeight)

@@ -163,7 +163,7 @@ void InputComponent::SetIsFlipped(bool aIsFlipped)
 void InputComponent::ReceiveNote(const DeathNote&)
 {
 	myIsActive = false;
-	if (myController->IsConnected() == true)
+	if (myController->IsConnected() == true && myHasCompletedLevel == false)
 	{
 		myController->Vibrate(32000, 16000, 0.5f);
 	}
