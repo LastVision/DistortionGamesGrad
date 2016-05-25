@@ -201,7 +201,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	{
 		myTimeToLevelChange -= aDeltaTime;
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
-		if (myTimeToLevelChange < 0.f)
+		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
