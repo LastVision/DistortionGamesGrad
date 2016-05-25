@@ -33,6 +33,8 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+
+	
 }
 
 void OptionState::EndState()

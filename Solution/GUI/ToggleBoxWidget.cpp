@@ -10,8 +10,8 @@ namespace GUI
 {
 	ToggleBoxWidget::ToggleBoxWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
 		: Widget()
-		, myImageNormal(nullptr)
-		, myImagePressed(nullptr)
+		, myImageActive(nullptr)
+		, myImageDeactive(nullptr)
 		, myImageCurrent(nullptr)
 		, myClickEvent(nullptr)
 		, myCanBeClicked(true)
@@ -19,8 +19,8 @@ namespace GUI
 		, myId(-1)
 		, myColor(1.f, 1.f, 1.f, 1.f)
 	{
-		std::string spritePathNormal = "";
-		std::string spritePathPressed = "";
+		std::string spritePathActive = "";
+		std::string spritePathDeactive = "";
 
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "size"), "x", mySize.x);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "size"), "y", mySize.y);
@@ -38,12 +38,12 @@ namespace GUI
 				myIsVisible = false;
 			}
 		}
-		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spriteactive"), "path", spritePathNormal);
-		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spritedeactive"), "path", spritePathPressed);
+		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spriteactive"), "path", spritePathActive);
+		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "spritedeactive"), "path", spritePathDeactive);
 
-		myImageNormal = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathNormal, mySize, mySize / 2.f);
-		myImagePressed = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathPressed, mySize, mySize / 2.f);
-		myImageCurrent = myImagePressed;
+		myImageActive = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathActive, mySize, mySize / 2.f);
+		myImageDeactive = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathDeactive, mySize, mySize / 2.f);
+		myImageCurrent = myImageActive;
 
 		ReadEvent(aReader, anXMLElement);
 	}
@@ -51,8 +51,8 @@ namespace GUI
 
 	ToggleBoxWidget::~ToggleBoxWidget()
 	{
-		SAFE_DELETE(myImageNormal);
-		SAFE_DELETE(myImagePressed);
+		SAFE_DELETE(myImageActive);
+		SAFE_DELETE(myImageDeactive);
 		SAFE_DELETE(myClickEvent);
 		myImageCurrent = nullptr;
 	}
@@ -72,29 +72,29 @@ namespace GUI
 
 	void ToggleBoxWidget::OnLeftMousePressed(const CU::Vector2<float>&)
 	{
-		myImageCurrent = myImageNormal;
+		myImageCurrent = myImageDeactive;
 		if (myToggledState == true)
 		{
-			myImageCurrent = myImagePressed;
+			myImageCurrent = myImageActive;
 		}
 	}
 
 	void ToggleBoxWidget::OnLeftMouseUp()
 	{
-		Click();
 		myToggledState = !myToggledState;
-		myImageCurrent = myImageNormal;
+		Click();
+		myImageCurrent = myImageDeactive;
 		if (myToggledState == true)
 		{
-			myImageCurrent = myImagePressed;
+			myImageCurrent = myImageActive;
 		}
 	}
 
 	void ToggleBoxWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
 	{
 		Widget::OnResize(aNewSize, anOldSize);
-		myImageNormal->SetSize(mySize, mySize / 2.f);
-		myImagePressed->SetSize(mySize, mySize / 2.f);
+		myImageActive->SetSize(mySize, mySize / 2.f);
+		myImageDeactive->SetSize(mySize, mySize / 2.f);
 	}
 
 	bool ToggleBoxWidget::IsInside(const CU::Vector2<float>& aPosition) const
@@ -125,6 +125,13 @@ namespace GUI
 		if (clickEvent == "toggle_vibration")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_TOGGLE_VIBRATION, static_cast<int>(myToggledState));
+			myToggledState = GC::OptionsUseViberations;
+			myImageCurrent = myImageDeactive;
+			if (myToggledState == true)
+			{
+				myImageCurrent = myImageActive;
+			}
+
 		}
 		else
 		{
@@ -145,6 +152,16 @@ namespace GUI
 			{
 				myIsVisible = false;
 			}
+		}
+	}
+
+	void ToggleBoxWidget::SetToggleState(const bool aFlag)
+	{
+		myToggledState = aFlag;
+		myImageCurrent = myImageDeactive;
+		if (myToggledState == true)
+		{
+			myImageCurrent = myImageActive;
 		}
 	}
 

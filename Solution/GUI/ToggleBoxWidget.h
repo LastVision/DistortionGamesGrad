@@ -27,6 +27,8 @@ namespace GUI
 		const OnClickMessage* GetEvent() const;
 
 		void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut) override;
+
+		void SetToggleState(const bool aFlag);
 	protected:
 		void Click();
 
@@ -38,8 +40,8 @@ namespace GUI
 
 		bool myToggledState;
 
-		Prism::SpriteProxy* myImageNormal;
-		Prism::SpriteProxy* myImagePressed;
+		Prism::SpriteProxy* myImageActive;
+		Prism::SpriteProxy* myImageDeactive;
 		Prism::SpriteProxy* myImageCurrent;
 
 		OnClickMessage* myClickEvent;
