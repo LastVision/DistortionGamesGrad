@@ -24,6 +24,8 @@
 #include "DecalPass.h"
 
 #include "ParticlePass.h"
+
+#include <GameConstants.h>
 namespace Prism
 {
 	DeferredRenderer::DeferredRenderer()
@@ -140,9 +142,10 @@ namespace Prism
 
 		RenderParticles(aParticleEmitterManager);
 
-#ifdef SHADOWS
-		RenderShadows(aShadowLight, aScene->GetCamera());
-#endif
+		if (GC::OptionsUseShadows == true)
+		{
+			RenderShadows(aShadowLight, aScene->GetCamera());
+		}
 
 		RenderBackground(aBackground);
 	}
@@ -286,11 +289,15 @@ namespace Prism
 
 		ID3D11RenderTargetView* renderTarget = nullptr;
 
-#ifdef SHADOWS
-		renderTarget = myFinishedSceneTexture->GetRenderTargetView();
-#else
-		renderTarget = myFinishedTexture->GetRenderTargetView();
-#endif
+		if (GC::OptionsUseShadows == true)
+		{
+			renderTarget = myFinishedSceneTexture->GetRenderTargetView();
+		}
+		else
+		{
+			renderTarget = myFinishedTexture->GetRenderTargetView();
+		}
+
 
 		context->ClearDepthStencilView(Engine::GetInstance()->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		context->ClearRenderTargetView(renderTarget, myClearColor);
@@ -381,12 +388,15 @@ namespace Prism
 
 		ActivateBuffers();
 
-
-#ifdef SHADOWS
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
-#else
-		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
-#endif
+		ID3D11RenderTargetView* backbuffer = nullptr;
+		if (GC::OptionsUseShadows == true)
+		{
+			backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+		}
+		else
+		{
+			backbuffer = myFinishedTexture->GetRenderTargetView();
+		}
 		ID3D11DepthStencilView* depth = Engine::GetInstance()->GetDepthView();
 
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
