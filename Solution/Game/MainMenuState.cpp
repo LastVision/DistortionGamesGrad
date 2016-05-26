@@ -76,6 +76,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myCursor->SetShouldRender(true);
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
+	myController->SetIsInMenu(true);
 }
 
 void MainMenuState::EndState()
@@ -94,7 +95,7 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 	}
 	else
 	{
-		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK))
 		{
 			myIsActiveState = false;
 			return eStateStatus::ePopMainState;
@@ -146,6 +147,7 @@ void MainMenuState::ResumeState()
 	myCursor->SetShouldRender(true);
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
+	myController->SetIsInMenu(true);
 }
 
 void MainMenuState::PauseState()

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AcidComponent.h>
 #include <BounceComponent.h>
 #include <DirectionalLight.h>
 #include <EffectContainer.h>
@@ -101,6 +102,7 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
 	LoadStompers(level, reader, levelElement);
+	LoadAcid(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
 	LoadSpotLights(level, reader, levelElement);
@@ -345,6 +347,29 @@ void LevelFactory::LoadStompers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 
 		entity->GetComponent<StomperComponent>()->InitStomper(timeBeforeStomp, timeStomperDown
 			, stompSpeedOut, stompSpeedIn, distance, delayBeforeStomp);
+
+		aLevel->Add(entity);
+	}
+}
+
+void LevelFactory::LoadAcid(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "acid"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "acid"))
+	{
+		std::string acidType;
+		CU::Vector3f acidPosition;
+		CU::Vector3f acidRotation;
+		CU::Vector3f acidScale;
+
+		aReader.ForceReadAttribute(entityElement, "acidType", acidType);
+
+		ReadOrientation(aReader, entityElement, acidPosition, acidRotation, acidScale);
+
+		Entity* entity = EntityFactory::CreateEntity(eEntityType::ACID, CU::ToLower(acidType),
+			aLevel->GetScene(), acidPosition, acidRotation, acidScale);
+
+		DL_ASSERT_EXP(entity->GetComponent<AcidComponent>() != nullptr, "Acid need acid component to work");
 
 		aLevel->Add(entity);
 	}

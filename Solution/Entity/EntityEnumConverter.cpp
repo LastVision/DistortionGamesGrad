@@ -58,6 +58,14 @@ namespace EntityEnumConverter
 		{
 			return eEntityType::STOMPER_HOLDER;
 		}
+		else if (aType == "acid")
+		{
+			return eEntityType::ACID;
+		}
+		else if (aType == "acid_drop")
+		{
+			return eEntityType::ACID_DROP;
+		}
 
 		DL_ASSERT("The " + aType + " entity type is not supported, please tell Daniel about it.");
 		return eEntityType::_COUNT;

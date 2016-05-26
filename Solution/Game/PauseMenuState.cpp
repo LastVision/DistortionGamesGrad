@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
@@ -36,7 +37,7 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
-
+	myController->SetIsInMenu(true);
 }
 
 void PauseMenuState::EndState()
@@ -47,11 +48,12 @@ void PauseMenuState::EndState()
 
 const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
+		|| myController->ButtonOnDown(eXboxButton::B))
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopSubState;
 	}
 
 	HandleControllerInMenu(myController, myGUIManager);
@@ -72,6 +74,7 @@ void PauseMenuState::ResumeState()
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void PauseMenuState::PauseState()
