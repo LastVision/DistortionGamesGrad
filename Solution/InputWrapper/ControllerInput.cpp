@@ -97,8 +97,10 @@ namespace CU
 				return DIK_NUMPAD0;
 			}
 			return DIK_SPACE;
-
-			break;
+		}
+		case eXboxButton::START:
+		{
+			return DIK_ESCAPE;
 		}
 		case eXboxButton::RTRIGGER:
 		{
@@ -107,8 +109,6 @@ namespace CU
 				return DIK_NUMPAD1;
 			}
 			return DIK_LSHIFT;
-
-			break;
 		}
 		case eXboxButton::LTRIGGER:
 		{
@@ -117,8 +117,6 @@ namespace CU
 				return DIK_NUMPAD3;
 			}
 			return DIK_LALT;
-
-			break;
 		}
 		case eXboxButton::X:
 		{
@@ -127,8 +125,6 @@ namespace CU
 				return DIK_NUMPAD9;
 			}
 			return DIK_F3;
-
-			break;
 		}
 		default:
 			break;
