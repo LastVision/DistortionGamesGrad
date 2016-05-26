@@ -4,10 +4,13 @@
 class AcidComponent : public Component
 {
 public:
-	AcidComponent(Entity& anEntity, Prism::Scene* aScene);
+	AcidComponent(Entity& anEntity);
 	~AcidComponent();
 
 	void Update(float aDeltaTime) override;
+
+	void InitAcid(int anAmount, float aAcidIntervalMax, float aAcidIntervalMin
+		, CU::Vector3<float> aMaxVelocity, CU::Vector3<float> aMinVelocity, Prism::Scene* aScene);
 
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
@@ -17,9 +20,12 @@ private:
 	CU::GrowingArray<Entity*> myAcidDrops;
 
 	CU::Vector3<float> mySpawnPosition;
+	CU::Vector3<float> mySpawnVelocityMin;
+	CU::Vector3<float> mySpawnVelocityMax;
 
 	float myAcidTimer;
-	float myAcidInterval;
+	float myAcidIntervalMin;
+	float myAcidIntervalMax;
 
 	int myAcidIndex;
 };

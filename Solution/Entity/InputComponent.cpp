@@ -42,8 +42,8 @@ void InputComponent::Init()
 {
 	myMovement = myEntity.GetComponent<MovementComponent>();
 	DL_ASSERT_EXP(myMovement != nullptr, "Input component needs movement component to work correctly.");
-	
-	
+
+
 }
 
 void InputComponent::AddController(int anID)
@@ -69,7 +69,7 @@ void InputComponent::Update(float aDeltaTime)
 			myIsInLevel = true;
 			PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 		}
-		PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", myOrientation.GetPos()));
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myOrientation.GetPos(), myOrientation.GetUp(), 2.f));
 		myIntendToSpawn = false;
 		myEntity.SendNote(SpawnNote());
 		myIsActive = true;

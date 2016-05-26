@@ -209,6 +209,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SteamComponent.h" />
     <ClInclude Include="SteamComponentData.h" />
+    <ClInclude Include="SteamVentNote.h" />
     <ClInclude Include="StomperComponent.h" />
     <ClInclude Include="StomperComponentData.h" />
     <ClInclude Include="TriggerComponent.h" />

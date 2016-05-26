@@ -361,6 +361,11 @@ void LevelFactory::LoadAcid(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElem
 		CU::Vector3f acidPosition;
 		CU::Vector3f acidRotation;
 		CU::Vector3f acidScale;
+		int amount = 0;
+		float maxInterval = 0.f;
+		float minInterval = 0.f;
+		CU::Vector3<float> maxVelocity;
+		CU::Vector3<float> minVelocity;
 
 		aReader.ForceReadAttribute(entityElement, "acidType", acidType);
 
@@ -370,6 +375,15 @@ void LevelFactory::LoadAcid(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElem
 			aLevel->GetScene(), acidPosition, acidRotation, acidScale);
 
 		DL_ASSERT_EXP(entity->GetComponent<AcidComponent>() != nullptr, "Acid need acid component to work");
+
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "amount"), "value", amount);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "maxInterval"), "value", maxInterval);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "minInterval"), "value", minInterval);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "maxVelocity"), "X", "Y", "Z", maxVelocity);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "minVelocity"), "X", "Y", "Z", minVelocity);
+
+		entity->GetComponent<AcidComponent>()->InitAcid(amount, maxInterval, minInterval
+			, maxVelocity, minVelocity, aLevel->GetScene());
 
 		aLevel->Add(entity);
 	}

@@ -45,6 +45,8 @@ namespace Prism
 		void SetRotation(const CU::Vector3<float>& aRotation);
 		CU::Vector3<float> GetPosition() const;
 
+		void SetRandomizeDirection(bool aShouldBeSet);
+
 	private:
 
 		void Reset();
@@ -86,7 +88,8 @@ namespace Prism
 		int myLiveParticleCount;
 
 		bool myOverrideDirection;
-
+		bool myRandomizeDirection = false;
+		bool myIsAffectedByGravity = false;
 		Entity* myEntity;
 
 		enum eEmitterStates
