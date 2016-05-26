@@ -18,6 +18,7 @@ struct BodyPart
 	void SetActive(bool aValue);
 	bool GetActive() const;
 
+
 	Prism::Instance* myInstance;
 	CU::Matrix44<float> myOrientation;
 };

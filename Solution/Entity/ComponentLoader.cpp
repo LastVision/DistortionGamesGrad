@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AcidComponentData.h"
 #include "BounceComponentData.h"
 #include <CommonHelper.h>
 #include "ComponentLoader.h"
@@ -13,6 +14,11 @@
 #include "PlayerComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
+
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, AcidComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData)
 {
