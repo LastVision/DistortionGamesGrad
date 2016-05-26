@@ -35,5 +35,7 @@ private:
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
 
 	float myTimer;
+
+	int myNumberOfActiveScores;
 };
 
