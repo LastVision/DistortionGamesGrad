@@ -24,6 +24,8 @@ namespace GUI
 
 		void Render(const CU::Vector2<float>& aParentPosition) override;
 
+		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
+
 		void ReceiveMessage(const OnClickMessage& aMessage) override;
 
 		ButtonWidget* GetDecreseButton();
@@ -42,6 +44,7 @@ namespace GUI
 		std::string myTextValue;
 
 		CU::Vector2<float> myTextPosition;
+		float myTextScale;
 
 		int myValue;
 
