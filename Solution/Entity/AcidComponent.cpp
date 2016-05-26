@@ -1,22 +1,17 @@
 #include "stdafx.h"
 #include "AcidComponent.h"
 #include "EntityFactory.h"
+#include <MathHelper.h>
 #include "PhysicsComponent.h"
 
-AcidComponent::AcidComponent(Entity& anEntity, Prism::Scene* aScene)
+AcidComponent::AcidComponent(Entity& anEntity)
 	: Component(anEntity)
-	, myAcidDrops(8)
 	, myAcidTimer(0.f)
 	, myAcidIndex(0)
-	, myAcidInterval(5.f)
+	, myAcidIntervalMin(0.f)
+	, myAcidIntervalMax(0.f)
 {
-	for (int i = 0; i < 4; i++)
-	{
-		mySpawnPosition = myEntity.GetOrientation().GetPos() + myEntity.GetOrientation().GetUp() * 2.f;
-
-		Entity* acidDrop = EntityFactory::GetInstance()->CreateEntity(eEntityType::ACID_DROP, aScene, mySpawnPosition);
-		myAcidDrops.Add(acidDrop);
-	}
+	mySpawnPosition = myEntity.GetOrientation().GetPos() + myEntity.GetOrientation().GetUp() * 2.f;
 }
 
 AcidComponent::~AcidComponent()
@@ -26,38 +21,62 @@ AcidComponent::~AcidComponent()
 
 void AcidComponent::Update(float aDeltaTime)
 {
-	myAcidTimer -= aDeltaTime;
-
-	if (myAcidTimer <= 0.f)
-	{
-		if (myAcidDrops[myAcidIndex]->IsInScene() == false)
-		{
-			myAcidDrops[myAcidIndex]->GetComponent<PhysicsComponent>()->AddToScene();
-			myAcidDrops[myAcidIndex]->AddToScene();
-		}
-
-		myAcidDrops[myAcidIndex]->SetShouldBeRemoved(false);
-		myAcidDrops[myAcidIndex]->GetComponent<PhysicsComponent>()->TeleportToPosition(mySpawnPosition);
-
-		myAcidIndex++;
-
-		myAcidTimer = myAcidInterval;
-
-		if (myAcidIndex >= myAcidDrops.Size())
-		{
-			myAcidIndex = 0;
-		}
-	}
-
 	for each (Entity* acidDrop in myAcidDrops)
 	{
 		acidDrop->Update(aDeltaTime);
 
 		if (acidDrop->ShouldBeRemoved() == true)
 		{
-			acidDrop->GetComponent<PhysicsComponent>()->RemoveFromScene();
+			acidDrop->GetComponent<PhysicsComponent>()->TeleportToPosition({ 0.f, -10.f, 0.f });
 			acidDrop->RemoveFromScene();
 			acidDrop->SetShouldBeRemoved(false);
 		}
 	}
+
+	myAcidTimer -= aDeltaTime;
+
+	if (myAcidTimer <= 0.f)
+	{
+		if (myAcidDrops[myAcidIndex]->IsInScene() == false)
+		{
+			myAcidDrops[myAcidIndex]->AddToScene();
+		}
+
+		CU::Vector3<float> velocity = CU::Math::RandomVector(mySpawnVelocityMin, mySpawnVelocityMax);
+
+		myAcidDrops[myAcidIndex]->SetShouldBeRemoved(false);
+		myAcidDrops[myAcidIndex]->GetComponent<PhysicsComponent>()->TeleportToPosition(mySpawnPosition);
+		myAcidDrops[myAcidIndex]->GetComponent<PhysicsComponent>()->SetVelocity(velocity);
+
+		myAcidTimer = CU::Math::RandomRange(myAcidIntervalMin, myAcidIntervalMax);
+
+		myAcidIndex++;
+
+		if (myAcidIndex >= myAcidDrops.Size())
+		{
+			myAcidIndex = 0;
+		}
+	}
+}
+
+void AcidComponent::InitAcid(int anAmount, float aAcidIntervalMax, float aAcidIntervalMin
+	, CU::Vector3<float> aMaxVelocity, CU::Vector3<float> aMinVelocity, Prism::Scene* aScene)
+{
+	myAcidDrops.Init(anAmount);
+
+	for (int i = 0; i < anAmount; i++)
+	{
+		Entity* acidDrop = EntityFactory::GetInstance()->CreateEntity(eEntityType::ACID_DROP, aScene, mySpawnPosition);
+		acidDrop->GetComponent<PhysicsComponent>()->AddToScene();
+		acidDrop->GetComponent<PhysicsComponent>()->TeleportToPosition({ -1.f * i, -10.f, 0.f });
+
+		myAcidDrops.Add(acidDrop);
+	}
+
+	myAcidIntervalMax = aAcidIntervalMax;
+	myAcidIntervalMin = aAcidIntervalMin;
+
+	mySpawnVelocityMax = aMaxVelocity;
+	mySpawnVelocityMin = aMinVelocity;
+
 }
