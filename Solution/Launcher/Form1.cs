@@ -23,6 +23,8 @@ namespace Launcher
 
 		private Process myGame = new Process();
 
+		private bool myUseCheat = false;
+
 		enum eResolutions
 		{
 			R1280x720,
@@ -132,6 +134,7 @@ namespace Launcher
 				WriteMSAAToFile(writer);
 				WriterWindowedToFile(writer);
 				WriteQualityToFile(writer);
+				WriteCheatToFile(writer);
 			}
 
 			ProcessStartInfo processInfo = new ProcessStartInfo();
@@ -157,6 +160,18 @@ namespace Launcher
 			else
 			{
 				MessageBox.Show("Could not find " + myExePath + ".");
+			}
+		}
+
+		private void WriteCheatToFile(BinaryWriter writer)
+		{
+			if (myUseCheat == true)
+			{
+				writer.Write((Int32)1);
+			}
+			else
+			{
+				writer.Write((Int32)0);
 			}
 		}
 

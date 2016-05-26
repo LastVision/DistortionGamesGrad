@@ -176,7 +176,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || 
-		(myController->IsConnected() == true && myController->ButtonOnUp(eXboxButton::START)))
+		(myController->IsConnected() == true && myController->ButtonOnDown(eXboxButton::START)))
 	{
 		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;

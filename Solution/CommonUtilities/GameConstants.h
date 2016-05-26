@@ -31,4 +31,6 @@ public:
 
 	static bool OptionsUseViberations;
 	static bool OptionsUseShadows;
+
+	static bool EnableCheat;
 };
