@@ -30,6 +30,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 		if (elementName == CU::ToLower("Model"))
 		{
 			aDocument.ForceReadAttribute(e, "modelPath", aOutputData.myModelPath);
+			aDocument.ReadAttribute(e, "secondAnimationPath", aOutputData.mySecondAnimationPath); // used by steam vents hehe
 			aDocument.ForceReadAttribute(e, "shaderPath", aOutputData.myEffectPath);
 		}
 	}
