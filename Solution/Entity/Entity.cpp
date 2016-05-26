@@ -145,7 +145,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myAcidData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::ACID)] = new AcidComponent(*this, aScene);
+		myComponents[static_cast<int>(eComponentType::ACID)] = new AcidComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

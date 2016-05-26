@@ -52,6 +52,7 @@ private:
 	Prism::Instance* myInstance;
 	float myCullingRadius;
 	AnimationData myAnimation;
+	AnimationData mySecondAnimation;
 
 	const AnimationComponentData& myComponentData;
 };

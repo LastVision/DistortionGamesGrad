@@ -24,10 +24,14 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 	, myInstance(nullptr)
 	, myCullingRadius(50.f)
 {
+	myAnimation.myFile = myComponentData.myModelPath;
+
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadModelAnimated(myComponentData.myModelPath
 		, myComponentData.myEffectPath);
 
 	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
+
+	//myInstance->SetAnimation(Prism::AnimationSystem::GetInstance()->GetAnimation(myAnimation.myFile.c_str()));
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }

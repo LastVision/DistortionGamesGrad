@@ -110,25 +110,15 @@ void PlayerGraphicsComponent::Activate()
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
+	myPreviousAnimation = eCharacterAnimationType::FLY;
+	myCurrentAnimationType = eCharacterAnimationType::FLY;
+	myCurrentAnimation = &myFlyAnimation;
 	//myArrow->SetShouldRender(true);
 }
 
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
-	{
-		myCurrentAnimation = &myIdleAnimation;
-	}
-	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_2))
-	{
-		myCurrentAnimation = &myWalkAnimation;
-	}
-	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_3))
-	{
-		myCurrentAnimation = &myFlyAnimation;
-	}
-
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
 		myBody.SetActive(false);
@@ -151,10 +141,6 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
-	
-
-
-
 
 	if (PollingStation::GetInstance()->GetPlayersAlive() > 1 && myShowArrow == false)
 	{

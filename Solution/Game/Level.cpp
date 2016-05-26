@@ -411,6 +411,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				first->SendNote(ShouldDieNote());
+				second->SetShouldBeRemoved(true);
 			}
 			break;
 		case eEntityType::GOAL_POINT:
