@@ -50,7 +50,7 @@ void WalkMovement::Update(float aDeltaTime, bool)
 
 	if (myVelocity.x != myPreviousVelocity.x)
 	{
-		if (myVelocity.x > 0.f)
+		if (myVelocity.x != 0.f)
 		{
 			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
 		}
