@@ -5,6 +5,7 @@
 #include "LevelButtonWidget.h"
 #include <OnClickMessage.h>
 #include <CommonHelper.h>
+#include <GameConstants.h>
 
 namespace GUI
 {
@@ -61,17 +62,24 @@ namespace GUI
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
 				}
 #ifdef RELEASE_BUILD
-				if (index == 0)
+				if (GC::EnableCheat == false)
 				{
-					button->SetActive(true);
-				}
-				else if (index >= unlockedlevels.Size())
-				{
-					button->SetActive(false);
+					if (index == 0)
+					{
+						button->SetActive(true);
+					}
+					else if (index >= unlockedlevels.Size())
+					{
+						button->SetActive(false);
+					}
+					else
+					{
+						button->SetActive(unlockedlevels[index]);
+					}
 				}
 				else
 				{
-					button->SetActive(unlockedlevels[index]);
+					button->SetActive(true);
 				}
 #else
 				button->SetActive(true);

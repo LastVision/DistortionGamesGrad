@@ -31,3 +31,5 @@ bool GC::OptionsUseShadows = true;
 #else
 bool GC::OptionsUseShadows = false;
 #endif
+
+bool GC::EnableCheat = false;
