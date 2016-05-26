@@ -18,8 +18,13 @@ public:
 private:
 
 	CU::GrowingArray<CU::Vector3<float>> myPositions;
+
+	CU::Vector3<float> myStartPosition;
+
 	float myPatrolSpeed;
 	float myDelayBeforePatrol;
+	float myTotalCurrentLength;
+
 	bool myIsLoopingForward;
 	int myCurrentIndex;
 };
@@ -32,11 +37,4 @@ inline eComponentType SawBladeComponent::GetTypeStatic()
 inline eComponentType SawBladeComponent::GetType()
 {
 	return GetTypeStatic();
-}
-
-inline void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& somePositions, float aSpeed, float aDelayBeforePatrol)
-{
-	myPositions = somePositions;
-	myPatrolSpeed = aSpeed;
-	myDelayBeforePatrol = aDelayBeforePatrol;
 }
