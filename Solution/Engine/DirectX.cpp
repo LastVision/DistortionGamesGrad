@@ -111,6 +111,12 @@ namespace Prism
 		SAFE_RELEASE(myDepthStencilStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
 		SAFE_RELEASE(myDepthStencilStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
 
+		SAFE_RELEASE(myBlendStates[static_cast<int>(eDirectXBlendState::ALPHA)]);
+		SAFE_RELEASE(myBlendStates[static_cast<int>(eDirectXBlendState::NO_ALPHA)]);
+		SAFE_RELEASE(myBlendStates[static_cast<int>(eDirectXBlendState::PARTICLE_BLEND)]);
+
+
+
 		SAFE_DELETE(myViewPort);
 
 		myContext->ClearState();

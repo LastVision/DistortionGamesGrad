@@ -48,6 +48,7 @@ void InputComponent::Init()
 
 void InputComponent::AddController(int anID)
 {
+	DL_ASSERT_EXP(myController == nullptr, "Controller was not null. Don't add twice.");
 	myController = new CU::ControllerInput(anID);
 }
 
