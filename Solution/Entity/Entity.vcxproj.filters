@@ -110,6 +110,9 @@
     <ClCompile Include="StomperComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="AcidComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -258,6 +261,12 @@
     </ClInclude>
     <ClInclude Include="VibrationNote.h">
       <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="AcidComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AcidComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
