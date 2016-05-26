@@ -104,8 +104,8 @@ void SmartCamera::Update(float aDeltaTime)
 		if (myCameraAlpha <= 1.f)
 		{
 			CU::Vector3f cameraPos = myCamera.GetOrientation().GetPos();
-			CU::Vector3f pos = CU::Math::Lerp(cameraPos, myStartPosition, myCameraAlpha);
-			myCamera.SetPosition(pos);
+			//CU::Vector3f pos = CU::Math::Lerp(cameraPos, myStartPosition, myCameraAlpha);
+			myCamera.SetPosition(cameraPos);
 			myCameraAlpha = 0.f;
 		}
 	}

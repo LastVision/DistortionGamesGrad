@@ -11,6 +11,7 @@
 namespace GUI
 {
 	VolumeWidget::VolumeWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
+		: myTextScale(1.f)
 	{
 		std::string spriteDecreasePathNormal = "";
 		std::string spriteDecreasePathHover = "";
@@ -102,9 +103,16 @@ namespace GUI
 
 	void VolumeWidget::Render(const CU::Vector2<float>& aParentPosition)
 	{
-		Prism::Engine::GetInstance()->PrintText(myText, { aParentPosition.x + myPosition.x + myTextPosition.x, aParentPosition.y + myPosition.y + myTextPosition.y }, Prism::eTextType::RELEASE_TEXT);
+		Prism::Engine::GetInstance()->PrintText(myText, { aParentPosition.x + myPosition.x + myTextPosition.x, aParentPosition.y + myPosition.y + myTextPosition.y }, Prism::eTextType::RELEASE_TEXT, myTextScale);
 		/*myDecreaseButton->Render(myPosition + aParentPosition);
 		myIncreaseButton->Render(myPosition + aParentPosition);*/
+	}
+
+	void VolumeWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
+	{
+		CU::Vector2<float> ratio = aNewSize / anOldSize;
+		myPosition *= ratio;
+		myTextPosition *= ratio;
 	}
 
 	void VolumeWidget::ReceiveMessage(const OnClickMessage& aMessage)

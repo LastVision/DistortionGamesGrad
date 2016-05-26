@@ -47,4 +47,16 @@ namespace GUI
 			star->Update(aDeltaTime);
 		}
 	}
+
+	void LevelButtonWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
+	{
+		__super::OnResize(aNewSize, anOldSize);
+		for each(StarWidget* star in myStars)
+		{
+			star->OnResize(aNewSize, anOldSize);
+		}
+		CU::Vector2<float> ratio = aNewSize / anOldSize;
+		myStarOffset *= ratio;
+		myStarPosition *= ratio;
+	}
 }

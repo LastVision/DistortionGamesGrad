@@ -31,6 +31,7 @@ void VictoryState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerIn
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
+	myController->SetIsInMenu(true);
 }
 
 void VictoryState::EndState()
@@ -40,7 +41,7 @@ void VictoryState::EndState()
 
 void VictoryState::ResumeState()
 {
-
+	myController->SetIsInMenu(true);
 }
 
 void VictoryState::PauseState()
