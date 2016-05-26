@@ -64,6 +64,9 @@ public:
 	void SetActive(bool aIsActive);
 	void SetDelayedAddToScene();
 
+	void SetShouldBeRemoved(bool aShouldBeRemoved);
+	bool ShouldBeRemoved() const;
+
 private:
 	void operator=(Entity&) = delete;
 
@@ -75,6 +78,8 @@ private:
 	bool myAlive;
 	bool myIsActive;
 	bool myIsInScene;
+	bool myShouldBeRemoved;
+
 	std::string mySubType;
 
 	Prism::Scene* myScene;
@@ -212,4 +217,14 @@ inline void Entity::SetDelayedAddToScene()
 {
 	myDelayAddToSceneTimer = 0.1f;
 	myDelayedAddToScene = true;
+}
+
+inline void Entity::SetShouldBeRemoved(bool aShouldBeRemoved)
+{
+	myShouldBeRemoved = aShouldBeRemoved;
+}
+
+inline bool Entity::ShouldBeRemoved() const
+{
+	return myShouldBeRemoved;
 }

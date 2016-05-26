@@ -389,6 +389,18 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				}
 			}
 			break;
+		case eEntityType::ACID_DROP:
+			if (aHasEntered == true)
+			{
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				first->SendNote(ShouldDieNote());
+			}
+			break;
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{
@@ -432,8 +444,31 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				break;
 			case GOAL_POINT:
 				break;
+			case ACID_DROP:
+				second->SetShouldBeRemoved(true);
+				break;
 			default:
 				break;
+			}
+		}
+	}
+	else if (first->GetType() == eEntityType::ACID_DROP)
+	{
+		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
+		{
+			first->SetShouldBeRemoved(true);
+
+			if (second->GetType() == eEntityType::PLAYER)
+			{
+				int playerID = second->GetComponent<InputComponent>()->GetPlayerID();
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				second->SendNote(ShouldDieNote());
 			}
 		}
 	}
