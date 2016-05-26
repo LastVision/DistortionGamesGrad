@@ -345,6 +345,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, playerID));
 
 				first->SendNote(ShouldDieNote());
+
+				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
+
 				//Sawblade Particle Effect
 				//Oil Effect
 			}

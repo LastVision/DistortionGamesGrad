@@ -140,8 +140,8 @@ namespace Prism
 
 		RenderDeferred(aScene);
 
-		RenderParticles(aParticleEmitterManager);
 
+		RenderParticles(aParticleEmitterManager);
 		if (GC::OptionsUseShadows == true)
 		{
 			RenderShadows(aShadowLight, aScene->GetCamera());

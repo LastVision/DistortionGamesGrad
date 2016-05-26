@@ -16,7 +16,7 @@ namespace Prism
 
 	ParticleEmitterInstance::ParticleEmitterInstance(ParticleEmitterData* someData, bool anAllowManyParticles)
 		: myVertexWrapper(nullptr)
-		, myEmissionTime(0)
+		, myEmissionTime(-1.f)
 		, myParticleIndex(0)
 		, myLiveParticleCount(0)
 		, myOverrideDirection(false)
@@ -283,10 +283,15 @@ namespace Prism
 				particleData.mySpeed += particleData.mySpeedDelta * aDeltaTime;
 			}
 
-			gfxParticle.myPosition.x += (logicParticle.myDirection.x * particleData.mySpeed) * aDeltaTime;
-			gfxParticle.myPosition.y += (logicParticle.myDirection.y * particleData.mySpeed) * aDeltaTime;
-			gfxParticle.myPosition.z += (logicParticle.myDirection.z * particleData.mySpeed) * aDeltaTime;
+			if (myIsAffectedByGravity == true)
+			{
+				logicParticle.myDirection.y -= (9.82f * 0.1f) * aDeltaTime;
+				
+			}
 
+			gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
+			gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
+			gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
 
 			if (gfxParticle.mySize > 0.000000f)
 			{
@@ -339,9 +344,27 @@ namespace Prism
 
 			gfxParticle.myColor = myParticleEmitterData->myData.myStartColor;
 
-			logicParticle.mySpeed = myParticleSpeed;
-
+			if (myIsAffectedByGravity == true)
+			{
+				logicParticle.mySpeed = CU::Math::RandomRange(0.5f, myParticleSpeed);
+			}
+			else
+			{
+				logicParticle.mySpeed = myParticleSpeed;
+			}
 			logicParticle.myDirection = myDirection;
+
+			if (myRandomizeDirection == true)
+			{
+
+				float randomAngle = CU::Math::RandomRange(-45.f, 45.f) * (M_PI / 180.f);
+
+				CU::Vector3f newDirection = { (myDirection.x * cos(-randomAngle * 0.5f)) - (myDirection.y * sin(-randomAngle * 0.5f))
+					, (myDirection.y * cos(-randomAngle * 0.5f)) - (myDirection.x * sin(-randomAngle * 0.5f)), 0.f };
+				CU::Normalize(newDirection);
+				logicParticle.myDirection = newDirection;
+			}
+
 			if (myOverrideDirection == false)
 			{
 
@@ -474,6 +497,12 @@ namespace Prism
 	CU::Vector3<float> ParticleEmitterInstance::GetPosition() const
 	{
 		return myOrientation.GetPos();
+	}
+
+	void ParticleEmitterInstance::SetRandomizeDirection(bool aShouldBeSet)
+	{
+		myRandomizeDirection = aShouldBeSet;
+		myIsAffectedByGravity = true;
 	}
 
 }

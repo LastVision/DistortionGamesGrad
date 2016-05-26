@@ -16,6 +16,7 @@
 #include "InputComponent.h"
 #include <OnDeathMessage.h>
 #include "VibrationNote.h"
+#include <EmitterMessage.h>
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
@@ -205,6 +206,8 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Head", myEntity.GetOrientation().GetPos()));
+
 		}
 		myHead.SetActive(false);
 		break;
@@ -215,6 +218,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myLeftLeg.SetActive(false);
 			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Legs", myEntity.GetOrientation().GetPos()));
 		}
 
 		if (myRightLeg.GetActive() == true)
