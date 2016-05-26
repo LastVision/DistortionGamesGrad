@@ -47,7 +47,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, -1);
 	myGUIManager->SetSelectedButton(0, 6);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 }

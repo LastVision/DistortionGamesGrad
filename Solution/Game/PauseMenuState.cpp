@@ -33,7 +33,7 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_pause_menu.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
 
@@ -70,7 +70,7 @@ void PauseMenuState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 }
 
