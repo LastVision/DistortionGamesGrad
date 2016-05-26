@@ -16,7 +16,7 @@
 
 #include "VibrationNote.h"
 #include <GameConstants.h>
-
+#include <ModelLoader.h>
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -30,7 +30,6 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myAllowedToSpawn(true)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE | eMessageType::PLAYER_ACTIVE);
-
 }
 
 InputComponent::~InputComponent()
@@ -43,6 +42,8 @@ void InputComponent::Init()
 {
 	myMovement = myEntity.GetComponent<MovementComponent>();
 	DL_ASSERT_EXP(myMovement != nullptr, "Input component needs movement component to work correctly.");
+	
+	
 }
 
 void InputComponent::AddController(int anID)
@@ -83,7 +84,9 @@ void InputComponent::Update(float aDeltaTime)
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
 					myMovement->Impulse();
-					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myOrientation.GetPos(), -myOrientation.GetUp()));
+					myParticlePoint = &myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation()->myJetPack;
+					myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myParticleOrientation.GetPos(), -myParticleOrientation.GetUp()));
 				}
 				else
 				{

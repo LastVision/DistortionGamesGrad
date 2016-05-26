@@ -270,3 +270,8 @@ void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage
 		myCurrentAnimationType = aMessage.myAnimationType;
 	//}
 }
+
+BodyAnimation* PlayerGraphicsComponent::GetCurrentAnimation()
+{
+	return myCurrentAnimation;
+}

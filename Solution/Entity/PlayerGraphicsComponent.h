@@ -35,7 +35,7 @@ public:
 	void ReceiveNote(const CharacterAnimationNote& aMessage) override;
 
 	bool GetLegsActive() const;
-
+	BodyAnimation* GetCurrentAnimation();
 private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;

@@ -344,6 +344,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, playerID));
 
 				first->SendNote(ShouldDieNote());
+				//Sawblade Particle Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::SPIKE:
@@ -356,6 +358,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				first->SendNote(ShouldDieNote());
+				//Spike Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -370,12 +374,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
 				}
+				//Bouncer effect
 			}
 			break;
 		case eEntityType::STOMPER:
 			if (aHasEntered == true)
 			{
- 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
 				
 				if (dot > 0.001f)
 				{
@@ -387,6 +392,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 					first->SendNote(ShouldDieNote());
 				}
+				//Stomper Effect
 			}
 			break;
 		case eEntityType::GOAL_POINT:
