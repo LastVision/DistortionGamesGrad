@@ -65,6 +65,7 @@ namespace CU
 		const int GetControllerID() const;
 
 		bool CheckConnection();
+		void SetIsInMenu(const bool aFlag);
 	private:
 
 		unsigned int ConvertInput(const eXboxButton& aButton);
@@ -84,5 +85,12 @@ namespace CU
 
 		float myPrevLeftTrigger;
 		float myPrevRightTrigger;
+
+		bool myIsInMenu;
 	};
+
+	inline void ControllerInput::SetIsInMenu(const bool aFlag)
+	{
+		myIsInMenu = aFlag;
+	}
 }

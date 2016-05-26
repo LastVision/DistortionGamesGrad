@@ -50,6 +50,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void ScoreState::EndState()
@@ -102,6 +103,7 @@ void ScoreState::Render()
 
 void ScoreState::ResumeState()
 {
+	myController->SetIsInMenu(true);
 }
 
 void ScoreState::PauseState()
