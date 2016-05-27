@@ -41,8 +41,11 @@
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <TextureContainer.h>
+#include "PauseMenuState.h"
 #include <PointLight.h>
 #include <VibrationNote.h>
+
+#include <Texture.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -144,6 +147,7 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
+	myController->SetIsInMenu(false);
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -173,11 +177,14 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || 
+		(myController->IsConnected() == true && myController->ButtonOnDown(eXboxButton::START)))
 	{
-		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
+		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopMainState;*/
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new PauseMenuState());
 	}
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
@@ -340,6 +347,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, playerID));
 
 				first->SendNote(ShouldDieNote());
+
+				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
+
+				//Sawblade Particle Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::SPIKE:
@@ -352,6 +366,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				first->SendNote(ShouldDieNote());
+				//Spike Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -366,6 +382,38 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
 				}
+				//Bouncer effect
+			}
+			break;
+		case eEntityType::STOMPER:
+			if (aHasEntered == true)
+			{
+				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				
+				if (dot > 0.001f)
+				{
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					first->SendNote(ShouldDieNote());
+				}
+				//Stomper Effect
+			}
+			break;
+		case eEntityType::ACID_DROP:
+			if (aHasEntered == true)
+			{
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				first->SendNote(ShouldDieNote());
+				second->SetShouldBeRemoved(true);
 			}
 			break;
 		case eEntityType::GOAL_POINT:
@@ -411,8 +459,31 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				break;
 			case GOAL_POINT:
 				break;
+			case ACID_DROP:
+				second->SetShouldBeRemoved(true);
+				break;
 			default:
 				break;
+			}
+		}
+	}
+	else if (first->GetType() == eEntityType::ACID_DROP)
+	{
+		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
+		{
+			first->SetShouldBeRemoved(true);
+
+			if (second->GetType() == eEntityType::PLAYER)
+			{
+				int playerID = second->GetComponent<InputComponent>()->GetPlayerID();
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				second->SendNote(ShouldDieNote());
 			}
 		}
 	}
@@ -466,7 +537,7 @@ void Level::EndState()
 
 void Level::ResumeState()
 {
-
+	myController->SetIsInMenu(false);
 }
 
 void Level::PauseState()

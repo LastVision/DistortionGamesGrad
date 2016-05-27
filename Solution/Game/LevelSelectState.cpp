@@ -30,10 +30,11 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
 	RetrieveUnlockedLevelsFromFile();
+	myController->SetIsInMenu(true);
 }
 
 void LevelSelectState::EndState()
@@ -44,7 +45,8 @@ void LevelSelectState::EndState()
 
 const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
+		|| myController->ButtonOnDown(eXboxButton::B))
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
@@ -67,8 +69,9 @@ void LevelSelectState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void LevelSelectState::PauseState()

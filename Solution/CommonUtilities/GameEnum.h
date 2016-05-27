@@ -85,6 +85,10 @@ enum eEntityType
 	GOAL_POINT = 128,
 	STEAM_VENT = 256,
 	SCRAP = 512,
+	STOMPER = 1024,
+	STOMPER_HOLDER = 2048,
+	ACID = 4096,
+	ACID_DROP = 8192,
 	_COUNT,
 };
 
@@ -153,6 +157,7 @@ enum class eComponentType
 	BOUNCE,
 	SOUND,
 	STOMPER,
+	ACID,
 	_COUNT,
 };
 

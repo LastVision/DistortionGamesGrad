@@ -162,6 +162,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AcidComponent.h" />
+    <ClInclude Include="AcidComponentData.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationComponentData.h" />
     <ClInclude Include="BounceComponent.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SteamComponent.h" />
     <ClInclude Include="SteamComponentData.h" />
+    <ClInclude Include="SteamVentNote.h" />
     <ClInclude Include="StomperComponent.h" />
     <ClInclude Include="StomperComponentData.h" />
     <ClInclude Include="TriggerComponent.h" />
@@ -215,6 +218,7 @@
     <ClInclude Include="WalkMovement.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AcidComponent.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="BounceComponent.cpp" />
     <ClCompile Include="DashAimMovement.cpp" />

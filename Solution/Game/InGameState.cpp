@@ -5,6 +5,7 @@
 #include "LevelFactory.h"
 #include <Camera.h>
 #include "Console.h"
+#include <ControllerInput.h>
 #include <CommonHelper.h>
 #include <GameStateMessage.h>
 #include <EffectContainer.h>
@@ -77,6 +78,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK | eMessageType::RETURN_TO_MENU);
 
 	myNextLevel = 1;
+	myController->SetIsInMenu(false);
 }
 
 void InGameState::EndState()
@@ -113,6 +115,7 @@ void InGameState::ResumeState()
 {
 	myIsActiveState = true;
 	myLevelToLoad = -1;
+	myController->SetIsInMenu(false);
 }
 
 void InGameState::PauseState()

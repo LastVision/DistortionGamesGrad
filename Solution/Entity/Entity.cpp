@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AcidComponent.h"
 #include "AnimationComponent.h"
 #include "BounceComponent.h"
 #include "GraphicsComponent.h"
@@ -34,6 +35,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myDelayedAddToScene(false)
 	, myStartPosition(aStartPosition)
 	, myStartRotation(aRotation)
+	, myShouldBeRemoved(false)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
@@ -138,7 +140,12 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.myStomperData.myExistsInEntity == true)
 	{
-		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this);
+		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this, aScene, aRotation);
+	}
+
+	if (aEntityData.myAcidData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::ACID)] = new AcidComponent(*this);
 	}
 
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)

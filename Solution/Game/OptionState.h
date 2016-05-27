@@ -1,6 +1,17 @@
 #pragma once
 #include "GameState.h"
 #include <Subscriber.h>
+
+namespace GUI
+{
+	class GUIManager;
+}
+
+namespace Prism
+{
+	class Text;
+}
+
 class OptionState : public GameState, public Subscriber
 {
 public:
@@ -20,7 +31,5 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
-
-	CU::ControllerInput* myController;
 };
 

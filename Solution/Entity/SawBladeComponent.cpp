@@ -12,6 +12,7 @@ SawBladeComponent::SawBladeComponent(Entity& anEntity)
 	, myIsLoopingForward(true)
 	, myPositions(8)
 	, myCurrentIndex(0)
+	, myTotalCurrentLength(0.f)
 {
 }
 
@@ -45,18 +46,19 @@ void SawBladeComponent::Update(float aDeltaTime)
 	if (myPositions.Size() > 0)
 	{
 		CU::Vector3<float> position = myEntity.GetOrientation().GetPos();
-		CU::Vector3<float> direction = (myPositions[myCurrentIndex] - position);
+		CU::Vector3<float> direction = myPositions[myCurrentIndex] - position;
 		CU::Normalize(direction);
 
 		position += direction * aDeltaTime * myPatrolSpeed;
-
 		myEntity.SetPosition(position);
 
-		if (position.x <= myPositions[myCurrentIndex].x + 0.1f &&
-			position.x >= myPositions[myCurrentIndex].x - 0.1f &&
-			position.y <= myPositions[myCurrentIndex].y + 0.1f &&
-			position.y >= myPositions[myCurrentIndex].y - 0.1f)
+		float length = CU::Length(position - myStartPosition);
+
+		if (length >= myTotalCurrentLength)
 		{
+			float remainder = length - myTotalCurrentLength;
+			position = myPositions[myCurrentIndex];
+
 			if (myIsLoopingForward == true)
 			{
 				myCurrentIndex++;
@@ -73,6 +75,32 @@ void SawBladeComponent::Update(float aDeltaTime)
 					myIsLoopingForward = true;
 				}
 			}
+
+			if (remainder > 0.f)
+			{
+				myEntity.SetPosition(position);
+				position = myEntity.GetOrientation().GetPos();
+				direction = myPositions[myCurrentIndex] - position;
+				CU::Normalize(direction);
+				position += direction * remainder;
+				myEntity.SetPosition(position);
+			}	
+
+			myStartPosition = myEntity.GetOrientation().GetPos();
+			myTotalCurrentLength = CU::Length(myStartPosition - myPositions[myCurrentIndex]);
 		}
+	}
+}
+
+void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& somePositions, float aSpeed, float aDelayBeforePatrol)
+{
+	myPositions = somePositions;
+	myPatrolSpeed = aSpeed;
+	myDelayBeforePatrol = aDelayBeforePatrol;
+
+	if (myPositions.Size() > 0)
+	{
+		myStartPosition = myEntity.GetOrientation().GetPos();
+		myTotalCurrentLength = CU::Length(myStartPosition - myPositions[0]);
 	}
 }

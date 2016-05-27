@@ -46,7 +46,6 @@ void SteamComponent::Update(float aDeltaTime)
 			{
 				myCurrentSteamInterval = mySteamInterval;
 				myCurrentSteamTime = 0.f;
-				//mySteam->RemoveFromScene();
 				mySteam->GetComponent<PhysicsComponent>()->RemoveFromScene();
 				if (soundComp != nullptr)
 				{
@@ -61,7 +60,6 @@ void SteamComponent::Update(float aDeltaTime)
 			{
 				myCurrentSteamInterval = 0.f;
 				myCurrentSteamTime = mySteamTime;
-				//mySteam->AddToScene();
 				mySteam->GetComponent<PhysicsComponent>()->AddToScene();
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp(), mySteamTime));
 				if (soundComp != nullptr)
@@ -80,9 +78,7 @@ void SteamComponent::InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& a
 {
 	mySteam = EntityFactory::GetInstance()->CreateEntity(eEntityType::STEAM, aSteamSubType, aScene, myEntity.GetOrientation().GetPos(), { 0.f, aRotation.y, aRotation.z });
 
-	//mySteam->AddToScene();
 	mySteam->GetComponent<PhysicsComponent>()->AddToScene();
-	//mySteam->GetComponent<PhysicsComponent>()->TeleportToPosition(mySteam->GetOrientation().GetPos() + (myEntity.GetOrientation().GetUp()));
 	mySteam->GetComponent<PhysicsComponent>()->UpdateOrientationStatic();
 
 	mySteamInterval = aSteamInterval;
@@ -106,7 +102,6 @@ void SteamComponent::InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& a
 
 	if (myDelayBeforeSteam > 0.f)
 	{
-		//mySteam->RemoveFromScene();
 		myCurrentSteamTime = 0.f;
 		mySteam->GetComponent<PhysicsComponent>()->RemoveFromScene();
 	}

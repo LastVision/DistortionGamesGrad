@@ -9,7 +9,7 @@ namespace CU
 class MovementComponent;
 
 struct InputComponentData;
-
+struct AnimationJoint;
 
 class InputComponent : public Component, public Subscriber
 {
@@ -56,6 +56,10 @@ private:
 	bool myIntendToSpawn;
 
 	bool myAllowedToSpawn;
+	AnimationJoint* myParticlePoint; //for particles
+	CU::Matrix44<float> myParticleOrientation;
+
+
 };
 
 inline eComponentType InputComponent::GetTypeStatic()

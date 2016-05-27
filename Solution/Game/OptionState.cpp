@@ -1,12 +1,14 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
 #include "OptionState.h"
 #include <PostMaster.h>
-
+#include <Text.h>
 
 OptionState::OptionState()
 {
@@ -31,10 +33,9 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_options.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
-
-	
+	myController->SetIsInMenu(true);
 }
 
 void OptionState::EndState()
@@ -45,7 +46,8 @@ void OptionState::EndState()
 
 const eStateStatus OptionState::Update(const float& aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
+		|| myController->ButtonOnDown(eXboxButton::B))
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
@@ -68,8 +70,9 @@ void OptionState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void OptionState::PauseState()

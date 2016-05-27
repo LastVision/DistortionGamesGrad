@@ -37,6 +37,5 @@ private:
 
 	GUI::GUIManager* myGUIManager;
 
-	CU::ControllerInput* myController;
 };
 

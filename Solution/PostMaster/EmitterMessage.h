@@ -20,6 +20,7 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, const CU::Vector3f& aSize);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, float aRadius);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float anEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, const CU::Vector3f& aRotation);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, Entity* anEntity);
@@ -38,6 +39,7 @@ struct EmitterMessage : public Message
 	const int myEntityID = -1;
 	const bool myShouldKillEmitter = false;
 	const bool myUseDirection = false;
+	const bool myRandomDirection = false;
 	const float myEmitterLifeTime = 0.f;
 	const float myRadius = 0.f;
 };
@@ -149,5 +151,15 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, Entity* 
 	, myParticleTypeString(aParticleType)
 	, myEntity(anEntity)
 	, myEmitterLifeTime(aEmitterLifeTime)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myDirection(aDirection)
+	, myRandomDirection(aRandomDirection)
+	, myUseDirection(true)
 {
 }

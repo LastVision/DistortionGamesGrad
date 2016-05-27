@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AcidComponentData.h"
 #include "BounceComponentData.h"
 #include <CommonHelper.h>
 #include "ComponentLoader.h"
@@ -14,6 +15,11 @@
 #include "XMLReader.h"
 #include "GameEnum.h"
 
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, AcidComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
+
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
@@ -24,6 +30,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 		if (elementName == CU::ToLower("Model"))
 		{
 			aDocument.ForceReadAttribute(e, "modelPath", aOutputData.myModelPath);
+			aDocument.ReadAttribute(e, "secondAnimationPath", aOutputData.mySecondAnimationPath); // used by steam vents hehe
 			aDocument.ForceReadAttribute(e, "shaderPath", aOutputData.myEffectPath);
 		}
 	}

@@ -198,6 +198,9 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::OPTIONS_TOGGLE_VIBRATION:
 		GC::OptionsUseViberations = aMessage.myID != 0;
 		break;
+	case eOnClickEvent::OPTIONS_TOGGLE_SHADOWS:
+		GC::OptionsUseShadows = aMessage.myID != 0;
+		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;
 	}

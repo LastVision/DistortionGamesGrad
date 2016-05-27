@@ -15,6 +15,8 @@ namespace GUI
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
+		void OnMouseEnter() override;
+		void OnMouseExit() override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 
@@ -41,7 +43,9 @@ namespace GUI
 		bool myToggledState;
 
 		Prism::SpriteProxy* myImageActive;
+		Prism::SpriteProxy* myImageActiveHover;
 		Prism::SpriteProxy* myImageDeactive;
+		Prism::SpriteProxy* myImageDeactiveHover;
 		Prism::SpriteProxy* myImageCurrent;
 
 		OnClickMessage* myClickEvent;

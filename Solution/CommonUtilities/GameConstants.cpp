@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include "Defines.h"
 #include "GameConstants.h"
 
 bool GC::GenerateLightData = false; 
@@ -24,3 +26,10 @@ float GC::PlayerHeightWithLegs = 0.5f;
 float GC::PlayerRadius = 0.5f;
 
 bool GC::OptionsUseViberations = true;
+#ifdef SHADOWS
+bool GC::OptionsUseShadows = true;
+#else
+bool GC::OptionsUseShadows = false;
+#endif
+
+bool GC::EnableCheat = false;

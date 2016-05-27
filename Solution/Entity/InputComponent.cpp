@@ -16,7 +16,7 @@
 
 #include "VibrationNote.h"
 #include <GameConstants.h>
-
+#include <ModelLoader.h>
 
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
@@ -30,7 +30,6 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myAllowedToSpawn(true)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE | eMessageType::PLAYER_ACTIVE);
-
 }
 
 InputComponent::~InputComponent()
@@ -43,10 +42,13 @@ void InputComponent::Init()
 {
 	myMovement = myEntity.GetComponent<MovementComponent>();
 	DL_ASSERT_EXP(myMovement != nullptr, "Input component needs movement component to work correctly.");
+
+
 }
 
 void InputComponent::AddController(int anID)
 {
+	DL_ASSERT_EXP(myController == nullptr, "Controller was not null. Don't add twice.");
 	myController = new CU::ControllerInput(anID);
 }
 
@@ -67,7 +69,7 @@ void InputComponent::Update(float aDeltaTime)
 			myIsInLevel = true;
 			PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 		}
-		PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", myOrientation.GetPos()));
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myOrientation.GetPos(), myOrientation.GetUp(), 2.f));
 		myIntendToSpawn = false;
 		myEntity.SendNote(SpawnNote());
 		myIsActive = true;
@@ -83,7 +85,9 @@ void InputComponent::Update(float aDeltaTime)
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
 					myMovement->Impulse();
-					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myOrientation.GetPos(), -myOrientation.GetUp()));
+					myParticlePoint = &myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation()->myJetPack;
+					myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myParticleOrientation.GetPos(), -myParticleOrientation.GetUp()));
 				}
 				else
 				{

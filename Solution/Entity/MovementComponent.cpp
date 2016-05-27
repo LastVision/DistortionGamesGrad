@@ -153,14 +153,7 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::FLY));
 		break;
 	case MovementComponent::WALK:
-		if (velocityToState.x > 0.f)
-		{
-			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
-		}
-		else
-		{
-			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
-		}
+		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
 		break;
 	case MovementComponent::DASH_AIM:
 		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::DASH_AIM));

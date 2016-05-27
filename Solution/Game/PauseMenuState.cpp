@@ -1,9 +1,11 @@
 #include "stdafx.h"
 
+#include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
+#include "OptionState.h"
 #include "PauseMenuState.h"
 #include <PostMaster.h>
 
@@ -30,12 +32,12 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myCursor = aCursor;
 	myStateStatus = eStateStatus::eKeepState;
 	myIsActiveState = true;
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_options.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_pause_menu.xml", nullptr, -1);
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
-
+	myController->SetIsInMenu(true);
 }
 
 void PauseMenuState::EndState()
@@ -46,11 +48,12 @@ void PauseMenuState::EndState()
 
 const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
+		|| myController->ButtonOnDown(eXboxButton::B))
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopSubState;
 	}
 
 	HandleControllerInMenu(myController, myGUIManager);
@@ -69,8 +72,9 @@ void PauseMenuState::ResumeState()
 {
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void PauseMenuState::PauseState()
@@ -89,6 +93,13 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::RETURN_TO_GAME:
+		myStateStatus = eStateStatus::ePopSubState;
+		break;
+	case eOnClickEvent::OPTIONS:
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new OptionState());
 		break;
 	}
 }

@@ -7,6 +7,7 @@ namespace CU
 		, myPrevLeftTrigger(0.f)
 		, myPrevRightTrigger(0.f)
 		, myIsVibrate(false)
+		, myIsInMenu(false)
 	{
 		//Set the controller ID (0 -> 3) 
 		myControllerID = aPlayer;
@@ -97,8 +98,22 @@ namespace CU
 				return DIK_NUMPAD0;
 			}
 			return DIK_SPACE;
-
+		}
+		case eXboxButton::B:
+		{
+			if (myIsInMenu == true)
+			{
+				return DIK_ESCAPE;
+			}
 			break;
+		}
+		case eXboxButton::START:
+		{
+			return DIK_ESCAPE;
+		}
+		case eXboxButton::BACK:
+		{
+			return DIK_ESCAPE;
 		}
 		case eXboxButton::RTRIGGER:
 		{
@@ -107,8 +122,6 @@ namespace CU
 				return DIK_NUMPAD1;
 			}
 			return DIK_LSHIFT;
-
-			break;
 		}
 		case eXboxButton::LTRIGGER:
 		{
@@ -117,8 +130,6 @@ namespace CU
 				return DIK_NUMPAD3;
 			}
 			return DIK_LALT;
-
-			break;
 		}
 		case eXboxButton::X:
 		{
@@ -127,8 +138,6 @@ namespace CU
 				return DIK_NUMPAD9;
 			}
 			return DIK_F3;
-
-			break;
 		}
 		default:
 			break;
