@@ -1,5 +1,7 @@
 #pragma once
 
+struct ID3D11DepthStencilView;
+
 namespace Prism
 {
 	class Texture;
@@ -12,6 +14,10 @@ namespace Prism
 
 		void Clear(float* aClearColor);
 		void SetAsRenderTarget(Texture* aDepthTexture);
+		void SetAsRenderTarget(ID3D11DepthStencilView* aDepthStencil);
+
+		void Copy(const GBufferData& aSource);
+
 
 		Texture* myAlbedoTexture;
 		Texture* myNormalTexture; //METALNESS is stored in W
