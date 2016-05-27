@@ -42,6 +42,8 @@
 #include <PointLight.h>
 #include <EmitterMessage.h>
 
+#include <Texture.h>
+
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
 	, myEntities(1024)
