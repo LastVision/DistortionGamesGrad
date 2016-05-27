@@ -18,6 +18,10 @@ SteamComponent::SteamComponent(Entity& anEntity)
 	, mySteamTime(0.f)
 	, myIsConstant(true)
 	, mySteam(nullptr)
+	, myTimeBeforeVentOpens(0.5f)
+	, myTimeBeforeSmoke(0.3f)
+	, myIsSmoking(false)
+	, myIsOpen(false)
 {
 }
 
@@ -44,12 +48,23 @@ void SteamComponent::Update(float aDeltaTime)
 		if (myCurrentSteamTime > 0.f)
 		{
 			myCurrentSteamTime -= aDeltaTime;
+
 			if (myCurrentSteamTime <= 0.f)
 			{
 				myCurrentSteamInterval = mySteamInterval;
 				myCurrentSteamTime = 0.f;
 				mySteam->GetComponent<PhysicsComponent>()->RemoveFromScene();
+				myIsSmoking = false;
+				myIsOpen = false;
+			}
+			else if (myIsOpen == false && myCurrentSteamTime <= myTimeBeforeVentOpens)
+			{
+				myIsOpen = true;
 				myEntity.SendNote(SteamVentNote(false));
+			}
+			else if (myIsSmoking == false && myCurrentSteamTime <= myTimeBeforeSmoke)
+			{
+				myIsSmoking = true;
 				if (soundComp != nullptr)
 				{
 					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Steam", soundComp->GetAudioSFXID());
@@ -59,18 +74,28 @@ void SteamComponent::Update(float aDeltaTime)
 		else
 		{
 			myCurrentSteamInterval -= aDeltaTime;
+
 			if (myCurrentSteamInterval <= 0.f)
 			{
 				myCurrentSteamInterval = 0.f;
 				myCurrentSteamTime = mySteamTime;
 				mySteam->GetComponent<PhysicsComponent>()->AddToScene();
+				myIsSmoking = false;
+				myIsOpen = false;
+			}
+			else if (myIsOpen == false && myCurrentSteamInterval <= myTimeBeforeVentOpens)
+			{
+				myIsOpen = true;
 				myEntity.SendNote(SteamVentNote(true));
+			}
+			else if (myIsSmoking == false && myCurrentSteamInterval <= myTimeBeforeSmoke)
+			{
+				myIsSmoking = true;
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp(), mySteamTime));
 				if (soundComp != nullptr)
 				{
 					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Steam", soundComp->GetAudioSFXID());
 				}
-
 			}
 		}
 	}
