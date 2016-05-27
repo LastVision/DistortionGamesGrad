@@ -143,9 +143,9 @@ namespace Prism
 
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
-		myGBufferData->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
-		aScene->RenderSea(myDepthStencilTexture);
+		aScene->RenderSea(myParticleDepth);
 
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
