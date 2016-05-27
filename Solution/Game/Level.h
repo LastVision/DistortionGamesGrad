@@ -3,7 +3,7 @@
 #include "GameState.h"
 #include <GrowingArray.h>
 #include "Subscriber.h"
-
+#include <Quaternion.h>
 class Entity;
 
 namespace Prism
@@ -102,6 +102,16 @@ private:
 	short myPlayersPlaying;
 	int myLevelToChangeToID;
 	const int myLevelID;
+
+	bool myIsFreeCam = false;
+
+	CU::Matrix44f myOrientation;
+	CU::Quaternion myPitch;
+	CU::Quaternion myYaw;
+	CU::Vector2<float> myCursorPosition;
+	void UpdateInput(float aDeltaTime);
+
+
 };
 
 inline Prism::Scene* Level::GetScene() const
