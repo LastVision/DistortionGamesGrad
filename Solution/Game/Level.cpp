@@ -214,7 +214,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
 
 		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos() + CU::Vector3<float>(0.f, 0.f, -8.f));
+		light->SetPosition(player->GetOrientation().GetPos());
 		light->Update();
 	}
 
