@@ -111,7 +111,6 @@ Level::~Level()
 		SAFE_DELETE(myScrapManagers[i]);
 	}
 	SAFE_DELETE(myShadowLight);
-	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
@@ -126,7 +125,6 @@ Level::~Level()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
-
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
 #endif
@@ -348,7 +346,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
 		if (aHasEntered == true)
 		{
 			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
