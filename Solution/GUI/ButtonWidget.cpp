@@ -184,13 +184,6 @@ namespace GUI
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
 			myButtonText = std::to_string(myId + 1);
 			myIsTextButton = true;
-
-			//if (myId == locked?? )
-			//{
-			//	myColor = { 0.5f, 0.5f, 0.5f, 1.f };
-			//	myCanBeClicked = false;
-			//}
-
 			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
 		}
 		else if (clickEvent == "restart_level")

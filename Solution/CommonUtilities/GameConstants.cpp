@@ -33,3 +33,5 @@ bool GC::OptionsUseShadows = false;
 #endif
 
 bool GC::EnableCheat = false;
+
+int GC::TotalLevels = 0;
