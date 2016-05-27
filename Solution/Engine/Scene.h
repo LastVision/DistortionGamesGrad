@@ -29,7 +29,7 @@ namespace Prism
 
 		void RenderStatic();
 		void RenderDynamic();
-		void RenderSea();
+		void RenderSea(Texture* aDepthTexture);
 
 		void AddInstance(Instance* aInstance, bool aDynamic);
 		void SetSea(Instance* aInstance, bool aDynamic);

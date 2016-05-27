@@ -81,8 +81,12 @@ namespace Prism
 		myInstancingHelper->Render(false);
 	}
 
-	void Scene::RenderSea()
+	void Scene::RenderSea(Texture* aDepthTexture)
 	{
+		if (mySea->GetModel().IsLoaded() == true)
+		{
+			mySea->GetModel().GetEffect()->SetDepthTexture(aDepthTexture);
+		}
 		mySea->RenderInstanced(*myCamera, *myInstancingHelper);
 		myInstancingHelper->Render(false);
 	}

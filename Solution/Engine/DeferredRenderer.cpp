@@ -130,9 +130,11 @@ namespace Prism
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
 		aScene->RenderStatic();
-		aScene->RenderSea();
 
-		//myGBufferData->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+		myGBufferData->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+
+		aScene->RenderSea(myDepthStencilTexture);
+
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
