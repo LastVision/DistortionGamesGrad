@@ -481,7 +481,7 @@ void Level::CreatePlayers()
 
 		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
-		light->SetRange(14.f);
+		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
 		myScene->AddLight(light);
 	}

@@ -89,16 +89,16 @@ namespace Prism
 				effect->SetDecalDirection(info.myDirection);
 
 				myAlbedo->SetResource(info.myTexture->GetShaderView());
-				myMetalness->SetResource(info.myMetalness->GetShaderView());
-				myRoughness->SetResource(info.myRoughness->GetShaderView());
+				//myMetalness->SetResource(info.myMetalness->GetShaderView());
+				//myRoughness->SetResource(info.myRoughness->GetShaderView());
 
-				aGBufferCopy->Copy(*aGBuffer);
-				aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+				//aGBufferCopy->Copy(*aGBuffer);
+				//aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
 				
-				myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
-				myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
-				myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
-				myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
+				//myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
+				//myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
+				//myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
+				//myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
 
 				myInstance->Render(aCamera);
 			}
