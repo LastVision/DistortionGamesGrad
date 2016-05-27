@@ -29,20 +29,20 @@ namespace GUI
 
 		virtual void OnResize(const CU::Vector2<float>& aNewWindowSize, const CU::Vector2<float>& anOldWindowSize);
 
-		virtual inline void SetPosition(const CU::Vector2<float>& aPosition, bool aIsHotspot = true);
-		virtual inline void SetVisibility(bool aVisibility);
-		inline const CU::Vector2<float>& GetSize() const;
-		inline const CU::Vector2<float>& GetPosition() const;
-		inline bool IsVisible() const;
+		virtual void SetPosition(const CU::Vector2<float>& aPosition, bool aIsHotspot = true);
+		virtual void SetVisibility(bool aVisibility);
+		const CU::Vector2<float>& GetSize() const;
+		const CU::Vector2<float>& GetPosition() const;
+		bool IsVisible() const;
 
-	
-		inline bool IsFullscreen() const;
-		inline void SetIsFullscreen(bool aIsFullscreen);
+		bool IsFullscreen() const;
+		void SetIsFullscreen(bool aIsFullscreen);
 
-		inline bool IsClickable() const;
-		inline void SetIsClickable(bool aIsClickable);
+		bool IsClickable() const;
+		void SetIsClickable(bool aIsClickable);
 
-		virtual inline void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut);
+		virtual void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut);
+		virtual void SetButtonText(const std::string& aText);
 
 	protected:
 		CU::Vector2<float> myPosition;
@@ -100,6 +100,9 @@ namespace GUI
 
 	inline void Widget::SetButtonText(int, const std::string&, bool&)
 	{
+	}
 
+	inline void Widget::SetButtonText(const std::string&)
+	{
 	}
 }

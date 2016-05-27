@@ -33,4 +33,6 @@ public:
 	static bool OptionsUseShadows;
 
 	static bool EnableCheat;
+
+	static int TotalLevels;
 };

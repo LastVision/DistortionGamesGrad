@@ -33,7 +33,13 @@ private:
 	float myCurrentSteamInterval;
 	float myCurrentSteamTime;
 
+	float myTimeBeforeSmoke;
+	float myTimeBeforeVentOpens;
+
 	bool myIsConstant;
+
+	bool myIsSmoking;
+	bool myIsOpen;
 };
 
 inline eComponentType SteamComponent::GetTypeStatic()

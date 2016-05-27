@@ -4,12 +4,14 @@
 #include <Cursor.h>
 #include <GUIManager.h>
 #include "InputWrapper.h"
+#include "LevelFactory.h"
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 #include "Score.h"
 #include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScoreWidget.h"
+#include <WidgetContainer.h>
 #include <fstream>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
@@ -18,6 +20,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myScoreWidgets(4)
 	, myTimer(2.f)
 	, myNumberOfActiveScores(0)
+	, myCurrentLevel(aLevelID)
 {
 	for each (const Score* score in myScores)
 	{
@@ -51,6 +54,13 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, -1);
 	myGUIManager->SetSelectedButton(0, 6);
+
+	int nextLevel = myCurrentLevel + 1;
+
+	if (nextLevel < GC::TotalLevels)
+	{
+		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2)->SetButtonText(std::to_string(nextLevel));
+	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 

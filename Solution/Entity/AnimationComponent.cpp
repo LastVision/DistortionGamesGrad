@@ -15,6 +15,7 @@
 #include <PostMaster.h>
 #include <Scene.h>
 #include "SoundComponent.h"
+#include "SteamVentNote.h"
 #include <Texture.h>
 
 
@@ -31,9 +32,15 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 
 	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
 
-	//myInstance->SetAnimation(Prism::AnimationSystem::GetInstance()->GetAnimation(myAnimation.myFile.c_str()));
+	myAnimation.myFile = myComponentData.myModelPath;
+	mySecondAnimation.myFile = myComponentData.mySecondAnimationPath;
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
+
+	if (myEntity.GetType() == eEntityType::GOAL_POINT)
+	{
+		myAnimation.myShouldLoop = true;
+	}
 }
 
 AnimationComponent::~AnimationComponent()
@@ -53,6 +60,10 @@ void AnimationComponent::Update(float aDeltaTime)
 	{
 		myInstance->Update(aDeltaTime);
 	}
+	if (myInstance->IsAnimationDone() == true && myAnimation.myShouldLoop == true)
+	{
+		myInstance->ResetAnimationTime(0.f);
+	}
 }
 
 void AnimationComponent::ReceiveNote(const BounceNote&)
@@ -65,10 +76,35 @@ void AnimationComponent::ReceiveNote(const BounceNote&)
 	}
 }
 
+void AnimationComponent::ReceiveNote(const SteamVentNote& aMessage)
+{
+	if (myEntity.GetType() == eEntityType::STEAM_VENT)
+	{
+		bool runtime = GET_RUNTIME;
+		SET_RUNTIME(false);
+		if (aMessage.myIsActivate == true)
+		{			
+			myInstance->SetAnimation(Prism::AnimationSystem::GetInstance()->GetAnimation(mySecondAnimation.myFile.c_str()));
+		}
+		else
+		{
+			myInstance->SetAnimation(Prism::AnimationSystem::GetInstance()->GetAnimation(myAnimation.myFile.c_str()));
+		}
+
+		myInstance->ResetAnimationTime(0.f);
+		SET_RUNTIME(runtime);
+	}
+}
+
+void AnimationComponent::ReceiveNote(const PlayAnimationNote&)
+{
+	myInstance->ResetAnimationTime(0.f);
+}
+
 void AnimationComponent::ReceiveMessage(const PlayerActiveMessage&)
 {
 	if (myEntity.GetType() == eEntityType::SPAWN_POINT)
 	{
-		myInstance->ResetAnimationTime(0.f);
+ 		myInstance->ResetAnimationTime(0.f);
 	}
 }
