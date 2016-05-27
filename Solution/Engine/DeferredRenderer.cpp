@@ -156,6 +156,7 @@ namespace Prism
 		{
 			RenderShadows(aShadowLight, aScene->GetCamera());
 		}
+
 		RenderBackground(aBackground);
 
 		RenderParticles(aParticleEmitterManager);
@@ -208,10 +209,10 @@ namespace Prism
 	{
 		if (GC::OptionsUseShadows == true)
 		{
-			return myFinishedSceneTexture;
+			return myFinishedTexture;
 		}
 
-		return myFinishedTexture;
+		return myFinishedSceneTexture;
 	}
 
 	Prism::Texture* DeferredRenderer::GetEmissiveTexture()
@@ -352,16 +353,16 @@ namespace Prism
 
 	void DeferredRenderer::RenderBackground(Texture* aBackground)
 	{
-		if (aBackground != nullptr)
+		if (aBackground != nullptr && aBackground->GetShaderView() != nullptr)
 		{
 			ID3D11RenderTargetView* backbuffer = nullptr;
 			if (GC::OptionsUseShadows == true)
 			{
-				backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+				backbuffer = myFinishedTexture->GetRenderTargetView();
 			}
 			else
 			{
-				backbuffer = myFinishedTexture->GetRenderTargetView();
+				backbuffer = myFinishedSceneTexture->GetRenderTargetView();
 			}
 
 
@@ -419,11 +420,11 @@ namespace Prism
 		ID3D11RenderTargetView* backbuffer = nullptr;
 		if (GC::OptionsUseShadows == true)
 		{
-			backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+			backbuffer = myFinishedTexture->GetRenderTargetView();
 		}
 		else
 		{
-			backbuffer = myFinishedTexture->GetRenderTargetView();
+			backbuffer = myFinishedSceneTexture->GetRenderTargetView();
 		}
 
 		ID3D11DepthStencilView* depth = Engine::GetInstance()->GetDepthView();
