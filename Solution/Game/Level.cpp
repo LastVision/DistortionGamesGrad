@@ -346,7 +346,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
 		if (aHasEntered == true)
 		{
 			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
