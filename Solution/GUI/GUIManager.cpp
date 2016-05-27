@@ -260,6 +260,7 @@ namespace GUI
 
 		for (int i = 0; i < myLevelButtons.Size(); i++)
 		{
+#ifdef RELEASE_BUILD
 			if (i == 0)
 			{
 				myLevelButtons[i]->SetActive(true);
@@ -272,6 +273,9 @@ namespace GUI
 			{
 				myLevelButtons[i]->SetActive(unlockedLevels[i]);
 			}
+#else
+			myLevelButtons[i]->SetActive(true);
+#endif
 		}
 
 	}
