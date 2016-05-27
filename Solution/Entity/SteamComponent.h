@@ -9,7 +9,7 @@ namespace Prism
 class SteamComponent : public Component
 {
 public:
-	SteamComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation);
+	SteamComponent(Entity& anEntity);
 	~SteamComponent();
 
 	void Update(float aDeltaTime) override;
@@ -17,7 +17,7 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
-	void SetSteamVariables(float aSteamInterval, float aSteamTime, float aDelayBeforeSteam);
+	void InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& aRotation, const std::string& aSteamSubType, float aSteamInterval, float aSteamTime, float aDelayBeforeSteam);
 
 	float GetForce() const;
 	void SetForce(float aForce);

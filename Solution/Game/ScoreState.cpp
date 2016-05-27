@@ -17,9 +17,14 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myScoreInfo(aScoreInfo)
 	, myScoreWidgets(4)
 	, myTimer(2.f)
+	, myNumberOfActiveScores(0)
 {
 	for each (const Score* score in myScores)
 	{
+		if (score->myActive == true)
+		{
+			myNumberOfActiveScores++;
+		}
 		myScoreWidgets.Add(new ScoreWidget(score, myScoreInfo));
 	}
 	SaveScoreToFile(aLevelID);
@@ -47,9 +52,10 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, -1);
 	myGUIManager->SetSelectedButton(0, 6);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	myController->SetIsInMenu(true);
 }
 
 void ScoreState::EndState()
@@ -93,15 +99,22 @@ void ScoreState::Render()
 		myGUIManager->Render();
 	}
 
-	for (int i = 0; i < myScoreWidgets.Size(); ++i)
+	if (myNumberOfActiveScores == 1)
 	{
-		myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
+		myScoreWidgets[0]->Render(CU::Vector2<float>((myScoreWidgets[0]->GetSize().x / 2.f), 0.f));
 	}
-
+	else 
+	{
+		for (int i = 0; i < myScoreWidgets.Size(); ++i)
+		{
+			myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
+		}
+	}
 }
 
 void ScoreState::ResumeState()
 {
+	myController->SetIsInMenu(true);
 }
 
 void ScoreState::PauseState()

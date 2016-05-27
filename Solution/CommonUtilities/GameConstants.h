@@ -28,4 +28,9 @@ public:
 
 	static float PlayerHeightWithLegs;
 	static float PlayerRadius;
+
+	static bool OptionsUseViberations;
+	static bool OptionsUseShadows;
+
+	static bool EnableCheat;
 };

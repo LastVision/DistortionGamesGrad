@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
-#include "GameState.h"
+#include <Cursor.h>
 #include <ControllerInput.h>
+#include "GameState.h"
 #include <GUIManager.h>
 
 void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager)
@@ -70,7 +71,7 @@ void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GU
 	}
 }
 
-void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager)
+void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor)
 {
 	aController->Update(0.f);
 
@@ -79,8 +80,9 @@ void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIM
 	myControllerPressedUp = false;
 	myControllerPressedDown = false;
 
-	if (aController->CheckConnection())
+	if (aController->CheckConnection() == true)
 	{
 		aManager->HoverSelectedButton();
+		aCursor->SetIsUsingController(true);
 	}
 }

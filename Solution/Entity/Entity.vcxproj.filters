@@ -107,6 +107,12 @@
     <ClCompile Include="BounceComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="StomperComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AcidComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -245,6 +251,24 @@
       <Filter>Notes</Filter>
     </ClInclude>
     <ClInclude Include="CharacterAnimationNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="StomperComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="StomperComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="VibrationNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="AcidComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AcidComponentData.h">
+      <Filter>EntityFactory\EntityData\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="SteamVentNote.h">
       <Filter>Notes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -94,6 +94,7 @@ bool Game::Init(HWND& aHwnd)
 	myStateStack.PushMainGameState(new MainMenuState());
 #else
 	myStateStack.PushMainGameState(new LevelSelectState());
+	//myStateStack.PushMainGameState(new MainMenuState());
 #endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
@@ -193,6 +194,12 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::LEVEL_SELECT:
 		SET_RUNTIME(false);
 		myStateStack.PushMainGameState(new LevelSelectState());
+		break;
+	case eOnClickEvent::OPTIONS_TOGGLE_VIBRATION:
+		GC::OptionsUseViberations = aMessage.myID != 0;
+		break;
+	case eOnClickEvent::OPTIONS_TOGGLE_SHADOWS:
+		GC::OptionsUseShadows = aMessage.myID != 0;
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;

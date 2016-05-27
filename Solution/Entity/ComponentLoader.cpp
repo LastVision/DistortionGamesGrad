@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AcidComponentData.h"
 #include "BounceComponentData.h"
 #include <CommonHelper.h>
 #include "ComponentLoader.h"
@@ -9,9 +10,15 @@
 #include "ScoreComponentData.h"
 #include "SawBladeComponentData.h"
 #include "SteamComponentData.h"
+#include "StomperComponentData.h"
 #include "PlayerComponentData.h"
 #include "XMLReader.h"
 #include "GameEnum.h"
+
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, AcidComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
 
 void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData)
 {
@@ -23,6 +30,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 		if (elementName == CU::ToLower("Model"))
 		{
 			aDocument.ForceReadAttribute(e, "modelPath", aOutputData.myModelPath);
+			aDocument.ReadAttribute(e, "secondAnimationPath", aOutputData.mySecondAnimationPath); // used by steam vents hehe
 			aDocument.ForceReadAttribute(e, "shaderPath", aOutputData.myEffectPath);
 		}
 	}
@@ -83,6 +91,7 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashDistance"), "value", aOutputData.myDashDistance);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "DashCooldown"), "value", aOutputData.myDashCooldown);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "MaxAngleWhenLanding"), "value", aOutputData.myMaxAngleWhenLanding);
+	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "SteamMinForce"), "value", aOutputData.mySteamMinForce);
 
 	aOutputData.myDashSpeed = aOutputData.myDashDistance / aOutputData.myDashFlyTime;
 }
@@ -212,13 +221,17 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashaimanimation"), "path", aOutputData.myDashAimAnimation);
 	aDocument.ForceReadAttribute(aDocument.ForceFindFirstChild(aSourceElement, "Dashflyanimation"), "path", aOutputData.myDashFlyAnimation);
 }
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData& aOutputData)
+{
+	aOutputData.myExistsInEntity = true;
+}
 
 void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, SteamComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }
 
-void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, ScoreComponentData& aOutputData)
+void ComponentLoader::Load(XMLReader&, tinyxml2::XMLElement*, StomperComponentData& aOutputData)
 {
 	aOutputData.myExistsInEntity = true;
 }

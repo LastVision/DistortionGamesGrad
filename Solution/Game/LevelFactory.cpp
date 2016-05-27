@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AcidComponent.h>
 #include <BounceComponent.h>
 #include <DirectionalLight.h>
 #include <EffectContainer.h>
@@ -12,6 +13,7 @@
 #include <SawBladeComponent.h>
 #include "ScoreInfo.h"
 #include <SteamComponent.h>
+#include <StomperComponent.h>
 #include <TriggerComponent.h>
 #include <XMLReader.h>
 #include <PointLight.h>
@@ -99,6 +101,8 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadSawBlades(level, reader, levelElement);
 	LoadSteamVents(level, reader, levelElement);
 	LoadBouncers(level, reader, levelElement);
+	LoadStompers(level, reader, levelElement);
+	LoadAcid(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
 	LoadSpotLights(level, reader, levelElement);
@@ -244,31 +248,36 @@ void LevelFactory::LoadSteamVents(Level* aLevel, XMLReader& aReader, tinyxml2::X
 		tinyxml2::XMLElement* steamTimeElement = aReader.FindFirstChild(entityElement, "steamTime");
 		tinyxml2::XMLElement* steamIntervalElement = aReader.FindFirstChild(entityElement, "steamInterval");
 		tinyxml2::XMLElement* steamDelayElement = aReader.FindFirstChild(entityElement, "steamDelay");
+		tinyxml2::XMLElement* steamSubTypeElement = aReader.FindFirstChild(entityElement, "steamSubType");
 
 		DL_ASSERT_EXP(entity->GetComponent<SteamComponent>() != nullptr, "Steam vents need steam components to work");
 		DL_ASSERT_EXP(forceElement != nullptr, "Steam vents need force in level XML");
 
 		aReader.ForceReadAttribute(forceElement, "value", force);
 
-		entity->GetComponent<SteamComponent>()->SetForce(force);
 
 		if (steamTimeElement != nullptr && steamIntervalElement != nullptr)
 		{
+			std::string steamType = "";
 			float steamTime = 0.f;
 			float steamInterval = 0.f;
 			float steamDelay = 0.f;
 
 			aReader.ForceReadAttribute(steamTimeElement, "value", steamTime);
 			aReader.ForceReadAttribute(steamIntervalElement, "value", steamInterval);
+			aReader.ForceReadAttribute(steamSubTypeElement, "type", steamType);
 
 			if (steamDelayElement != nullptr)
 			{
 				aReader.ForceReadAttribute(steamDelayElement, "value", steamDelay);
 			}
 
-			entity->GetComponent<SteamComponent>()->SetSteamVariables(steamInterval, steamTime, steamDelay);
+			entity->GetComponent<SteamComponent>()->InitSteam(aLevel->GetScene(), steamVentRotation, steamType, steamInterval, steamTime, steamDelay);
 
 		}
+
+		entity->GetComponent<SteamComponent>()->SetForce(force);
+
 		aLevel->Add(entity);
 	}
 }
@@ -304,6 +313,82 @@ void LevelFactory::LoadBouncers(Level* aLevel, XMLReader& aReader, tinyxml2::XML
 	}
 }
 
+void LevelFactory::LoadStompers(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "stomper_holder"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "stomper_holder"))
+	{
+		std::string stomperType;
+		CU::Vector3f stomperPosition;
+		CU::Vector3f stomperRotation;
+		CU::Vector3f stomperScale;
+		float timeBeforeStomp;
+		float timeStomperDown;
+		float stompSpeedOut;
+		float stompSpeedIn;
+		float distance;
+		float delayBeforeStomp;
+
+		aReader.ForceReadAttribute(entityElement, "stomperType", stomperType);
+
+		ReadOrientation(aReader, entityElement, stomperPosition, stomperRotation, stomperScale);
+
+		Entity* entity(EntityFactory::CreateEntity(eEntityType::STOMPER_HOLDER, CU::ToLower(stomperType),
+			aLevel->GetScene(), stomperPosition, stomperRotation, stomperScale));
+
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeBeforeStomp"), "value", timeBeforeStomp);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeStomperIsDown"), "value", timeStomperDown);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "stompSpeedOut"), "value", stompSpeedOut);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "stompSpeedIn"), "value", stompSpeedIn);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "distance"), "value", distance);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "timeDelay"), "value", delayBeforeStomp);
+
+		DL_ASSERT_EXP(entity->GetComponent<StomperComponent>() != nullptr, "stomper holders need stomper components to work");
+
+		entity->GetComponent<StomperComponent>()->InitStomper(timeBeforeStomp, timeStomperDown
+			, stompSpeedOut, stompSpeedIn, distance, delayBeforeStomp);
+
+		aLevel->Add(entity);
+	}
+}
+
+void LevelFactory::LoadAcid(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
+{
+	for (tinyxml2::XMLElement* entityElement = aReader.FindFirstChild(aElement, "acid"); entityElement != nullptr;
+		entityElement = aReader.FindNextElement(entityElement, "acid"))
+	{
+		std::string acidType;
+		CU::Vector3f acidPosition;
+		CU::Vector3f acidRotation;
+		CU::Vector3f acidScale;
+		int amount = 0;
+		float maxInterval = 0.f;
+		float minInterval = 0.f;
+		CU::Vector3<float> maxVelocity;
+		CU::Vector3<float> minVelocity;
+
+		aReader.ForceReadAttribute(entityElement, "acidType", acidType);
+
+		ReadOrientation(aReader, entityElement, acidPosition, acidRotation, acidScale);
+
+		Entity* entity = EntityFactory::CreateEntity(eEntityType::ACID, CU::ToLower(acidType),
+			aLevel->GetScene(), acidPosition, acidRotation, acidScale);
+
+		DL_ASSERT_EXP(entity->GetComponent<AcidComponent>() != nullptr, "Acid need acid component to work");
+
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "amount"), "value", amount);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "maxInterval"), "value", maxInterval);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "minInterval"), "value", minInterval);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "maxVelocity"), "X", "Y", "Z", maxVelocity);
+		aReader.ForceReadAttribute(aReader.FindFirstChild(entityElement, "minVelocity"), "X", "Y", "Z", minVelocity);
+
+		entity->GetComponent<AcidComponent>()->InitAcid(amount, maxInterval, minInterval
+			, maxVelocity, minVelocity, aLevel->GetScene());
+
+		aLevel->Add(entity);
+	}
+}
+
 void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement)
 {
 	for (tinyxml2::XMLElement* lightElement = aReader.FindFirstChild(aElement, "pointlight"); lightElement != nullptr;
@@ -324,9 +409,7 @@ void LevelFactory::LoadPointLights(Level* aLevel, XMLReader& aReader, tinyxml2::
 
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "range"), "value", range);
 
-		unsigned int gid(UINT32_MAX);
-
-		Prism::PointLight* light = new Prism::PointLight(gid, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetPosition(position);
 		light->SetColor(color);
 		light->SetRange(range);
@@ -351,8 +434,6 @@ void LevelFactory::LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tiny
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "G", color.y);
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
-
-		unsigned int gid(UINT32_MAX);
 
 		Prism::DirectionalLight* light = new Prism::DirectionalLight();
 		light->SetColor(color);

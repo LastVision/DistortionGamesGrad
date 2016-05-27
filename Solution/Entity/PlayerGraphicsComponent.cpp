@@ -15,6 +15,8 @@
 #include <InputWrapper.h>
 #include "InputComponent.h"
 #include <OnDeathMessage.h>
+#include "VibrationNote.h"
+#include <EmitterMessage.h>
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
@@ -108,25 +110,15 @@ void PlayerGraphicsComponent::Activate()
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
+	myPreviousAnimation = eCharacterAnimationType::FLY;
+	myCurrentAnimationType = eCharacterAnimationType::FLY;
+	myCurrentAnimation = &myFlyAnimation;
 	//myArrow->SetShouldRender(true);
 }
 
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
-	{
-		myCurrentAnimation = &myIdleAnimation;
-	}
-	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_2))
-	{
-		myCurrentAnimation = &myWalkAnimation;
-	}
-	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_3))
-	{
-		myCurrentAnimation = &myFlyAnimation;
-	}
-
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
 		myBody.SetActive(false);
@@ -149,10 +141,6 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
-	
-
-
-
 
 	if (PollingStation::GetInstance()->GetPlayersAlive() > 1 && myShowArrow == false)
 	{
@@ -203,6 +191,9 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 		{
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Head", myEntity.GetOrientation().GetPos()));
+
 		}
 		myHead.SetActive(false);
 		break;
@@ -212,6 +203,8 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myLeftLeg.SetActive(false);
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Legs", myEntity.GetOrientation().GetPos()));
 		}
 
 		if (myRightLeg.GetActive() == true)
@@ -219,6 +212,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myRightLeg.SetActive(false);
+			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 		}
 		break;
 	default:
@@ -265,4 +259,9 @@ void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage
 
 		myCurrentAnimationType = aMessage.myAnimationType;
 	//}
+}
+
+BodyAnimation* PlayerGraphicsComponent::GetCurrentAnimation()
+{
+	return myCurrentAnimation;
 }

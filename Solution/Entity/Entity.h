@@ -64,7 +64,8 @@ public:
 	void SetActive(bool aIsActive);
 	void SetDelayedAddToScene();
 
-	int GetScrapBodyID() const;
+	void SetShouldBeRemoved(bool aShouldBeRemoved);
+	bool ShouldBeRemoved() const;
 
 private:
 	void operator=(Entity&) = delete;
@@ -77,8 +78,9 @@ private:
 	bool myAlive;
 	bool myIsActive;
 	bool myIsInScene;
+	bool myShouldBeRemoved;
+
 	std::string mySubType;
-	int myScrapBodyID;
 
 	Prism::Scene* myScene;
 
@@ -217,7 +219,12 @@ inline void Entity::SetDelayedAddToScene()
 	myDelayedAddToScene = true;
 }
 
-inline int Entity::GetScrapBodyID() const
+inline void Entity::SetShouldBeRemoved(bool aShouldBeRemoved)
 {
-	return myScrapBodyID;
+	myShouldBeRemoved = aShouldBeRemoved;
+}
+
+inline bool Entity::ShouldBeRemoved() const
+{
+	return myShouldBeRemoved;
 }

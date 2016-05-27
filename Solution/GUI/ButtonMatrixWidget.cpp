@@ -5,6 +5,7 @@
 #include "LevelButtonWidget.h"
 #include <OnClickMessage.h>
 #include <CommonHelper.h>
+#include <GameConstants.h>
 
 namespace GUI
 {
@@ -50,7 +51,7 @@ namespace GUI
 		CU::GrowingArray<bool> unlockedlevels = RetrieveUnlockedLevelsFromFile();
 		for (int y = 0; y < myButtonMatrixIndex.y; ++y)
 		{
-			CU::GrowingArray<ButtonWidget*> buttons(myButtonMatrixIndex.x);
+			CU::GrowingArray<Widget*> buttons(myButtonMatrixIndex.x);
 			for (int x = 0; x < myButtonMatrixIndex.x; ++x)
 			{
 				ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x,
@@ -61,17 +62,24 @@ namespace GUI
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
 				}
 #ifdef RELEASE_BUILD
-				if (index == 0)
+				if (GC::EnableCheat == false)
 				{
-					button->SetActive(true);
-				}
-				else if (index >= unlockedlevels.Size())
-				{
-					button->SetActive(false);
+					if (index == 0)
+					{
+						button->SetActive(true);
+					}
+					else if (index >= unlockedlevels.Size())
+					{
+						button->SetActive(false);
+					}
+					else
+					{
+						button->SetActive(unlockedlevels[index]);
+					}
 				}
 				else
 				{
-					button->SetActive(unlockedlevels[index]);
+					button->SetActive(true);
 				}
 #else
 				button->SetActive(true);

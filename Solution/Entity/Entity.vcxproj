@@ -162,6 +162,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AcidComponent.h" />
+    <ClInclude Include="AcidComponentData.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationComponentData.h" />
     <ClInclude Include="BounceComponent.h" />
@@ -207,11 +209,16 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SteamComponent.h" />
     <ClInclude Include="SteamComponentData.h" />
+    <ClInclude Include="SteamVentNote.h" />
+    <ClInclude Include="StomperComponent.h" />
+    <ClInclude Include="StomperComponentData.h" />
     <ClInclude Include="TriggerComponent.h" />
     <ClInclude Include="TriggerComponentData.h" />
+    <ClInclude Include="VibrationNote.h" />
     <ClInclude Include="WalkMovement.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AcidComponent.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="BounceComponent.cpp" />
     <ClCompile Include="DashAimMovement.cpp" />
@@ -245,6 +252,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SteamComponent.cpp" />
+    <ClCompile Include="StomperComponent.cpp" />
     <ClCompile Include="TriggerComponent.cpp" />
     <ClCompile Include="WalkMovement.cpp" />
   </ItemGroup>

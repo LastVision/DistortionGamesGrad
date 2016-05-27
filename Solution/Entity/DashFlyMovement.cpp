@@ -24,7 +24,7 @@ void DashFlyMovement::Reset()
 	myTimer = myData.myDashFlyTime;
 }
 
-void DashFlyMovement::Update(float aDeltaTime)
+void DashFlyMovement::Update(float aDeltaTime, bool)
 {
 	HandleContact();
 	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity*aDeltaTime, 0));

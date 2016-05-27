@@ -38,8 +38,9 @@ void CreditMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controlle
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+	myController->SetIsInMenu(true);
 }
 
 void CreditMenuState::EndState()
@@ -61,7 +62,8 @@ const eStateStatus CreditMenuState::Update(const float& aDeltaTime)
 	}
 	CU::InputWrapper* input = CU::InputWrapper::GetInstance();
 	if (input->KeyDown(DIK_ESCAPE) == true || input->KeyDown(DIK_SPACE) == true || input->KeyDown(DIK_RETURN) == true
-		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A))
+		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A) 
+		|| myController->ButtonOnDown(eXboxButton::BACK) || myController->ButtonOnDown(eXboxButton::B))
 	{
 		myStateStatus = eStateStatus::ePopMainState;
 	}
@@ -80,8 +82,9 @@ void CreditMenuState::Render()
 
 void CreditMenuState::ResumeState()
 {
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+	myController->SetIsInMenu(true);
 }
 
 void CreditMenuState::PauseState()
@@ -93,7 +96,6 @@ void CreditMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	if (myIsActiveState == true)
 	{
-		bool notDone = true;
 		switch (aMessage.myEvent)
 		{
 			/*case eOnClickEvent::GAME_START:

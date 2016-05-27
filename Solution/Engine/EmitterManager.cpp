@@ -112,7 +112,6 @@ namespace Prism
 					else
 					{
 						CU::Vector3<float> pos = instance->GetPosition() - myCamera->GetOrientation().GetPos();
-						float length = CU::Length2(pos);
 						instance->Render(aTexture);
 					}
 				}
@@ -153,20 +152,19 @@ namespace Prism
 
 		EmitterData* emitter = myEmitters[particleType];
 
-
 		if (emitter->myCurrentIndex > (PREALLOCATED_EMITTERGROUP - 1))
 		{
 			emitter->myCurrentIndex = 0;
 		}
 
-		short index = emitter->myCurrentIndex;
 
+		short index = emitter->myCurrentIndex;
 
 		for (int i = 0; i < emitter->myEmitters[index].Size(); ++i)
 		{
 			Prism::ParticleEmitterInstance* instance = emitter->myEmitters[index][i];
-
-
+			if (instance->IsActive() == true)
+				continue;
 
 			instance->SetEntity(aMessage.myEntity);
 
@@ -176,7 +174,6 @@ namespace Prism
 			}
 
 			instance->Activate();
-
 
 			instance->SetPosition(position);
 
@@ -206,6 +203,11 @@ namespace Prism
 			if (aMessage.myRotation.x > 0.f || aMessage.myRotation.y > 0.f || aMessage.myRotation.z > 0.f)
 			{
 				instance->SetRotation(aMessage.myRotation);
+			}
+
+			if (aMessage.myRandomDirection == true)
+			{
+				instance->SetRandomizeDirection(aMessage.myRandomDirection);
 			}
 		}
 

@@ -16,6 +16,7 @@ namespace GUI
 
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
 		void Update(float aDeltaTime) override;
+		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 
 	private:
 		CU::GrowingArray<StarWidget*> myStars;

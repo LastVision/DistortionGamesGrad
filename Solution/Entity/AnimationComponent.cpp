@@ -12,6 +12,7 @@
 #include <Model.h>
 #include <ModelLoader.h>
 #include <ModelProxy.h>
+#include <PostMaster.h>
 #include <Scene.h>
 #include "SoundComponent.h"
 #include <Texture.h>
@@ -23,14 +24,21 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 	, myInstance(nullptr)
 	, myCullingRadius(50.f)
 {
+	myAnimation.myFile = myComponentData.myModelPath;
+
 	Prism::ModelProxy* model = Prism::ModelLoader::GetInstance()->LoadModelAnimated(myComponentData.myModelPath
 		, myComponentData.myEffectPath);
 
 	myInstance = new Prism::Instance(*model, myEntity.GetOrientation());
+
+	//myInstance->SetAnimation(Prism::AnimationSystem::GetInstance()->GetAnimation(myAnimation.myFile.c_str()));
+
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }
 
 AnimationComponent::~AnimationComponent()
 {
+	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myInstance);
 }
 
@@ -54,5 +62,13 @@ void AnimationComponent::ReceiveNote(const BounceNote&)
 	if (soundComp != nullptr)
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Bouncer", soundComp->GetAudioSFXID());
+	}
+}
+
+void AnimationComponent::ReceiveMessage(const PlayerActiveMessage&)
+{
+	if (myEntity.GetType() == eEntityType::SPAWN_POINT)
+	{
+		myInstance->ResetAnimationTime(0.f);
 	}
 }

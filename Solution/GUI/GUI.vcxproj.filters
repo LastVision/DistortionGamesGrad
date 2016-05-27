@@ -39,6 +39,12 @@
     <ClInclude Include="LevelButtonWidget.h">
       <Filter>Widget</Filter>
     </ClInclude>
+    <ClInclude Include="ToggleBoxWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="VolumeWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +75,12 @@
       <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="LevelButtonWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="ToggleBoxWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="VolumeWidget.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>

@@ -46,7 +46,7 @@ void DashAimMovement::Reset()
 
 }
 
-void DashAimMovement::Update(float aDeltaTime)
+void DashAimMovement::Update(float aDeltaTime, bool)
 {
 	Rotate(aDeltaTime);
 

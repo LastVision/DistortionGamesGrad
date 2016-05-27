@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AcidComponent.h"
 #include "AnimationComponent.h"
 #include "BounceComponent.h"
 #include "GraphicsComponent.h"
@@ -16,6 +17,7 @@
 #include "SawBladeComponent.h"
 #include "ScoreComponent.h"
 #include "SteamComponent.h"
+#include "StomperComponent.h"
 #include "SoundComponent.h"
 #include "TriggerComponent.h"
 
@@ -33,7 +35,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myDelayedAddToScene(false)
 	, myStartPosition(aStartPosition)
 	, myStartRotation(aRotation)
-	, myScrapBodyID(-1)
+	, myShouldBeRemoved(false)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
@@ -118,7 +120,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 
 	if (aEntityData.mySteamData.myExistsInEntity == true) // has to be after physics
 	{
-		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this, aScene, aRotation);
+		myComponents[static_cast<int>(eComponentType::STEAM)] = new SteamComponent(*this);
 	}
 
 	if (aEntityData.myScoreData.myExistsInEntity == true)
@@ -136,21 +138,22 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 		myComponents[static_cast<int>(eComponentType::BOUNCE)] = new BounceComponent(*this);
 	}
 
+	if (aEntityData.myStomperData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::STOMPER)] = new StomperComponent(*this, aScene, aRotation);
+	}
+
+	if (aEntityData.myAcidData.myExistsInEntity == true)
+	{
+		myComponents[static_cast<int>(eComponentType::ACID)] = new AcidComponent(*this);
+	}
+
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{
 		if (myComponents[i] != nullptr)
 		{
 			myComponents[i]->Init();
 		}
-	}
-
-	if (mySubType == "body1")
-	{
-		myScrapBodyID = 1;
-	}
-	else if (mySubType == "body2")
-	{
-		myScrapBodyID = 2;
 	}
 
 	Reset();

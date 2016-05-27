@@ -11,7 +11,7 @@
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 #include <PostMaster.h>
-
+#include <EmitterMessage.h>
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(false)
@@ -43,11 +43,14 @@ void FlyMovement::Reset()
 	myVelocity = CU::Vector2<float>();
 }
 
-void FlyMovement::Update(float aDeltaTime)
+void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 {
-	RaycastBody();
-	RaycastHead();
-	RaycastLegs();
+	if (aShouldCollide == true)
+	{
+		RaycastBody();
+		RaycastHead();
+		RaycastLegs();
+	}
 
 	myVelocity.y += myData.myGravity * aDeltaTime;
 	Drag(aDeltaTime);
@@ -105,7 +108,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 
-			if (dot > 0.001f)
+			if (abs(dot) > 0.001f)
 			{
 				return;
 			}
@@ -128,6 +131,20 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 				{
 					myVelocity.y = 0;
 					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+				}
+			}
+			else
+			{
+				float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
+
+				if (abs(dot) > 0.001f)
+				{
+					return;
+				}
+				else
+				{
+					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 				}
 			}
 		}

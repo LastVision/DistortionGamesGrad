@@ -10,6 +10,7 @@
 #include "MainMenuState.h"
 #include <ModelLoader.h>
 #include <OnClickMessage.h>
+#include "OptionState.h"
 #include <PostMaster.h>
 #include <PollingStation.h>
 #include "StateStackProxy.h"
@@ -74,7 +75,8 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myHasRunOnce = false;
 	myCursor->SetShouldRender(true);
 
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
+	myController->SetIsInMenu(true);
 }
 
 void MainMenuState::EndState()
@@ -93,7 +95,7 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 	}
 	else
 	{
-		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK))
 		{
 			myIsActiveState = false;
 			return eStateStatus::ePopMainState;
@@ -144,7 +146,8 @@ void MainMenuState::ResumeState()
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myCursor->SetShouldRender(true);
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
-	InitControllerInMenu(myController, myGUIManager);
+	InitControllerInMenu(myController, myGUIManager, myCursor);
+	myController->SetIsInMenu(true);
 }
 
 void MainMenuState::PauseState()
@@ -168,6 +171,10 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::CREDITS:
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new CreditMenuState());
+		break;
+	case eOnClickEvent::OPTIONS:
+		SET_RUNTIME(false);
+		myStateStack->PushMainGameState(new OptionState());
 		break;
 	}
 }

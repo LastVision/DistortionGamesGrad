@@ -20,6 +20,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myCurrentMovement(eMovementType::FLY)
 	, myDashCooldown(0.f)
 	, myDeltaTime(0.f)
+	, myCollisionTimer(0.f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
@@ -62,13 +63,21 @@ void MovementComponent::Update(float aDeltaTime)
 	DEBUG_PRINT(myEntity.GetOrientation().GetPos());
 	DEBUG_PRINT(CU::Length(GetVelocity()));
 
+	myCollisionTimer -= aDeltaTime;
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
-	myMovements[myCurrentMovement]->Update(aDeltaTime);
+
+	bool shouldCollide = myCollisionTimer <= 0.f;
+	myMovements[myCurrentMovement]->Update(aDeltaTime, shouldCollide);
 
 	if (myIsInSteam == true)
 	{
-		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime);
+		float length = CU::Length(myEntity.GetOrientation().GetPos() - mySteamOrigin) - GC::PlayerRadius;
+		float dist = fmax(1.f - (length / mySteamLength), 0.f);
+		dist *= 1.f - myData.mySteamMinForce;
+		dist += myData.mySteamMinForce;
+
+		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime * dist);
 	}
 }
 
@@ -144,14 +153,7 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::FLY));
 		break;
 	case MovementComponent::WALK:
-		if (velocityToState.x > 0.f)
-		{
-			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
-		}
-		else
-		{
-			myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
-		}
+		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::IDLE));
 		break;
 	case MovementComponent::DASH_AIM:
 		myEntity.SendNote(CharacterAnimationNote(eCharacterAnimationType::DASH_AIM));
@@ -162,10 +164,22 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 	}
 }
 
-void MovementComponent::SetInSteam(bool aIsInSteam, const CU::Vector2<float>& aVelocity)
+void MovementComponent::SetInSteam(bool aIsInSteam, float aForce, float aSteamLength
+	, const CU::Vector2<float>& aDirection, const CU::Vector3<float>& anOrigion)
 {
+	if (myIsInSteam == true && aIsInSteam == true)
+	{
+		mySteamVelocity.x += (aDirection.x * aForce) * aDirection.x;
+		mySteamVelocity.y += (aDirection.y * aForce) * aDirection.y;
+	}
+	else
+	{
+		mySteamVelocity = aForce * aDirection;
+	}
+
 	myIsInSteam = aIsInSteam;
-	mySteamVelocity = aVelocity;
+	mySteamOrigin = anOrigion;
+	mySteamLength = aSteamLength;
 
 	for (int i = 0; i < eMovementType::_COUNT; ++i)
 	{
@@ -193,8 +207,14 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 
 void MovementComponent::ReceiveNote(const SpawnNote&)
 {
+	myCollisionTimer = 0.4f;
 	myCurrentMovement = eMovementType::FLY;
 	//mySpawnVelocity = { 0.05f, 0.01f };
 	myMovements[myCurrentMovement]->Activate(mySpawnVelocity);
 	//myEntity.ResetPosition();
+
+	if (mySpawnVelocity.x < 0)
+	{
+		myEntity.GetComponent<InputComponent>()->SetIsFlipped(true);
+	}
 }

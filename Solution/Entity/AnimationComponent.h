@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "AnimationJoint.h"
+#include "Subscriber.h"
 
 namespace Prism
 {
@@ -15,7 +16,7 @@ namespace Prism
 
 struct AnimationComponentData;
 
-class AnimationComponent : public Component
+class AnimationComponent : public Component, public Subscriber
 {
 public:
 	AnimationComponent(Entity& aEntity, const AnimationComponentData& aComponentData, Prism::Scene* aScene);
@@ -29,6 +30,7 @@ public:
 	eComponentType GetType() override;
 
 	void ReceiveNote(const BounceNote& aMessage) override;
+	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
 private:
 	struct AnimationData
@@ -50,6 +52,7 @@ private:
 	Prism::Instance* myInstance;
 	float myCullingRadius;
 	AnimationData myAnimation;
+	AnimationData mySecondAnimation;
 
 	const AnimationComponentData& myComponentData;
 };

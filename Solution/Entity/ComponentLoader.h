@@ -1,5 +1,6 @@
 #pragma once
 
+struct AcidComponentData;
 struct AnimationComponentData;
 struct BounceComponentData;
 struct GraphicsComponentData;
@@ -11,8 +12,9 @@ struct SoundComponentData;
 struct InputComponentData;
 struct SawBladeComponentData;
 struct PlayerGraphicsComponentData;
-struct SteamComponentData;
 struct ScoreComponentData;
+struct SteamComponentData;
+struct StomperComponentData;
 struct PlayerComponentData;
 class XMLReader;
 
@@ -24,6 +26,7 @@ namespace tinyxml2
 class ComponentLoader
 {
 public:
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AcidComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, AnimationComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, BounceComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, GraphicsComponentData& aOutputData);
@@ -34,8 +37,9 @@ public:
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SoundComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SawBladeComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerGraphicsComponentData& aOutputData);
-	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, ScoreComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, SteamComponentData& aOutputData);
+	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, StomperComponentData& aOutputData);
 	void Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceElement, PlayerComponentData& aOutputData);
 
 private:

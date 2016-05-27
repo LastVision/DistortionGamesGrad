@@ -6,8 +6,10 @@
 #include <Camera.h>
 #include <ContactNote.h>
 #include <ControllerInput.h>
-#include "EmitterManager.h"
+#include <DirectionalLight.h>
 #include <DeferredRenderer.h>
+#include "EmitterManager.h"
+#include <EmitterMessage.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
 #include <InputComponent.h>
@@ -15,6 +17,8 @@
 #include "Level.h"
 #include <MovementComponent.h>
 #include <ModelLoader.h>
+#include <OnPlayerLevelComplete.h>
+#include <OnDeathMessage.h>
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
@@ -36,11 +40,10 @@
 #include <SpriteProxy.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
-#include <OnPlayerLevelComplete.h>
-#include <OnDeathMessage.h>
 #include <TextureContainer.h>
+#include "PauseMenuState.h"
 #include <PointLight.h>
-#include <EmitterMessage.h>
+#include <VibrationNote.h>
 
 #include <Texture.h>
 
@@ -144,11 +147,12 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
+	myController->SetIsInMenu(false);
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
-	//myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
 	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 #ifndef THREAD_PHYSICS
@@ -173,11 +177,14 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || 
+		(myController->IsConnected() == true && myController->ButtonOnDown(eXboxButton::START)))
 	{
-		PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
+		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopMainState;*/
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new PauseMenuState());
 	}
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
@@ -185,6 +192,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
 		{
 			++playersAlive;
+			player->GetComponent<InputComponent>()->SetPlayersWinCount(myPlayerWinCount);
 			player->Update(aDeltaTime);
 		}
 		else
@@ -199,11 +207,21 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		entity->Update(aDeltaTime);
 	}
 
+	for (int i = 0; i < myPlayers.Size(); ++i)
+	{
+		Entity* player = myPlayers[i];
+		player->GetComponent<PlayerComponent>()->EvaluateDeath();
+
+		Prism::PointLight* light = myPlayerPointLights[i];
+		light->SetPosition(player->GetOrientation().GetPos());
+		light->Update();
+	}
+
 	if (myPlayerWinCount >= 1)
 	{
 		myTimeToLevelChange -= aDeltaTime;
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
-		if (myTimeToLevelChange < 0.f)
+		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
@@ -212,15 +230,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	
-	for (int i = 0; i < myPlayers.Size(); ++i)
-	{
-		Entity* player = myPlayers[i];
-		player->GetComponent<PlayerComponent>()->EvaluateDeath();
-
-		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos() );
-		light->Update();
-	}
+	
 
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
@@ -276,14 +286,15 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 				CU::Vector2<float> currentVelocity = second.GetComponent<MovementComponent>()->GetVelocity();
 				CU::Vector3<float> velocity = { currentVelocity.x, currentVelocity.y, 0.f };
 				float force = firstTrigger->GetForce();
+				float SteamLength = first.GetComponent<PhysicsComponent>()->GetHeight();
 
 				if ((currentVelocity.x > 0.f && currentVelocity.y > 0.f) && abs(CU::Dot(velocity, first.GetOrientation().GetUp()) < 0.85f))
 				{
 					second.GetComponent<MovementComponent>()->SetVelocity(currentVelocity * 0.5f);
 				}
 
-				second.GetComponent<MovementComponent>()->SetInSteam(true
-					, { first.GetOrientation().GetUp().x * force, first.GetOrientation().GetUp().y * force });
+				second.GetComponent<MovementComponent>()->SetInSteam(true, force, SteamLength
+					, { first.GetOrientation().GetUp().x, first.GetOrientation().GetUp().y }, first.GetOrientation().GetPos());
 				break;
 			}
 		}
@@ -336,6 +347,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, playerID));
 
 				first->SendNote(ShouldDieNote());
+
+				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
+
+				//Sawblade Particle Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::SPIKE:
@@ -348,6 +366,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
 
 				first->SendNote(ShouldDieNote());
+				//Spike Effect
+				//Oil Effect
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -362,6 +382,38 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
 				}
+				//Bouncer effect
+			}
+			break;
+		case eEntityType::STOMPER:
+			if (aHasEntered == true)
+			{
+				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
+				
+				if (dot > 0.001f)
+				{
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+					first->SendNote(ShouldDieNote());
+				}
+				//Stomper Effect
+			}
+			break;
+		case eEntityType::ACID_DROP:
+			if (aHasEntered == true)
+			{
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				first->SendNote(ShouldDieNote());
+				second->SetShouldBeRemoved(true);
 			}
 			break;
 		case eEntityType::GOAL_POINT:
@@ -394,6 +446,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			switch (second->GetType())
 			{
 			case BOUNCER:
+				if (first->IsInScene() == true)
+				{
+					second->SendNote(BounceNote());
+				}
 			case STEAM:
 			case SPIKE:
 				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
@@ -402,27 +458,32 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
 				break;
 			case GOAL_POINT:
-				if (first->GetScrapBodyID() > 0 && myPlayers[first->GetScrapBodyID()]->GetComponent<InputComponent>()->GetIsActive() == false)
-				{
-					TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
-					DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-					PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetScrapBodyID() - 1));
-					myPlayerWinCount++;
-					//first->GetComponent<ScoreComponent>()
-					myPlayers[first->GetScrapBodyID() - 1]->GetComponent<ScoreComponent>()->ReachedGoal();
-
-					myLevelToChangeToID = firstTrigger->GetLevelID();
-					if (myPlayerWinCount >= myPlayersPlaying)
-					{
-						PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-
-						SET_RUNTIME(false);
-						myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-					}
-				}
+				break;
+			case ACID_DROP:
+				second->SetShouldBeRemoved(true);
 				break;
 			default:
 				break;
+			}
+		}
+	}
+	else if (first->GetType() == eEntityType::ACID_DROP)
+	{
+		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
+		{
+			first->SetShouldBeRemoved(true);
+
+			if (second->GetType() == eEntityType::PLAYER)
+			{
+				int playerID = second->GetComponent<InputComponent>()->GetPlayerID();
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
+
+				second->SendNote(ShouldDieNote());
 			}
 		}
 	}
@@ -451,7 +512,7 @@ void Level::CreatePlayers()
 	{
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
 
-		Prism::PointLight* light = new Prism::PointLight(-1, false);
+		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
@@ -468,17 +529,23 @@ void Level::CreatePlayers()
 
 void Level::EndState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::ResumeState()
 {
-
+	myController->SetIsInMenu(false);
 }
 
 void Level::PauseState()
 {
-
+	for each(Entity* player in myPlayers)
+	{
+		player->SendNote(VibrationNote(0, 0, 0));
+	}
 }
 
 void Level::OnResize(int aWidth, int aHeight)

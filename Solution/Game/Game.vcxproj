@@ -213,6 +213,8 @@
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="LevelSelectState.h" />
     <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="OptionState.h" />
+    <ClInclude Include="PauseMenuState.h" />
     <ClInclude Include="ScoreInfo.h" />
     <ClInclude Include="ScoreState.h" />
     <ClInclude Include="ScoreWidget.h" />
@@ -239,6 +241,8 @@
     <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="LevelSelectState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="OptionState.cpp" />
+    <ClCompile Include="PauseMenuState.cpp" />
     <ClCompile Include="ScoreState.cpp" />
     <ClCompile Include="ScoreWidget.cpp" />
     <ClCompile Include="ScrapManager.cpp" />

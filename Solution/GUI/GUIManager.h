@@ -76,7 +76,7 @@ namespace GUI
 
 		WidgetContainer* myWidgets;
 
-		CU::GrowingArray<CU::GrowingArray<ButtonWidget*>> myButtons;
+		CU::GrowingArray<CU::GrowingArray<Widget*>> myButtons;
 
 		const Prism::Camera* myCamera;
 

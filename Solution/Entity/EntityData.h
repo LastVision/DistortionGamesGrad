@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AcidComponentData.h"
 #include "AnimationComponentData.h"
 #include "BounceComponentData.h"
 #include "GraphicsComponentData.h"
@@ -10,6 +11,7 @@
 #include "SoundComponentData.h"
 #include "SawBladeComponentData.h"
 #include "ScoreComponentData.h"
+#include "StomperComponentData.h"
 #include "SteamComponentData.h"
 #include "PlayerGraphicsComponentData.h"
 #include "PlayerComponentData.h"
@@ -21,6 +23,7 @@ struct EntityData
 	{}
 
 	eEntityType myType;
+	AcidComponentData myAcidData;
 	AnimationComponentData myAnimationData;
 	BounceComponentData myBounceData;
 	GraphicsComponentData myGraphicsData;
@@ -33,6 +36,7 @@ struct EntityData
 	ScoreComponentData myScoreData;
 	PlayerGraphicsComponentData myPlayerGraphicsData;
 	SteamComponentData mySteamData;
+	StomperComponentData myStomperData;
 	PlayerComponentData myPlayerData;
 	std::string mySubType;
 	bool myShowDecal;

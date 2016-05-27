@@ -26,10 +26,12 @@ void WalkMovement::Reset()
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
+	myPreviousVelocity.x = 0.f;
+	myPreviousVelocity.y = 0.f;
 	myHasContact = true;
 }
 
-void WalkMovement::Update(float aDeltaTime)
+void WalkMovement::Update(float aDeltaTime, bool)
 {
 	myPreviousVelocity = myVelocity;
 
@@ -50,7 +52,7 @@ void WalkMovement::Update(float aDeltaTime)
 
 	if (myVelocity.x != myPreviousVelocity.x)
 	{
-		if (myVelocity.x > 0.f)
+		if (myVelocity.x != 0.f)
 		{
 			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
 		}
@@ -87,6 +89,8 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 {
 	myVelocity.x = 0.f;
 	myVelocity.y = 0.f;
+	myPreviousVelocity.x = 0.f;
+	myPreviousVelocity.y = 0.f;
 	myHasContact = true;
 
 	myIsActive = true;
