@@ -7,6 +7,8 @@
 #include "PhysicsComponent.h"
 #include <PostMaster.h>
 #include "SoundComponent.h"
+#include "SteamVentNote.h"
+
 SteamComponent::SteamComponent(Entity& anEntity)
 	: Component(anEntity)
 	, myCurrentSteamInterval(0.f)
@@ -47,6 +49,7 @@ void SteamComponent::Update(float aDeltaTime)
 				myCurrentSteamInterval = mySteamInterval;
 				myCurrentSteamTime = 0.f;
 				mySteam->GetComponent<PhysicsComponent>()->RemoveFromScene();
+				myEntity.SendNote(SteamVentNote(false));
 				if (soundComp != nullptr)
 				{
 					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Steam", soundComp->GetAudioSFXID());
@@ -61,6 +64,7 @@ void SteamComponent::Update(float aDeltaTime)
 				myCurrentSteamInterval = 0.f;
 				myCurrentSteamTime = mySteamTime;
 				mySteam->GetComponent<PhysicsComponent>()->AddToScene();
+				myEntity.SendNote(SteamVentNote(true));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp(), mySteamTime));
 				if (soundComp != nullptr)
 				{
@@ -91,6 +95,7 @@ void SteamComponent::InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& a
 		myIsConstant = true;
 		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp()));
 		SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+		myEntity.SendNote(SteamVentNote(true));
 		if (soundComp != nullptr)
 		{
 			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Steam", soundComp->GetAudioSFXID());
