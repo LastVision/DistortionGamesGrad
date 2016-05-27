@@ -56,6 +56,7 @@ namespace Prism
 		void RenderParticles(EmitterManager* aParticleEmitterManager);
 
 		Texture* myDepthStencilTexture;
+		Texture* myParticleDepth;
 		Texture* myCubemap;
 		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
@@ -70,6 +71,7 @@ namespace Prism
 		SpotLightPass* mySpotLightTextureProjectionPass;
 		ShadowPass myShadowPass;
 		GBufferData* myGBufferData;
+		GBufferData* myGBufferDataCopy;
 		D3D11_VIEWPORT* myViewPort;
 
 		DecalPass* myDecal;

@@ -214,7 +214,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
 
 		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos());
+		light->SetPosition(player->GetOrientation().GetPos() + CU::Vector3<float>(0.f, 0.f, -8.f));
 		light->Update();
 	}
 
@@ -481,7 +481,7 @@ void Level::CreatePlayers()
 
 		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
-		light->SetRange(4.f);
+		light->SetRange(14.f);
 		myPlayerPointLights.Add(light);
 		myScene->AddLight(light);
 	}
@@ -558,13 +558,16 @@ void Level::Add(Prism::SpotLight* aLight)
 void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 {
 	int playerID = aPlayer->GetComponent<InputComponent>()->GetPlayerID();
-
-	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-
-	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
 	aPlayer->SendNote(ShouldDieNote());
 }
 

@@ -8,6 +8,8 @@ namespace Prism
 	struct DecalInfo
 	{
 		Texture* myTexture;
+		Texture* myMetalness;
+		Texture* myRoughness;
 		CU::Vector3<float> myPosition;
 		CU::Vector3<float> myDirection;
 	};

@@ -35,6 +35,7 @@ public:
 	void ReceiveNote(const CharacterAnimationNote& aMessage) override;
 
 	bool GetLegsActive() const;
+	bool GetHeadActive() const;
 	BodyAnimation* GetCurrentAnimation();
 private:
 	const PlayerGraphicsComponentData& myData;
@@ -79,4 +80,9 @@ inline eComponentType PlayerGraphicsComponent::GetType()
 inline bool PlayerGraphicsComponent::GetLegsActive() const
 {
 	return myRightLeg.GetActive();
+}
+
+inline bool PlayerGraphicsComponent::GetHeadActive() const
+{
+	return myHead.GetActive();
 }
