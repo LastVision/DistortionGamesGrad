@@ -6,6 +6,7 @@ namespace GUI
 {
 	LevelButtonWidget::LevelButtonWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
 		: ButtonWidget(aReader, anXMLElement)
+		, myStars(4)
 	{
 	}
 
