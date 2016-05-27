@@ -6,7 +6,7 @@
 class LevelReader : public IReader
 {
 public:
-	LevelReader();
+	LevelReader(const std::string& aFile);
 	~LevelReader();
 
 	void ReadFile(const std::string& aFile) override;

@@ -25,6 +25,7 @@ namespace GUI
 	class Widget;
 	class ButtonWidget;
 	class Cursor;
+	class LevelButtonWidget;
 
 	class GUIManager
 	{
@@ -63,6 +64,8 @@ namespace GUI
 		void PressSelectedButton();
 		void HoverSelectedButton();
 
+		void CheckUnlockedNightmareLevels();
+
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);
 		void ReadFiles(XMLReader& aReader, tinyxml2::XMLElement* aFilePathElement);
@@ -77,6 +80,7 @@ namespace GUI
 		WidgetContainer* myWidgets;
 
 		CU::GrowingArray<CU::GrowingArray<Widget*>> myButtons;
+		CU::GrowingArray<LevelButtonWidget*> myLevelButtons; // for nightmare mode
 
 		const Prism::Camera* myCamera;
 

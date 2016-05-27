@@ -25,15 +25,18 @@ struct OnClickMessage : public Message
 {
 	OnClickMessage(eOnClickEvent anEvent);
 	OnClickMessage(eOnClickEvent anEvent, int anID);
+	OnClickMessage(eOnClickEvent anEvent, int anID, bool aIsNightmare);
 
 	const eOnClickEvent myEvent;
 	const int myID;
+	const bool myIsNightmareLevel;
 };
 
 inline OnClickMessage::OnClickMessage(eOnClickEvent anEvent)
 	: Message(eMessageType::ON_CLICK)
 	, myEvent(anEvent)
 	, myID(-1)
+	, myIsNightmareLevel(false)
 {
 }
 
@@ -41,6 +44,14 @@ inline OnClickMessage::OnClickMessage(eOnClickEvent anEvent, int anID)
 	: Message(eMessageType::ON_CLICK)
 	, myEvent(anEvent)
 	, myID(anID)
+	, myIsNightmareLevel(false)
 {
+}
 
+inline OnClickMessage::OnClickMessage(eOnClickEvent anEvent, int anID, bool aIsNightmare)
+	: Message(eMessageType::ON_CLICK)
+	, myEvent(anEvent)
+	, myID(anID)
+	, myIsNightmareLevel(aIsNightmare)
+{
 }

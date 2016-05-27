@@ -111,7 +111,6 @@ Level::~Level()
 		SAFE_DELETE(myScrapManagers[i]);
 	}
 	SAFE_DELETE(myShadowLight);
-	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
@@ -126,7 +125,6 @@ Level::~Level()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
-
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
 #endif
@@ -153,14 +151,28 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
-	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	if (myIsFreeCam == false)
+	{
+		myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	}
+	else
+	{
+		myShadowLight->SetPosition(myCamera.GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	}
 	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
-	mySmartCamera->Update(aDeltaTime);
-	
+	if (myIsFreeCam == true)
+	{
+		UpdateInput(aDeltaTime);
+		myCamera.Update(aDeltaTime);
+	}
+	else
+	{
+		mySmartCamera->Update(aDeltaTime);
+	}
 	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
 	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
 	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
@@ -170,6 +182,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	for (int i = 0; i < myScrapManagers.Size(); ++i)
 	{
 		myScrapManagers[i]->Update(aDeltaTime);
+	}
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_F9))
+	{
+		myCamera.SetOrientation(myOrientation);
+		myIsFreeCam = !myIsFreeCam;
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
@@ -214,7 +232,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		player->GetComponent<PlayerComponent>()->EvaluateDeath();
 
 		Prism::PointLight* light = myPlayerPointLights[i];
-		light->SetPosition(player->GetOrientation().GetPos() + CU::Vector3<float>(0.f, 0.f, -8.f));
+		light->SetPosition(player->GetOrientation().GetPos());
 		light->Update();
 	}
 
@@ -328,7 +346,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
 		if (aHasEntered == true)
 		{
 			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
@@ -481,7 +498,7 @@ void Level::CreatePlayers()
 
 		Prism::PointLight* light = new Prism::PointLight(false);
 		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
-		light->SetRange(14.f);
+		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
 		myScene->AddLight(light);
 	}
@@ -569,6 +586,63 @@ void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
 	}
 	aPlayer->SendNote(ShouldDieNote());
+}
+
+void Level::UpdateInput(float aDeltaTime)
+{
+	const float moveSpeed = 25.f;
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+	{
+		myCamera.MoveForward(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+	{
+		myCamera.MoveForward(-moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_SPACE))
+	{
+		myCamera.MoveUp(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_X))
+	{
+		myCamera.MoveUp(-moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+	{
+		myCamera.MoveRight(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+	{
+		myCamera.MoveRight(-moveSpeed * aDeltaTime);
+	}
+
+	const float rotateSpeed = 25.f;
+
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UPARROW))
+	{
+		myCamera.RotateX(-rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_DOWNARROW))
+	{
+		myCamera.RotateX(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_RIGHTARROW))
+	{
+		myCamera.RotateY(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LEFTARROW))
+	{
+		myCamera.RotateY(-rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_Q))
+	{
+		myCamera.RotateZ(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_E))
+	{
+		myCamera.RotateZ(-rotateSpeed * aDeltaTime);
+	}
+
 }
 
 void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)

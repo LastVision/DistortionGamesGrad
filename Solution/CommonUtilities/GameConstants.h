@@ -35,4 +35,7 @@ public:
 	static bool EnableCheat;
 
 	static int TotalLevels;
+	static int TotalNightmareLevels;
+
+	static bool NightmareMode;
 };

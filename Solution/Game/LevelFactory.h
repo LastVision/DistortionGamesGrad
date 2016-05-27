@@ -18,20 +18,20 @@ namespace tinyxml2
 class LevelFactory
 {
 public:
-	LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel);
+	LevelFactory(const std::string& aLevelListPath, const std::string& aNightLevelListPath
+		, Prism::Camera& aCamera, int aLevel);
 	~LevelFactory();
 
 	bool LoadLevel(Level*& aLevelOut);
 
 	void RestartLevel();
 
-	int GetTotalLevels() const;
-
 private:
 	void operator=(LevelFactory&) = delete;
 	Level* LoadCurrentLevel();
 
-	void ReadLevelList(const std::string& aLevelListPath);
+	void ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
+		, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare);
 	Level* ReadLevel(const std::string& aLevelPath);
 
 	void LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
@@ -50,21 +50,16 @@ private:
 
 	void ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aElement, CU::Vector3f& aPosition, CU::Vector3f& aRotation, CU::Vector3f& aScale);
 
-	void AddLevelToUnlockedLevelFile(const int aLevelID);
+	void AddLevelToUnlockedLevelFile(const int aLevelID, bool aIsNightmare);
 
 	Prism::Camera& myCamera;
 	
 	int myCurrentLevelID;
 	int myFinalLevelID;
+	int myFinalNightmareLevelID;
 
 	std::unordered_map<int, std::string> myLevelPaths;
+	std::unordered_map<int, std::string> myNightmareLevelPaths;
 
 	bool myHasCreatedUnlockedLevels;
-
-	int myTotalLevels;
 };
-
-inline int LevelFactory::GetTotalLevels() const
-{
-	return myTotalLevels;
-}
