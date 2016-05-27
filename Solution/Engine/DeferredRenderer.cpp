@@ -128,6 +128,11 @@ namespace Prism
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
 		aScene->RenderStatic();
+
+		//myGBufferData->SetAsRenderTarget(Prism::Engine::GetInstance()->GetDepthView())
+
+		aScene->RenderSea();
+
 		ID3D11RenderTargetView* target = myGBufferData->myAlbedoTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
 			, Engine::GetInstance()->GetDepthView());

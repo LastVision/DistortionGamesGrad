@@ -21,6 +21,7 @@ namespace Prism
 		: myCamera(nullptr)
 		, myDynamicInstances(1024)
 		, myStaticInstances(1024)
+		, mySea(nullptr)
 	{
 		myDirectionalLights.Init(4);
 		myPointLights.Init(128);
@@ -80,6 +81,12 @@ namespace Prism
 		myInstancingHelper->Render(false);
 	}
 
+	void Scene::RenderSea()
+	{
+		mySea->RenderInstanced(*myCamera, *myInstancingHelper);
+		myInstancingHelper->Render(false);
+	}
+
 	void Scene::AddInstance(Instance* aInstance, bool aDynamic)
 	{
 		if (aDynamic == true)
@@ -90,6 +97,11 @@ namespace Prism
 		{
 			myStaticInstances.Add(aInstance);
 		}
+	}
+
+	void Scene::SetSea(Instance* aInstance, bool aDynamic)
+	{
+		mySea = aInstance;
 	}
 
 	void Scene::AddLight(DirectionalLight* aLight)

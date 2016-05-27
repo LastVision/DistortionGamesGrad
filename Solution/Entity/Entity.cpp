@@ -251,6 +251,13 @@ void Entity::AddToScene()
 		return;
 	}
 
+	if (mySubType == "water_plane")
+	{
+		myScene->SetSea(GetComponent<GraphicsComponent>()->GetInstance(), !myEntityData.myShowDecal);
+		myIsInScene = true;
+		return;
+	}
+
 	if (GetComponent<GraphicsComponent>() != nullptr && GetComponent<GraphicsComponent>()->GetInstance() != nullptr)
 	{
 		myScene->AddInstance(GetComponent<GraphicsComponent>()->GetInstance(), !myEntityData.myShowDecal);
