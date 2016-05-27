@@ -65,6 +65,7 @@ namespace Prism
 		myDirectionalLightPass = new DirectionalLightPass();
 
 		myGBufferData = new GBufferData();
+		myGBufferDataCopy = new GBufferData();
 		SetupShadowData();
 
 		InitFullscreenQuad();
@@ -106,6 +107,7 @@ namespace Prism
 
 		SAFE_DELETE(myAmbientPass);
 		SAFE_DELETE(myGBufferData);
+		SAFE_DELETE(myGBufferDataCopy);
 		SAFE_DELETE(myPointLightPass);
 		SAFE_DELETE(mySpotLightPass);
 		SAFE_DELETE(mySpotLightTextureProjectionPass);
@@ -140,6 +142,10 @@ namespace Prism
 		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
 
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture);
+
+
+		//myGBufferData->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 		aScene->RenderDynamic();
@@ -361,7 +367,7 @@ namespace Prism
 				backbuffer = myFinishedTexture->GetRenderTargetView();
 			}
 
-		
+
 			Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, Engine::GetInstance()->GetDepthView());
 			Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 

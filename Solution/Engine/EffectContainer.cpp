@@ -57,7 +57,9 @@ namespace Prism
 	{
 		VerifyShader(aFilePath);
 		GetCSOPath(aFilePath);
+		SET_RUNTIME(false);
 		Effect* newEffect = new Effect();
+		RESET_RUNTIME;
 
 		if (newEffect->Init(aFilePath) == false)
 		{

@@ -71,6 +71,7 @@ namespace Prism
 		SpotLightPass* mySpotLightTextureProjectionPass;
 		ShadowPass myShadowPass;
 		GBufferData* myGBufferData;
+		GBufferData* myGBufferDataCopy;
 		D3D11_VIEWPORT* myViewPort;
 
 		DecalPass* myDecal;
