@@ -22,6 +22,7 @@
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
+#include <PlayAnimationNote.h>
 #include <PlayerComponent.h>
 #include <PollingStation.h>
 #include <PostMaster.h>
@@ -425,6 +426,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
 				first->GetComponent<ScoreComponent>()->ReachedGoal();
+				second->SendNote(PlayAnimationNote());
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)

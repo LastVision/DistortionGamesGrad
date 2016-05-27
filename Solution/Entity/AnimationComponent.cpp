@@ -87,6 +87,11 @@ void AnimationComponent::ReceiveNote(const SteamVentNote& aMessage)
 	}
 }
 
+void AnimationComponent::ReceiveNote(const PlayAnimationNote&)
+{
+	myInstance->ResetAnimationTime(0.f);
+}
+
 void AnimationComponent::ReceiveMessage(const PlayerActiveMessage&)
 {
 	if (myEntity.GetType() == eEntityType::SPAWN_POINT)
