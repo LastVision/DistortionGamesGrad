@@ -30,6 +30,8 @@ public:
 	eComponentType GetType() override;
 
 	void ReceiveNote(const BounceNote& aMessage) override;
+	void ReceiveNote(const SteamVentNote& aMessage) override;
+	void ReceiveNote(const PlayAnimationNote& aMessage) override;
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 
 private:
@@ -46,8 +48,6 @@ private:
 		bool myResetTimeOnRestart;
 		float myElapsedTime;
 	};
-
-
 
 	Prism::Instance* myInstance;
 	float myCullingRadius;

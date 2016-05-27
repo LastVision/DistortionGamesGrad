@@ -25,6 +25,8 @@ public:
 
 	void RestartLevel();
 
+	int GetTotalLevels() const;
+
 private:
 	void operator=(LevelFactory&) = delete;
 	Level* LoadCurrentLevel();
@@ -58,5 +60,11 @@ private:
 	std::unordered_map<int, std::string> myLevelPaths;
 
 	bool myHasCreatedUnlockedLevels;
+
+	int myTotalLevels;
 };
 
+inline int LevelFactory::GetTotalLevels() const
+{
+	return myTotalLevels;
+}

@@ -43,6 +43,7 @@ namespace GUI
 		const OnClickMessage* GetEvent() const;
 
 		void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut) override;
+		void SetButtonText(const std::string& aText) override;
 
 		void SetActive(const bool aActiveFlag);
 	protected:
@@ -73,5 +74,11 @@ namespace GUI
 	inline void ButtonWidget::SetEvent(OnClickMessage* anEvent)
 	{
 		myClickEvent = anEvent;
+	}
+
+	inline void ButtonWidget::SetButtonText(const std::string& aText)
+	{
+		myButtonText = aText;
+		myIsTextButton = true;
 	}
 }

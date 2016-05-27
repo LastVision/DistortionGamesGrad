@@ -22,6 +22,7 @@
 #include <PhysicsComponent.h>
 #include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
+#include <PlayAnimationNote.h>
 #include <PlayerComponent.h>
 #include <PollingStation.h>
 #include <PostMaster.h>
@@ -44,6 +45,8 @@
 #include "PauseMenuState.h"
 #include <PointLight.h>
 #include <VibrationNote.h>
+
+#include <Texture.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
@@ -322,6 +325,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 {
 	Entity* first = &aFirst->GetEntity(); 
 	Entity* second = &aSecond->GetEntity();
+
 	if (first->GetType() == eEntityType::PLAYER)
 	{
 		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
@@ -335,16 +339,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SAW_BLADE:
 			if (aHasEntered == true)
 			{
-				
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()
-					, playerID));
-
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), first->GetComponent<MovementComponent>()->GetVelocity()
-					, playerID));
-
-				first->SendNote(ShouldDieNote());
+				KillPlayer(first, first->GetComponent<MovementComponent>()->GetVelocity());
 
 				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
 				CU::Normalize(dir);
@@ -357,13 +352,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::SPIKE:
 			if (aHasEntered == true)
 			{
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				first->SendNote(ShouldDieNote());
+				KillPlayer(first);
 				//Spike Effect
 				//Oil Effect
 			}
@@ -390,13 +379,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				
 				if (dot > 0.001f)
 				{
-					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-					PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-						, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-					first->SendNote(ShouldDieNote());
+					KillPlayer(first);
 				}
 				//Stomper Effect
 			}
@@ -404,13 +387,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::ACID_DROP:
 			if (aHasEntered == true)
 			{
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, first->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				first->SendNote(ShouldDieNote());
+				KillPlayer(first);
 				second->SetShouldBeRemoved(true);
 			}
 			break;
@@ -473,15 +450,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 			if (second->GetType() == eEntityType::PLAYER)
 			{
-				int playerID = second->GetComponent<InputComponent>()->GetPlayerID();
-
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-					, second->GetOrientation().GetPos(), { 0.f, 0.f }, playerID));
-
-				second->SendNote(ShouldDieNote());
+				KillPlayer(second);
 			}
 		}
 	}
@@ -523,7 +492,6 @@ void Level::CreatePlayers()
 	mySmartCamera->SetStartPosition(mySpawnPosition);
 
 }
-
 
 void Level::EndState()
 {
@@ -575,7 +543,6 @@ void Level::Add(Entity* anEntity)
 	myEntities.GetLast()->Reset();
 }
 
-
 void Level::Add(Prism::DirectionalLight* aLight)
 {
 	myDirectionalLights.Add(aLight);
@@ -586,6 +553,22 @@ void Level::Add(Prism::SpotLight* aLight)
 {
 	mySpotLights.Add(aLight);
 	myScene->AddLight(aLight);
+}
+
+void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
+{
+	int playerID = aPlayer->GetComponent<InputComponent>()->GetPlayerID();
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
+	aPlayer->SendNote(ShouldDieNote());
 }
 
 void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)

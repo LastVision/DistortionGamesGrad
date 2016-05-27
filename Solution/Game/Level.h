@@ -63,6 +63,9 @@ public:
 	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
 private:
+
+	void KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity = { 0.f, 0.f });
+
 	void operator=(Level&) = delete;
 
 	Prism::Texture* myBackground;

@@ -271,5 +271,8 @@
     <ClInclude Include="SteamVentNote.h">
       <Filter>Notes</Filter>
     </ClInclude>
+    <ClInclude Include="PlayAnimationNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
