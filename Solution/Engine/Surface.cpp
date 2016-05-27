@@ -41,6 +41,10 @@ namespace Prism
 	void Surface::SetEffect(Effect* aEffect)
 	{
 		myEffect = aEffect;
+		if (myEffect->GetFileName().find("water") != std::string::npos)
+		{
+			myPrimitiveTopologyType = D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
+		}
 
 		for (int i = 0; i < myShaderResourceNames.Size(); ++i)
 		{
