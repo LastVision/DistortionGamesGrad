@@ -37,5 +37,8 @@ private:
 	float myTimer;
 
 	int myNumberOfActiveScores;
+
+	int myCurrentLevel;
+
 };
 

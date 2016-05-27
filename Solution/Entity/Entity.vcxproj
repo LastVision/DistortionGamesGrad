@@ -191,6 +191,7 @@
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="MovementComponentData.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="PlayAnimationNote.h" />
     <ClInclude Include="PlayerBody.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerComponentData.h" />

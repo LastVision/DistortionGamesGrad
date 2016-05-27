@@ -158,7 +158,7 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 
 
 		resetPos.z = 0.f;
-		if (aHitNormal.y > 0.f)
+		if (aHitNormal.y > 0.001f)
 		{
 			resetPos.y = aHitPosition.y + walkOffset;
 		}

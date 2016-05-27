@@ -7,6 +7,7 @@
 #include <Engine.h>
 #include <EntityFactory.h>
 #include <Entity.h>
+#include <GameConstants.h>
 #include "Level.h"
 #include "LevelFactory.h"
 #include <PhysicsInterface.h>
@@ -24,6 +25,7 @@ LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCa
 	, myCurrentLevelID(aLevel)
 	, myFinalLevelID(0)
 	, myHasCreatedUnlockedLevels(true)
+	, myTotalLevels(0)
 {
 	ReadLevelList(aLevelListPath);
 }
@@ -80,7 +82,10 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 		myLevelPaths[ID] = levelPath;
 
 		myFinalLevelID = max(myFinalLevelID, ID);
+		myTotalLevels++;
 	}
+
+	GC::TotalLevels = myTotalLevels;
 	myHasCreatedUnlockedLevels = true;
 	reader.CloseDocument();
 }

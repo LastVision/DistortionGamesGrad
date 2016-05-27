@@ -12,6 +12,8 @@ struct LoseBodyPartNote;
 struct ShouldDieNote;
 struct SpawnNote;
 struct VibrationNote;
+struct SteamVentNote;
+struct PlayAnimationNote;
 
 class Component
 {
@@ -31,6 +33,8 @@ public:
 	virtual void ReceiveNote(const ShouldDieNote&) {}
 	virtual void ReceiveNote(const SpawnNote&) {}
 	virtual void ReceiveNote(const VibrationNote&) {}
+	virtual void ReceiveNote(const SteamVentNote&) {}
+	virtual void ReceiveNote(const PlayAnimationNote&) {}
 
 	virtual void Init();
 
