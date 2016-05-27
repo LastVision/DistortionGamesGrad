@@ -16,6 +16,9 @@ public:
 
 	eComponentType GetType() override;
 
+	bool IsGoingDown() const;
+	bool IsGoingUp() const;
+
 private:
 	Entity* myStomper;
 
@@ -44,4 +47,14 @@ inline eComponentType StomperComponent::GetTypeStatic()
 inline eComponentType StomperComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline bool StomperComponent::IsGoingDown() const
+{
+	return myStompDownTimer > 0.f && myHasReachedMax == false;
+}
+
+inline bool StomperComponent::IsGoingUp() const
+{
+	return myBeforeStompTimer > 0.f && myHasReachedMin == false;
 }
