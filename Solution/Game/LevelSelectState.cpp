@@ -8,7 +8,8 @@
 #include <PostMaster.h>
 #include <WidgetContainer.h>
 
-LevelSelectState::LevelSelectState() 
+LevelSelectState::LevelSelectState(bool aIsNightmare)
+	: myIsNightmare(aIsNightmare)
 {
 }
 
@@ -28,12 +29,22 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	myCursor = aCursor;
 	myStateStatus = eStateStatus::eKeepState;
 	myIsActiveState = true;
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+
+	if (myIsNightmare == false)
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+	}
+	else
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, -1);
+		myGUIManager->CheckUnlockedNightmareLevels();
+	}
+
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
-	RetrieveUnlockedLevelsFromFile();
+	//RetrieveUnlockedLevelsFromFile();
 	myController->SetIsInMenu(true);
 }
 

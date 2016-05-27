@@ -7,6 +7,7 @@
 #include <Engine.h>
 #include "GUIManager.h"
 #include "../InputWrapper/InputWrapper.h"
+#include "LevelButtonWidget.h"
 #include "SpriteWidget.h"
 #include "ToggleBoxWidget.h"
 #include "VolumeWidget.h"
@@ -21,6 +22,7 @@ namespace GUI
 		, myCamera(aCamera)
 		, myLevelID(aLeveID)
 		, myButtons(16)
+		, myLevelButtons(16)
 		, myUseController(false)
 		, myControllerButtonIndexX(0)
 		, myControllerButtonIndexY(0)
@@ -229,6 +231,51 @@ namespace GUI
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
+	void GUIManager::CheckUnlockedNightmareLevels()
+	{
+		CU::GrowingArray<bool> unlockedLevels(64);
+
+		std::fstream file;
+		file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels_Nightmare.bin", std::ios::binary | std::ios::in);
+
+		if (file.is_open() == true)
+		{
+			int levelID;
+			bool isUnlocked = false;
+			bool isEndOfFile = false;
+			while (isEndOfFile == false)
+			{
+				if (file.eof())
+				{
+					isEndOfFile = true;
+					break;
+				}
+				file >> levelID >> isUnlocked;
+				unlockedLevels.Add(isUnlocked);
+			}
+
+			file.close();
+		}
+
+
+		for (int i = 0; i < myLevelButtons.Size(); i++)
+		{
+			if (i == 0)
+			{
+				myLevelButtons[i]->SetActive(true);
+			}
+			else if (i > unlockedLevels.Size())
+			{
+				myLevelButtons[i]->SetActive(false);
+			}
+			else
+			{
+				myLevelButtons[i]->SetActive(unlockedLevels[i]);
+			}
+		}
+
+	}
+
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{
 		std::string path = "";
@@ -362,6 +409,27 @@ namespace GUI
 						}
 					}
 					container->AddWidget(widget);
+				}
+				else if (type == "levelButton")
+				{
+					LevelButtonWidget* widget = new LevelButtonWidget(&aReader, widgetElement);
+					container->AddWidget(widget);
+
+					if (myButtons.Size() == 0 || widget->GetPosition().y > myButtons.GetLast().GetLast()->GetPosition().y)
+					{
+						myButtons.Add(CU::GrowingArray<Widget*>(8));
+						myButtons.GetLast().Add(widget);
+					}
+					else if (widget->GetPosition().x > myButtons.GetLast().GetLast()->GetPosition().x)
+					{
+						myButtons.GetLast().Add(widget);
+					}
+					else
+					{
+						myButtons.Add(CU::GrowingArray<Widget*>(8));
+						myButtons.GetLast().Add(widget);
+					}
+					myLevelButtons.Add(widget);
 				}
 				else
 				{

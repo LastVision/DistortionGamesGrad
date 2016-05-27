@@ -35,3 +35,6 @@ bool GC::OptionsUseShadows = false;
 bool GC::EnableCheat = false;
 
 int GC::TotalLevels = 0;
+int GC::TotalNightmareLevels = 0;
+
+bool GC::NightmareMode = false;
