@@ -45,6 +45,8 @@
 #include <PointLight.h>
 #include <VibrationNote.h>
 
+#include <Texture.h>
+
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	: myCamera(aCamera)
 	, myEntities(1024)
