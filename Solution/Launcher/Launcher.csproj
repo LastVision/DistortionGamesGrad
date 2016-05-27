@@ -69,7 +69,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>machinaicon2.ico</ApplicationIcon>
+    <ApplicationIcon>T_icon_game.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DataExporter|AnyCPU'">
     <OutputPath>bin\DataExporter\</OutputPath>
@@ -147,6 +147,7 @@
   <ItemGroup>
     <Content Include="machinaicon2.ico" />
     <Content Include="T_icon.ico" />
+    <Content Include="T_icon_game.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

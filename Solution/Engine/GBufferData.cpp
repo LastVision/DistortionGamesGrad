@@ -27,7 +27,7 @@ namespace Prism
 		myDepthTexture = new Texture();
 		myDepthTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R32_FLOAT);
+			, DXGI_FORMAT_R32G32_FLOAT);
 	}
 
 	GBufferData::~GBufferData()
@@ -50,6 +50,11 @@ namespace Prism
 
 	void GBufferData::SetAsRenderTarget(Texture* aDepthTexture)
 	{
+		SetAsRenderTarget(aDepthTexture->GetDepthStencilView());
+	}
+
+	void GBufferData::SetAsRenderTarget(ID3D11DepthStencilView* aDepthStencil)
+	{
 		ID3D11RenderTargetView* targets[4];
 		targets[0] = myAlbedoTexture->GetRenderTargetView();
 		targets[1] = myNormalTexture->GetRenderTargetView();
@@ -57,6 +62,15 @@ namespace Prism
 		targets[3] = myDepthTexture->GetRenderTargetView();
 
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(4, targets
-			, aDepthTexture->GetDepthStencilView());
+			, aDepthStencil);
 	}
+
+	void GBufferData::Copy(const GBufferData& aSource)
+	{
+		Engine::GetInstance()->GetContex()->CopyResource(myAlbedoTexture->GetTexture(), aSource.myAlbedoTexture->GetTexture());
+		Engine::GetInstance()->GetContex()->CopyResource(myNormalTexture->GetTexture(), aSource.myNormalTexture->GetTexture());
+		Engine::GetInstance()->GetContex()->CopyResource(myEmissiveTexture->GetTexture(), aSource.myEmissiveTexture->GetTexture());
+		Engine::GetInstance()->GetContex()->CopyResource(myDepthTexture->GetTexture(), aSource.myDepthTexture->GetTexture());
+	}
+
 }
