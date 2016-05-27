@@ -92,7 +92,9 @@ namespace Prism
 				//myMetalness->SetResource(info.myMetalness->GetShaderView());
 				//myRoughness->SetResource(info.myRoughness->GetShaderView());
 
-				aGBufferCopy->Copy(*aGBuffer);
+				//aGBufferCopy->Copy(*aGBuffer);
+				Engine::GetInstance()->GetContex()->CopyResource(aGBufferCopy->myAlbedoTexture->GetTexture(), aGBuffer->myAlbedoTexture->GetTexture());
+
 				//aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
 				ID3D11RenderTargetView* target = aGBuffer->myAlbedoTexture->GetRenderTargetView();
 				Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
