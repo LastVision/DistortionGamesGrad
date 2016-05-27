@@ -21,8 +21,8 @@ namespace Prism
 		myInstance = new Instance(*model, myOrientation);
 
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		//TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
+		//TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
 
 		OnEffectLoad();
 		myEffect->AddListener(this);
@@ -40,8 +40,8 @@ namespace Prism
 		info.myPosition = aPosition;
 		info.myDirection = aDirection;
 		info.myTexture = TextureContainer::GetInstance()->GetTexture(aTexturePath);
-		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		//info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
+		//info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
 		myDecals.Add(info);
 	}
 
@@ -85,10 +85,10 @@ namespace Prism
 
 				myOrientation.SetPos(info.myPosition);
 				effect->SetWorldMatrixInverted(CU::InverseSimple(myOrientation));
-				//effect->SetTexture(info.myTexture);
 				effect->SetDecalDirection(info.myDirection);
 
 				myAlbedo->SetResource(info.myTexture->GetShaderView());
+
 				//myMetalness->SetResource(info.myMetalness->GetShaderView());
 				//myRoughness->SetResource(info.myRoughness->GetShaderView());
 
@@ -103,10 +103,10 @@ namespace Prism
 				myInstance->Render(aCamera);
 			}
 
-			myGAlbedo->SetResource(nullptr);
-			myGNormal->SetResource(nullptr);
-			myGEmissive->SetResource(nullptr);
-			myGDepth->SetResource(nullptr);
+			//myGAlbedo->SetResource(nullptr);
+			//myGNormal->SetResource(nullptr);
+			//myGEmissive->SetResource(nullptr);
+			//myGDepth->SetResource(nullptr);
 		}
 
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
