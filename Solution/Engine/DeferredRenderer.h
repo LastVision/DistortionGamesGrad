@@ -56,6 +56,7 @@ namespace Prism
 		void RenderParticles(EmitterManager* aParticleEmitterManager);
 
 		Texture* myDepthStencilTexture;
+		Texture* myParticleDepth;
 		Texture* myCubemap;
 		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
