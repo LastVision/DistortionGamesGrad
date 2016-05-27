@@ -20,14 +20,16 @@
 #include <PointLight.h>
 #include <SpotLight.h>
 
-LevelFactory::LevelFactory(const std::string& aLevelListPath, Prism::Camera& aCamera, int aLevel)
+LevelFactory::LevelFactory(const std::string& aLevelListPath
+	, const std::string& aNightLevelListPath, Prism::Camera& aCamera, int aLevel)
 	: myCamera(aCamera)
 	, myCurrentLevelID(aLevel)
 	, myFinalLevelID(0)
+	, myFinalNightmareLevelID(0)
 	, myHasCreatedUnlockedLevels(true)
-	, myTotalLevels(0)
 {
-	ReadLevelList(aLevelListPath);
+	ReadLevelList(aLevelListPath, myLevelPaths, GC::TotalLevels, myFinalLevelID, false);
+	ReadLevelList(aNightLevelListPath, myNightmareLevelPaths, GC::TotalNightmareLevels, myFinalNightmareLevelID, true);
 }
 
 LevelFactory::~LevelFactory()
@@ -55,7 +57,16 @@ void LevelFactory::RestartLevel()
 
 Level* LevelFactory::LoadCurrentLevel()
 {
-	Level* level = ReadLevel(myLevelPaths[myCurrentLevelID]);
+	Level* level = nullptr;
+
+	if (GC::NightmareMode == false)
+	{
+		level = ReadLevel(myLevelPaths[myCurrentLevelID]);
+	}
+	else
+	{
+		level = ReadLevel(myNightmareLevelPaths[myCurrentLevelID]);
+	}
 
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->InitThread();
@@ -64,9 +75,10 @@ Level* LevelFactory::LoadCurrentLevel()
 	return level;
 }
 
-void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
+void LevelFactory::ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
+	, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare)
 {
-	myLevelPaths.clear();
+	aLevelMap.clear();
 	XMLReader reader;
 	reader.OpenDocument(aLevelListPath);
 
@@ -78,14 +90,13 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath)
 	{
 		reader.ForceReadAttribute(element, "ID", ID);
 		reader.ForceReadAttribute(element, "path", levelPath);
-		AddLevelToUnlockedLevelFile(ID);
-		myLevelPaths[ID] = levelPath;
+		AddLevelToUnlockedLevelFile(ID, aIsNightmare);
+		aLevelMap[ID] = levelPath;
 
-		myFinalLevelID = max(myFinalLevelID, ID);
-		myTotalLevels++;
+		aFinalLevel = max(aFinalLevel, ID);
+		aTotalLevels++;
 	}
 
-	GC::TotalLevels = myTotalLevels;
 	myHasCreatedUnlockedLevels = true;
 	reader.CloseDocument();
 }
@@ -532,10 +543,17 @@ void LevelFactory::ReadOrientation(XMLReader& aReader, tinyxml2::XMLElement* aEl
 	aRotation.z = CU::Math::DegreeToRad(aRotation.z);
 }
 
-void LevelFactory::AddLevelToUnlockedLevelFile(const int aLevelID)
+void LevelFactory::AddLevelToUnlockedLevelFile(const int aLevelID, bool aIsNightmare)
 {
 	std::fstream file;
-	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+	std::string path = "Data/UnlockedLevels.bin";
+
+	if (aIsNightmare == true)
+	{
+		path = "Data/UnlockedLevels_Nightmare.bin";
+	}
+
+	file.open(CU::GetMyDocumentFolderPath() + path, std::ios::binary | std::ios::in);
 	if (file.peek() == std::ifstream::traits_type::eof())
 	{
 		myHasCreatedUnlockedLevels = false;
@@ -548,7 +566,7 @@ void LevelFactory::AddLevelToUnlockedLevelFile(const int aLevelID)
 		{
 			mode = std::ios::binary | std::ios::out;
 		}
-		file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", mode);
+		file.open(CU::GetMyDocumentFolderPath() + path, mode);
 		if (file.is_open() == true)
 		{
 			if (myHasCreatedUnlockedLevels == false)

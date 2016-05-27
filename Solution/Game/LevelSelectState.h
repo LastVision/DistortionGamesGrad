@@ -16,7 +16,7 @@ namespace CU
 class LevelSelectState : public GameState, public Subscriber
 {
 public:
-	LevelSelectState();
+	LevelSelectState(bool aIsNightmare);
 	~LevelSelectState();
 
 	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
@@ -37,5 +37,6 @@ private:
 
 	GUI::GUIManager* myGUIManager;
 
+	bool myIsNightmare;
 };
 

@@ -93,7 +93,7 @@ bool Game::Init(HWND& aHwnd)
 #ifdef RELEASE_BUILD
 	myStateStack.PushMainGameState(new MainMenuState());
 #else
-	myStateStack.PushMainGameState(new LevelSelectState());
+	myStateStack.PushMainGameState(new LevelSelectState(false));
 	//myStateStack.PushMainGameState(new MainMenuState());
 #endif
 
@@ -189,11 +189,12 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	{
 	case eOnClickEvent::START_LEVEL:
 		SET_RUNTIME(false);
+		GC::NightmareMode = aMessage.myIsNightmareLevel;
 		myStateStack.PushMainGameState(new InGameState(aMessage.myID));
 		break;
 	case eOnClickEvent::LEVEL_SELECT:
 		SET_RUNTIME(false);
-		myStateStack.PushMainGameState(new LevelSelectState());
+		myStateStack.PushMainGameState(new LevelSelectState(aMessage.myIsNightmareLevel));
 		break;
 	case eOnClickEvent::OPTIONS_TOGGLE_VIBRATION:
 		GC::OptionsUseViberations = aMessage.myID != 0;
