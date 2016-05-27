@@ -558,13 +558,16 @@ void Level::Add(Prism::SpotLight* aLight)
 void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 {
 	int playerID = aPlayer->GetComponent<InputComponent>()->GetPlayerID();
-
-	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-
-	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
+	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+	{
+		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	}
 	aPlayer->SendNote(ShouldDieNote());
 }
 
