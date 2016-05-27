@@ -36,6 +36,11 @@ AnimationComponent::AnimationComponent(Entity& aEntity, const AnimationComponent
 	mySecondAnimation.myFile = myComponentData.mySecondAnimationPath;
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
+
+	if (myEntity.GetType() == eEntityType::GOAL_POINT)
+	{
+		myAnimation.myShouldLoop = true;
+	}
 }
 
 AnimationComponent::~AnimationComponent()
@@ -54,6 +59,10 @@ void AnimationComponent::Update(float aDeltaTime)
 	if (myInstance->IsAnimationDone() == false || myInstance->AnimationIsLoaded() == false)
 	{
 		myInstance->Update(aDeltaTime);
+	}
+	if (myInstance->IsAnimationDone() == true && myAnimation.myShouldLoop == true)
+	{
+		myInstance->ResetAnimationTime(0.f);
 	}
 }
 

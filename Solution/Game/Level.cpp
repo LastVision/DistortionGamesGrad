@@ -426,7 +426,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
 				myPlayerWinCount++;
 				first->GetComponent<ScoreComponent>()->ReachedGoal();
-				second->SendNote(PlayAnimationNote());
 
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
