@@ -93,9 +93,14 @@ namespace Prism
 				//myRoughness->SetResource(info.myRoughness->GetShaderView());
 
 				//aGBufferCopy->Copy(*aGBuffer);
+				Engine::GetInstance()->GetContex()->CopyResource(aGBufferCopy->myAlbedoTexture->GetTexture(), aGBuffer->myAlbedoTexture->GetTexture());
+
 				//aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+				ID3D11RenderTargetView* target = aGBuffer->myAlbedoTexture->GetRenderTargetView();
+				Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
+					, Engine::GetInstance()->GetDepthView());
 				
-				//myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
+				myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
 				//myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
 				//myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
 				//myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
@@ -103,7 +108,7 @@ namespace Prism
 				myInstance->Render(aCamera);
 			}
 
-			//myGAlbedo->SetResource(nullptr);
+			myGAlbedo->SetResource(nullptr);
 			//myGNormal->SetResource(nullptr);
 			//myGEmissive->SetResource(nullptr);
 			//myGDepth->SetResource(nullptr);

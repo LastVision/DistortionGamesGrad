@@ -135,9 +135,6 @@ namespace Prism
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
 		aScene->RenderStatic();
-		ID3D11RenderTargetView* target = myGBufferData->myAlbedoTexture->GetRenderTargetView();
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
-			, Engine::GetInstance()->GetDepthView());
 
 		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
 
