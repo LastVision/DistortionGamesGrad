@@ -269,7 +269,10 @@ void ScrapManager::ReceiveMessage(const ScrapMessage& aMessage)
 	if (myPlayerID == aMessage.myPlayerID)
 	{
 		SpawnScrap(aMessage.myScrapPart, aMessage.myPosition, aMessage.myVelocity);
-		SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+		if (rand() % 3 == 0)
+		{
+			SpawnScrap(eScrapPart::GIBS, aMessage.myPosition, aMessage.myVelocity);
+		}
 	}
 
 }

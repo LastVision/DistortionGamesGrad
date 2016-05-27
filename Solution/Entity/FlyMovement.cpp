@@ -173,7 +173,7 @@ void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vect
 	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed)
 	{
 		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP
-			|| aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
+			&& aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 		{
 			myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
 		}

@@ -7,6 +7,7 @@
 #include <PlayerActiveMessage.h>
 #include "PlayerComponent.h"
 #include <PostMaster.h>
+#include "PlayerGraphicsComponent.h"
 #include "ShouldDieNote.h"
 #include <ScrapMessage.h>
 
@@ -37,6 +38,16 @@ void PlayerComponent::EvaluateDeath()
 		myShouldDie = false;
 		PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::BODY, myEntity.GetOrientation().GetPos()
 			, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+		if (myEntity.GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+		{
+			PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::LEGS, myEntity.GetOrientation().GetPos()
+				, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+		}
+		if (myEntity.GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+		{
+			PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::HEAD, myEntity.GetOrientation().GetPos()
+				, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+		}
 		PostMaster::GetInstance()->SendMessage(OnDeathMessage(myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		myEntity.Reset();
 		myEntity.SendNote(DeathNote());
