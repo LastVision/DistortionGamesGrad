@@ -41,13 +41,16 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	{
 		if (score->myActive == true)
 		{
-			if (bestScore.myActive == false || bestScore.myTime > score->myTime)
+			if (bestScore.myActive == false || (bestScore.myTime > score->myTime && score->myReachedGoal == true))
 			{
 				bestScore = *score;
 			}
 		}
 	}
-	sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+	if (bestScore.myReachedGoal == true)
+	{
+		sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+	}
 }
 
 
