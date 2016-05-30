@@ -11,7 +11,9 @@
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 #include <PostMaster.h>
+#include "StomperComponent.h"
 #include <EmitterMessage.h>
+
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(false)
@@ -27,7 +29,6 @@ FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOr
 		this->HandleRaycastLegs(aComponent, aDirection, aHitPosition, aHitNormal);
 	};
 }
-
 
 FlyMovement::~FlyMovement()
 {
@@ -104,11 +105,13 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		Entity& entity = aComponent->GetEntity();
+
 		myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->HandleCollision(&aComponent->GetEntity());
 
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP) return;
-		if (type == eEntityType::BOUNCER || type == eEntityType::STOMPER)
+		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 

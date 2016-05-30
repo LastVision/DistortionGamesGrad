@@ -35,15 +35,17 @@ bool BodyPart::GetActive() const
 Head::Head()
 	: myHat(nullptr)
 {
-	myHat = new Hat();
-	myHat->myInstance = new Prism::Instance(*HatManager::GetInstance()->GetHat(2), myHat->myOrientation);
+
 }
 
 Head::~Head()
 {
 	SAFE_DELETE(myInstance);
-	SAFE_DELETE(myHat->myInstance);
-	SAFE_DELETE(myHat);
+	if (myHat != nullptr)
+	{
+		SAFE_DELETE(myHat->myInstance);
+		SAFE_DELETE(myHat);
+	}
 }
 
 void Head::CreateJoints(const std::string& aAnimationPath)
@@ -68,10 +70,19 @@ void Head::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, Anim
 	}
 }
 
+void Head::SetHat(int aHatID)
+{
+	myHat = new Hat();
+	myHat->myInstance = new Prism::Instance(*HatManager::GetInstance()->GetHat(aHatID), myHat->myOrientation);
+}
+
 void Head::SetActive(bool aValue)
 {
 	myInstance->SetShouldRender(aValue);
-	myHat->myInstance->SetShouldRender(aValue);
+	if (myHat != nullptr)
+	{
+		myHat->myInstance->SetShouldRender(aValue);
+	}
 }
 
 bool Head::GetActive() const

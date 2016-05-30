@@ -22,7 +22,7 @@ namespace GUI
 		ButtonWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement);
 		ButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition, 
 			const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath, 
-			const std::string& aButtonText = "default", const std::string& = "");
+			const std::string& aButtonText = "default", const std::string& = "", const CU::Vector2<float>& aTextOffset = { 0.f, 0.f });
 		virtual ~ButtonWidget();
 
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
@@ -43,7 +43,7 @@ namespace GUI
 		const OnClickMessage* GetEvent() const;
 
 		void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut) override;
-		void SetButtonText(const std::string& aText) override;
+		void SetButtonText(const std::string& aText, const CU::Vector2<float>& aOffset = { 0.f, 0.f }) override;
 
 		void SetActive(const bool aActiveFlag);
 	protected:
@@ -64,6 +64,8 @@ namespace GUI
 		Prism::SpriteProxy* myImageCurrent;
 
 		OnClickMessage* myClickEvent;
+
+		CU::Vector2<float> myTextOffset;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const
@@ -76,8 +78,9 @@ namespace GUI
 		myClickEvent = anEvent;
 	}
 
-	inline void ButtonWidget::SetButtonText(const std::string& aText)
+	inline void ButtonWidget::SetButtonText(const std::string& aText, const CU::Vector2<float>& aOffset)
 	{
+		myTextOffset = aOffset;
 		myButtonText = aText;
 		myIsTextButton = true;
 	}

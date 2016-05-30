@@ -8,6 +8,7 @@
 #include "PlayerGraphicsComponent.h"
 #include "PostMaster.h"
 #include "ShouldDieNote.h"
+#include "StomperComponent.h"
 #include "WalkMovement.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -140,9 +141,11 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		Entity& entity = aComponent->GetEntity();
 		const eEntityType& type = aComponent->GetEntity().GetType();
+
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP) return;
-		if (type == eEntityType::BOUNCER || type == eEntityType::STOMPER)
+		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 

@@ -42,6 +42,7 @@ void StomperComponent::Update(float aDeltaTime)
 		{
 			if (myHasReachedMax == false)
 			{
+				myStomper->SetStomperMoving(true);
 				myStomper->SetRotation({ 0, 5.f * aDeltaTime, 0 });
 				float length = CU::Length(entityPosition - currentStompPosition);
 
@@ -61,6 +62,7 @@ void StomperComponent::Update(float aDeltaTime)
 					{
 						myStomper->SetPosition(myStomperMaxPosition);
 						myHasReachedMax = true;
+						myStomper->SetStomperMoving(false);
 					}
 				}
 			}
@@ -78,6 +80,7 @@ void StomperComponent::Update(float aDeltaTime)
 		{
 			if (myHasReachedMin == false)
 			{
+				myStomper->SetStomperMoving(true);
 				myStomper->SetRotation({ 0, -5.f * aDeltaTime, 0 });
 				float length = CU::Length(currentStompPosition - myStomperMaxPosition);
 
@@ -99,6 +102,7 @@ void StomperComponent::Update(float aDeltaTime)
 					{
 						myStomper->SetPosition(entityPosition);
 						myHasReachedMin = true;
+						myStomper->SetStomperMoving(false);
 					}
 				}
 			}

@@ -35,6 +35,7 @@ struct Head
 	void SetActive(bool aValue);
 	bool GetActive() const;
 
+	void SetHat(int aHatID);
 
 	Prism::Instance* myInstance;
 	CU::Matrix44<float> myOrientation;

@@ -42,7 +42,7 @@ namespace GUI
 		void SetIsClickable(bool aIsClickable);
 
 		virtual void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut);
-		virtual void SetButtonText(const std::string& aText);
+		virtual void SetButtonText(const std::string& aText, const CU::Vector2<float>& aOffset = { 0.f, 0.f });
 
 	protected:
 		CU::Vector2<float> myPosition;
@@ -102,7 +102,7 @@ namespace GUI
 	{
 	}
 
-	inline void Widget::SetButtonText(const std::string&)
+	inline void Widget::SetButtonText(const std::string&, const CU::Vector2<float>&)
 	{
 	}
 }
