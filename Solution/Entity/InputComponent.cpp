@@ -28,6 +28,7 @@ InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInput
 	, myTimeToSpawn(0.f)
 	, myIntendToSpawn(false)
 	, myAllowedToSpawn(true)
+	, myStandingOnStomper(nullptr)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_LEVEL_COMPLETE | eMessageType::PLAYER_ACTIVE);
 }
@@ -136,6 +137,11 @@ void InputComponent::Update(float aDeltaTime)
 				}
 			}
 		}
+	}
+
+	if (myStandingOnStomper != nullptr && myStandingOnStomper->IsStomperMoving() == true)
+	{
+		myEntity.SendNote(ShouldDieNote());
 	}
 }
 

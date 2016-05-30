@@ -66,6 +66,10 @@ void StomperComponent::Update(float aDeltaTime)
 					}
 				}
 			}
+			else
+			{
+				myStomper->SetStomperMoving(false);
+			}
 
 			myStompDownTimer -= aDeltaTime;
 
@@ -105,6 +109,10 @@ void StomperComponent::Update(float aDeltaTime)
 						myStomper->SetStomperMoving(false);
 					}
 				}
+			}
+			else
+			{
+				myStomper->SetStomperMoving(false);
 			}
 
 			myBeforeStompTimer -= aDeltaTime;
