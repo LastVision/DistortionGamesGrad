@@ -327,4 +327,12 @@ namespace CU
 		file.close();
 		return toReturn;
 	}
+
+	inline const std::string GetUsername()
+	{
+		char username[256 + 1];
+		DWORD username_len = 256 + 1;
+		GetUserNameA(username, &username_len);
+		return username;
+	}
 }

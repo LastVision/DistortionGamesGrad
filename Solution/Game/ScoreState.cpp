@@ -13,6 +13,7 @@
 #include "ScoreWidget.h"
 #include <WidgetContainer.h>
 #include <fstream>
+#include <SQLWrapper.h>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
@@ -32,6 +33,21 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	}
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
+	CU::SQLWrapper sql;
+	sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+	Score bestScore;
+	bestScore.myActive = false;
+	for each(const Score* score in myScores)
+	{
+		if (score->myActive == true)
+		{
+			if (bestScore.myActive == false || bestScore.myTime > score->myTime)
+			{
+				bestScore = *score;
+			}
+		}
+	}
+	sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
 }
 
 

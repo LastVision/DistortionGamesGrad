@@ -120,6 +120,9 @@
     <ClInclude Include="MurmurHash3.h">
       <Filter>Hash</Filter>
     </ClInclude>
+    <ClInclude Include="SQLWrapper.h">
+      <Filter>SQL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">
@@ -155,6 +158,9 @@
     <Filter Include="Hash">
       <UniqueIdentifier>{8556c7af-d6fa-433a-81f0-50a6453bc5fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SQL">
+      <UniqueIdentifier>{27ac531a-85b5-49a1-96e0-a6038173f9bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera2D.cpp">
@@ -184,6 +190,9 @@
     <ClCompile Include="GameConstants.cpp" />
     <ClCompile Include="MurmurHash3.cpp">
       <Filter>Hash</Filter>
+    </ClCompile>
+    <ClCompile Include="SQLWrapper.cpp">
+      <Filter>SQL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
