@@ -61,4 +61,11 @@ namespace GUI
 		myStarOffset *= ratio;
 		myStarPosition *= ratio;
 	}
+
+	void LevelButtonWidget::SetStars(const int someStars)
+	{
+		myStars.Add(new StarWidget(someStars > 0, 1));
+		myStars.Add(new StarWidget(someStars > 1, 2));
+		myStars.Add(new StarWidget(someStars > 2, 3));
+	}
 }

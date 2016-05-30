@@ -57,7 +57,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	int nextLevel = myCurrentLevel + 1;
 
-	if (nextLevel < GC::TotalLevels)
+	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
 	{
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2)->SetButtonText(std::to_string(nextLevel));
 	}
@@ -66,6 +66,11 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	if (GC::NightmareMode == false && myCurrentLevel >= GC::TotalLevels)
+	{
+		GC::HasWonGame = true;
+	}
 }
 
 void ScoreState::EndState()
@@ -177,7 +182,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			}
 		}
 
-		if (currentScore.myTime < highestScore.myTime)
+		if (currentScore.myTime != 0 && currentScore.myTime < highestScore.myTime)
 		{
 			highestScore.myTime = currentScore.myTime;
 		}

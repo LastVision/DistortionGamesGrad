@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <InputWrapper.h>
@@ -46,6 +47,14 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 
 	//RetrieveUnlockedLevelsFromFile();
 	myController->SetIsInMenu(true);
+
+#ifdef RELEASE_BUILD
+	if (myIsNightmare == false && GC::HasWonGame == false)
+	{
+		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetLast())->SetActive(false);
+
+	}
+#endif
 }
 
 void LevelSelectState::EndState()
