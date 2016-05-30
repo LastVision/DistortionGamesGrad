@@ -50,7 +50,6 @@ private:
 
 	CU::Matrix44<float> myArrowOrientation;
 
-	BodyPart myBody;
 	BodyPart myLeftLeg;
 	BodyPart myRightLeg;
 	Head myHead;

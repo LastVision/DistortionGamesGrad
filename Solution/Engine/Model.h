@@ -43,14 +43,14 @@ namespace Prism
 		void DeActivateSurfaces();
 		
 		bool SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices
-			, const CU::GrowingArray<CU::Vector3<float>>& someScales
-			, const CU::GrowingArray<float>& someHeights);
+			, const CU::GrowingArray<CU::Vector3<float>>& someScales);
 		int GetIndexCount();
 		int GetVertexStart();
 		CU::GrowingArray<Model*>& GetChildren();
 
 
 		const std::string& GetTechniqueName() const override;
+		const std::string& GetTechniqueNameDepthOnly() const override;
 		Model* GetRealModel(const CU::Vector3<float>& aModelPosition, const CU::Vector3<float>& aCameraPosition);
 		void SetFileName(const std::string& aFileName) override;
 
@@ -59,12 +59,15 @@ namespace Prism
 
 		CU::GrowingArray<CU::Matrix44<float>> myMatrices;
 		CU::GrowingArray<CU::Vector3<float>> myScales;
-		CU::GrowingArray<float> myHeights;
 
 	private:
 		void operator=(Model&) = delete;
 		void InitInstancingBuffers();
 		void SetupInstancingBuffers();
+
+		bool MapResource(ID3D11Buffer* aBuffer, const CU::GrowingArray<CU::Matrix44<float>>& someMatrices);
+		bool MapResource(ID3D11Buffer* aBuffer, const CU::GrowingArray<CU::Vector3<float>>& someVectors);
+
 		bool myIsNULLObject;
 
 		
@@ -86,8 +89,7 @@ namespace Prism
 		D3D11_BUFFER_DESC* myInstancingBufferDesc;
 		VertexBufferWrapper* myInstancingMatrixBuffer;
 		VertexBufferWrapper* myInstancingScaleBuffer;
-		VertexBufferWrapper* myInstancingHeightBuffer;
-		ID3D11Buffer* myVertexBuffers[4];
+		ID3D11Buffer* myVertexBuffers[3];
 		int myMaxInstances;
 	};
 

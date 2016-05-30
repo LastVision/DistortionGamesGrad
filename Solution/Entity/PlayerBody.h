@@ -50,6 +50,9 @@ struct BodyAnimation
 		, const CU::Matrix44<float>& aOrientation);
 	void CreateJoints(const std::string& aAnimationPath);
 
+	void SetActive(bool aValue);
+	bool GetActive() const;
+
 	Prism::Instance* myAnimation;
 
 	AnimationJoint myHead;

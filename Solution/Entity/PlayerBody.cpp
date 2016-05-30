@@ -88,6 +88,7 @@ void BodyAnimation::CreateAnimation(const std::string& aAnimationPath, const std
 	, const CU::Matrix44<float>& aOrientation)
 {
 	myAnimation = new Prism::Instance(*Prism::ModelLoader::GetInstance()->LoadModelAnimated(aAnimationPath, aShaderPath), aOrientation);
+	SetActive(false);
 }
 
 void BodyAnimation::CreateJoints(const std::string& aAnimationPath)
@@ -97,4 +98,14 @@ void BodyAnimation::CreateJoints(const std::string& aAnimationPath)
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "l_leg_jnt0", myLeftLeg);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "r_leg_jnt0", myRightLeg);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "jetpack_jnt0", myJetPack);
+}
+
+void BodyAnimation::SetActive(bool aValue)
+{
+	myAnimation->SetShouldRender(aValue);
+}
+
+bool BodyAnimation::GetActive() const
+{
+	return myAnimation->GetShouldRender();
 }

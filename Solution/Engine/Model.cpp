@@ -30,10 +30,8 @@ namespace Prism
 		, myMaxInstances(0)
 		, myInstancingMatrixBuffer(nullptr)
 		, myInstancingScaleBuffer(nullptr)
-		, myInstancingHeightBuffer(nullptr)
 		, myMatrices(128)
 		, myScales(128)
-		, myHeights(128)
 	{
 		myInstancingBufferDesc = new D3D11_BUFFER_DESC();
 	}
@@ -56,12 +54,6 @@ namespace Prism
 			myInstancingScaleBuffer->myVertexBuffer->Release();
 			delete myInstancingScaleBuffer;
 		}
-
-		if (myInstancingHeightBuffer != nullptr && myInstancingHeightBuffer->myVertexBuffer != nullptr)
-		{
-			myInstancingHeightBuffer->myVertexBuffer->Release();
-			delete myInstancingHeightBuffer;
-		}
 	}
 
 	void Model::Init(int aMaxInstances, bool aLightMesh)
@@ -71,7 +63,7 @@ namespace Prism
 		myMaxInstances = aMaxInstances;
 		if (myIsNULLObject == false)
 		{
-			const int size = myVertexFormat.Size() + 6;
+			const int size = myVertexFormat.Size() + 5;
 			D3D11_INPUT_ELEMENT_DESC* vertexDesc = new D3D11_INPUT_ELEMENT_DESC[size];
 			for (int i = 0; i < myVertexFormat.Size(); ++i)
 			{
@@ -86,7 +78,6 @@ namespace Prism
 				vertexDesc[myVertexFormat.Size() + 3] = { "myWorld", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
 
 				vertexDesc[myVertexFormat.Size() + 4] = { "myScale", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
-				vertexDesc[myVertexFormat.Size() + 5] = { "myHeight", 0, DXGI_FORMAT_R32_FLOAT, 3, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
 			}
 
 			
@@ -344,18 +335,13 @@ namespace Prism
 	}
 
 	bool Model::SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices
-		, const CU::GrowingArray<CU::Vector3<float>>& someScales
-		, const CU::GrowingArray<float>& someHeights)
+		, const CU::GrowingArray<CU::Vector3<float>>& someScales)
 	{
 		DL_ASSERT_EXP(mySurfaces.Size() < 2, "We do not support several surfaces yet");
 
 		if (myIsNULLObject == true)
 		{
-			//if (myChildren.Size() == 0)
-			{
-				return false;
-			}
-			//return myChildren[0]->SetGPUState(someWorldMatrices, someScales, someHeights);
+			return false;
 		}
 		else
 		{
@@ -366,69 +352,32 @@ namespace Prism
 				return false;
 			}
 
-			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
-
-			context->Map(myInstancingMatrixBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (mappedResource.pData != nullptr)
-			{
-				CU::Matrix44<float>* data = (CU::Matrix44<float>*)mappedResource.pData;
-				if (someWorldMatrices.Size() > 0)
-				{
-					memcpy(data, &someWorldMatrices[0], sizeof(CU::Matrix44<float>) * someWorldMatrices.Size());
-				}
-
-				context->Unmap(myInstancingMatrixBuffer->myVertexBuffer, 0);
-			}
-			else
+			bool result = true;
+			result = MapResource(myInstancingMatrixBuffer->myVertexBuffer, someWorldMatrices);
+			if (result == false)
 			{
 				DL_ASSERT("Failed to Map InstancingMatrix Buffer");
 				return false;
 			}
 
-			context->Map(myInstancingScaleBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (mappedResource.pData != nullptr)
-			{
-				CU::Vector3<float>* data = (CU::Vector3<float>*)mappedResource.pData;
-				if (someScales.Size() > 0)
-				{
-					memcpy(data, &someScales[0], sizeof(CU::Vector3<float>) * someScales.Size());
-				}
-
-				context->Unmap(myInstancingScaleBuffer->myVertexBuffer, 0);
-			}
-			else
+			result = MapResource(myInstancingScaleBuffer->myVertexBuffer, someScales);
+			if (result == false)
 			{
 				DL_ASSERT("Failed to Map InstancingScale Buffer");
 				return false;
 			}
 
-			context->Map(myInstancingHeightBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (mappedResource.pData != nullptr)
-			{
-				float* data = (float*)mappedResource.pData;
-				if (someHeights.Size() > 0)
-				{
-					memcpy(data, &someHeights[0], sizeof(float) * someHeights.Size());
-				}
-
-				context->Unmap(myInstancingHeightBuffer->myVertexBuffer, 0);
-			}
-			else
-			{
-				DL_ASSERT("Failed to Map InstancingHeight Buffer");
-				return false;
-			}
 
 			myVertexBuffers[0] = myVertexBuffer->myVertexBuffer;
 			myVertexBuffers[1] = myInstancingMatrixBuffer->myVertexBuffer;
 			myVertexBuffers[2] = myInstancingScaleBuffer->myVertexBuffer;
-			myVertexBuffers[3] = myInstancingHeightBuffer->myVertexBuffer;
 
-			UINT strides[4] = { myVertexBuffer->myStride, myInstancingMatrixBuffer->myStride
-				, myInstancingScaleBuffer->myStride, myInstancingHeightBuffer->myStride };
-			UINT offsets[4] = { 0, 0, 0, 0 };
-			context->IASetVertexBuffers(0, 4, myVertexBuffers, strides, offsets);
+			UINT strides[3] = { myVertexBuffer->myStride, myInstancingMatrixBuffer->myStride
+				, myInstancingScaleBuffer->myStride};
+			UINT offsets[3] = { 0, 0, 0 };
+
+			ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
+			context->IASetVertexBuffers(0, 3, myVertexBuffers, strides, offsets);
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
 				, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 			context->IASetInputLayout(myVertexLayout);
@@ -477,6 +426,18 @@ namespace Prism
 		else
 		{
 			return BaseModel::GetTechniqueName();
+		}
+	}
+
+	const std::string& Model::GetTechniqueNameDepthOnly() const
+	{
+		if (myIsNULLObject == true)
+		{
+			return myChildren[0]->GetTechniqueNameDepthOnly();
+		}
+		else
+		{
+			return BaseModel::GetTechniqueNameDepthOnly();
 		}
 	}
 
@@ -531,12 +492,6 @@ namespace Prism
 		myInstancingScaleBuffer->myByteOffset = 0;
 		myInstancingScaleBuffer->myStartSlot = 0;
 		myInstancingScaleBuffer->myNumberOfBuffers = 1;
-
-		myInstancingHeightBuffer = new VertexBufferWrapper();
-		myInstancingHeightBuffer->myStride = sizeof(float);
-		myInstancingHeightBuffer->myByteOffset = 0;
-		myInstancingHeightBuffer->myStartSlot = 0;
-		myInstancingHeightBuffer->myNumberOfBuffers = 1;
 	}
 
 	void Model::SetupInstancingBuffers()
@@ -565,18 +520,50 @@ namespace Prism
 			DL_ASSERT("Model::SetupInstancingBuffer: Failed to setup myInstancingScaleBuffer");
 		}
 		Engine::GetInstance()->SetDebugName(myInstancingScaleBuffer->myVertexBuffer, "Model::myInstancingScaleBuffer->myVertexBuffer");
+	}
 
-		if (myInstancingHeightBuffer->myVertexBuffer != nullptr)
-			myInstancingHeightBuffer->myVertexBuffer->Release();
+	bool Model::MapResource(ID3D11Buffer* aBuffer, const CU::GrowingArray<CU::Matrix44<float>>& someMatrices)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 
-		myInstancingBufferDesc->ByteWidth = sizeof(float) * myMaxInstances;
-		hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myInstancingBufferDesc, nullptr
-			, &myInstancingHeightBuffer->myVertexBuffer);
-		if (FAILED(hr) != S_OK)
+		context->Map(aBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		if (mappedResource.pData != nullptr)
 		{
-			DL_ASSERT("Model::SetupInstancingBuffer: Failed to setup myInstancingHeightBuffer");
+			CU::Matrix44<float>* data = (CU::Matrix44<float>*)mappedResource.pData;
+			if (someMatrices.Size() > 0)
+			{
+				memcpy(data, &someMatrices[0], sizeof(CU::Matrix44<float>) * someMatrices.Size());
+			}
+
+			context->Unmap(aBuffer, 0);
+
+			return true;
 		}
-		Engine::GetInstance()->SetDebugName(myInstancingHeightBuffer->myVertexBuffer, "Model::myInstancingHeightBuffer->myVertexBuffer");
+
+		return false;
+	}
+
+	bool Model::MapResource(ID3D11Buffer* aBuffer, const CU::GrowingArray<CU::Vector3<float>>& someVectors)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
+
+		context->Map(aBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		if (mappedResource.pData != nullptr)
+		{
+			CU::Vector3<float>* data = (CU::Vector3<float>*)mappedResource.pData;
+			if (someVectors.Size() > 0)
+			{
+				memcpy(data, &someVectors[0], sizeof(CU::Vector3<float>) * someVectors.Size());
+			}
+
+			context->Unmap(aBuffer, 0);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	bool Model::IsNullObject()
