@@ -5,6 +5,7 @@
 #include "CharacterAnimationNote.h"
 #include <ModelLoader.h>
 #include <Instance.h>
+#include "HatManager.h"
 #include "LoseBodyPartNote.h"
 #include "PlayerGraphicsComponent.h"
 #include <PostMaster.h>
@@ -30,6 +31,11 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myPreviousAnimation(eCharacterAnimationType::FLY)
 	, myCurrentAnimationType(eCharacterAnimationType::FLY)
 {
+	int hatID = HatManager::GetInstance()->GetHatIDOnPlayer(myPlayerID);
+	if (hatID != -1)
+	{
+		myHead.SetHat(hatID);
+	}
 }
 
 PlayerGraphicsComponent::~PlayerGraphicsComponent()
@@ -95,8 +101,10 @@ void PlayerGraphicsComponent::Init()
 	myScene->AddInstance(myHead.myInstance, true);
 	myScene->AddInstance(myArrow, true);
 
-	myScene->AddInstance(myHead.myHat->myInstance, true);
-
+	if (myHead.myHat != nullptr)
+	{
+		myScene->AddInstance(myHead.myHat->myInstance, true);
+	}
 	myCurrentAnimation = &myIdleAnimation;
 }
 
