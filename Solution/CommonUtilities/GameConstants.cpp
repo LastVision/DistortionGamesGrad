@@ -39,3 +39,4 @@ int GC::TotalLevels = 0;
 int GC::TotalNightmareLevels = 0;
 
 bool GC::NightmareMode = false;
+bool GC::HasWonGame = false;

@@ -183,7 +183,7 @@ namespace GUI
 		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
 		{
 			if (myControllerButtonIndexX + 1 < myButtons.Size() &&
-				myButtons[myControllerButtonIndexX].Size() > 1 && 
+				myButtons[myControllerButtonIndexX].Size() > 1 &&
 				myButtons[myControllerButtonIndexX + 1].Size() > 1)
 			{
 				myControllerButtonIndexX++;
@@ -257,7 +257,6 @@ namespace GUI
 			file.close();
 		}
 
-
 		for (int i = 0; i < myLevelButtons.Size(); i++)
 		{
 #ifdef RELEASE_BUILD
@@ -278,7 +277,28 @@ namespace GUI
 #endif
 		}
 
+		for (int i = 0; i < unlockedLevels.Size(); i++)
+		{
+			int stars = 0;
+			std::fstream file;
+			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score_Nightmare" + std::to_string(i + 1) + ".bin", std::ios::binary | std::ios::in);
+
+			if (file.is_open() == true)
+			{
+				int levelID = 0;
+				float time = 0;
+				file >> levelID >> time >> stars;		
+			}
+
+			if (i < myLevelButtons.Size())
+			{
+				myLevelButtons[i]->SetStars(stars);
+			}
+
+			file.close();
+		}
 	}
+
 
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{

@@ -39,12 +39,26 @@ LevelFactory::~LevelFactory()
 bool LevelFactory::LoadLevel(Level*& aLevelOut)
 {
 	myCurrentLevelID++;
-	if (myCurrentLevelID > myFinalLevelID)
+
+	if (GC::NightmareMode == false)
 	{
-		return false;
+		if (myCurrentLevelID > myFinalLevelID)
+		{
+			return false;
+		}
+		DL_ASSERT_EXP(myLevelPaths.find(myCurrentLevelID) != myLevelPaths.end()
+			, "[LevelFactory]: Non-existing ID in LoadLevel! ID most correspond with LI_level.xml");
+	}
+	else
+	{
+		if (myCurrentLevelID > myFinalNightmareLevelID)
+		{
+			return false;
+		}
+		DL_ASSERT_EXP(myNightmareLevelPaths.find(myCurrentLevelID) != myNightmareLevelPaths.end()
+			, "[LevelFactory]: Non-existing ID in LoadLevel nightmare! ID most correspond with LI_level_nightmare.xml");
 	}
 
-	DL_ASSERT_EXP(myLevelPaths.find(myCurrentLevelID) != myLevelPaths.end(), "[LevelFactory]: Non-existing ID in LoadLevel! ID most correspond with LI_level.xml");
 
 	aLevelOut = LoadCurrentLevel();
 	return true;
@@ -78,6 +92,9 @@ Level* LevelFactory::LoadCurrentLevel()
 void LevelFactory::ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
 	, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare)
 {
+	aFinalLevel = 0;
+	aTotalLevels = 0;
+
 	aLevelMap.clear();
 	XMLReader reader;
 	reader.OpenDocument(aLevelListPath);

@@ -25,6 +25,7 @@
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="GUIManager.h" />
     <ClInclude Include="GUIManager3D.h" />
+    <ClInclude Include="HighscoreWidget.h" />
     <ClInclude Include="LevelButtonWidget.h" />
     <ClInclude Include="SpriteWidget.h" />
     <ClInclude Include="StarWidget.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="GUIManager3D.cpp" />
+    <ClCompile Include="HighscoreWidget.cpp" />
     <ClCompile Include="LevelButtonWidget.cpp" />
     <ClCompile Include="SpriteWidget.cpp" />
     <ClCompile Include="StarWidget.cpp" />

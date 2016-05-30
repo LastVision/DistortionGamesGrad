@@ -38,4 +38,5 @@ public:
 	static int TotalNightmareLevels;
 
 	static bool NightmareMode;
+	static bool HasWonGame;
 };

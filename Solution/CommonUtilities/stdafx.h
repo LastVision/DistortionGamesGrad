@@ -1,7 +1,7 @@
 #pragma once
-
-#include <algorithm>
+#include "SQLWrapper.h"
 #include <DL_Debug.h>
+#include <algorithm>
 #include "..\DL_Debug\DL_Debug.h"
 #include <cassert>
 #include <cmath>

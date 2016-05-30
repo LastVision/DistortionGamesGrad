@@ -40,6 +40,8 @@ namespace GUI
 		Widget* At(const int& aIndex);
 		const Widget* At(const int& aIndex) const;
 
+		Widget* GetLast();
+		const Widget* GetLast() const;
 
 	private:
 		CU::GrowingArray<Widget*> myWidgets;
@@ -63,5 +65,15 @@ namespace GUI
 	inline const Widget* WidgetContainer::At(const int& aIndex) const
 	{
 		return myWidgets[aIndex];
+	}
+
+	inline Widget* WidgetContainer::GetLast()
+	{
+		return myWidgets.GetLast();
+	}
+
+	inline const Widget* WidgetContainer::GetLast() const
+	{
+		return myWidgets.GetLast();
 	}
 }

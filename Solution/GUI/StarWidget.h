@@ -9,7 +9,7 @@ namespace Prism
 class StarWidget : public GUI::Widget
 {
 public:
-	StarWidget(bool anActive, int anID);
+	StarWidget(bool anActive, int anID, const CU::Vector2<float>& aSize = { 128.f, 128.f });
 	~StarWidget();
 
 	void Update(float aDeltaTime) override;

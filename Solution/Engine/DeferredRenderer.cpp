@@ -116,12 +116,16 @@ namespace Prism
 		SAFE_DELETE(myDecal);
 	}
 
-	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath)
+	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
 	{
 		SET_RUNTIME(false);
-		myDecal->AddDecal(aPosition, aDirection, aPath);
-		myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
+		myDecal->AddDecal(aPosition, aDirection);
 		SET_RUNTIME(true);
+	}
+
+	void DeferredRenderer::Update(float aDelta)
+	{
+		myDecal->Update(aDelta);
 	}
 
 	void DeferredRenderer::Render(Scene* aScene, Texture* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager)
@@ -136,17 +140,12 @@ namespace Prism
 
 		aScene->RenderStatic();
 
-		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
-
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
+		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
 		aScene->RenderSea(myParticleDepth);
-
-		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
-
-		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 		aScene->RenderDynamic();
 
 		ActivateBuffers();

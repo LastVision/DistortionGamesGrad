@@ -13,6 +13,7 @@
 #include "ScoreWidget.h"
 #include <WidgetContainer.h>
 #include <fstream>
+#include <SQLWrapper.h>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
@@ -32,6 +33,24 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	}
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
+	CU::SQLWrapper sql;
+	sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+	Score bestScore;
+	bestScore.myActive = false;
+	for each(const Score* score in myScores)
+	{
+		if (score->myActive == true)
+		{
+			if (bestScore.myActive == false || (bestScore.myTime > score->myTime && score->myReachedGoal == true))
+			{
+				bestScore = *score;
+			}
+		}
+	}
+	if (bestScore.myReachedGoal == true)
+	{
+		sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+	}
 }
 
 
@@ -57,7 +76,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	int nextLevel = myCurrentLevel + 1;
 
-	if (nextLevel < GC::TotalLevels)
+	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
 	{
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2)->SetButtonText(std::to_string(nextLevel));
 	}
@@ -66,6 +85,11 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	if (GC::NightmareMode == false && myCurrentLevel >= GC::TotalLevels)
+	{
+		GC::HasWonGame = true;
+	}
 }
 
 void ScoreState::EndState()
@@ -177,7 +201,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			}
 		}
 
-		if (currentScore.myTime < highestScore.myTime)
+		if (currentScore.myTime != 0 && currentScore.myTime < highestScore.myTime)
 		{
 			highestScore.myTime = currentScore.myTime;
 		}
