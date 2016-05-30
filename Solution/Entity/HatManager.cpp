@@ -42,6 +42,85 @@ void HatManager::LoadHats()
 	}
 
 	hatDocument.CloseDocument();
+
+	std::string hatPath = "Data/UnlockedHats.bin";
+
+	if (CU::FileExists(hatPath) == false)
+	{
+
+		myPlayersCurrentHat.Add(-1);
+		myPlayersCurrentHat.Add(-1);
+		for (auto it = myHats.begin(); it != myHats.end(); ++it)
+		{
+			myHatsStatus.Add(0);
+		}
+		std::ofstream file;
+		file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::out);
+		//skapa up filen korrekt
+
+		for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
+		{
+			file << myPlayersCurrentHat[i];
+		}
+
+		for (int i = 0; i < myHatsStatus.Size(); ++i)
+		{
+			file << myHatsStatus[i];
+		}
+		file.close();
+	}
+	else
+	{
+		std::ifstream file;
+		file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::in);
+		int playerOneHat;
+		int playerTwoHat;
+		file >> playerOneHat;
+		file >> playerTwoHat;
+		myPlayersCurrentHat.Add(playerOneHat);
+		myPlayersCurrentHat.Add(playerTwoHat);
+
+		for (int i = 0; i < myHats.size(); ++i)
+		{
+			int hasUnlocked;
+			file >> hasUnlocked;
+			myHatsStatus.Add(hasUnlocked);
+		}
+		file.close();
+	}
+	
+
+}
+
+void HatManager::UnlockHat(int aID)
+{
+	std::string hatPath = "Data/UnlockedHats.bin";
+	std::ofstream file;
+	file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::out);
+
+	for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
+	{
+		file << myPlayersCurrentHat[i];
+	}
+
+	myHatsStatus[aID] = 1;
+
+	for (int i = 0; i < myHatsStatus.Size(); ++i)
+	{
+		file << myHatsStatus[i];
+	}
+
+	file.close();
+}
+
+void HatManager::SetHatOnPlayer(int aPlayerID, int aHatID)
+{
+	myPlayersCurrentHat[aPlayerID - 1] = aHatID;
+}
+
+int HatManager::GetHatIDOnPlayer(int aPlayerID) const
+{
+	return myPlayersCurrentHat[aPlayerID - 1];
 }
 
 Prism::ModelProxy* HatManager::GetHat(int aID)
@@ -51,8 +130,15 @@ Prism::ModelProxy* HatManager::GetHat(int aID)
 	return myHats[aID];
 }
 
-HatManager::HatManager()
+bool HatManager::IsHatUnlocked(int aID) const
 {
+	return myHatsStatus[aID] != 0;
+}
+
+HatManager::HatManager()
+	: myPlayersCurrentHat(4)
+	, myHatsStatus(8)
+{ 
 }
 
 
