@@ -12,5 +12,8 @@ namespace Prism
 		Texture* myRoughness;
 		CU::Vector3<float> myPosition;
 		CU::Vector3<float> myDirection;
+
+		float myTime;
+		bool myIsFading;
 	};
 }

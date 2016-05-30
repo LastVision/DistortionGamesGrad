@@ -83,6 +83,11 @@ namespace Prism
 
 	void Scene::RenderSea(Texture* aDepthTexture)
 	{
+		if (mySea == nullptr)
+		{
+			return;
+		}
+
 		if (mySea->GetModel().IsLoaded() == true)
 		{
 			mySea->GetModel().GetEffect()->SetDepthTexture(aDepthTexture);

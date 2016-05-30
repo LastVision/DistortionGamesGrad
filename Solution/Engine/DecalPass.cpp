@@ -21,8 +21,8 @@ namespace Prism
 		myInstance = new Instance(*model, myOrientation);
 
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
-		//TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		//TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
 
 		OnEffectLoad();
 		myEffect->AddListener(this);
@@ -34,15 +34,40 @@ namespace Prism
 		SAFE_DELETE(myInstance);
 	}
 
-	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath)
+	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
 	{
+		if (myDecals.Size() > 0)
+		{
+			DecalInfo& decal = myDecals.GetLast();
+			decal.myIsFading = true;
+			decal.myTime = 3.f;
+		}
+
 		DecalInfo info;
 		info.myPosition = aPosition;
 		info.myDirection = aDirection;
-		info.myTexture = TextureContainer::GetInstance()->GetTexture(aTexturePath);
-		//info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		//info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		info.myTexture = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
+		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
+		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
+		info.myIsFading = false;
+		info.myTime = 3.f;
 		myDecals.Add(info);
+	}
+
+	void DecalPass::Update(float aDelta)
+	{
+		for (int i = myDecals.Size() - 1; i >= 0; --i)
+		{
+			DecalInfo& decal = myDecals[i];
+			if (decal.myIsFading == true)
+			{
+				decal.myTime -= aDelta;
+				if (decal.myTime <= 0.f)
+				{
+					myDecals.RemoveNonCyclicAtIndex(i);
+				}
+			}
+		}
 	}
 
 	void DecalPass::Render(const Camera& aCamera, Texture* aDepthTexture, GBufferData* aGBuffer, GBufferData* aGBufferCopy)
@@ -66,52 +91,23 @@ namespace Prism
 
 			for each (const DecalInfo& info in myDecals)
 			{
-				if (info.myDirection == CU::Vector3<float>(0.f, 0.f, 1.f))
-				{
-					myOrientation = CU::Matrix44<float>();
-				}
-				else
-				{
-					CU::Vector3<float> forward(info.myDirection);
-					CU::Vector3<float> up = CU::Cross(forward, CU::Vector3<float>(0.f, 0.f, 1.f));
-					CU::Normalize(up);
-					CU::Vector3<float> right = CU::Cross(forward, up);
-					CU::Normalize(up);
+				SetDecalVariables(effect, info);
 
-					myOrientation.SetUp(up);
-					myOrientation.SetRight(right);
-					myOrientation.SetForward(forward);
-				}
+				myOrientation = CalculateOrientation(info.myPosition, info.myDirection);
+				SetShaderVariables(effect, info.myDirection);
+				SetGBufferData(aGBuffer, aGBufferCopy);
+				myInstance->Render(aCamera);
 
-				myOrientation.SetPos(info.myPosition);
-				effect->SetWorldMatrixInverted(CU::InverseSimple(myOrientation));
-				effect->SetDecalDirection(info.myDirection);
-
-				myAlbedo->SetResource(info.myTexture->GetShaderView());
-
-				//myMetalness->SetResource(info.myMetalness->GetShaderView());
-				//myRoughness->SetResource(info.myRoughness->GetShaderView());
-
-				//aGBufferCopy->Copy(*aGBuffer);
-				Engine::GetInstance()->GetContex()->CopyResource(aGBufferCopy->myAlbedoTexture->GetTexture(), aGBuffer->myAlbedoTexture->GetTexture());
-
-				//aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
-				ID3D11RenderTargetView* target = aGBuffer->myAlbedoTexture->GetRenderTargetView();
-				Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
-					, Engine::GetInstance()->GetDepthView());
-				
-				myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
-				//myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
-				//myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
-				//myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
-
+				myOrientation = CalculateOrientation(info.myPosition, CU::Vector3<float>(0.f, 0.f, 1.f));
+				SetShaderVariables(effect, CU::Vector3<float>(0.f, 0.f, 1.f));
+				SetGBufferData(aGBuffer, aGBufferCopy);
 				myInstance->Render(aCamera);
 			}
 
 			myGAlbedo->SetResource(nullptr);
-			//myGNormal->SetResource(nullptr);
-			//myGEmissive->SetResource(nullptr);
-			//myGDepth->SetResource(nullptr);
+			myGNormal->SetResource(nullptr);
+			myGEmissive->SetResource(nullptr);
+			myGDepth->SetResource(nullptr);
 		}
 
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
@@ -130,4 +126,62 @@ namespace Prism
 		myRoughness = myEffect->GetEffect()->GetVariableByName("RoughnessTexture")->AsShaderResource();
 
 	}
+
+	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
+	{
+		CU::Matrix44<float> orientation;
+
+		if (aDirection == CU::Vector3<float>(0.f, 0.f, 1.f))
+		{
+			orientation = CU::Matrix44<float>();
+		}
+		else
+		{
+			CU::Vector3<float> forward(aDirection);
+			CU::Vector3<float> up = CU::Cross(forward, CU::Vector3<float>(0.f, 0.f, 1.f));
+			CU::Normalize(up);
+			CU::Vector3<float> right = CU::Cross(forward, up);
+			CU::Normalize(up);
+
+			orientation.SetUp(up);
+			orientation.SetRight(right);
+			orientation.SetForward(forward);
+		}
+
+		orientation.SetPos(aPosition);
+		return orientation;
+	}
+
+	void DecalPass::SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy)
+	{
+		aGBufferCopy->Copy(*aGBuffer);
+		aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
+
+		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
+		myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
+		myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
+		myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
+	}
+
+	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
+	{
+		myAlbedo->SetResource(aDecal.myTexture->GetShaderView());
+
+		myMetalness->SetResource(aDecal.myMetalness->GetShaderView());
+		myRoughness->SetResource(aDecal.myRoughness->GetShaderView());
+
+		float alpha = min(1.f, aDecal.myTime);
+		if (alpha < 1.f)
+		{
+			int apa = 5;
+		}
+		aEffect->SetAlpha(alpha);
+	}
+
+	void DecalPass::SetShaderVariables(Effect* aEffect, const CU::Vector3<float>& aDirection)
+	{
+		aEffect->SetWorldMatrixInverted(CU::InverseSimple(myOrientation));
+		aEffect->SetDecalDirection(aDirection);
+	}
+
 }

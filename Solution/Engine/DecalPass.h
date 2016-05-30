@@ -19,11 +19,18 @@ namespace Prism
 		DecalPass();
 		~DecalPass();
 
-		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath);
+		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
+
+		void Update(float aDelta);
 		void Render(const Camera& aCamera, Texture* aDepthTexture, GBufferData* aGBuffer, GBufferData* aGBufferCopy);
 
 	private:
 		void OnEffectLoad();
+
+		CU::Matrix44<float> CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
+		void SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy);
+		void SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal);
+		void SetShaderVariables(Effect* aEffect, const CU::Vector3<float>& aDirection);
 
 		CU::Matrix44<float> myOrientation;
 		Instance* myInstance;
