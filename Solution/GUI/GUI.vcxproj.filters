@@ -45,6 +45,9 @@
     <ClInclude Include="VolumeWidget.h">
       <Filter>Widget</Filter>
     </ClInclude>
+    <ClInclude Include="HighscoreWidget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +84,9 @@
       <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="VolumeWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="HighscoreWidget.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>
