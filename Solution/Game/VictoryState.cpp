@@ -27,7 +27,15 @@ void VictoryState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerIn
 	myController = aController;
 	myCursor = aCursor;
 	myCursor->SetShouldRender(true);
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen.xml", nullptr, -1);
+
+	if (GC::NightmareMode == false)
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen.xml", nullptr, -1);
+	}
+	else
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen_nightmare.xml", nullptr, -1);
+	}
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
