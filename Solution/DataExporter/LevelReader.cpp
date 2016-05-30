@@ -4,10 +4,10 @@
 #include <fstream>
 #include <XMLReader.h>
 
-LevelReader::LevelReader()
+LevelReader::LevelReader(const std::string& aFile)
 	: myUsedIDs(64)
 {
-	myBuffer.open("GeneratedData/LI_level.xml", std::ios::out);
+	myBuffer.open(aFile, std::ios::out);
 	myOutputStream = new std::ostream(&myBuffer);
 
 	*myOutputStream << "<root>";

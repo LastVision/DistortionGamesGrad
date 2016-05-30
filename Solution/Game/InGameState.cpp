@@ -66,7 +66,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myCursor->SetShouldRender(false);
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
-	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", *myCamera, myLevelToLoad);
+	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", "GeneratedData/LI_level_nightmare.xml", *myCamera, myLevelToLoad);
 	//myLevel = myLevelFactory->LoadLevel(1);
 
 

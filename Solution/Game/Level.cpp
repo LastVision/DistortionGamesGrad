@@ -65,6 +65,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myScrapManagers(4)
 	, myDirectionalLights(4)
 	, mySpotLights(16)
+	, myShouldRenderCountDown(true)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -111,7 +112,6 @@ Level::~Level()
 		SAFE_DELETE(myScrapManagers[i]);
 	}
 	SAFE_DELETE(myShadowLight);
-	SAFE_DELETE(myBackground);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
@@ -126,7 +126,6 @@ Level::~Level()
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 
 	PollingStation::Destroy();
-
 #ifdef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->ShutdownThread();
 #endif
@@ -153,14 +152,28 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
-	myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	if (myIsFreeCam == false)
+	{
+		myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	}
+	else
+	{
+		myShadowLight->SetPosition(myCamera.GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));
+	}
 	myShadowLight->GetCamera()->Update(aDeltaTime);
 
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
-	mySmartCamera->Update(aDeltaTime);
-	
+	if (myIsFreeCam == true)
+	{
+		UpdateInput(aDeltaTime);
+		myCamera.Update(aDeltaTime);
+	}
+	else
+	{
+		mySmartCamera->Update(aDeltaTime);
+	}
 	CU::Vector3<float> cameraPos(mySmartCamera->GetOrientation().GetPos());
 	CU::Vector3<float> cameraForward(mySmartCamera->GetOrientation().GetForward());
 	CU::Vector3<float> cameraUp(mySmartCamera->GetOrientation().GetUp());
@@ -170,6 +183,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	for (int i = 0; i < myScrapManagers.Size(); ++i)
 	{
 		myScrapManagers[i]->Update(aDeltaTime);
+	}
+
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_F9))
+	{
+		myCamera.SetOrientation(myOrientation);
+		myIsFreeCam = !myIsFreeCam;
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
@@ -224,15 +243,20 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
 		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
+			myShouldRenderCountDown = false;
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 		}
 	}
+	else
+	{
+		myShouldRenderCountDown = true;
+	}
 
 	
 	
-
+	myDeferredRenderer->Update(aDeltaTime);
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
 
@@ -260,7 +284,7 @@ void Level::Render()
 		}
 	}
 
-	if (myPlayerWinCount >= 1)
+	if (myPlayerWinCount >= 1 && myShouldRenderCountDown == true)
 	{
 		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
@@ -328,7 +352,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 	if (first->GetType() == eEntityType::PLAYER)
 	{
-		int playerID = first->GetComponent<InputComponent>()->GetPlayerID();
 		if (aHasEntered == true)
 		{
 			first->SendNote<ContactNote>(ContactNote(second, aContactPoint, aContactNormal, aHasEntered));
@@ -404,6 +427,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
 				{
+					myShouldRenderCountDown = false;
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);
@@ -531,7 +555,7 @@ void Level::ReceiveMessage(const OnDeathMessage& aMessage)
 	{
 		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
-			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight(), "Data/Resource/Texture/Decal/T_decal_test.dds");
+			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight());
 		}
 	}
 }
@@ -569,6 +593,63 @@ void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
 	}
 	aPlayer->SendNote(ShouldDieNote());
+}
+
+void Level::UpdateInput(float aDeltaTime)
+{
+	const float moveSpeed = 25.f;
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+	{
+		myCamera.MoveForward(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+	{
+		myCamera.MoveForward(-moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_SPACE))
+	{
+		myCamera.MoveUp(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_X))
+	{
+		myCamera.MoveUp(-moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+	{
+		myCamera.MoveRight(moveSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+	{
+		myCamera.MoveRight(-moveSpeed * aDeltaTime);
+	}
+
+	const float rotateSpeed = 25.f;
+
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UPARROW))
+	{
+		myCamera.RotateX(-rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_DOWNARROW))
+	{
+		myCamera.RotateX(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_RIGHTARROW))
+	{
+		myCamera.RotateY(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LEFTARROW))
+	{
+		myCamera.RotateY(-rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_Q))
+	{
+		myCamera.RotateZ(rotateSpeed * aDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_E))
+	{
+		myCamera.RotateZ(-rotateSpeed * aDeltaTime);
+	}
+
 }
 
 void Level::CreateScoreInfo(float aShortTime, float aMediumTime, float aLongTime)

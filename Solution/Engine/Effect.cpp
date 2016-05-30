@@ -119,12 +119,18 @@ namespace Prism
 
 	void Effect::SetTexture(Texture* aTexture)
 	{
-		myTexture->SetResource(aTexture ? aTexture->GetShaderView() : nullptr);
+		if (myTexture != nullptr)
+		{
+			myTexture->SetResource(aTexture ? aTexture->GetShaderView() : nullptr);
+		}
 	}
 
 	void Effect::SetDepthTexture(Texture* aTexture)
 	{
-		myDepthTexture->SetResource(aTexture ? aTexture->GetDepthStencilShaderView() : nullptr);
+		if (myDepthTexture != nullptr)
+		{
+			myDepthTexture->SetResource(aTexture ? aTexture->GetDepthStencilShaderView() : nullptr);
+		}
 	}
 
 	void Effect::SetAmbientHue(CU::Vector4f aVector)
@@ -137,37 +143,66 @@ namespace Prism
 
 	void Effect::SetBones(const CU::StaticArray<CU::Matrix44<float>, MAX_NR_OF_BONES>& someBones)
 	{
-		myBonesArray->SetMatrixArray(&someBones[0].myMatrix[0], 0, MAX_NR_OF_BONES);
+		if (myBonesArray != nullptr)
+		{
+			myBonesArray->SetMatrixArray(&someBones[0].myMatrix[0], 0, MAX_NR_OF_BONES);
+		}
 	}
 
 	void Effect::SetFogOfWarTexture(Texture* aFogOfWarTexture)
 	{
-		myFogOfWarTexture->SetResource(aFogOfWarTexture ? aFogOfWarTexture->GetShaderView() : nullptr);
+		if (myFogOfWarTexture != nullptr)
+		{
+			myFogOfWarTexture->SetResource(aFogOfWarTexture ? aFogOfWarTexture->GetShaderView() : nullptr);
+		}
 	}
 
 	void Effect::SetShadowDepthTexture(Texture* aLightDepthTexture)
 	{
-		myShadowDepthTexture->SetResource(aLightDepthTexture->GetDepthStencilShaderView());
+		if (myShadowDepthTexture != nullptr)
+		{
+			myShadowDepthTexture->SetResource(aLightDepthTexture->GetDepthStencilShaderView());
+		}
 	}
 
 	void Effect::SetShadowMVP(const CU::Matrix44<float>& aMatrix)
 	{
-		myShadowMVP->SetMatrix(&aMatrix.myMatrix[0]);
+		if (myShadowMVP != nullptr)
+		{
+			myShadowMVP->SetMatrix(&aMatrix.myMatrix[0]);
+		}
 	}
 
 	void Effect::SetGradiantValue(float aValue)
 	{
-		myGradiantValue->SetFloat(aValue);
+		if (myGradiantValue != nullptr)
+		{
+			myGradiantValue->SetFloat(aValue);
+		}
 	}
 
 	void Effect::SetGradiantDirection(const CU::Vector2<float>& aDirection)
 	{
-		myGradiantDirection->SetFloatVector(&aDirection.x);
+		if (myGradiantDirection != nullptr)
+		{
+			myGradiantDirection->SetFloatVector(&aDirection.x);
+		}
 	}
 
 	void Effect::SetDecalDirection(const CU::Vector3<float>& aDirection)
 	{
-		myDecalDirection->SetFloatVector(&aDirection.x);
+		if (myDecalDirection != nullptr)
+		{
+			myDecalDirection->SetFloatVector(&aDirection.x);
+		}
+	}
+
+	void Effect::SetAlpha(float aValue)
+	{
+		if (myAlpha != nullptr)
+		{
+			myAlpha->SetFloat(aValue);
+		}
 	}
 
 	void Effect::SetPosAndScale(const CU::Vector2<float>& aPos
@@ -182,17 +217,27 @@ namespace Prism
 		mySpritePosAndScaleVector.z = aScale.x;
 		mySpritePosAndScaleVector.w = aScale.y;
 
-		mySpritePosAndScale->SetFloatVector(&mySpritePosAndScaleVector.x);
+
+		if (mySpritePosAndScale != nullptr)
+		{
+			mySpritePosAndScale->SetFloatVector(&mySpritePosAndScaleVector.x);
+		}
 	}
 
 	void Effect::SetColor(const CU::Vector4<float>& aColor)
 	{
-		myColor->SetFloatVector(&aColor.x);
+		if (myColor != nullptr)
+		{
+			myColor->SetFloatVector(&aColor.x);
+		}
 	}
 
 	void Effect::SetSpriteOrientation(const CU::Matrix44<float>& aOrientation)
 	{
-		mySpriteOrientation->SetMatrix(&aOrientation.myMatrix[0]);
+		if (mySpriteOrientation != nullptr)
+		{
+			mySpriteOrientation->SetMatrix(&aOrientation.myMatrix[0]);
+		}
 	}
 
 	void Effect::UpdateDirectionalLights(
@@ -234,22 +279,34 @@ namespace Prism
 
 	void Effect::SetStreakTexture(Texture* aTexture)
 	{
-		myStreakDiffuse->SetResource(aTexture->GetShaderView());
+		if (myStreakDiffuse != nullptr)
+		{
+			myStreakDiffuse->SetResource(aTexture->GetShaderView());
+		}
 	}
 
 	void Effect::SetStreakSizeDelta(float aSizeDelta)
 	{
-		myStreakSizeDelta->SetFloat(aSizeDelta);
+		if (myStreakSizeDelta != nullptr)
+		{
+			myStreakSizeDelta->SetFloat(aSizeDelta);
+		}
 	}
 
 	void Effect::SetStreakStartAlpha(float aStartAlpha)
 	{
-		myStreakStartAlpha->SetFloat(aStartAlpha);
+		if (myStreakStartAlpha != nullptr)
+		{
+			myStreakStartAlpha->SetFloat(aStartAlpha);
+		}
 	}
 
 	void Effect::SetStreakAlphaDelta(float anAlphaDelta)
 	{
-		myStreakAlphaDelta->SetFloat(anAlphaDelta);
+		if (myStreakAlphaDelta != nullptr)
+		{
+			myStreakAlphaDelta->SetFloat(anAlphaDelta);
+		}
 	}
 
 	void Effect::SetPlayerVariable(int someVariable)
@@ -506,6 +563,12 @@ namespace Prism
 		if (myDecalDirection->IsValid() == false)
 		{
 			myDecalDirection = nullptr;
+		}
+
+		myAlpha = myEffect->GetVariableByName("Alpha")->AsScalar();
+		if (myAlpha->IsValid() == false)
+		{
+			myAlpha = nullptr;
 		}
 
 		return true;

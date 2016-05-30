@@ -181,10 +181,12 @@ namespace GUI
 
 		if (clickEvent == "start_level")
 		{
+			bool isNightmare = false;
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
+			aReader->ReadAttribute(aReader->FindFirstChild(anXMLElement, "onclick"), "isNightmare", isNightmare);
 			myButtonText = std::to_string(myId + 1);
 			myIsTextButton = true;
-			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId);
+			myClickEvent = new OnClickMessage(eOnClickEvent::START_LEVEL, myId, isNightmare);
 		}
 		else if (clickEvent == "restart_level")
 		{
@@ -196,7 +198,9 @@ namespace GUI
 		}
 		else if (clickEvent == "level_select")
 		{
-			myClickEvent = new OnClickMessage(eOnClickEvent::LEVEL_SELECT, myId);
+			bool isNightmare = false;
+			aReader->ReadAttribute(aReader->FindFirstChild(anXMLElement, "onclick"), "isNightmare", isNightmare);
+			myClickEvent = new OnClickMessage(eOnClickEvent::LEVEL_SELECT, myId, isNightmare);
 		}
 		else if (clickEvent == "credits")
 		{

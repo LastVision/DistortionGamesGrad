@@ -171,6 +171,12 @@ namespace GUI
 
 			file.close();
 		}
+
+		if (toReturn.GetLast() == true)
+		{
+			GC::HasWonGame = true;
+		}
+
 		return toReturn;
 	}
 }

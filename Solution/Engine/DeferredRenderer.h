@@ -29,8 +29,9 @@ namespace Prism
 		DeferredRenderer();
 		~DeferredRenderer();
 
-		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath);
+		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
 
+		void Update(float aDelta);
 		void Render(Scene* aScene, Texture* aBackground, Prism::SpotLightShadow* aShadowLight, EmitterManager* aParticleEmitterManager);
 		void RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera);
 		void OnResize(float aWidth, float aHeight);
@@ -56,6 +57,7 @@ namespace Prism
 		void RenderParticles(EmitterManager* aParticleEmitterManager);
 
 		Texture* myDepthStencilTexture;
+		Texture* myParticleDepth;
 		Texture* myCubemap;
 		Texture* myFinishedSceneTexture;
 		Texture* myFinishedTexture;
@@ -70,6 +72,7 @@ namespace Prism
 		SpotLightPass* mySpotLightTextureProjectionPass;
 		ShadowPass myShadowPass;
 		GBufferData* myGBufferData;
+		GBufferData* myGBufferDataCopy;
 		D3D11_VIEWPORT* myViewPort;
 
 		DecalPass* myDecal;

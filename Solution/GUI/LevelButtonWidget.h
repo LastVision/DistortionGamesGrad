@@ -18,6 +18,8 @@ namespace GUI
 		void Update(float aDeltaTime) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 
+		void SetStars(const int someStars);
+
 	private:
 		CU::GrowingArray<StarWidget*> myStars;
 		CU::Vector2<float> myStarPosition;

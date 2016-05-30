@@ -73,7 +73,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	int nextLevel = myCurrentLevel + 1;
 
-	if (nextLevel < GC::TotalLevels)
+	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
 	{
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2)->SetButtonText(std::to_string(nextLevel));
 	}
@@ -82,6 +82,11 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	if (GC::NightmareMode == false && myCurrentLevel >= GC::TotalLevels)
+	{
+		GC::HasWonGame = true;
+	}
 }
 
 void ScoreState::EndState()
@@ -165,15 +170,22 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 
 void ScoreState::SaveScoreToFile(const int aLevelID)
 {
+	std::string levelsPath = "Data/Score/Score";
+
+	if (GC::NightmareMode == true)
+	{
+		levelsPath = "Data/Score/Score_Nightmare";
+	}
+
 	CU::BuildFoldersInPath(CU::GetMyDocumentFolderPath() + "Data/Score/");
 	std::fstream file;
-	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
 	Score currentScore;
 	int levelID = 0;
 	file >> levelID >> currentScore.myTime;
 	file.close();
 
-	file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
 	if (file.is_open() == true)
 	{
 		Score highestScore;
@@ -186,7 +198,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			}
 		}
 
-		if (currentScore.myTime < highestScore.myTime)
+		if (currentScore.myTime != 0 && currentScore.myTime < highestScore.myTime)
 		{
 			highestScore.myTime = currentScore.myTime;
 		}
@@ -212,8 +224,15 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 
 void ScoreState::SaveUnlockedLevels(const int aLevelID)
 {
+	std::string levelsPath = "Data/UnlockedLevels.bin";
+
+	if (GC::NightmareMode == true)
+	{
+		levelsPath = "Data/UnlockedLevels_Nightmare.bin";
+	}
+
 	std::fstream file;
-	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::in);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath, std::ios::binary | std::ios::in);
 	Score currentScore;
 	CU::GrowingArray<bool> unlockedLevels(64);
 	int levelID = 0;
@@ -231,7 +250,7 @@ void ScoreState::SaveUnlockedLevels(const int aLevelID)
 	}
 	file.close();
 
-	file.open(CU::GetMyDocumentFolderPath() + "Data/UnlockedLevels.bin", std::ios::binary | std::ios::out);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath, std::ios::binary | std::ios::out);
 	if (file.is_open() == true)
 	{
 		for (int i = 0; i < unlockedLevels.Size(); ++i)

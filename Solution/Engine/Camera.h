@@ -42,7 +42,7 @@ namespace Prism
 		CU::Vector3<float> RayCast(const CU::Vector2<float>& aMousePosition) const;
 
 		CU::Vector2<float> ConvertTo2D(const CU::Vector3<float>& aPostion);
-
+		void AddOrientation(CU::Matrix44f* anOrientation);
 	private:
 		void operator= (const Camera&) = delete;
 
