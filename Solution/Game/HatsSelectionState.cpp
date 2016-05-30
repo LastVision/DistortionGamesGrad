@@ -55,7 +55,7 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		return eStateStatus::ePopMainState;
+		return eStateStatus::ePopSubState;
 	}
 
 	HandleControllerInMenu(myController, myGUIManager);
@@ -86,7 +86,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 	switch (aMessage.myEvent)
 	{
 	case eOnClickEvent::GAME_QUIT:
-		myStateStatus = eStateStatus::ePopMainState;
+		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	}
 }

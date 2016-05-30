@@ -3,17 +3,16 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
+#include "HatsSelectionState.h"
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
 #include "OptionState.h"
 #include "PauseMenuState.h"
 #include <PostMaster.h>
 
-
 PauseMenuState::PauseMenuState()
 {
 }
-
 
 PauseMenuState::~PauseMenuState()
 {
@@ -91,6 +90,10 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
+	case eOnClickEvent::HAT_SELECTION:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HatsSelectionState());
+		break;
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
 		break;

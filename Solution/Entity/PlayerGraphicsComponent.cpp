@@ -45,18 +45,24 @@ PlayerGraphicsComponent::~PlayerGraphicsComponent()
 
 void PlayerGraphicsComponent::Init()
 {
-	myIdleAnimation.CreateAnimation(myData.myIdleAnimation, myData.myAnimationShader, myEntityOrientation);
-	myWalkAnimation.CreateAnimation(myData.myWalkAnimation, myData.myAnimationShader, myEntityOrientation);
-	myFlyAnimation.CreateAnimation(myData.myFlyAnimation, myData.myAnimationShader, myEntityOrientation);
-	myDashAimAnimation.CreateAnimation(myData.myDashAimAnimation, myData.myAnimationShader, myEntityOrientation);
-	myDashFlyAnimation.CreateAnimation(myData.myDashFlyAnimation, myData.myAnimationShader, myEntityOrientation);
+	std::string idle(myData.myIdleAnimation);
+	std::string walk(myData.myWalkAnimation);
+	std::string fly(myData.myFlyAnimation);
+	std::string dashAim(myData.myDashAimAnimation);
+	std::string dashFly(myData.myDashFlyAnimation);
+	std::replace(idle.begin(), idle.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(walk.begin(), walk.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(fly.begin(), fly.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(dashAim.begin(), dashAim.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(dashFly.begin(), dashFly.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+
+	myIdleAnimation.CreateAnimation(idle, myData.myAnimationShader, myEntityOrientation);
+	myWalkAnimation.CreateAnimation(walk, myData.myAnimationShader, myEntityOrientation);
+	myFlyAnimation.CreateAnimation(fly, myData.myAnimationShader, myEntityOrientation);
+	myDashAimAnimation.CreateAnimation(dashAim, myData.myAnimationShader, myEntityOrientation);
+	myDashFlyAnimation.CreateAnimation(dashFly, myData.myAnimationShader, myEntityOrientation);
 
 	myArrowOrientation.SetPos(myEntityOrientation.GetPos4() + CU::Vector4f(0.f, 1.5f, 0.f, 0.f));
-
-	std::string body(myData.myBody);
-	std::replace(body.begin(), body.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
-	myBody.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(body, myData.myShader), myBody.myOrientation);
 
 	std::string leftLeg(myData.myLeftLeg);
 	std::replace(leftLeg.begin(), leftLeg.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
@@ -88,14 +94,20 @@ void PlayerGraphicsComponent::Init()
 		;
 
 
-	myIdleAnimation.CreateJoints(myData.myIdleAnimation);
-	myWalkAnimation.CreateJoints(myData.myWalkAnimation);
-	myFlyAnimation.CreateJoints(myData.myFlyAnimation);
-	myDashAimAnimation.CreateJoints(myData.myDashAimAnimation);
-	myDashFlyAnimation.CreateJoints(myData.myDashFlyAnimation);
+	myIdleAnimation.CreateJoints(idle);
+	myWalkAnimation.CreateJoints(walk);
+	myFlyAnimation.CreateJoints(fly);
+	myDashAimAnimation.CreateJoints(dashAim);
+	myDashFlyAnimation.CreateJoints(dashFly);
 	myHead.CreateJoints(head);
 
-	myScene->AddInstance(myBody.myInstance, true);
+
+	myScene->AddInstance(myIdleAnimation.myAnimation, true);
+	myScene->AddInstance(myWalkAnimation.myAnimation, true);
+	myScene->AddInstance(myFlyAnimation.myAnimation, true);
+	myScene->AddInstance(myDashAimAnimation.myAnimation, true);
+	myScene->AddInstance(myDashFlyAnimation.myAnimation, true);
+
 	myScene->AddInstance(myLeftLeg.myInstance, true);
 	myScene->AddInstance(myRightLeg.myInstance, true);
 	myScene->AddInstance(myHead.myInstance, true);
@@ -106,26 +118,27 @@ void PlayerGraphicsComponent::Init()
 		myScene->AddInstance(myHead.myHat->myInstance, true);
 	}
 	myCurrentAnimation = &myIdleAnimation;
+	myCurrentAnimation->SetActive(true);
 }
 
 void PlayerGraphicsComponent::Reset()
 {
-	myBody.SetActive(false);
 	myLeftLeg.SetActive(false);
 	myRightLeg.SetActive(false);
 	myHead.SetActive(false);
 	myArrow->SetShouldRender(false);
+	myCurrentAnimation->SetActive(false);
 }
 
 void PlayerGraphicsComponent::Activate()
 {
-	myBody.SetActive(true);
 	myLeftLeg.SetActive(true);
 	myRightLeg.SetActive(true);
 	myHead.SetActive(true);
 	myPreviousAnimation = eCharacterAnimationType::FLY;
 	myCurrentAnimationType = eCharacterAnimationType::FLY;
 	myCurrentAnimation = &myFlyAnimation;
+	myCurrentAnimation->SetActive(true);
 	//myArrow->SetShouldRender(true);
 }
 
@@ -134,7 +147,7 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
-		myBody.SetActive(false);
+		myCurrentAnimation->SetActive(false);
 	}
 	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_W))
 	{
@@ -150,7 +163,6 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	}
 
 	myCurrentAnimation->myAnimation->Update(aDeltaTime);
-	myBody.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myBody);
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
 	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead, aDeltaTime);
@@ -197,7 +209,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 	switch (aMessage.myBodyPart)
 	{
 	case eScrapPart::BODY:
-		myBody.SetActive(false);
+		myCurrentAnimation->SetActive(false);
 		break;
 	case eScrapPart::HEAD:
 		if (myHead.GetActive() == true)
@@ -251,6 +263,8 @@ void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage
 	//{
 		myPreviousAnimation = myCurrentAnimationType;
 
+		myCurrentAnimation->SetActive(false);
+
 		switch (aMessage.myAnimationType)
 		{
 		case eCharacterAnimationType::IDLE:
@@ -270,6 +284,7 @@ void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage
 			break;
 		}
 
+		myCurrentAnimation->SetActive(true);
 		myCurrentAnimationType = aMessage.myAnimationType;
 	//}
 }
