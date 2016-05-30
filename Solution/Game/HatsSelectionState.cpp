@@ -106,7 +106,6 @@ void HatsSelectionState::HandleHatSelection(CU::ControllerInput* aController, in
 	, bool& aControllerPressedLeft, bool& aControllerPressedRight)
 {
 	float controllerX = aController->LeftThumbstickX();
-	float controllerY = aController->LeftThumbstickY();
 
 	if (controllerX >= 0.5f)
 	{
