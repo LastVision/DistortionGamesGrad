@@ -26,6 +26,7 @@ namespace Prism
 
 	private:
 		void OnEffectLoad();
+		void LoadFromXML();
 
 		CU::Matrix44<float> CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
 		void SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy);
@@ -35,7 +36,10 @@ namespace Prism
 		CU::Matrix44<float> myOrientation;
 		Instance* myInstance;
 
+		CU::GrowingArray<DecalTextures> myDecalTextures;
 		CU::GrowingArray<DecalInfo> myDecals;
+		float myFadeTime;
+		int myMaxDecalCount;
 
 		Effect* myEffect;
 		ID3DX11EffectShaderResourceVariable* myGAlbedo;

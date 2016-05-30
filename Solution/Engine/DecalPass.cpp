@@ -9,21 +9,19 @@
 #include "Instance.h"
 #include "ModelLoader.h"
 #include "Texture.h"
+#include <XMLReader.h>
 
 namespace Prism
 {
 	DecalPass::DecalPass()
 		: myDecals(16)
+		, myDecalTextures(8)
 	{
 		myEffect = EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_deferred_decal.fx");
 		ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Decals/SM_decal_box.fbx", "Data/Resource/Shader/S_effect_deferred_decal.fx");
-		//ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Decals/SM_decal_box_large.fbx", "Data/Resource/Shader/S_effect_deferred_decal.fx");
 		myInstance = new Instance(*model, myOrientation);
 
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_normal.dds");
+		LoadFromXML();
 
 		OnEffectLoad();
 		myEffect->AddListener(this);
@@ -41,18 +39,22 @@ namespace Prism
 		{
 			DecalInfo& decal = myDecals.GetLast();
 			decal.myIsFading = true;
-			decal.myTime = 3.f;
+			decal.myTime = myFadeTime;
 		}
+
+		if (myDecals.Size() > myMaxDecalCount)
+		{
+			myDecals.RemoveNonCyclicAtIndex(0);
+		}
+
+		int textureIndex = rand() % myDecalTextures.Size();
 
 		DecalInfo info;
 		info.myPosition = aPosition;
 		info.myDirection = aDirection;
-		info.myTexture = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
-		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
-		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
-		info.myNormalMap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_normal.dds");
+		info.myTextures = &myDecalTextures[textureIndex];
 		info.myIsFading = false;
-		info.myTime = 3.f;
+		info.myTime = myFadeTime;
 		myDecals.Add(info);
 	}
 
@@ -129,6 +131,43 @@ namespace Prism
 		myNormal = myEffect->GetEffect()->GetVariableByName("DecalNormalTexture")->AsShaderResource();
 	}
 
+	void DecalPass::LoadFromXML()
+	{
+		XMLReader reader;
+		reader.OpenDocument("Data/Resource/SET_decals.xml");
+
+		tinyxml2::XMLElement* root = reader.ForceFindFirstChild("root");
+
+		tinyxml2::XMLElement* numberOfDecals = reader.ForceFindFirstChild(root, "MaxNumberOfDecals");
+		reader.ForceReadAttribute(numberOfDecals, "value", myMaxDecalCount);
+
+		tinyxml2::XMLElement* fadeTime = reader.ForceFindFirstChild(root, "FadeTime");
+		reader.ForceReadAttribute(fadeTime, "value", myFadeTime);
+
+		tinyxml2::XMLElement* decalElement = reader.ForceFindFirstChild(root, "Decal");
+		for (; decalElement != nullptr; decalElement = reader.FindNextElement(decalElement, "Decal"))
+		{
+			std::string albedo;
+			std::string normal;
+			std::string metalness;
+			std::string roughness;
+
+			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Albedo"), "path", albedo);
+			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Normal"), "path", normal);
+			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Metalness"), "path", metalness);
+			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Roughness"), "path", roughness);
+
+			DecalTextures textures;
+			textures.myTexture = TextureContainer::GetInstance()->GetTexture(albedo);
+			textures.myNormalMap = TextureContainer::GetInstance()->GetTexture(normal);
+			textures.myMetalness = TextureContainer::GetInstance()->GetTexture(metalness);
+			textures.myRoughness = TextureContainer::GetInstance()->GetTexture(roughness);
+			myDecalTextures.Add(textures);
+		}
+
+		reader.CloseDocument();
+	}
+
 	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
 	{
 		CU::Matrix44<float> orientation;
@@ -167,10 +206,10 @@ namespace Prism
 
 	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
 	{
-		myAlbedo->SetResource(aDecal.myTexture->GetShaderView());
-		myMetalness->SetResource(aDecal.myMetalness->GetShaderView());
-		myRoughness->SetResource(aDecal.myRoughness->GetShaderView());
-		myNormal->SetResource(aDecal.myNormalMap->GetShaderView());
+		myAlbedo->SetResource(aDecal.myTextures->myTexture->GetShaderView());
+		myMetalness->SetResource(aDecal.myTextures->myMetalness->GetShaderView());
+		myRoughness->SetResource(aDecal.myTextures->myRoughness->GetShaderView());
+		myNormal->SetResource(aDecal.myTextures->myNormalMap->GetShaderView());
 
 		float alpha = min(1.f, aDecal.myTime);
 		if (alpha < 1.f)
