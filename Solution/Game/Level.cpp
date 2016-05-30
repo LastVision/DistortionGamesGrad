@@ -65,6 +65,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myScrapManagers(4)
 	, myDirectionalLights(4)
 	, mySpotLights(16)
+	, myShouldRenderCountDown(true)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -242,10 +243,15 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
 		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
+			myShouldRenderCountDown = false;
 			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 		}
+	}
+	else
+	{
+		myShouldRenderCountDown = true;
 	}
 
 	
@@ -278,7 +284,7 @@ void Level::Render()
 		}
 	}
 
-	if (myPlayerWinCount >= 1)
+	if (myPlayerWinCount >= 1 && myShouldRenderCountDown == true)
 	{
 		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
@@ -421,6 +427,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				myLevelToChangeToID = firstTrigger->GetLevelID();
 				if (myPlayerWinCount >= myPlayersPlaying)
 				{
+					myShouldRenderCountDown = false;
 					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
 					SET_RUNTIME(false);

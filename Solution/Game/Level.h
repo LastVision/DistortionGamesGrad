@@ -111,7 +111,7 @@ private:
 	CU::Vector2<float> myCursorPosition;
 	void UpdateInput(float aDeltaTime);
 
-
+	bool myShouldRenderCountDown;
 };
 
 inline Prism::Scene* Level::GetScene() const
