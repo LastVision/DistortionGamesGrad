@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#pragma warning( disable : 4706 )
 #include "CommonHelper.h"
 #include <fstream>
 #include <string>
@@ -71,6 +71,7 @@ namespace CU
 			}
 			return myResult;
 		}
+		return nullptr;
 	}
 
 	void SQLWrapper::WriteHighscore(const std::string& aUsername, float aTime, int aLevelID)
@@ -111,7 +112,7 @@ namespace CU
 					}
 					else if (i == 2)
 					{
-						score.myScore = std::atof(row[i]);
+						score.myScore = static_cast<float>(std::atof(row[i]));
 					}
 					else if (i == 3)
 					{
@@ -147,7 +148,7 @@ namespace CU
 						else if (i == 2)
 						{
 							
-							score.myScore = std::atof(row[i]);
+							score.myScore = static_cast<float>(std::atof(row[i]));
 						}
 						else if (i == 3)
 						{
