@@ -56,7 +56,11 @@ void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 	Drag(aDeltaTime);
 	Rotate(aDeltaTime);
 
+#ifdef FPS_INDEPENDENT_INPUT
+	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
+#else
 	Translate();
+#endif
 }
 
 void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -305,23 +309,4 @@ void FlyMovement::Rotate(float aDeltaTime)
 void FlyMovement::Translate()
 {
 	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
-
-	//myOrientation.SetPos(CU::Vector3<float>(myOrientation.GetPos().x, fmaxf(myOrientation.GetPos().y, 0), myOrientation.GetPos().z));
-
-	//if (myOrientation.GetPos().y == 0)
-	//{
-	//	myVelocity.y = 0;
-	//}
-
-
-	//only for debugging, keeping player inside screen:
-	//if (myOrientation.GetPos().x < -15.f)
-	//{
-	//	myVelocity.x = fmaxf(myVelocity.x, 0);
-	//}
-	//else if (myOrientation.GetPos().x > 15.f)
-	//{
-	//	myVelocity.x = fminf(myVelocity.x, 0);
-	//}
-	//debugging out
 }
