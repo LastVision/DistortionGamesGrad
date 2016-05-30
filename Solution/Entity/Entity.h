@@ -67,6 +67,9 @@ public:
 	void SetShouldBeRemoved(bool aShouldBeRemoved);
 	bool ShouldBeRemoved() const;
 
+	bool IsStomperMoving() const;
+	void SetStomperMoving(bool aIsMoving);
+
 private:
 	void operator=(Entity&) = delete;
 
@@ -79,6 +82,7 @@ private:
 	bool myIsActive;
 	bool myIsInScene;
 	bool myShouldBeRemoved;
+	bool myIsStomperMoving;
 
 	std::string mySubType;
 
@@ -227,4 +231,14 @@ inline void Entity::SetShouldBeRemoved(bool aShouldBeRemoved)
 inline bool Entity::ShouldBeRemoved() const
 {
 	return myShouldBeRemoved;
+}
+
+inline bool Entity::IsStomperMoving() const
+{
+	return myIsStomperMoving;
+}
+
+inline void Entity::SetStomperMoving(bool aIsMoving)
+{
+	myIsStomperMoving = aIsMoving;
 }

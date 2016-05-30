@@ -39,6 +39,7 @@
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
+#include <StomperComponent.h>
 #include <PlayerGraphicsComponent.h>
 #include <TriggerComponent.h>
 #include <TextureContainer.h>
@@ -400,7 +401,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			{
 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
 				
-				if (dot > 0.001f)
+				if (dot > 0.001f && second->IsStomperMoving() == true)
 				{
 					KillPlayer(first);
 				}

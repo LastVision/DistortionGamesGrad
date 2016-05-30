@@ -59,6 +59,7 @@ Game::Game()
 
 	HatManager::Create();
 	HatManager::GetInstance()->LoadHats();
+	EntityFactory::GetInstance();
 }
 
 Game::~Game()
@@ -122,6 +123,7 @@ bool Game::Update()
 
 	float deltaTime = myTimerManager->GetMasterTimer().GetTime().GetFrameTime();
 	Prism::Engine::GetInstance()->Update(deltaTime);
+	EntityFactory::GetInstance()->UpdateFileWatcher();
 
 	float fps = 1.f / deltaTime;
 	DEBUG_PRINT(fps);

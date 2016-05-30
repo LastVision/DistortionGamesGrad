@@ -8,6 +8,7 @@
 #include "PlayerGraphicsComponent.h"
 #include "PostMaster.h"
 #include "ShouldDieNote.h"
+#include "StomperComponent.h"
 #include "WalkMovement.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -48,10 +49,15 @@ void WalkMovement::Update(float aDeltaTime, bool)
 	Drag(aDeltaTime);
 	Walk(aDeltaTime);
 
+#ifdef FPS_INDEPENDENT_INPUT
+	//myVelocity gets multiplied with delta insize Walk, so not needed out here
+	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
+#else
 	Translate();
+#endif
 
 	if (myVelocity.x != myPreviousVelocity.x)
-	{
+	{	
 		if (myVelocity.x != 0.f)
 		{
 			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
@@ -136,9 +142,11 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		Entity& entity = aComponent->GetEntity();
 		const eEntityType& type = aComponent->GetEntity().GetType();
+
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP) return;
-		if (type == eEntityType::BOUNCER || type == eEntityType::STOMPER)
+		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 
@@ -258,23 +266,4 @@ void WalkMovement::Walk(float aDeltaTime)
 void WalkMovement::Translate()
 {
 	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
-
-	//myOrientation.SetPos(CU::Vector3<float>(myOrientation.GetPos().x, fmaxf(myOrientation.GetPos().y, 0), myOrientation.GetPos().z));
-
-	//if (myOrientation.GetPos().y == 0)
-	//{
-	//	myVelocity.y = 0;
-	//}
-
-
-	//only for debugging, keeping player inside screen:
-	//if (myOrientation.GetPos().x < -15.f)
-	//{
-	//	myVelocity.x = fmaxf(myVelocity.x, 0);
-	//}
-	//else if (myOrientation.GetPos().x > 15.f)
-	//{
-	//	myVelocity.x = fminf(myVelocity.x, 0);
-	//}
-	//debugging out
 }
