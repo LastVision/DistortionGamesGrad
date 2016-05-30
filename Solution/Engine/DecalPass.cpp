@@ -23,6 +23,7 @@ namespace Prism
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_normal.dds");
 
 		OnEffectLoad();
 		myEffect->AddListener(this);
@@ -49,6 +50,7 @@ namespace Prism
 		info.myTexture = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
 		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
 		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
+		info.myNormalMap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_normal.dds");
 		info.myIsFading = false;
 		info.myTime = 3.f;
 		myDecals.Add(info);
@@ -124,7 +126,7 @@ namespace Prism
 		myAlbedo = myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myMetalness = myEffect->GetEffect()->GetVariableByName("MetalnessTexture")->AsShaderResource();
 		myRoughness = myEffect->GetEffect()->GetVariableByName("RoughnessTexture")->AsShaderResource();
-
+		myNormal = myEffect->GetEffect()->GetVariableByName("DecalNormalTexture")->AsShaderResource();
 	}
 
 	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
@@ -166,9 +168,9 @@ namespace Prism
 	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
 	{
 		myAlbedo->SetResource(aDecal.myTexture->GetShaderView());
-
 		myMetalness->SetResource(aDecal.myMetalness->GetShaderView());
 		myRoughness->SetResource(aDecal.myRoughness->GetShaderView());
+		myNormal->SetResource(aDecal.myNormalMap->GetShaderView());
 
 		float alpha = min(1.f, aDecal.myTime);
 		if (alpha < 1.f)

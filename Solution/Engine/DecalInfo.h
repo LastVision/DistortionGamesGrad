@@ -10,6 +10,7 @@ namespace Prism
 		Texture* myTexture;
 		Texture* myMetalness;
 		Texture* myRoughness;
+		Texture* myNormalMap;
 		CU::Vector3<float> myPosition;
 		CU::Vector3<float> myDirection;
 
