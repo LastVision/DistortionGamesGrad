@@ -50,13 +50,14 @@ void WalkMovement::Update(float aDeltaTime, bool)
 	Walk(aDeltaTime);
 
 #ifdef FPS_INDEPENDENT_INPUT
-	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
+	//myVelocity gets multiplied with delta insize Walk, so not needed out here
+	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
 #else
 	Translate();
 #endif
 
 	if (myVelocity.x != myPreviousVelocity.x)
-	{
+	{	
 		if (myVelocity.x != 0.f)
 		{
 			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
