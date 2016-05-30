@@ -28,7 +28,7 @@ namespace Prism
 
 		aModel->myMatrices.Add(aWorldMatrix);
 		aModel->myScales.Add(aScale);
-		aModel->myHeights.Add(aHeight);
+		//aModel->myHeights.Add(aHeight);
 	}
 
 	void InstancingHelper::Render(bool aIsOnlyDepth)
@@ -39,10 +39,6 @@ namespace Prism
 
 		for each (Model* model in myModels)
 		{
-			CU::GrowingArray<CU::Matrix44<float>>& matrices = model->myMatrices;
-			CU::GrowingArray<CU::Vector3<float>>& scales = model->myScales;
-			CU::GrowingArray<float>& heights = model->myHeights;
-
 			Effect* currEffect = model->GetEffect();
 			if (currEffect != oldEffect)
 			{
@@ -56,25 +52,28 @@ namespace Prism
 			RenderModel(model, currEffect, aIsOnlyDepth);
 
 
-			matrices.RemoveAll();
-			scales.RemoveAll();
-			heights.RemoveAll();
+			model->myMatrices.RemoveAll();
+			model->myScales.RemoveAll();
 		}
 	}
 
 	void InstancingHelper::RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth)
 	{
-		if (aModel->SetGPUState(aModel->myMatrices, aModel->myScales, aModel->myHeights))
+		if (aModel->SetGPUState(aModel->myMatrices, aModel->myScales))
 		{
 			D3DX11_TECHNIQUE_DESC techDesc;
 			ID3DX11EffectTechnique* tech;
 
-			std::string techniqueName(aModel->GetTechniqueName());
+
 			if (aIsOnlyDepth == true)
 			{
-				techniqueName += "_DEPTHONLY";
+				tech = aEffect->GetTechnique(aModel->GetTechniqueNameDepthOnly());
 			}
-			tech = aEffect->GetTechnique(techniqueName);
+			else
+			{
+				tech = aEffect->GetTechnique(aModel->GetTechniqueName());
+			}
+
 			tech->GetDesc(&techDesc);
 
 			if (tech->IsValid() == false)
