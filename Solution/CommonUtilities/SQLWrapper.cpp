@@ -87,50 +87,18 @@ namespace CU
 		file.close();
 	}
 
-	CU::GrowingArray<Highscore> SQLWrapper::RetriveHighcore(const int aLevelID, const float aScore)
+	CU::GrowingArray<Highscore> SQLWrapper::RetriveOnlineHighcore(const int aLevelID, const float aScore)
 	{
 		CU::GrowingArray<Highscore> toReturn(11);
 		if (GetIsOnline() == true)
 		{
 			std::string query("SET @rownum:=0; SELECT Rank, Name, Score, LevelID FROM( SELECT @rownum:=@rownum+1 AS Rank, Score, Name, LevelID FROM (SELECT DISTINCT * FROM Highscore ORDER BY Score) small WHERE LevelID = " + std::to_string(aLevelID) + " ORDER BY Score ) result");
 			ExecuteQuery(query.c_str());
-			int num_fields = mysql_num_fields(myResult);
-			MYSQL_ROW row;
-			int num_rows = 0;
-			while ((row = mysql_fetch_row(myResult)))
+			if (myResult != nullptr)
 			{
-				Highscore score;
-				for (int i = 0; i < num_fields; ++i)
-				{
-					if (i == 0)
-					{
-						score.myRank = std::atoi(row[i]);
-					}
-					else if (i == 1)
-					{
-						score.myName = row[i];
-					}
-					else if (i == 2)
-					{
-						score.myScore = static_cast<float>(std::atof(row[i]));
-					}
-					else if (i == 3)
-					{
-						score.myLevelID = std::atoi(row[i]);
-					}
-				}
-				toReturn.Add(score);
-				num_rows++;
-				if (num_rows >= 10)
-				{
-					break;
-				}
-			}
-			if (aScore != 0)
-			{
-				query = "SET @rownum:=0; SELECT Rank, Name, Score, LevelID FROM( SELECT @rownum:=@rownum+1 AS Rank, Score, Name, LevelID FROM (SELECT DISTINCT * FROM Highscore ORDER BY Score) small WHERE LevelID = " + std::to_string(aLevelID) + " ORDER BY Score ) result WHERE Score = " + std::to_string(aScore);
-				ExecuteQuery(query.c_str());
-				num_fields = mysql_num_fields(myResult);
+				int num_fields = mysql_num_fields(myResult);
+				MYSQL_ROW row;
+				int num_rows = 0;
 				while ((row = mysql_fetch_row(myResult)))
 				{
 					Highscore score;
@@ -142,12 +110,10 @@ namespace CU
 						}
 						else if (i == 1)
 						{
-							
 							score.myName = row[i];
 						}
 						else if (i == 2)
 						{
-							
 							score.myScore = static_cast<float>(std::atof(row[i]));
 						}
 						else if (i == 3)
@@ -156,52 +122,103 @@ namespace CU
 						}
 					}
 					toReturn.Add(score);
-					break;
+					num_rows++;
+					if (num_rows >= 10)
+					{
+						break;
+					}
+				}
+			}
+			if (aScore != 0)
+			{
+				query = "SET @rownum:=0; SELECT Rank, Name, Score, LevelID FROM( SELECT @rownum:=@rownum+1 AS Rank, Score, Name, LevelID FROM (SELECT DISTINCT * FROM Highscore ORDER BY Score) small WHERE LevelID = " + std::to_string(aLevelID) + " ORDER BY Score ) result WHERE Score = " + std::to_string(aScore) + " AND Name = '" + CU::GetUsername() + "'";
+				ExecuteQuery(query.c_str());
+				if (myResult != nullptr)
+				{
+					MYSQL_ROW row;
+					int num_fields = mysql_num_fields(myResult);
+					while ((row = mysql_fetch_row(myResult)))
+					{
+						Highscore score;
+						for (int i = 0; i < num_fields; ++i)
+						{
+							if (i == 0)
+							{
+								score.myRank = std::atoi(row[i]);
+							}
+							else if (i == 1)
+							{
+
+								score.myName = row[i];
+							}
+							else if (i == 2)
+							{
+
+								score.myScore = static_cast<float>(std::atof(row[i]));
+							}
+							else if (i == 3)
+							{
+								score.myLevelID = std::atoi(row[i]);
+							}
+						}
+						toReturn.Add(score);
+						break;
+					}
 				}
 			}
 		}
-		else
+		return toReturn;
+	}
+
+	CU::GrowingArray<Highscore> SQLWrapper::RetriveLocalHighcore(const int aLevelID, const float aScore)
+	{
+		CU::GrowingArray<Highscore> toReturn(11);
+		CU::GrowingArray<Highscore> unsortedHighscore(11);
+		std::fstream file(CU::GetMyDocumentFolderPath() + "/Data/HS_Level" + std::to_string(aLevelID) + ".bin",
+			std::ios::binary | std::ios::in);
+		bool isEndOfFile = false;
+		int rows = 0;
+		while (isEndOfFile == false)
 		{
-			CU::GrowingArray<Highscore> unsortedHighscore(11);
-			std::fstream file(CU::GetMyDocumentFolderPath() + "/Data/HS_Level" + std::to_string(aLevelID) + ".bin",
-				std::ios::binary | std::ios::in);
-			bool isEndOfFile = false;
-			int rows = 0;
-			while (isEndOfFile == false)
+			Highscore score;
+			if (file.eof())
 			{
-				Highscore score;
-				if (file.eof())
+				isEndOfFile = true;
+				break;
+			}
+
+			file >> score.myName >> score.myScore >> score.myLevelID;
+			rows++;
+			unsortedHighscore.Add(score);
+			if (rows >= 10)
+			{
+				break;
+			}
+		}
+		file.close();
+		int rank = 1;
+		while (unsortedHighscore.Size() > 0)
+		{
+			Highscore bestScore;
+			bestScore.myScore = 1000000.f;
+			for each(Highscore unscore in unsortedHighscore)
+			{
+				if (bestScore.myScore >= unscore.myScore)
 				{
-					isEndOfFile = true;
-					break;
-				}
-				
-				file >> score.myName >> score.myScore >> score.myLevelID;
-				rows++;
-				unsortedHighscore.Add(score);
-				if (rows >= 10)
-				{
-					break;
+					bestScore = unscore;
 				}
 			}
-			file.close();
-			int rank = 1;
-			while (unsortedHighscore.Size() > 0)
+			bestScore.myRank = rank;
+			unsortedHighscore.RemoveCyclic(bestScore);
+			if (rank <= 10)
 			{
-				Highscore bestScore;
-				bestScore.myScore = 1000000.f;
-				for each(Highscore unscore in unsortedHighscore)
-				{
-					if (bestScore.myScore >= unscore.myScore)
-					{
-						bestScore = unscore;
-					}
-				}
-				bestScore.myRank = rank;
 				toReturn.Add(bestScore);
-				unsortedHighscore.RemoveCyclic(bestScore);
-				rank++;
 			}
+			else if (bestScore.myScore == aScore)
+			{
+				toReturn.Add(bestScore);
+			}
+			rank++;
 		}
 		return toReturn;
 	}

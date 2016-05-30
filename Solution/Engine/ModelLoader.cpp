@@ -533,6 +533,11 @@ namespace Prism
 #endif	
 	}
 
+	void ModelLoader::AddHatPath(const std::string& aModelPath)
+	{
+		myInstancedCount[aModelPath] = 4;
+	}
+
 	void ModelLoader::SetRadius(ModelProxy* aProxy, const std::string& aModelPath)
 	{
 		float radius = 0;

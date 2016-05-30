@@ -114,6 +114,7 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="Hat.cpp" />
+    <ClCompile Include="HatManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -276,5 +277,6 @@
       <Filter>Notes</Filter>
     </ClInclude>
     <ClInclude Include="Hat.h" />
+    <ClInclude Include="HatManager.h" />
   </ItemGroup>
 </Project>

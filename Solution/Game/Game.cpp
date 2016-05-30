@@ -13,6 +13,7 @@
 #include <EntityFactory.h>
 #include <FileWatcher.h>
 #include "Game.h"
+#include <HatManager.h>
 #include "LevelSelectState.h"
 #include <InputWrapper.h>
 #include "MainMenuState.h"
@@ -55,10 +56,15 @@ Game::Game()
 
 	SetCursorPos(Prism::Engine::GetInstance()->GetWindowSizeInt().x / 2, Prism::Engine::GetInstance()->GetWindowSizeInt().y / 2);
 	myStateStack.SetCursor(myCursor);
+
+	HatManager::Create();
+	HatManager::GetInstance()->LoadHats();
 }
 
 Game::~Game()
 {
+
+	HatManager::Destroy();
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	SAFE_DELETE(myCursor);

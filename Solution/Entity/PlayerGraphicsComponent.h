@@ -53,7 +53,7 @@ private:
 	BodyPart myBody;
 	BodyPart myLeftLeg;
 	BodyPart myRightLeg;
-	BodyPart myHead;
+	Head myHead;
 
 	BodyAnimation myIdleAnimation;
 	BodyAnimation myWalkAnimation;

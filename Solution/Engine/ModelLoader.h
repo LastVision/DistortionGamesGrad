@@ -55,6 +55,8 @@ namespace Prism
 
 		void GetHierarchyToBone(const std::string& aAnimationPath, const std::string& aBoneName, AnimationJoint& aBoneOut);
 
+		void AddHatPath(const std::string& aModelPath);
+
 	private:
 		enum class eLoadType
 		{

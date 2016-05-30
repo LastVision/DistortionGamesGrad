@@ -1,6 +1,8 @@
 #include "stdafx.h"
+#include "Hat.h"
 #include <ModelLoader.h>
 #include <Instance.h>
+#include "HatManager.h"
 #include "PlayerBody.h"
 
 BodyPart::~BodyPart()
@@ -26,6 +28,52 @@ void BodyPart::SetActive(bool aValue)
 }
 
 bool BodyPart::GetActive() const
+{
+	return myInstance->GetShouldRender();
+}
+
+Head::Head()
+	: myHat(nullptr)
+{
+	myHat = new Hat();
+	myHat->myInstance = new Prism::Instance(*HatManager::GetInstance()->GetHat(2), myHat->myOrientation);
+}
+
+Head::~Head()
+{
+	SAFE_DELETE(myInstance);
+	SAFE_DELETE(myHat->myInstance);
+}
+
+void Head::CreateJoints(const std::string& aAnimationPath)
+{
+	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "hat_jnt-1", myHatJoint);
+}
+
+void Head::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint, float aDeltaTime)
+{
+	myInstance->Update(aDeltaTime);
+	if (aJoint.IsValid() == true)
+	{
+		myOrientation = CU::InverseSimple(*aJoint.myBind) * (*aJoint.myJoint) * aEntityOrientation;
+	}
+	else
+	{
+		myOrientation = aEntityOrientation;
+	}
+	if (myHat != nullptr)
+	{
+		myHat->Update(myOrientation, myHatJoint, aDeltaTime);
+	}
+}
+
+void Head::SetActive(bool aValue)
+{
+	myInstance->SetShouldRender(aValue);
+	myHat->myInstance->SetShouldRender(aValue);
+}
+
+bool Head::GetActive() const
 {
 	return myInstance->GetShouldRender();
 }

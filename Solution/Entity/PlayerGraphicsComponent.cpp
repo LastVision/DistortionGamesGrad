@@ -17,6 +17,7 @@
 #include <OnDeathMessage.h>
 #include "VibrationNote.h"
 #include <EmitterMessage.h>
+#include "Hat.h"
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
@@ -61,10 +62,11 @@ void PlayerGraphicsComponent::Init()
 	myRightLeg.myInstance = new Prism::Instance(
 		*Prism::ModelLoader::GetInstance()->LoadModel(rightLeg, myData.myShader), myRightLeg.myOrientation);
 
+
 	std::string head(myData.myHead);
 	std::replace(head.begin(), head.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
 	myHead.myInstance = new Prism::Instance(
-		*Prism::ModelLoader::GetInstance()->LoadModel(head, myData.myShader), myHead.myOrientation);
+		*Prism::ModelLoader::GetInstance()->LoadModelAnimated(head, myData.myAnimationShader), myHead.myOrientation);
 
 	if (myPlayerID == 1)
 	{
@@ -85,12 +87,15 @@ void PlayerGraphicsComponent::Init()
 	myFlyAnimation.CreateJoints(myData.myFlyAnimation);
 	myDashAimAnimation.CreateJoints(myData.myDashAimAnimation);
 	myDashFlyAnimation.CreateJoints(myData.myDashFlyAnimation);
+	myHead.CreateJoints(head);
 
 	myScene->AddInstance(myBody.myInstance, true);
 	myScene->AddInstance(myLeftLeg.myInstance, true);
 	myScene->AddInstance(myRightLeg.myInstance, true);
 	myScene->AddInstance(myHead.myInstance, true);
 	myScene->AddInstance(myArrow, true);
+
+	myScene->AddInstance(myHead.myHat->myInstance, true);
 
 	myCurrentAnimation = &myIdleAnimation;
 }
@@ -140,7 +145,7 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	myBody.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myBody);
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);
 	myRightLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myRightLeg);
-	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead);
+	myHead.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myHead, aDeltaTime);
 
 	if (PollingStation::GetInstance()->GetPlayersAlive() > 1 && myShowArrow == false)
 	{
