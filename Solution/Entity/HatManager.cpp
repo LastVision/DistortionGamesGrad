@@ -134,7 +134,12 @@ Prism::ModelProxy* HatManager::GetHat(int aID)
 
 bool HatManager::IsHatUnlocked(int aID) const
 {
-	return myHatsStatus[aID] != 0;
+	return aID == -1 || myHatsStatus[aID] != 0;
+}
+
+int HatManager::GetAmountOfHats() const
+{
+	return myHatsStatus.Size();
 }
 
 HatManager::HatManager()

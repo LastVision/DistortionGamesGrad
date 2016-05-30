@@ -20,6 +20,8 @@ public:
 	Prism::ModelProxy* GetHat(int aID);
 	bool IsHatUnlocked(int aID) const;
 
+	int GetAmountOfHats() const;
+
 private:
 	HatManager();
 	~HatManager();

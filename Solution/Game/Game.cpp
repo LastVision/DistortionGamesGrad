@@ -97,9 +97,9 @@ bool Game::Init(HWND& aHwnd)
 	//Console::GetInstance(); // needed to create console here
 	//myStateStack.PushMainGameState(new LevelSelectState(myController));
 #ifdef RELEASE_BUILD
-	myStateStack.PushMainGameState(new MainMenuState());
 #else
-	myStateStack.PushMainGameState(new LevelSelectState(false));
+	myStateStack.PushMainGameState(new MainMenuState());
+	//myStateStack.PushMainGameState(new LevelSelectState(false));
 	//myStateStack.PushMainGameState(new MainMenuState());
 #endif
 

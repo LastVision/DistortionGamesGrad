@@ -179,7 +179,7 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	case eOnClickEvent::HAT_SELECTION:
 		SET_RUNTIME(false);
-		myStateStack->PushMainGameState(new HatsSelectionState());
+		myStateStack->PushSubGameState(new HatsSelectionState());
 		break;
 	}
 }
