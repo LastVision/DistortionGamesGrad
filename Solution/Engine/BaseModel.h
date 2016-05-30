@@ -26,6 +26,7 @@ namespace Prism
 		Effect* GetEffect();
 
 		virtual const std::string& GetTechniqueName() const;
+		virtual const std::string& GetTechniqueNameDepthOnly() const;
 		void SetTechniqueName(const std::string& aName);
 
 		virtual void SetFileName(const std::string& aFileName);
@@ -63,11 +64,17 @@ namespace Prism
 
 		std::string myFileName;
 		std::string myTechniqueName;
+		std::string myTechniqueNameDepthOnly;
 	};
 
 	inline const std::string& BaseModel::GetTechniqueName() const
 	{
 		return myTechniqueName;
+	}
+
+	inline const std::string& BaseModel::GetTechniqueNameDepthOnly() const
+	{
+		return myTechniqueNameDepthOnly;
 	}
 
 	inline void BaseModel::SetFileName(const std::string& aFileName)
