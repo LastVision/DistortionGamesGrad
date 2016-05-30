@@ -43,6 +43,7 @@ Head::~Head()
 {
 	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myHat->myInstance);
+	SAFE_DELETE(myHat);
 }
 
 void Head::CreateJoints(const std::string& aAnimationPath)
