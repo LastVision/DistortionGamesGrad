@@ -54,9 +54,13 @@ namespace GUI
 			CU::GrowingArray<Widget*> buttons(myButtonMatrixIndex.x);
 			for (int x = 0; x < myButtonMatrixIndex.x; ++x)
 			{
+				CU::Vector2<float> textOffset;
+				textOffset.x = index + 1 > 9 ? -20.f : -10.f;
+				textOffset.y = 20.f;
+
 				ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x,
 					(-y * buttonSize.y + buttonOffset.y * -y) + myPosition.y }, starPosition, starOffset, spritePathNormal, spritePathHover, spritePathPressed,
-					std::to_string(index + 1), "", GetAmountOfStarsFromFile(index + 1));
+					std::to_string(index + 1), "", GetAmountOfStarsFromFile(index + 1), textOffset);
 				if (buttonEventType == "start_level")
 				{
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));

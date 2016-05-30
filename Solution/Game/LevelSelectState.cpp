@@ -3,8 +3,8 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <InputWrapper.h>
-#include "LevelSelectState.h"
 #include <GUIManager.h>
+#include "LevelSelectState.h"
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 #include <WidgetContainer.h>

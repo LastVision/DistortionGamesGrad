@@ -276,6 +276,10 @@ namespace GUI
 #else
 			myLevelButtons[i]->SetActive(true);
 #endif
+			CU::Vector2<float> textOffset;
+			textOffset.x = i + 1 > 9 ? -20.f : -10.f;
+			textOffset.y = 20.f;
+			myLevelButtons[i]->SetButtonText(std::to_string(i + 1), textOffset);
 		}
 
 		for (int i = 0; i < unlockedLevels.Size(); i++)

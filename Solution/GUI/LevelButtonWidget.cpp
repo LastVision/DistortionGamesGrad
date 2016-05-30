@@ -6,22 +6,22 @@ namespace GUI
 {
 	LevelButtonWidget::LevelButtonWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
 		: ButtonWidget(aReader, anXMLElement)
-		, myStars(4)
+		, myStars(3)
 	{
 	}
 
 	LevelButtonWidget::LevelButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition, 
 		const CU::Vector2<float>& aStarPosition, const CU::Vector2<float>& aStarOffest,
 		const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath,
-		const std::string& aButtonText, const std::string& aHoverText, const int someStars)
-		: ButtonWidget(aSize, aPosition, aSpritePath, aSpriteHoverPath, aSpritePressedPath, aButtonText, aHoverText)
+		const std::string& aButtonText, const std::string& aHoverText, const int someStars, const CU::Vector2<float>& aTextOffset)
+		: ButtonWidget(aSize, aPosition, aSpritePath, aSpriteHoverPath, aSpritePressedPath, aButtonText, aHoverText, aTextOffset)
 		, myStars(3)
 		, myStarPosition(aStarPosition)
 		, myStarOffset(aStarOffest)
 	{
-		myStars.Add(new StarWidget(someStars > 0, 1));
-		myStars.Add(new StarWidget(someStars > 1, 2));
-		myStars.Add(new StarWidget(someStars > 2, 3));
+		myStars.Add(new StarWidget(someStars > 0, 1, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 1, 2, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 2, 3, mySize * 0.5f));
 	}
 
 	LevelButtonWidget::~LevelButtonWidget()
@@ -68,7 +68,7 @@ namespace GUI
 		myStars.Add(new StarWidget(someStars > 1, 2, mySize * 0.5f));
 		myStars.Add(new StarWidget(someStars > 2, 3, mySize * 0.5f));
 
-		myStarPosition = { (-mySize.x * 0.5f) + myStars[0]->GetSize().x * 0.3f, 0.f };
-		myStarOffset.x = mySize.x / 3.f;
+		myStarPosition = { -64.f, -38.f };
+		myStarOffset.x = 64.f;
 	}
 }

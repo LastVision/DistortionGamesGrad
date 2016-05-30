@@ -45,7 +45,7 @@ void HatManager::LoadHats()
 
 	std::string hatPath = "Data/UnlockedHats.bin";
 
-	if (CU::FileExists(hatPath) == false)
+	if (CU::FileExists(CU::GetMyDocumentFolderPath() + hatPath) == false)
 	{
 
 		myPlayersCurrentHat.Add(-1);
@@ -61,11 +61,13 @@ void HatManager::LoadHats()
 		for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
 		{
 			file << myPlayersCurrentHat[i];
+			file << std::endl;
 		}
 
 		for (int i = 0; i < myHatsStatus.Size(); ++i)
 		{
 			file << myHatsStatus[i];
+			file << std::endl;
 		}
 		file.close();
 	}
