@@ -185,6 +185,7 @@
     <ClInclude Include="GraphicsComponent.h" />
     <ClInclude Include="GraphicsComponentData.h" />
     <ClInclude Include="Hat.h" />
+    <ClInclude Include="HatManager.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputComponentData.h" />
     <ClInclude Include="LoseBodyPartNote.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="FlyMovement.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="Hat.cpp" />
+    <ClCompile Include="HatManager.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
