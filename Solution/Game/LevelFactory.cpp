@@ -92,6 +92,9 @@ Level* LevelFactory::LoadCurrentLevel()
 void LevelFactory::ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
 	, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare)
 {
+	aFinalLevel = 0;
+	aTotalLevels = 0;
+
 	aLevelMap.clear();
 	XMLReader reader;
 	reader.OpenDocument(aLevelListPath);
@@ -127,12 +130,12 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);
 	LoadProps(level, reader, levelElement);
-	LoadSpikes(level, reader, levelElement);
-	LoadSawBlades(level, reader, levelElement);
-	LoadSteamVents(level, reader, levelElement);
-	LoadBouncers(level, reader, levelElement);
-	LoadStompers(level, reader, levelElement);
-	LoadAcid(level, reader, levelElement);
+	//LoadSpikes(level, reader, levelElement);
+	//LoadSawBlades(level, reader, levelElement);
+	//LoadSteamVents(level, reader, levelElement);
+	//LoadBouncers(level, reader, levelElement);
+	//LoadStompers(level, reader, levelElement);
+	//LoadAcid(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
 	LoadSpotLights(level, reader, levelElement);
