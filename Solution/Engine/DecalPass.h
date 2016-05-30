@@ -19,7 +19,7 @@ namespace Prism
 		DecalPass();
 		~DecalPass();
 
-		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath);
+		void AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
 
 		void Update(float aDelta);
 		void Render(const Camera& aCamera, Texture* aDepthTexture, GBufferData* aGBuffer, GBufferData* aGBufferCopy);

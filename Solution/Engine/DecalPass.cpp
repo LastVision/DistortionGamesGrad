@@ -34,7 +34,7 @@ namespace Prism
 		SAFE_DELETE(myInstance);
 	}
 
-	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aTexturePath)
+	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
 	{
 		if (myDecals.Size() > 0)
 		{
@@ -46,9 +46,9 @@ namespace Prism
 		DecalInfo info;
 		info.myPosition = aPosition;
 		info.myDirection = aDirection;
-		info.myTexture = TextureContainer::GetInstance()->GetTexture(aTexturePath);
-		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		info.myTexture = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
+		info.myMetalness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
+		info.myRoughness = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
 		info.myIsFading = false;
 		info.myTime = 3.f;
 		myDecals.Add(info);

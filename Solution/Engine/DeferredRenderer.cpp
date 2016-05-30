@@ -116,11 +116,10 @@ namespace Prism
 		SAFE_DELETE(myDecal);
 	}
 
-	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, const std::string& aPath)
+	void DeferredRenderer::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
 	{
 		SET_RUNTIME(false);
-		myDecal->AddDecal(aPosition, aDirection, aPath);
-		//myDecal->AddDecal(aPosition, { 0.f, 0.f, 1.f }, aPath);
+		myDecal->AddDecal(aPosition, aDirection);
 		SET_RUNTIME(true);
 	}
 
