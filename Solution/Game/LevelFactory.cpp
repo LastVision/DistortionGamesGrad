@@ -130,12 +130,12 @@ Level* LevelFactory::ReadLevel(const std::string& aLevelPath)
 	LoadLevelData(level, reader, levelElement);
 	LoadStartAndGoal(level, reader, levelElement);
 	LoadProps(level, reader, levelElement);
-	//LoadSpikes(level, reader, levelElement);
-	//LoadSawBlades(level, reader, levelElement);
-	//LoadSteamVents(level, reader, levelElement);
-	//LoadBouncers(level, reader, levelElement);
-	//LoadStompers(level, reader, levelElement);
-	//LoadAcid(level, reader, levelElement);
+	LoadSpikes(level, reader, levelElement);
+	LoadSawBlades(level, reader, levelElement);
+	LoadSteamVents(level, reader, levelElement);
+	LoadBouncers(level, reader, levelElement);
+	LoadStompers(level, reader, levelElement);
+	LoadAcid(level, reader, levelElement);
 	LoadPointLights(level, reader, levelElement);
 	LoadDirectionalLights(level, reader, levelElement);
 	LoadSpotLights(level, reader, levelElement);
