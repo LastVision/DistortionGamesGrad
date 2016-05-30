@@ -3,6 +3,7 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
+#include "HatsSelectionState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
 #include <OnClickMessage.h>
@@ -148,11 +149,13 @@ void ScoreState::Render()
 
 void ScoreState::ResumeState()
 {
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 }
 
 void ScoreState::PauseState()
 {
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
 void ScoreState::OnResize(int, int)
@@ -163,6 +166,10 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
+	case eOnClickEvent::HAT_SELECTION:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HatsSelectionState());
+		break;
 	case eOnClickEvent::GAME_QUIT:
 	case eOnClickEvent::RESTART_LEVEL:
 	case eOnClickEvent::NEXT_LEVEL:
