@@ -210,6 +210,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS);
 		}
+		else if (clickEvent == "hat_selection")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::HAT_SELECTION);
+		}
 		else if (clickEvent == "IncreaseVolume")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_VOLUME);
