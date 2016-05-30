@@ -21,8 +21,8 @@ namespace Prism
 		myInstance = new Instance(*model, myOrientation);
 
 		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_metalness.dds");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_test_roughness.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_metalness.dds");
+		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Decal/T_decal_roughnessy.dds");
 
 		OnEffectLoad();
 		myEffect->AddListener(this);
