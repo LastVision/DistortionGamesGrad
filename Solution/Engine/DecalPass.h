@@ -46,6 +46,7 @@ namespace Prism
 		ID3DX11EffectShaderResourceVariable* myAlbedo;
 		ID3DX11EffectShaderResourceVariable* myMetalness;
 		ID3DX11EffectShaderResourceVariable* myRoughness;
+		ID3DX11EffectShaderResourceVariable* myNormal;
 
 	};
 }
