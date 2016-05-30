@@ -33,48 +33,22 @@ namespace GUI
 		}
 
 		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize, mySize / 2.f);
-		myLevelText = "Level ";
-
+		ConstructHighscoreText();
 	}
 
 	HighscoreWidget::~HighscoreWidget()
 	{
+		SAFE_DELETE(myBackgroundSprite);
 	}
 
 	void HighscoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 	{
 		Prism::Engine* engine = Prism::Engine::GetInstance();
 		myBackgroundSprite->Render(myPosition + aParentPosition);
-		CU::Vector2<float> textPosition = aParentPosition + myPosition + myTextPosition;
-		textPosition.y -= myTextPosition.y / 2.f;
-		engine->PrintText(myLevelText + std::to_string(myCurrentLevel), textPosition, Prism::eTextType::RELEASE_TEXT);
-
-		myLevelText = "Rank";
-		textPosition = aParentPosition + myPosition + myTextPosition;
-		textPosition.y -= 20;
-		engine->PrintText(myLevelText, textPosition, Prism::eTextType::RELEASE_TEXT);
-		myLevelText = "Name";
-		textPosition.x += 160;
-		engine->PrintText(myLevelText, textPosition, Prism::eTextType::RELEASE_TEXT);
-		myLevelText = "Score";
-		textPosition.x += 250;
-		engine->PrintText(myLevelText, textPosition, Prism::eTextType::RELEASE_TEXT);
-
-		int rows = 0;
-		for each(const Highscore& score in myHighscores)
-		{
-			myHighscoreText = score.myRank;
-			textPosition = aParentPosition + myPosition + myTextPosition;
-			textPosition.y += 20 * rows;
-			engine->PrintText(myHighscoreText, textPosition, Prism::eTextType::RELEASE_TEXT);
-			myHighscoreText = score.myName;
-			textPosition.x += 160;
-			engine->PrintText(myHighscoreText, textPosition, Prism::eTextType::RELEASE_TEXT);
-			myHighscoreText = score.myScore;
-			textPosition.x += 250;
-			engine->PrintText(myHighscoreText, textPosition, Prism::eTextType::RELEASE_TEXT);
-			rows++;
-		}
+		engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT);
+		engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT);
+		engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT);
+		engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT);
 	}
 
 	void HighscoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
@@ -83,5 +57,42 @@ namespace GUI
 		myBackgroundSprite->SetSize(mySize, mySize / 2.f);
 		CU::Vector2<float> ratio = aNewSize / anOldSize;
 		myTextPosition *= ratio;
+		myTextRankPosition *= ratio;
+		myTextNamePosition *= ratio;
+		myTextScorePosition *= ratio;
+	}
+
+	void HighscoreWidget::ConstructHighscoreText()
+	{
+		CU::Vector2<float> textPosition = (myPosition + myTextPosition);
+		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		textPosition.x += myTextPosition.x / 2.f;
+		textPosition.y -= 20;
+		myTextPosition = textPosition;
+		myLevelText = "Level " + std::to_string(myCurrentLevel);
+
+		myHighscoreTextRank = "Rank\n";
+		textPosition = (myPosition + myTextPosition);
+		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		textPosition -= myTextPosition.x;
+		textPosition.y -= 100;
+		myTextRankPosition = textPosition;
+
+		myHighscoreTextName = "Name\n";
+		textPosition.x += 120;
+		myTextNamePosition = textPosition;
+
+		myHighscoreTextScore = "Score\n";
+		textPosition.x += 200;
+		myTextScorePosition = textPosition;
+
+		for each(const Highscore& score in myHighscores)
+		{
+			myHighscoreTextRank += std::to_string(score.myRank) + "\n";
+			myHighscoreTextName += score.myName + "\n";
+			myHighscoreTextScore += std::to_string(score.myScore) + "\n";
+		}
 	}
 }

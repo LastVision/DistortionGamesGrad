@@ -18,9 +18,17 @@ namespace GUI
 		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 	private:
+		void ConstructHighscoreText();
+
 		std::string myLevelText;
-		std::string myHighscoreText;
+		std::string myHighscoreTextRank;
+		std::string myHighscoreTextName;
+		std::string myHighscoreTextScore;
+
 		CU::Vector2<float> myTextPosition;
+		CU::Vector2<float> myTextRankPosition;
+		CU::Vector2<float> myTextNamePosition;
+		CU::Vector2<float> myTextScorePosition;
 
 		int myCurrentLevel;
 

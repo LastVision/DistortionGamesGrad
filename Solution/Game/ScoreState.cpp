@@ -72,7 +72,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myStateStatus = eStateStatus::eKeepState;
 	myIsLetThrough = true;
 	myIsActiveState = true;
-	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, -1);
+	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, myCurrentLevel);
 	myGUIManager->SetSelectedButton(0, 6);
 
 	int nextLevel = myCurrentLevel + 1;
