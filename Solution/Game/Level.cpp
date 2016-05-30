@@ -250,7 +250,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	
 	
-
+	myDeferredRenderer->Update(aDeltaTime);
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
 

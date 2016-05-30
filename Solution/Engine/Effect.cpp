@@ -197,6 +197,14 @@ namespace Prism
 		}
 	}
 
+	void Effect::SetAlpha(float aValue)
+	{
+		if (myAlpha != nullptr)
+		{
+			myAlpha->SetFloat(aValue);
+		}
+	}
+
 	void Effect::SetPosAndScale(const CU::Vector2<float>& aPos
 		, const CU::Vector2<float>& aScale)
 	{
@@ -555,6 +563,12 @@ namespace Prism
 		if (myDecalDirection->IsValid() == false)
 		{
 			myDecalDirection = nullptr;
+		}
+
+		myAlpha = myEffect->GetVariableByName("Alpha")->AsScalar();
+		if (myAlpha->IsValid() == false)
+		{
+			myAlpha = nullptr;
 		}
 
 		return true;
