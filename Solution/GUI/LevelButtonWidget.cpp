@@ -6,15 +6,15 @@ namespace GUI
 {
 	LevelButtonWidget::LevelButtonWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement)
 		: ButtonWidget(aReader, anXMLElement)
-		, myStars(4)
+		, myStars(3)
 	{
 	}
 
 	LevelButtonWidget::LevelButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition, 
 		const CU::Vector2<float>& aStarPosition, const CU::Vector2<float>& aStarOffest,
 		const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath,
-		const std::string& aButtonText, const std::string& aHoverText, const int someStars)
-		: ButtonWidget(aSize, aPosition, aSpritePath, aSpriteHoverPath, aSpritePressedPath, aButtonText, aHoverText)
+		const std::string& aButtonText, const std::string& aHoverText, const int someStars, const CU::Vector2<float>& aTextOffset)
+		: ButtonWidget(aSize, aPosition, aSpritePath, aSpriteHoverPath, aSpritePressedPath, aButtonText, aHoverText, aTextOffset)
 		, myStars(3)
 		, myStarPosition(aStarPosition)
 		, myStarOffset(aStarOffest)

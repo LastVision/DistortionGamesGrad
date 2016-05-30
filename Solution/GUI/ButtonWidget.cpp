@@ -62,7 +62,7 @@ namespace GUI
 
 	ButtonWidget::ButtonWidget(const CU::Vector2<float>& aSize, const CU::Vector2<float>& aPosition,
 		const std::string& aSpritePath, const std::string& aSpriteHoverPath, const std::string& aSpritePressedPath,
-		const std::string& aButtonText, const std::string& aHoverText)
+		const std::string& aButtonText, const std::string& aHoverText, const CU::Vector2<float>& aTextOffset)
 		: Widget()
 		, myImageNormal(nullptr)
 		, myImagePressed(nullptr)
@@ -74,6 +74,7 @@ namespace GUI
 		, myCanBeClicked(true)
 		, myId(-1)
 		, myColor(1.f, 1.f, 1.f, 1.f)
+		, myTextOffset(aTextOffset)
 	{
 		mySize = aSize;
 		myPosition = aPosition;
@@ -111,7 +112,7 @@ namespace GUI
 
 			if (myIsTextButton == true)
 			{
-				Prism::Engine::GetInstance()->PrintText(myButtonText, { aParentPosition.x + myPosition.x - 10.f, aParentPosition.y + myPosition.y - 10.f }, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myButtonText, aParentPosition + myPosition + myTextOffset, Prism::eTextType::RELEASE_TEXT);
 			}
 
 			if (myImageCurrent == myImageHover && myHoverText != "")
