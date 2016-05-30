@@ -87,6 +87,21 @@ void LevelSelectState::Render()
 
 void LevelSelectState::ResumeState()
 {
+	bool runtime = GET_RUNTIME;
+	SET_RUNTIME(false);
+	SAFE_DELETE(myGUIManager);
+
+	if (myIsNightmare == false)
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+	}
+	else
+	{
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, -1);
+		myGUIManager->CheckUnlockedNightmareLevels();
+	}
+	SET_RUNTIME(runtime);
+
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);

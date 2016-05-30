@@ -279,7 +279,7 @@ namespace GUI
 
 		for (int i = 0; i < unlockedLevels.Size(); i++)
 		{
-			int toReturn = 0;
+			int stars = 0;
 			std::fstream file;
 			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score_Nightmare" + std::to_string(i + 1) + ".bin", std::ios::binary | std::ios::in);
 
@@ -287,26 +287,18 @@ namespace GUI
 			{
 				int levelID = 0;
 				float time = 0;
-				int stars = 0;
-				bool isEndOfFile = false;
-				while (isEndOfFile == false)
-				{
-					if (file.eof())
-					{
-						isEndOfFile = true;
-						break;
-					}
-					file >> levelID >> time >> stars;
-					toReturn = stars;
-					if (i <= myLevelButtons.Size())
-					{
-						myLevelButtons[i]->SetStars(stars);
-					}
-				}
-				file.close();
+				file >> levelID >> time >> stars;		
 			}
+
+			if (i < myLevelButtons.Size())
+			{
+				myLevelButtons[i]->SetStars(stars);
+			}
+
+			file.close();
 		}
 	}
+
 
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{
