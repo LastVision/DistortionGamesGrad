@@ -113,6 +113,7 @@
     <ClCompile Include="AcidComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="Hat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -274,5 +275,6 @@
     <ClInclude Include="PlayAnimationNote.h">
       <Filter>Notes</Filter>
     </ClInclude>
+    <ClInclude Include="Hat.h" />
   </ItemGroup>
 </Project>
