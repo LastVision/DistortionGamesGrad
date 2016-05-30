@@ -6,12 +6,12 @@
 
 #include <Tweener.h>
 
-StarWidget::StarWidget(bool anActive, int anID)
+StarWidget::StarWidget(bool anActive, int anID, const CU::Vector2<float>& aSize)
 	: GUI::Widget()
 	, myID(anID)
 	, myActive(anActive)
 {
-	mySize = CU::Vector2<float>(128.f, 128.f);
+	mySize = aSize;
 
 	myTime = static_cast<float>(-myID) * 1.f - 1.5f;
 	

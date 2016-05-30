@@ -281,7 +281,7 @@ namespace GUI
 		{
 			int toReturn = 0;
 			std::fstream file;
-			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score_Nightmare" + std::to_string(i) + ".bin", std::ios::binary | std::ios::in);
+			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score_Nightmare" + std::to_string(i + 1) + ".bin", std::ios::binary | std::ios::in);
 
 			if (file.is_open() == true)
 			{
@@ -298,7 +298,7 @@ namespace GUI
 					}
 					file >> levelID >> time >> stars;
 					toReturn = stars;
-					if (i >= myLevelButtons.Size())
+					if (i <= myLevelButtons.Size())
 					{
 						myLevelButtons[i]->SetStars(stars);
 					}
