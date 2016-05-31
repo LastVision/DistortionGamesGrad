@@ -67,8 +67,11 @@ namespace Prism
 		aScene->RenderDepth();
 
 		context->OMSetRenderTargets(1, &originalRenderTargetView, originalDepthStencilView);
+
+		int IsThisNeededToPreventGPUMemoryCrash = 5;
 		//originalDepthStencilView->Release();
 		//originalRenderTargetView->Release();
+
 		context->RSSetViewports(1, &oldVp);
 		aScene->SetCamera(*oldCamera);
 	}
