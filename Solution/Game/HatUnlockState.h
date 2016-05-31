@@ -28,8 +28,28 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+	void Spin();
+	void WinHat(int aHatID);
+	bool myIsSpinning;
+	struct HatUnlock
+	{
+		HatUnlock(){};
+		HatUnlock(Prism::SpriteProxy* aSprite, int aID)
+			: mySprite(aSprite)
+			, myID(aID)
+		{}
+		Prism::SpriteProxy* mySprite;
+		int myID;
+	};
+	CU::GrowingArray<HatUnlock> myHats;
 
+	int myCurrentHatToWin;
 
+	float mySpinTimer;
+	float myMaxSpinTime;
+	bool myHasWonAllHats;
+
+	Prism::SpriteProxy* myHatWon;
 
 };
 
