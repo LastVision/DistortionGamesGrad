@@ -20,10 +20,14 @@ public:
 	Prism::ModelProxy* GetHat(int aID);
 	bool IsHatUnlocked(int aID) const;
 
+	int GetAmountOfHats() const;
+
 private:
 	HatManager();
 	~HatManager();
 	static HatManager* myInstance;
+
+	void Save();
 
 	std::unordered_map<int, Prism::ModelProxy*> myHats;
 

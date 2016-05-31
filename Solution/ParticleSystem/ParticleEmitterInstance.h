@@ -18,7 +18,7 @@ namespace Prism
 		ParticleEmitterInstance(ParticleEmitterData* someData, bool anAllowManyParticles = false);
 		~ParticleEmitterInstance();
 		void ReleaseData();
-		void Render(Texture* aTexture);
+		void Render();
 		void Update(float aDeltaTime);
 		void Activate(bool aShouldRender = true);
 		bool IsActive();
@@ -30,8 +30,6 @@ namespace Prism
 
 		void SetEntity(Entity* anEntity);
 		Entity* GetEntity();
-
-		void SetGPUData(Camera* aCamera);
 
 		void SetRadius(float aRadius);
 		void SetSize(const CU::Vector3f& aSize);
@@ -46,7 +44,6 @@ namespace Prism
 		CU::Vector3<float> GetPosition() const;
 
 		void SetRandomizeDirection(bool aShouldBeSet);
-
 	private:
 
 		void Reset();
@@ -63,7 +60,6 @@ namespace Prism
 		CU::Vector3<float> CreateCirclePositions();
 		CU::Vector3<float> CreateSpherePositions();
 		CU::Vector3<float> CreateHollowSquare();
-
 		CU::Matrix44f myOrientation;
 
 		CU::GrowingArray<GraphicalParticle> myParticleToGraphicsCard;
@@ -76,6 +72,7 @@ namespace Prism
 		CU::Vector3<float> myRotation;
 		CU::Vector3<float> myPoints[8];
 		
+		Texture* myTexture;
 		ParticleEmitterData* myParticleEmitterData;
 		VertexBufferWrapper* myVertexWrapper;
 
@@ -100,6 +97,7 @@ namespace Prism
 			SPHERE,
 			EMITTERLIFE,
 			USE_ALPHA_DELTA,
+			AFFECTED_BY_GRAVITY,
 			_COUNT
 		};
 

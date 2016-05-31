@@ -39,6 +39,10 @@ public:
 
 	static bool NightmareMode;
 	static bool HasWonGame;
+	static bool HasBeenInVictoryScreen;
+	static bool HasBeenInVictoryScreenNightmare;
+
+	static int Gold;
 
 	static int CurrentActivePlayers;
 };

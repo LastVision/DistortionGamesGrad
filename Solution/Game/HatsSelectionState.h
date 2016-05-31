@@ -19,13 +19,29 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 	const eStateStatus Update(const float& aDeltaTime) override;
+	void HandleHatSelection(CU::ControllerInput* aController, int& aCurrentPlayerHat, int aPlayerID
+		, bool& aControllerPressedLeft, bool& aControllerPressedRight);
 	void Render() override;
 	void ResumeState() override;
 	void PauseState() override;
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 
+
 private:
 	GUI::GUIManager* myGUIManager;
+
+	Prism::SpriteProxy* myLockSprite;
+	Prism::SpriteProxy* myPlayerOnePortrait;
+	Prism::SpriteProxy* myPlayerTwoPortrait;
+	int myPlayerOneCurrentHat;
+	int myPlayerTwoCurrentHat;
+
+	bool mySecondControllerPressedLeft;
+	bool mySecondControllerPressedRight;
+
+	CU::GrowingArray<Prism::SpriteProxy*> myHats;
+
+	CU::ControllerInput* mySecondController;
 };
 

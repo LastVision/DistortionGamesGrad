@@ -10,12 +10,13 @@ Hat::Hat()
 
 Hat::~Hat()
 {
-	SAFE_DELETE(myInstance);
 }
 
 
 void Hat::Update(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint, float aDeltaTime)
 {
+	aDeltaTime;
+
 	if (aJoint.IsValid() == true)
 	{
 		myOrientation = CU::InverseSimple(*aJoint.myBind) * (*aJoint.myJoint) * aEntityOrientation;

@@ -139,13 +139,9 @@ void MovementComponent::SetState(eMovementType aState, const CU::Vector2<float>&
 		PostMaster::GetInstance()->SendMessage(EmitterMessage("Dash_Recharge", &myEntity, myDashCooldown));
 	}
 	myMovements[myCurrentMovement]->DeActivate();
-	CU::Vector2<float> velocityToState(aVelocity);
-	if (myCurrentMovement != eMovementType::WALK)
-	{
-		velocityToState *= myDeltaTime;
-	}
+
 	myCurrentMovement = aState;
-	myMovements[myCurrentMovement]->Activate(velocityToState);
+	myMovements[myCurrentMovement]->Activate(aVelocity);
 
 	switch (myCurrentMovement)
 	{
