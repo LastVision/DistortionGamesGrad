@@ -48,6 +48,8 @@ namespace Prism
 
 		Reset();
 
+		myTexture = TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName);
+
 		CreateVertexBuffer();
 	}
 
@@ -66,11 +68,10 @@ namespace Prism
 		myParticleEmitterData = nullptr;
 	}
 
-	void ParticleEmitterInstance::Render(Texture*)
+	void ParticleEmitterInstance::Render()
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
-		myParticleEmitterData->myEffect->SetTexture(TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName));
-
+		myParticleEmitterData->myEffect->SetTexture(myTexture);
 
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		context->IASetVertexBuffers(
@@ -111,54 +112,35 @@ namespace Prism
 		{
 			myStates[ACTIVE] = TRUE;
 		}
-		else
-		{
-			myStates[ACTIVE] = FALSE;
-		}
 
 		if (myParticleEmitterData->myIsHollow == true)
 		{
 			myStates[HOLLOW] = TRUE;
-		}
-		else
-		{
-			myStates[HOLLOW] = FALSE;
 		}
 
 		if (myParticleEmitterData->myIsCircle == true)
 		{
 			myStates[CIRCLE] = TRUE;
 		}
-		else
-		{
-			myStates[CIRCLE] = FALSE;
-		}
-
+		
 		if (myParticleEmitterData->myUseEmitterLifeTime == true)
 		{
 			myStates[EMITTERLIFE] = TRUE;
 		}
-		else
-		{
-			myStates[EMITTERLIFE] = FALSE;
-		}
-
+		
 		if (myParticleEmitterData->myIsSphere == true)
 		{
 			myStates[SPHERE] = TRUE;
 		}
-		else
-		{
-			myStates[SPHERE] = FALSE;
-		}
-
+		
 		if (myParticleEmitterData->myUseAlphaDelta == true)
 		{
 			myStates[USE_ALPHA_DELTA] = TRUE;
 		}
-		else
+		
+		if (myParticleEmitterData->myIsAffectedByGravity == true)
 		{
-			myStates[USE_ALPHA_DELTA] = FALSE;
+			myStates[AFFECTED_BY_GRAVITY] = TRUE;
 		}
 
 		myEmitterLife = myParticleEmitterData->myEmitterLifeTime;
@@ -283,7 +265,7 @@ namespace Prism
 				particleData.mySpeed += particleData.mySpeedDelta * aDeltaTime;
 			}
 
-			if (myIsAffectedByGravity == true)
+			if (myStates[AFFECTED_BY_GRAVITY] == TRUE)
 			{
 				logicParticle.myDirection.y -= (9.82f * 0.1f) * aDeltaTime;
 				
@@ -344,7 +326,7 @@ namespace Prism
 
 			gfxParticle.myColor = myParticleEmitterData->myData.myStartColor;
 
-			if (myIsAffectedByGravity == true)
+			if (myStates[AFFECTED_BY_GRAVITY] == true)
 			{
 				logicParticle.mySpeed = CU::Math::RandomRange(0.5f, myParticleSpeed);
 			}
@@ -502,7 +484,5 @@ namespace Prism
 	void ParticleEmitterInstance::SetRandomizeDirection(bool aShouldBeSet)
 	{
 		myRandomizeDirection = aShouldBeSet;
-		myIsAffectedByGravity = true;
 	}
-
 }

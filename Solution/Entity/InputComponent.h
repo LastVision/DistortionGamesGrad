@@ -39,6 +39,8 @@ public:
 
 	void SetPlayersWinCount(int aWinCount);
 
+	void SetStandingOnStomper(Entity* aStomper);
+
 private:
 
 	const InputComponentData& myComponentData;
@@ -59,7 +61,7 @@ private:
 	AnimationJoint* myParticlePoint; //for particles
 	CU::Matrix44<float> myParticleOrientation;
 
-
+	Entity* myStandingOnStomper;
 };
 
 inline eComponentType InputComponent::GetTypeStatic()
@@ -75,4 +77,9 @@ inline eComponentType InputComponent::GetType()
 inline void InputComponent::SetPlayersWinCount(int aWinCount)
 {
 	myAllowedToSpawn = (aWinCount <= 0);
+}
+
+inline void InputComponent::SetStandingOnStomper(Entity* aStomper)
+{
+	myStandingOnStomper = aStomper;
 }

@@ -170,7 +170,35 @@ namespace CU
 		return toReturn;
 	}
 
-	CU::GrowingArray<Highscore> SQLWrapper::RetriveLocalHighcore(const int aLevelID, const float aScore)
+	const float SQLWrapper::RetriveLocalHighscore(const int aLevelID, const float aScore)
+	{
+		float toReturn = 0.f;
+		std::fstream file;
+		file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(aLevelID) + ".bin", std::ios::binary | std::ios::in);
+
+		if (file.is_open() == true)
+		{
+			int levelID = 0;
+			float time = 0;
+			int stars = 0;
+			bool isEndOfFile = false;
+			while (isEndOfFile == false)
+			{
+				if (file.eof())
+				{
+					isEndOfFile = true;
+					break;
+				}
+				file >> levelID >> time >> stars;
+				toReturn = time;
+			}
+
+			file.close();
+		}
+		return toReturn;
+	}
+
+	/*CU::GrowingArray<Highscore> SQLWrapper::RetriveLocalHighcore(const int aLevelID, const float aScore)
 	{
 		CU::GrowingArray<Highscore> toReturn(11);
 		CU::GrowingArray<Highscore> unsortedHighscore(11);
@@ -221,7 +249,7 @@ namespace CU
 			rank++;
 		}
 		return toReturn;
-	}
+	}*/
 
 	bool SQLWrapper::GetIsOnline()
 	{

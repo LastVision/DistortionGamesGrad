@@ -4,6 +4,10 @@
 
 class ScoreWidget;
 
+namespace Prism
+{
+	class SpriteProxy;
+}
 
 struct Score;
 struct ScoreInfo;
@@ -33,6 +37,8 @@ private:
 	const CU::GrowingArray<const Score*>& myScores;
 	const ScoreInfo& myScoreInfo;
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
+
+	Prism::SpriteProxy* myGoldBagSprite;
 
 	float myTimer;
 

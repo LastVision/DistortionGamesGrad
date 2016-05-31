@@ -44,6 +44,7 @@ namespace GUI
 			{
 				float newSize = *myCurrentValueFloat / *myMaxValueFloat;
 				myValueSprite->SetSize({ mySize.x * newSize, mySize.y }, mySize / 2.f);
+				myValueSprite->SetUVZeroToOne(CU::Vector2<float>(0, 0), CU::Vector2<float>(newSize, 1.f));
 			}
 		}
 	}

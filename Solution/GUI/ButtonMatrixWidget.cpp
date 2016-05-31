@@ -93,25 +93,6 @@ namespace GUI
 			}
 			myButtonMatrix.Add(buttons);
 		}
-
-		/*for (int i = 0; i < myButtonMatrixIndex.x * myButtonMatrixIndex.y; ++i)
-		{
-			ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x, 
-				(y * buttonSize.y + buttonOffset.y * y) + myPosition.y }, starPosition, starOffset, spritePathNormal, spritePathHover, spritePathPressed, 
-				std::to_string(i + 1), "", GetAmountOfStarsFromFile(i + 1));
-			if (buttonEventType == "start_level")
-			{
-				button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, i));
-			}
-			
-			myButtonMatrix.Add(button);
-			x++;
-			if (x >= myButtonMatrixIndex.x)
-			{
-				y--;
-				x = 0;
-			}
-		}*/
 	}
 
 	ButtonMatrixWidget::~ButtonMatrixWidget()
@@ -176,9 +157,10 @@ namespace GUI
 			file.close();
 		}
 
-		if (toReturn.GetLast() == true)
+		if (GC::TotalLevels == toReturn.Size() && toReturn.GetLast() == true)
 		{
 			GC::HasWonGame = true;
+			GC::HasBeenInVictoryScreen = true;
 		}
 
 		return toReturn;

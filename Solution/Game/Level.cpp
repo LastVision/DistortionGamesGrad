@@ -198,7 +198,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
 	}
 
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || 
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true ||
 		(myController->IsConnected() == true && myController->ButtonOnDown(eXboxButton::START)))
 	{
 		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
@@ -255,8 +255,8 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myShouldRenderCountDown = true;
 	}
 
-	
-	
+
+
 	myDeferredRenderer->Update(aDeltaTime);
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
@@ -348,7 +348,7 @@ void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecon
 void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, CU::Vector3<float> aContactPoint
 	, CU::Vector3<float> aContactNormal, bool aHasEntered)
 {
-	Entity* first = &aFirst->GetEntity(); 
+	Entity* first = &aFirst->GetEntity();
 	Entity* second = &aSecond->GetEntity();
 
 	if (first->GetType() == eEntityType::PLAYER)
@@ -368,8 +368,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), -dir, true));
 
-				//Sawblade Particle Effect
 				//Oil Effect
 			}
 			break;
@@ -400,12 +400,23 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (aHasEntered == true)
 			{
 				float dot = CU::Dot(aContactNormal, second->GetOrientation().GetUp());
-				
-				if (dot > 0.001f && second->IsStomperMoving() == true)
+
+				if (dot > 0.001f)
 				{
-					KillPlayer(first);
+					if (second->IsStomperMoving() == true)
+					{
+						KillPlayer(first);
+						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper", first->GetOrientation().GetPos(), true));
+					}
+					else
+					{
+						first->GetComponent<InputComponent>()->SetStandingOnStomper(second);
+					}
 				}
-				//Stomper Effect
+			}
+			else
+			{
+				first->GetComponent<InputComponent>()->SetStandingOnStomper(nullptr);
 			}
 			break;
 		case eEntityType::ACID_DROP:
@@ -476,6 +487,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
+				//Acid death effect
+			}
+			else
+			{
+				//acid hit ground effect
 			}
 		}
 	}
@@ -492,7 +508,7 @@ void Level::CreatePlayers()
 	mySmartCamera->AddOrientation(&player->GetOrientation());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
-	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1,1,1), 2);
+	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();

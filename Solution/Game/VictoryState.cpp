@@ -31,10 +31,12 @@ void VictoryState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerIn
 	if (GC::NightmareMode == false)
 	{
 		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen.xml", nullptr, -1);
+		GC::HasBeenInVictoryScreen = true;
 	}
 	else
 	{
 		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_victory_screen_nightmare.xml", nullptr, -1);
+		GC::HasBeenInVictoryScreenNightmare = true;
 	}
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
@@ -64,7 +66,14 @@ const eStateStatus VictoryState::Update(const float& aDeltaTime)
 		|| input->MouseUp(0) == true || input->MouseUp(1) == true || myController->ButtonOnDown(eXboxButton::A))
 	{
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new CreditMenuState());
+		if (GC::NightmareMode == false)
+		{
+			myStateStack->PushSubGameState(new CreditMenuState());
+		}
+		else
+		{
+			myStateStatus = eStateStatus::ePopSubState;
+		}
 	}
 	myGUIManager->Update(aDeltaTime);
 

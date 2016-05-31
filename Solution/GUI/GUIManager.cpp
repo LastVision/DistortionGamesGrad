@@ -6,6 +6,7 @@
 #include "Cursor.h"
 #include <Engine.h>
 #include "GUIManager.h"
+#include "HighscoreWidget.h"
 #include "../InputWrapper/InputWrapper.h"
 #include "LevelButtonWidget.h"
 #include "SpriteWidget.h"
@@ -281,7 +282,12 @@ namespace GUI
 			myLevelButtons[i]->SetButtonText(std::to_string(i + 1), textOffset);
 		}
 
-		for (int i = 0; i < unlockedLevels.Size(); i++)
+		if (GC::TotalNightmareLevels == unlockedLevels.Size() && unlockedLevels.GetLast() == true)
+		{
+			GC::HasBeenInVictoryScreenNightmare = true;
+		}
+
+		for (int i = 0; i < myLevelButtons.Size(); i++)
 		{
 			int stars = 0;
 			std::fstream file;
@@ -294,11 +300,7 @@ namespace GUI
 				file >> levelID >> time >> stars;		
 			}
 
-			if (i < myLevelButtons.Size())
-			{
-				myLevelButtons[i]->SetStars(stars);
-			}
-
+			myLevelButtons[i]->SetStars(stars);
 			file.close();
 		}
 	}
@@ -413,6 +415,11 @@ namespace GUI
 					ToggleBoxWidget* widget = new ToggleBoxWidget(&aReader, widgetElement);
 					myButtons.Add(CU::GrowingArray<Widget*>(1));
 					myButtons.GetLast().Add(widget);
+					container->AddWidget(widget);
+				}
+				else if (type == "highscore")
+				{
+					HighscoreWidget* widget = new HighscoreWidget(&aReader, widgetElement, myLevelID);
 					container->AddWidget(widget);
 				}
 				else if (type == "volume")

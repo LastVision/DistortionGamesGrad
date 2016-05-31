@@ -40,18 +40,18 @@ namespace Prism
 
 
 
-		Texture*				myTexture;
-		Effect*					myEffect;
-		ID3D11InputLayout*		myInputLayout;
-		_D3DX11_TECHNIQUE_DESC*	myTechniqueDesc;
+		Texture*				myTexture = nullptr;
+		Effect*					myEffect = nullptr; 
+		ID3D11InputLayout*		myInputLayout = nullptr;
+		_D3DX11_TECHNIQUE_DESC*	myTechniqueDesc = nullptr;
 
 
 		ParticleData			myData;
-		std::string				myFileName;
-		int						myMaxParticleAmount;
+		std::string				myFileName ="not initialized";
+		int						myMaxParticleAmount = 0;
 
-		std::string	myEffectName;
-		std::string	myTextureName;
+		std::string	myEffectName = "not initialized";
+		std::string	myTextureName = "not initialized";
 
 		CU::Vector3f myEmitterSize;
 		CU::Vector3f myMinDirection;
@@ -60,18 +60,19 @@ namespace Prism
 		CU::Vector2<float> myParticleRotation;
 		CU::Vector2<float> myMinMaxSpeed;
 
-		float myRotationDelta;
-		float myEmitterLifeTime;
-		float myEmissionRate;
+		float myRotationDelta = 0.f;
+		float myEmitterLifeTime = 0.f;
+		float myEmissionRate = 0.f;
 
-		int	myParticlesPerEmitt;
+		int	myParticlesPerEmitt = 0;
 
-		bool myUseEmitterLifeTime;
-		bool myUseAlphaDelta;
-		bool myIsActiveAtStart;
-		bool myIsHollow;
-		bool myIsCircle;
-		bool myIsAnimated;
-		bool myIsSphere;
+		bool myUseEmitterLifeTime = false;
+		bool myUseAlphaDelta = false;
+		bool myIsActiveAtStart = false;
+		bool myIsHollow = false;
+		bool myIsCircle = false;
+		bool myIsAnimated = false;
+		bool myIsSphere = false;
+		bool myIsAffectedByGravity = false;
 	};
 }

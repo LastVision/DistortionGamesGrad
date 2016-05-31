@@ -100,8 +100,15 @@ const eStateStatus InGameState::Update(const float&)
 	}
 	else
 	{
-		myStateStack->PushSubGameState(new VictoryState());
-		//Game over, push "win"-state
+		if (GC::NightmareMode == false && GC::HasBeenInVictoryScreen == false 
+			|| GC::NightmareMode == true && GC::HasBeenInVictoryScreenNightmare == false)
+		{
+			myStateStack->PushSubGameState(new VictoryState());
+		}
+		else
+		{
+			myStateStatus = eStateStatus::ePopMainState;
+		}
 	}
 
 	return myStateStatus;

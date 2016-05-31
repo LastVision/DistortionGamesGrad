@@ -144,7 +144,7 @@ namespace Prism
 			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 
 		//bool usePixelShader = Engine::GetInstance()->UsePBLPixelShader();
-	
+
 
 		for (int s = 0; s < mySurfaces.Size(); ++s)
 		{
@@ -162,12 +162,12 @@ namespace Prism
 			}
 			else
 			{
-				tech = myEffect->GetTechnique(myTechniqueName);
-				if (tech->IsValid() == false)
-				{
-					tech = myEffect->GetTechnique();
-					DL_ASSERT("INVALID TECHNIQUE IN BASEMODEL::RENDER: " + myTechniqueName);
-				}
+			tech = myEffect->GetTechnique(myTechniqueName);
+			if (tech->IsValid() == false)
+			{
+				tech = myEffect->GetTechnique();
+				DL_ASSERT("INVALID TECHNIQUE IN BASEMODEL::RENDER: " + myTechniqueName);
+			}
 			}
 
 
