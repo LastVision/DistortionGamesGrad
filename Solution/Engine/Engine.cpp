@@ -18,7 +18,7 @@
 #include "TextureContainer.h"
 #include <Vector.h>
 #include "VTuneApi.h"
-
+#include "SystemMonitor.h"
 #include <algorithm>
 
 namespace Prism
@@ -120,6 +120,7 @@ namespace Prism
 		RestoreDepthStencil();
 		DEBUG_PRINT(GET_RUNTIME);
 		DEBUG_PRINT(GetWindowSize());
+		DEBUG_PRINT(SystemMonitor::GetMemoryUsageKB());
 
 		if (myShouldRenderText == true)
 		{

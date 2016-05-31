@@ -155,6 +155,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MemoryDefine.h" />
     <ClInclude Include="MemoryMacros.h" />
     <ClInclude Include="MemoryStatistics.h" />
     <ClInclude Include="MemoryTracker.h" />

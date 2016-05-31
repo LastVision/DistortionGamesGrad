@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <PxPhysics.h>
 #include <extensions/pxdefaulterrorcallback.h>
 #include <extensions/pxdefaultallocator.h>

@@ -6,6 +6,7 @@
 #include "Cursor.h"
 #include <Engine.h>
 #include "GUIManager.h"
+#include "HighscoreWidget.h"
 #include "../InputWrapper/InputWrapper.h"
 #include "LevelButtonWidget.h"
 #include "SpriteWidget.h"
@@ -414,6 +415,11 @@ namespace GUI
 					ToggleBoxWidget* widget = new ToggleBoxWidget(&aReader, widgetElement);
 					myButtons.Add(CU::GrowingArray<Widget*>(1));
 					myButtons.GetLast().Add(widget);
+					container->AddWidget(widget);
+				}
+				else if (type == "highscore")
+				{
+					HighscoreWidget* widget = new HighscoreWidget(&aReader, widgetElement, myLevelID);
 					container->AddWidget(widget);
 				}
 				else if (type == "volume")

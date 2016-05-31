@@ -144,24 +144,32 @@ namespace Prism
 			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 
 		//bool usePixelShader = Engine::GetInstance()->UsePBLPixelShader();
-		std::string techniqueName(myTechniqueName);
-		if (aIsDepthOnly == true)
-		{
-			techniqueName += "_DEPTHONLY";
-		}
+
 
 		for (int s = 0; s < mySurfaces.Size(); ++s)
 		{
 			mySurfaces[s]->Activate();
 
 			ID3DX11EffectTechnique* tech = nullptr;
+			if (aIsDepthOnly == true)
+			{
+				tech = myEffect->GetTechnique(myTechniqueNameDepthOnly);
+				if (tech->IsValid() == false)
+				{
+					tech = myEffect->GetTechnique();
+					DL_ASSERT("INVALID TECHNIQUE IN BASEMODEL::RENDER: " + myTechniqueNameDepthOnly);
+				}
+			}
+			else
+			{
 			tech = myEffect->GetTechnique(myTechniqueName);
-
 			if (tech->IsValid() == false)
 			{
 				tech = myEffect->GetTechnique();
 				DL_ASSERT("INVALID TECHNIQUE IN BASEMODEL::RENDER: " + myTechniqueName);
 			}
+			}
+
 
 			DL_ASSERT_EXP(tech != nullptr, "Technique is nullptr");
 			DL_ASSERT_EXP(tech->IsValid() != false, "Technique is not valid");
