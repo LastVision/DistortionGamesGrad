@@ -41,4 +41,6 @@ public:
 	static bool HasWonGame;
 	static bool HasBeenInVictoryScreen;
 	static bool HasBeenInVictoryScreenNightmare;
+
+	static int Gold;
 };
