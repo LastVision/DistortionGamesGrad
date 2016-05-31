@@ -507,7 +507,7 @@ void Level::CreatePlayers()
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
 	player->AddToScene();
 	myPlayers.Add(player);
-	mySmartCamera->AddOrientation(&player->GetOrientation());
+	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetVelocity());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 2);
@@ -529,11 +529,10 @@ void Level::CreatePlayers()
 		myScene->AddLight(light);
 	}
 
-	mySmartCamera->AddOrientation(&player->GetOrientation());
+	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetVelocity());
 
 	mySmartCamera->SetActivePlayerCount(0);
 	mySmartCamera->SetStartPosition(mySpawnPosition);
-
 }
 
 void Level::EndState()
