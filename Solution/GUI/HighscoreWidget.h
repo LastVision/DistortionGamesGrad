@@ -20,10 +20,16 @@ namespace GUI
 	private:
 		void ConstructHighscoreText();
 
+		std::string myLocalBestScoreText;
+		std::string myLocalBestScore;
+
 		std::string myLevelText;
 		std::string myHighscoreTextRank;
 		std::string myHighscoreTextName;
 		std::string myHighscoreTextScore;
+
+		CU::Vector2<float> myLocalBestScoreTextPosition;
+		CU::Vector2<float> myLocalScorePosition;
 
 		CU::Vector2<float> myTextPosition;
 		CU::Vector2<float> myTextRankPosition;
@@ -32,7 +38,7 @@ namespace GUI
 
 		int myCurrentLevel;
 
-		bool myIsLocal;
+		bool myIsCoop;
 
 		CU::SQLWrapper mySQLWrapper;
 		CU::GrowingArray<Highscore> myHighscores;

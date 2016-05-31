@@ -31,7 +31,8 @@ namespace CU
 		void WriteHighscore(const std::string& aUsername, float aTime, int aLevelID);
 
 		CU::GrowingArray<Highscore> RetriveOnlineHighcore(const int aLevelID, const float aScore = 0);
-		CU::GrowingArray<Highscore> RetriveLocalHighcore(const int aLevelID, const float aScore = 0);
+		//CU::GrowingArray<Highscore> RetriveLocalHighcore(const int aLevelID, const float aScore = 0);
+		const float RetriveLocalHighscore(const int aLevelID, const float aScore = 0);
 
 		bool GetIsOnline();
 	private:

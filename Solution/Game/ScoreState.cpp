@@ -3,6 +3,7 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
+#include <GameConstants.h>
 #include "HatsSelectionState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
@@ -32,6 +33,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 		}
 		myScoreWidgets.Add(new ScoreWidget(score, myScoreInfo));
 	}
+	GC::CurrentActivePlayers = myNumberOfActiveScores;
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
 	CU::SQLWrapper sql;
@@ -136,13 +138,20 @@ void ScoreState::Render()
 
 	if (myNumberOfActiveScores == 1)
 	{
-		myScoreWidgets[0]->Render(CU::Vector2<float>((myScoreWidgets[0]->GetSize().x / 2.f), 0.f));
+		myScoreWidgets[0]->Render(CU::Vector2<float>((myScoreWidgets[0]->GetSize().x / 2.f), -80.f));
 	}
 	else 
 	{
 		for (int i = 0; i < myScoreWidgets.Size(); ++i)
 		{
-			myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
+			if (i == 0)
+			{
+				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f));
+			}
+			else 
+			{
+				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f));
+			}
 		}
 	}
 }

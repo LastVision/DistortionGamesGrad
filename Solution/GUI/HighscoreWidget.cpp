@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include <Engine.h>
+#include <GameConstants.h>
 #include "HighscoreWidget.h"
 #include <SQLWrapper.h>
 #include <Text.h>
@@ -19,20 +21,30 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "position"), "y", myPosition.y);
 
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "backgroundsprite"), "path", spritePathBackground);
+		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "coopwidget"), "flag", myIsCoop);
 
-		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "localhighscore"), "flag", myIsLocal);
+		mySQLWrapper.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+		myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
 
-		if (myIsLocal == false)
+		std::stringstream ss;
+		if (localscore < 1.f)
 		{
-			mySQLWrapper.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+			ss.precision(2);
+		}
+		else if (localscore < 10.f)
+		{
+			ss.precision(3);
 		}
 		else
 		{
-			myHighscores = mySQLWrapper.RetriveLocalHighcore(myCurrentLevel);
+			ss.precision(4);
 		}
+		ss << localscore;
 
-		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize, mySize / 2.f);
+		myLocalBestScore = ss.str();
+
+		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize);
 		ConstructHighscoreText();
 	}
 
@@ -43,12 +55,17 @@ namespace GUI
 
 	void HighscoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 	{
-		Prism::Engine* engine = Prism::Engine::GetInstance();
-		myBackgroundSprite->Render(myPosition + aParentPosition);
-		engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT);
-		engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT);
-		engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT);
-		engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT);
+		if ((myIsCoop == false && GC::CurrentActivePlayers == 1) || (myIsCoop == true && GC::CurrentActivePlayers == 2))
+		{
+			Prism::Engine* engine = Prism::Engine::GetInstance();
+			myBackgroundSprite->Render(myPosition + aParentPosition);
+			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT);
+		}
 	}
 
 	void HighscoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
@@ -64,20 +81,35 @@ namespace GUI
 
 	void HighscoreWidget::ConstructHighscoreText()
 	{
-		CU::Vector2<float> textPosition = (myPosition + myTextPosition);
+		CU::Vector2<float> textPosition;
+		textPosition = myPosition + myTextPosition;
 		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition.x += myTextPosition.x / 2.f;
-		textPosition.y -= 20;
-		myTextPosition = textPosition;
-		myLevelText = "Level " + std::to_string(myCurrentLevel);
+		textPosition.x += 150;
+		myLocalBestScoreTextPosition = textPosition;
+		myLocalBestScoreText = "Local Best Score";
 
-		myHighscoreTextRank = "Rank\n";
+		textPosition.x += 80;
+		myLocalScorePosition = textPosition;
+
+		myTextRankPosition = myTextPosition;
 		textPosition = (myPosition + myTextPosition);
 		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
-		textPosition -= myTextPosition.x;
-		textPosition.y -= 100;
+		textPosition.x += myTextPosition.x / 2.f;
+		textPosition.x += 150;
+		textPosition.y -= 10;
+		myTextPosition = textPosition;
+		myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
+
+		myHighscoreTextRank = "Rank\n";
+		textPosition = (myPosition + myTextRankPosition);
+		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		textPosition -= myTextRankPosition.x;
+		textPosition.x += 90;
+		textPosition.y -= 40;
 		myTextRankPosition = textPosition;
 
 		myHighscoreTextName = "Name\n";
@@ -85,14 +117,39 @@ namespace GUI
 		myTextNamePosition = textPosition;
 
 		myHighscoreTextScore = "Score\n";
-		textPosition.x += 200;
+		textPosition.x += 160;
 		myTextScorePosition = textPosition;
-
-		for each(const Highscore& score in myHighscores)
+		myLocalBestScoreTextPosition.y = textPosition.y;
+		if (mySQLWrapper.GetIsOnline() == true)
 		{
-			myHighscoreTextRank += std::to_string(score.myRank) + "\n";
-			myHighscoreTextName += score.myName + "\n";
-			myHighscoreTextScore += std::to_string(score.myScore) + "\n";
+			for each(const Highscore& score in myHighscores)
+			{
+				myHighscoreTextRank += std::to_string(score.myRank) + "\n";
+				myHighscoreTextName += score.myName + "\n";
+				std::stringstream ss;
+				if (score.myScore < 1.f)
+				{
+					ss.precision(2);
+				}
+				else if (score.myScore < 10.f)
+				{
+					ss.precision(3);
+				}
+				else
+				{
+					ss.precision(4);
+				}
+
+				ss << score.myScore << "\n";
+				myHighscoreTextScore += ss.str();
+				myLocalBestScoreTextPosition.y -= 40;
+			}
 		}
+		else
+		{
+			myHighscoreTextRank += "No Internet connection active.";
+			myLocalBestScoreTextPosition.y -= 40;
+		}
+		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - 30.f;
 	}
 }

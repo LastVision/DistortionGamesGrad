@@ -40,3 +40,5 @@ int GC::TotalNightmareLevels = 0;
 
 bool GC::NightmareMode = false;
 bool GC::HasWonGame = false;
+
+int GC::CurrentActivePlayers = 0;
