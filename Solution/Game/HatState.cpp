@@ -99,7 +99,7 @@ void HatState::ReceiveMessage(const OnClickMessage& aMessage)
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new HatUnlockState());
 		break;
-	case eOnClickEvent::GAME_QUIT:
+	case eOnClickEvent::HAT_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}

@@ -223,6 +223,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::HAT_UNLOCK);
 		}
+		else if (clickEvent == "hat_quit")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::HAT_QUIT);
+		}
 		else if (clickEvent == "spin")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::SPIN);
