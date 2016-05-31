@@ -43,11 +43,24 @@ namespace Prism
 		if (it == myParticleData.end())
 		{
 			LoadParticleData(aFilePath);
+			myFileWatcher.WatchFileChange(aFilePath, std::bind(&ParticleDataContainer::ReloadParticleData, this, std::placeholders::_1));
 		}
 
 		return myParticleData[aFilePath];
 	}
 
+	void ParticleDataContainer::LoadParticleData(const std::string& aFilePath)
+	{
+		ParticleEmitterData* newData = new ParticleEmitterData();
+		newData->LoadDataFile(aFilePath);
+		DL_ASSERT_EXP(newData != nullptr, "Failed to load data. newData became nullptr.");
+		myParticleData[aFilePath] = newData;
+	}
+
+	void ParticleDataContainer::ReloadParticleData(const std::string& aFilePath)
+	{
+		myParticleData[aFilePath]->ReloadDataFile();
+	}
 
 	void ParticleDataContainer::SetGPUData(const Camera& aCamera, Texture* aDepthTexture)
 	{
@@ -64,13 +77,11 @@ namespace Prism
 		}
 	}
 
-	void ParticleDataContainer::LoadParticleData(const std::string& aFilePath)
+	void ParticleDataContainer::Update()
 	{
-		ParticleEmitterData* newData = new ParticleEmitterData();
-		newData->LoadDataFile(aFilePath);
-		DL_ASSERT_EXP(newData != nullptr, "Failed to load data. newData became nullptr.");
-		myParticleData[aFilePath] = newData;
+		myFileWatcher.FlushChanges();
 	}
+
 }
 
  

@@ -29,6 +29,7 @@ namespace Prism
 		~ParticleEmitterData();
 
 		void LoadDataFile(const std::string& aFilePath);
+		void ReloadDataFile();
 
 	private:
 
@@ -47,7 +48,7 @@ namespace Prism
 
 
 		ParticleData			myData;
-		std::string				myFileName ="not initialized";
+		std::string				myFilePath ="not initialized";
 		int						myMaxParticleAmount = 0;
 
 		std::string	myEffectName = "not initialized";

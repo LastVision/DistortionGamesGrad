@@ -59,6 +59,7 @@ Game::Game()
 
 	HatManager::Create();
 	HatManager::GetInstance()->LoadHats();
+	EntityFactory::GetInstance();
 
 	std::fstream file;
 	file.open("GeneratedData/levelcount.bin", std::ios::binary | std::ios::in);
@@ -111,6 +112,7 @@ Game::~Game()
 	file.close();
 }
 
+
 bool Game::Init(HWND& aHwnd)
 {
 	myWindowHandler = &aHwnd;
@@ -153,6 +155,8 @@ bool Game::Update()
 
 	float deltaTime = myTimerManager->GetMasterTimer().GetTime().GetFrameTime();
 	Prism::Engine::GetInstance()->Update(deltaTime);
+	EntityFactory::GetInstance()->UpdateFileWatcher();
+	Prism::ParticleDataContainer::GetInstance()->Update();
 
 	float fps = 1.f / deltaTime;
 	DEBUG_PRINT(fps);

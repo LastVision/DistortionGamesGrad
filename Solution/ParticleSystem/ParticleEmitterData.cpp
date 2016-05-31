@@ -25,10 +25,20 @@ namespace Prism
 
 	void ParticleEmitterData::LoadDataFile(const std::string& aFilePath)
 	{
-		XMLReader read;
-		myFileName = aFilePath;
+		myFilePath = aFilePath;
+		ReloadDataFile();
+		myEffect = EffectContainer::GetInstance()->GetEffect(myEffectName.c_str());
 
-		read.OpenDocument(aFilePath);
+		CreateInputLayout();
+		myTechniqueDesc = new _D3DX11_TECHNIQUE_DESC();
+	}
+
+	void ParticleEmitterData::ReloadDataFile()
+	{
+		SET_RUNTIME(false);
+		XMLReader read;
+
+		read.OpenDocument(myFilePath);
 		tinyxml2::XMLElement* emitter = read.ForceFindFirstChild("Emitter");
 		tinyxml2::XMLElement* element;
 		element = read.ForceFindFirstChild(emitter, "Shader");
@@ -46,10 +56,7 @@ namespace Prism
 		myData.myEndColor /= 255.f;
 
 		myTexture = TextureContainer::GetInstance()->GetTexture(myTextureName.c_str());
-		myEffect = EffectContainer::GetInstance()->GetEffect(myEffectName.c_str());
-
-		CreateInputLayout();
-		myTechniqueDesc = new _D3DX11_TECHNIQUE_DESC();
+		RESET_RUNTIME;
 	}
 
 	void ParticleEmitterData::ReadParticleData(XMLReader* aReader, tinyxml2::XMLElement* anElement)
@@ -59,9 +66,12 @@ namespace Prism
 		element = aReader->ForceFindFirstChild(anElement, "ParticleScale");
 		aReader->ForceReadAttribute(element, "min", myData.myMinStartSize);
 		aReader->ForceReadAttribute(element, "max", myData.myMaxStartSize);
+		myData.myMinStartSize /= 100.f;
+		myData.myMaxStartSize /= 100.f;
 
 		element = aReader->ForceFindFirstChild(anElement, "ParticleSizeDelta");
 		aReader->ForceReadAttribute(element, "value", myData.mySizeDelta);
+		myData.mySizeDelta /= 100.f;
 
 		element = aReader->ForceFindFirstChild(anElement, "ParticleAlphaStart");
 		aReader->ForceReadAttribute(element, "value", myData.myStartAlpha);
@@ -71,9 +81,11 @@ namespace Prism
 
 		element = aReader->ForceFindFirstChild(anElement, "ParticleSpeed");
 		aReader->ForceReadAttribute(element, "value", myData.mySpeed);
+		myData.mySpeed /= 100.f;
 
 		element = aReader->ForceFindFirstChild(anElement, "ParticleSpeedDelta");
 		aReader->ForceReadAttribute(element, "value", myData.mySpeedDelta);
+		myData.mySpeedDelta /= 100.f;
 
 		element = aReader->ForceFindFirstChild(anElement, "ParticleStartColor");
 		aReader->ForceReadAttribute(element, "r", "g", "b", myData.myStartColor);
