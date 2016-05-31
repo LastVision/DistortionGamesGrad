@@ -71,7 +71,9 @@
     <ClCompile Include="HatUnlockState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
-    <ClCompile Include="HatState.cpp" />
+    <ClCompile Include="HatState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -148,7 +150,9 @@
     <ClInclude Include="HatUnlockState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
-    <ClInclude Include="HatState.h" />
+    <ClInclude Include="HatState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
