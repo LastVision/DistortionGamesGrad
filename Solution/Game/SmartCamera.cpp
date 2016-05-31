@@ -24,7 +24,7 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "responsiveness"), "value", myResponsiveness);
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "velocityMultiplier"), "x", myVelocityMultiplier.x);
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "velocityMultiplier"), "y", myVelocityMultiplier.y);
-	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "2PlayersMoveBackMultiplier"), "value", my2PlayersMoveBackMultiplier);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "TwoPlayersMoveBackMultiplier"), "value", my2PlayersMoveBackMultiplier);
 
 	reader.CloseDocument();
 
