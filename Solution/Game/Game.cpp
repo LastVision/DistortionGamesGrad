@@ -160,6 +160,7 @@ bool Game::Update()
 	DEBUG_PRINT(fps);
 	float frameTime = deltaTime * 1000;
 	DEBUG_PRINT(frameTime);
+	DEBUG_PRINT(GC::Gold);
 
 	if (deltaTime > 1.0f / 10.0f)
 	{
