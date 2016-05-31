@@ -19,6 +19,7 @@ HatUnlockState::HatUnlockState()
 	, myHats(8)
 	, myHatWon(nullptr)
 	, myHasWonAllHats(false)
+	, myTotalTime(0.f)
 {
 }
 
@@ -34,6 +35,7 @@ HatUnlockState::~HatUnlockState()
 	}
 
 	SAFE_DELETE(myHatWon);
+	SAFE_DELETE(mySpinBox);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -68,6 +70,8 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	{
 		myHasWonAllHats = true;
 	}
+
+	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", size * 4.f, size * 2.f);
 }
 
 void HatUnlockState::EndState()
@@ -105,7 +109,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		}
 	}
 
-
+	myTotalTime += aDeltaTime;
 
 
 	return myStateStatus;
@@ -114,11 +118,11 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 void HatUnlockState::Render()
 {
 	myGUIManager->Render();
-
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
+	mySpinBox->Render(windowSize);
 	if (myIsSpinning == true)
 	{
-		myHats[myCurrentHatToWin].mySprite->Render(windowSize);
+		myHats[myCurrentHatToWin].mySprite->Render(windowSize, { fabs(cos(myTotalTime)), fabs(cos(myTotalTime)) });
 	}
 	else if (myHatWon != nullptr)
 	{

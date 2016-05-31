@@ -47,9 +47,11 @@ private:
 
 	float mySpinTimer;
 	float myMaxSpinTime;
+	float myTotalTime;
 	bool myHasWonAllHats;
 
 	Prism::SpriteProxy* myHatWon;
+	Prism::SpriteProxy* mySpinBox;
 
 };
 
