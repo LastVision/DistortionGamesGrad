@@ -13,12 +13,7 @@ namespace Prism
 
 	int SystemMonitor::GetMemoryUsageMB()
 	{
-		PROCESS_MEMORY_COUNTERS memCounter;
-		GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
-
-		int memUsedMb = memCounter.WorkingSetSize / 1024 / 1024;
-
-		return memUsedMb;
+		return GetMemoryUsageKB() / 1024;
 	}
 
 	int SystemMonitor::GetMemoryUsageKB()

@@ -4,6 +4,7 @@
     <ClInclude Include="MemoryMacros.h" />
     <ClInclude Include="MemoryStatistics.h" />
     <ClInclude Include="MemoryTracker.h" />
+    <ClInclude Include="MemoryDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTracker.cpp" />
