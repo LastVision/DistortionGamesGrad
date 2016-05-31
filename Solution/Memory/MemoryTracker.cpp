@@ -27,13 +27,13 @@ void* operator new[](size_t aBytes)
 
 void operator delete(void* aAddress) throw()
 {
-	//Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	Prism::MemoryTracker::GetInstance()->Remove(aAddress);
 	//::free(aAddress);
 }
 
 void operator delete[](void* aAddress) throw()
 {
-	//Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	Prism::MemoryTracker::GetInstance()->Remove(aAddress);
 	//::free(aAddress);
 }
 
