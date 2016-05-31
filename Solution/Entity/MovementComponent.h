@@ -55,6 +55,7 @@ private:
 	eMovementType myCurrentMovement;
 
 	CU::StaticArray<Movement*, eMovementType::_COUNT> myMovements;
+	CU::Vector2<float> myVelocity;
 	float myDashCooldown;
 
 	bool myIsInSteam;

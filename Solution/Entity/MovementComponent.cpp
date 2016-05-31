@@ -79,6 +79,8 @@ void MovementComponent::Update(float aDeltaTime)
 
 		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime * dist);
 	}
+
+	myVelocity = myMovements[myCurrentMovement]->GetVelocity();
 }
 
 void MovementComponent::Render()
@@ -186,11 +188,12 @@ void MovementComponent::SetInSteam(bool aIsInSteam, float aForce, float aSteamLe
 void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
 {
 	myMovements[myCurrentMovement]->SetVelocity(aVelocity);
+	myVelocity = aVelocity;
 }
 
 const CU::Vector2<float>& MovementComponent::GetVelocity() const
 {
-	return myMovements[myCurrentMovement]->GetVelocity();
+	return myVelocity;
 }
 
 void MovementComponent::ReceiveNote(const DeathNote&)

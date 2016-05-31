@@ -11,6 +11,7 @@
 SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	: myCamera(aCamera)
 	, myPlayerOrientations(2)
+	, myPlayerVelocities(2)
 	, myCameraAlpha(0)
 {
 	myShouldResetCameraPos = true;
@@ -20,6 +21,11 @@ SmartCamera::SmartCamera(Prism::Camera& aCamera)
 	tinyxml2::XMLElement* rootElement = reader.ForceFindFirstChild("root");
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "minZoom"), "value", myMinZoom);
 	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "maxZoom"), "value", myMaxZoom);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "responsiveness"), "value", myResponsiveness);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "velocityMultiplier"), "x", myVelocityMultiplier.x);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "velocityMultiplier"), "y", myVelocityMultiplier.y);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "2PlayersMoveBackMultiplier"), "value", my2PlayersMoveBackMultiplier);
+
 	reader.CloseDocument();
 
 	myMinZoom = -myMinZoom;
@@ -38,13 +44,12 @@ SmartCamera::~SmartCamera()
 
 void SmartCamera::Update(float aDeltaTime)
 {
+	DEBUG_PRINT(myActivePlayerCount);
 	myCamera.Update(aDeltaTime);
-	if (myActivePlayerCount > 1)
+	if (myActivePlayerCount == 2)
 	{
-		CU::Vector3<float> position;
-		position.x = (myPlayerOrientations[0]->GetPos().x + myPlayerOrientations[1]->GetPos().x) * 0.5f;
-		position.y = (myPlayerOrientations[0]->GetPos().y + myPlayerOrientations[1]->GetPos().y) * 0.5f;
-		position.z = -CU::Length(myPlayerOrientations[0]->GetPos() - myPlayerOrientations[1]->GetPos()) * 1.2f;
+		CU::Vector3<float> position((CalcTargetPosition(0) + CalcTargetPosition(1)) * 0.5f);
+		position.z = -CU::Length(CalcTargetPosition(0) - CalcTargetPosition(1)) * my2PlayersMoveBackMultiplier;
 		if (position.z < myMinZoom)
 		{
 
@@ -53,7 +58,7 @@ void SmartCamera::Update(float aDeltaTime)
 				position.z = myMaxZoom;
 			}
 
-			myCameraAlpha += aDeltaTime * 2;
+			myCameraAlpha += aDeltaTime * myResponsiveness;
 			if (myCameraAlpha <= 1.f)
 			{
 
@@ -64,41 +69,44 @@ void SmartCamera::Update(float aDeltaTime)
 		}
 		else
 		{
-			myCameraAlpha += aDeltaTime * 2;
+			myCameraAlpha += aDeltaTime * myResponsiveness;
 			position.z = myMinZoom;
 			myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), position, myCameraAlpha));
 			//myCamera.SetPosition(CU::Vector3f(position.x, position.y, myMinZoom));
 			myCameraAlpha = 0.f;
 		}
-
-
-
 	}
-	else if (myActivePlayerCount < 2 && myActivePlayerCount > 0)
+	else if (myActivePlayerCount == 1)
 	{
-		myCameraAlpha += aDeltaTime * 2;
+		myCameraAlpha += aDeltaTime * myResponsiveness;
 		if (myActivePlayers[PLAYER_1] == TRUE)
 		{
 			if (myCameraAlpha <= 1.f)
 			{
-				CU::Vector3f targetPos = myPlayerOrientations[0]->GetPos();
+				CU::Vector3f targetPos(CalcTargetPosition(0));
 				targetPos.z = myMinZoom;
 				myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), targetPos, myCameraAlpha));
 				myCameraAlpha = 0.f;
 			}
-			//myCamera.SetPosition({ myPlayerOrientations[0]->GetPos().x, myPlayerOrientations[0]->GetPos().y, myMinZoom });
+			else
+			{
+				myCamera.SetPosition({ myPlayerOrientations[0]->GetPos().x, myPlayerOrientations[0]->GetPos().y, myMinZoom });
+			}
 		}
 		else if (myActivePlayers[PLAYER_2] == TRUE)
 		{
 
 			if (myCameraAlpha <= 1.f)
 			{
-				CU::Vector3f targetPos = myPlayerOrientations[1]->GetPos();
+				CU::Vector3f targetPos(CalcTargetPosition(1));
 				targetPos.z = myMinZoom;
 				myCamera.SetPosition(CU::Math::Lerp(myCamera.GetOrientation().GetPos(), targetPos, myCameraAlpha));
 				myCameraAlpha = 0.f;
 			}
-			//myCamera.SetPosition({ myPlayerOrientations[1]->GetPos().x, myPlayerOrientations[1]->GetPos().y, myMinZoom });
+			else
+			{
+				myCamera.SetPosition({ myPlayerOrientations[1]->GetPos().x, myPlayerOrientations[1]->GetPos().y, myMinZoom });
+			}
 		}
 	}
 	else
@@ -109,9 +117,10 @@ void SmartCamera::Update(float aDeltaTime)
 
 }
 
-void SmartCamera::AddOrientation(const CU::Matrix44f* aPlayerOrientation)
+void SmartCamera::AddPlayer(const CU::Matrix44f* aPlayerOrientation, const CU::Vector2<float>* aPlayerVelocity)
 {
 	myPlayerOrientations.Add(aPlayerOrientation);
+	myPlayerVelocities.Add(aPlayerVelocity);
 }
 
 void SmartCamera::SetActivePlayerCount(int aPlayerCount)
@@ -185,4 +194,9 @@ int SmartCamera::GetPlayerCount()
 int SmartCamera::GetActivePlayerCount()
 {
 	return myActivePlayerCount;
+}
+
+CU::Vector3<float> SmartCamera::CalcTargetPosition(int aPlayer) const
+{
+	return myPlayerOrientations[aPlayer]->GetPos() + CU::Vector3<float>(*myPlayerVelocities[aPlayer], 0) * myVelocityMultiplier;
 }
