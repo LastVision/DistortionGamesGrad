@@ -75,6 +75,15 @@ Game::Game()
 	file >> GC::TotalNightmareLevels;
 
 	file.close();
+
+	file.open(CU::GetMyDocumentFolderPath() + "Data/save.bin", std::ios::binary | std::ios::in);
+
+	if (file.is_open() == true)
+	{
+		file >> GC::Gold;
+	}
+
+	file.close();
 }
 
 Game::~Game()
@@ -94,6 +103,13 @@ Game::~Game()
 	EntityFactory::Destroy();
 	PostMaster::Destroy();
 	//	NetworkManager::Destroy();
+
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/save.bin", std::ios::binary | std::ios::out);
+
+	file << GC::Gold;
+
+	file.close();
 }
 
 bool Game::Init(HWND& aHwnd)

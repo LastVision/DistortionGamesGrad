@@ -191,8 +191,11 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	std::fstream file;
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
 	Score currentScore;
+	int currentStars = 0;
 	int levelID = 0;
-	file >> levelID >> currentScore.myTime;
+	int diffStars = 0;
+	int newStars = 0;
+	file >> levelID >> currentScore.myTime >> currentStars;
 	file.close();
 
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
@@ -212,24 +215,29 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 		{
 			highestScore.myTime = currentScore.myTime;
 		}
-
-		int stars = 0;
+	
 		if (highestScore.myTime < myScoreInfo.myShortTime && highestScore.myTime > 0)
 		{
-			stars = 3;
+			newStars = 3;
 		}
 		else if (highestScore.myTime < myScoreInfo.myMediumTime)
 		{
-			stars = 2;
+			newStars = 2;
 		}
 		else if (highestScore.myTime < myScoreInfo.myLongTime)
 		{
-			stars = 1;
+			newStars = 1;
 		}
 
-		file << aLevelID << std::endl << highestScore.myTime << std::endl << stars << std::endl;
+		file << aLevelID << std::endl << highestScore.myTime << std::endl << newStars << std::endl;
 	}
 	file.close();
+
+	diffStars = newStars - currentStars;
+	if (diffStars > 0)
+	{
+		GC::Gold += diffStars;
+	}
 }
 
 void ScoreState::SaveUnlockedLevels(const int aLevelID)
