@@ -23,7 +23,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myCollisionTimer(0.f)
 	, myVelocities(8)
 	, myVelocityIndex(0)
-	, myAverageVelocityTimer(0.05f)
+	, myAverageVelocityTimer(0.5f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
@@ -239,6 +239,7 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 
 void MovementComponent::ReceiveNote(const SpawnNote&)
 {
+	myAverageVelocityTimer = 0.5f;
 	myCollisionTimer = 0.4f;
 	myCurrentMovement = eMovementType::FLY;
 	//mySpawnVelocity = { 0.05f, 0.01f };
