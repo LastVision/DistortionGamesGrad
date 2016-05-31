@@ -60,6 +60,7 @@ Game::Game()
 	HatManager::Create();
 	HatManager::GetInstance()->LoadHats();
 	EntityFactory::GetInstance();
+	Prism::ParticleDataContainer::GetInstance();
 
 	std::fstream file;
 	file.open("GeneratedData/levelcount.bin", std::ios::binary | std::ios::in);
