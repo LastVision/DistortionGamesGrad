@@ -1,6 +1,10 @@
+#include "MemoryDefine.h"
+
+#ifdef ENABLE_MEMORY_TRACKER
+
+#include "MemoryTracker.h"
 #include <cstdlib>
 #include <DL_Debug.h>
-#include "MemoryTracker.h"
 #include <sstream>
 #include <mutex>
 
@@ -23,12 +27,14 @@ void* operator new[](size_t aBytes)
 
 void operator delete(void* aAddress) throw()
 {
-	Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	//Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	//::free(aAddress);
 }
 
 void operator delete[](void* aAddress) throw()
 {
-	Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	//Prism::MemoryTracker::GetInstance()->Remove(aAddress);
+	//::free(aAddress);
 }
 
 namespace Prism
@@ -203,3 +209,4 @@ namespace Prism
 		myMutex = nullptr;
 	}
 }
+#endif

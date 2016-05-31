@@ -1,7 +1,8 @@
 #pragma once
+#ifdef ENABLE_MEMORY_TRACKER
+
 #include "MemoryStatistics.h"
 #include <thread>
-
 
 
 namespace std
@@ -93,3 +94,4 @@ namespace Prism
 		myAllowThread = aThreadId;
 	}
 }
+#endif
