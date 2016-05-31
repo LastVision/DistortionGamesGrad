@@ -43,4 +43,6 @@ public:
 	static bool HasBeenInVictoryScreenNightmare;
 
 	static int Gold;
+
+	static int CurrentActivePlayers;
 };

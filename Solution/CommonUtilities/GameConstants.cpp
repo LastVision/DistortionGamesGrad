@@ -44,3 +44,5 @@ bool GC::HasBeenInVictoryScreen = false;
 bool GC::HasBeenInVictoryScreenNightmare = false;
 
 int GC::Gold = 0;
+
+int GC::CurrentActivePlayers = 0;
