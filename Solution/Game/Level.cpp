@@ -406,6 +406,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					if (second->IsStomperMoving() == true)
 					{
 						KillPlayer(first);
+						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper", first->GetOrientation().GetPos(), true));
 					}
 					else
 					{
@@ -417,8 +418,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			{
 				first->GetComponent<InputComponent>()->SetStandingOnStomper(nullptr);
 			}
-			//Stomper Effect
-
 			break;
 		case eEntityType::ACID_DROP:
 			if (aHasEntered == true)

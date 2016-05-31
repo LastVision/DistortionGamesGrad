@@ -48,6 +48,10 @@ namespace Prism
 		myParticleDepth = new Texture();
 		myParticleDepth->InitAsDepthBuffer(windowSize.x, windowSize.y);
 
+		myActualParticleDepth = new Texture();
+		myActualParticleDepth->InitAsDepthBuffer(windowSize.x, windowSize.y);
+
+
 		myClearColor[0] = 0.f;
 		myClearColor[1] = 0.f;
 		myClearColor[2] = 0.f;
@@ -99,6 +103,7 @@ namespace Prism
 	{
 		SAFE_DELETE(myParticleTexture);
 		SAFE_DELETE(myParticleDepth);
+		SAFE_DELETE(myActualParticleDepth);
 
 		SAFE_DELETE(myFinishedTexture);
 		SAFE_DELETE(myFinishedSceneTexture);
@@ -142,11 +147,13 @@ namespace Prism
 
 		myDecal->Render(*aScene->GetCamera(), myDepthStencilTexture, myGBufferData, myGBufferDataCopy);
 
-		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
 		myGBufferData->SetAsRenderTarget(myDepthStencilTexture);
 
-		aScene->RenderSea(myParticleDepth);
 		aScene->RenderDynamic();
+
+		myParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
+		myActualParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
+		aScene->RenderSea(myParticleDepth);
 
 		ActivateBuffers();
 
@@ -159,8 +166,8 @@ namespace Prism
 		}
 
 		RenderBackground(aBackground);
-
 		RenderParticles(aParticleEmitterManager);
+
 	}
 
 	void DeferredRenderer::RenderShadows(Prism::SpotLightShadow* aShadowLight, const Prism::Camera* aCamera)
@@ -411,13 +418,6 @@ namespace Prism
 
 	void DeferredRenderer::RenderParticles(EmitterManager* aParticleEmitterManager)
 	{
-		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
-		Engine::GetInstance()->GetContex()->ClearRenderTargetView(rt, myClearColor);
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &rt, myParticleDepth->GetDepthStencilView());
-		aParticleEmitterManager->RenderEmitters(myGBufferData->myAlbedoTexture);
-
-		ActivateBuffers();
-
 		ID3D11RenderTargetView* backbuffer = nullptr;
 		if (GC::OptionsUseShadows == true)
 		{
@@ -428,6 +428,15 @@ namespace Prism
 			backbuffer = myFinishedSceneTexture->GetRenderTargetView();
 		}
 
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myActualParticleDepth->GetDepthStencilView());
+		aParticleEmitterManager->RenderEmitters(myParticleDepth);
+		/*
+		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(rt, myClearColor);
+
+		ActivateBuffers();
+
+		
 		ID3D11DepthStencilView* depth = Engine::GetInstance()->GetDepthView();
 
 		Engine::GetInstance()->GetContex()->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -440,7 +449,7 @@ namespace Prism
 		myRenderToScreenData.mySource->SetResource(NULL);
 
 
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myDepthStencilTexture->GetDepthStencilView());
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myDepthStencilTexture->GetDepthStencilView());*/
 	}
 
 }
