@@ -59,6 +59,31 @@ Game::Game()
 
 	HatManager::Create();
 	HatManager::GetInstance()->LoadHats();
+	EntityFactory::GetInstance();
+
+	std::fstream file;
+	file.open("GeneratedData/levelcount.bin", std::ios::binary | std::ios::in);
+
+	DL_ASSERT_EXP(file.is_open() == true, "GeneratedData/levelcount.bin doesn't exist! Run level tool.");
+
+	file >> GC::TotalLevels;
+
+	file.close();
+	file.open("GeneratedData/levelcount_nightmare.bin", std::ios::binary | std::ios::in);
+
+	DL_ASSERT_EXP(file.is_open() == true, "GeneratedData/levelcount_nightmare.bin doesn't exist! Run level tool.");
+	file >> GC::TotalNightmareLevels;
+
+	file.close();
+
+	file.open(CU::GetMyDocumentFolderPath() + "Data/save.bin", std::ios::binary | std::ios::in);
+
+	if (file.is_open() == true)
+	{
+		file >> GC::Gold;
+	}
+
+	file.close();
 }
 
 Game::~Game()
@@ -78,7 +103,15 @@ Game::~Game()
 	EntityFactory::Destroy();
 	PostMaster::Destroy();
 	//	NetworkManager::Destroy();
+
+	std::fstream file;
+	file.open(CU::GetMyDocumentFolderPath() + "Data/save.bin", std::ios::binary | std::ios::out);
+
+	file << GC::Gold;
+
+	file.close();
 }
+
 
 bool Game::Init(HWND& aHwnd)
 {
@@ -122,6 +155,8 @@ bool Game::Update()
 
 	float deltaTime = myTimerManager->GetMasterTimer().GetTime().GetFrameTime();
 	Prism::Engine::GetInstance()->Update(deltaTime);
+	EntityFactory::GetInstance()->UpdateFileWatcher();
+	Prism::ParticleDataContainer::GetInstance()->Update();
 
 	float fps = 1.f / deltaTime;
 	DEBUG_PRINT(fps);

@@ -255,7 +255,8 @@ namespace Prism
 			std::string entityPath = "";
 			rootDocument.ForceReadAttribute(e, "src", entityPath);
 			Prism::ParticleEmitterInstance* newEmitter;
-			newEmitter = new Prism::ParticleEmitterInstance(Prism::ParticleDataContainer::GetInstance()->
+			newEmitter = new Prism::ParticleEmitterInstance();
+			newEmitter->Initiate(Prism::ParticleDataContainer::GetInstance()->
 				GetParticleData(entityPath), true);
 			myEmitters[anID]->myEmitters[anIndex].Add(newEmitter);
 
