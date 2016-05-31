@@ -10,11 +10,12 @@
 #include <TextureContainer.h>
 #include <Engine.h>
 #include "../Entity/Entity.h"
+#include "../Entity/InputComponent.h"
 
 namespace Prism
 {
 
-	ParticleEmitterInstance::ParticleEmitterInstance(ParticleEmitterData* someData, bool anAllowManyParticles)
+	ParticleEmitterInstance::ParticleEmitterInstance()
 		: myVertexWrapper(nullptr)
 		, myEmissionTime(-1.f)
 		, myParticleIndex(0)
@@ -22,9 +23,24 @@ namespace Prism
 		, myOverrideDirection(false)
 		, myParticleToGraphicsCard(256)
 	{
+	
+	}
+
+	ParticleEmitterInstance::~ParticleEmitterInstance()
+	{
+		if (myVertexWrapper != nullptr && myVertexWrapper->myVertexBuffer != nullptr)
+		{
+			myVertexWrapper->myVertexBuffer->Release();
+		}
+
+		SAFE_DELETE(myVertexWrapper);
+	}
+
+	void ParticleEmitterInstance::Initiate(ParticleEmitterData* aData, bool anAllowManyParticles)
+	{
 		myStates.reset();
-		myParticleEmitterData = someData;
-		myEmitterPath = myParticleEmitterData->myFileName;
+		myParticleEmitterData = aData;
+		myEmitterPath = myParticleEmitterData->myFilePath;
 
 		int particleCount = static_cast<int>(myParticleEmitterData->myParticlesPerEmitt * myParticleEmitterData->myData.myParticleLifeTime / myParticleEmitterData->myEmissionRate) + 1;
 
@@ -44,23 +60,13 @@ namespace Prism
 			LogicalParticle tempLogic;
 			myLogicalParticles.Add(tempLogic);
 		}
-		myParticleSpeed = myParticleEmitterData->myData.mySpeed;
+		
 
 		Reset();
 
 		myTexture = TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName);
 
 		CreateVertexBuffer();
-	}
-
-	ParticleEmitterInstance::~ParticleEmitterInstance()
-	{
-		if (myVertexWrapper != nullptr && myVertexWrapper->myVertexBuffer != nullptr)
-		{
-			myVertexWrapper->myVertexBuffer->Release();
-		}
-
-		SAFE_DELETE(myVertexWrapper);
 	}
 
 	void ParticleEmitterInstance::ReleaseData()
@@ -122,22 +128,22 @@ namespace Prism
 		{
 			myStates[CIRCLE] = TRUE;
 		}
-		
+
 		if (myParticleEmitterData->myUseEmitterLifeTime == true)
 		{
 			myStates[EMITTERLIFE] = TRUE;
 		}
-		
+
 		if (myParticleEmitterData->myIsSphere == true)
 		{
 			myStates[SPHERE] = TRUE;
 		}
-		
+
 		if (myParticleEmitterData->myUseAlphaDelta == true)
 		{
 			myStates[USE_ALPHA_DELTA] = TRUE;
 		}
-		
+
 		if (myParticleEmitterData->myIsAffectedByGravity == true)
 		{
 			myStates[AFFECTED_BY_GRAVITY] = TRUE;
@@ -223,7 +229,10 @@ namespace Prism
 
 			if (myEntity != nullptr)
 			{
-				myOrientation.SetPos(myEntity->GetOrientation().GetPos());
+				myOrientation.SetPos(myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetPos());
+				myDirection = -myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetUp();
+				myOverrideDirection = true;
+				int apa = 5;
 			}
 
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
@@ -262,24 +271,31 @@ namespace Prism
 
 			if (particleData.mySpeedDelta > 0.f)
 			{
-				particleData.mySpeed += particleData.mySpeedDelta * aDeltaTime;
+				logicParticle.mySpeed += particleData.mySpeedDelta * aDeltaTime;
 			}
 
 			if (myStates[AFFECTED_BY_GRAVITY] == TRUE)
 			{
 				logicParticle.myDirection.y -= (9.82f * 0.1f) * aDeltaTime;
-				
+
 			}
 
-			gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
-			gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
-			gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
 
-			if (gfxParticle.mySize > 0.000000f)
+// 			if (myEntity == nullptr)
+// 			{
+				gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
+				gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
+				gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
+			//}
+		/*	else
 			{
-				gfxParticle.mySize += (particleData.mySizeDelta / myParticleEmitterData->myData.myParticleLifeTime) * aDeltaTime;
-			}
-
+				if (myEntity != nullptr && myEntity->GetComponent<InputComponent>() != nullptr)
+				{
+					gfxParticle.myPosition += (logicParticle.myDirection * logicParticle.mySpeed) * aDeltaTime;
+				}
+			}*/
+			gfxParticle.mySize += particleData.mySizeDelta * aDeltaTime;
+			
 			if (myStates[USE_ALPHA_DELTA] == TRUE)
 			{
 				gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
@@ -328,11 +344,11 @@ namespace Prism
 
 			if (myStates[AFFECTED_BY_GRAVITY] == true)
 			{
-				logicParticle.mySpeed = CU::Math::RandomRange(0.5f, myParticleSpeed);
+				logicParticle.mySpeed = CU::Math::RandomRange(0.5f, myParticleEmitterData->myData.mySpeed);
 			}
 			else
 			{
-				logicParticle.mySpeed = myParticleSpeed;
+				logicParticle.mySpeed = myParticleEmitterData->myData.mySpeed;
 			}
 			logicParticle.myDirection = myDirection;
 
@@ -485,4 +501,10 @@ namespace Prism
 	{
 		myRandomizeDirection = aShouldBeSet;
 	}
+
+	void ParticleEmitterInstance::SetOtherOrientation(const CU::Matrix44f& aMatrix)
+	{
+		myOtherOrientation = aMatrix;
+	}
+
 }

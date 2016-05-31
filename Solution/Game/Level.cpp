@@ -375,7 +375,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (aHasEntered == true)
 			{
 				KillPlayer(first);
-				//Spike Effect
+				CU::Vector3f dir = aContactNormal;
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Spike", first->GetOrientation().GetPos(), dir, true));
 				//Oil Effect
 			}
 			break;
