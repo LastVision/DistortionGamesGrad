@@ -265,7 +265,7 @@ namespace Prism
 				particleData.mySpeed += particleData.mySpeedDelta * aDeltaTime;
 			}
 
-			if (myIsAffectedByGravity == true)
+			if (myStates[AFFECTED_BY_GRAVITY] == TRUE)
 			{
 				logicParticle.myDirection.y -= (9.82f * 0.1f) * aDeltaTime;
 				
@@ -326,7 +326,7 @@ namespace Prism
 
 			gfxParticle.myColor = myParticleEmitterData->myData.myStartColor;
 
-			if (myIsAffectedByGravity == true)
+			if (myStates[AFFECTED_BY_GRAVITY] == true)
 			{
 				logicParticle.mySpeed = CU::Math::RandomRange(0.5f, myParticleSpeed);
 			}
@@ -485,10 +485,4 @@ namespace Prism
 	{
 		myRandomizeDirection = aShouldBeSet;
 	}
-
-	void ParticleEmitterInstance::SetIsAffectedByGravity(bool aIsAffectedByGravity)
-	{
-		myIsAffectedByGravity = true;
-	}
-
 }

@@ -44,7 +44,6 @@ namespace Prism
 		CU::Vector3<float> GetPosition() const;
 
 		void SetRandomizeDirection(bool aShouldBeSet);
-		void SetIsAffectedByGravity(bool aIsAffectedByGravity);
 	private:
 
 		void Reset();
