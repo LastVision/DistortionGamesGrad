@@ -227,9 +227,10 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	if (file.is_open() == true)
 	{
 		Score highestScore;
+		highestScore.myTime = 1000000.f;
 		for each (const Score* score in myScores)
 		{
-			if (highestScore.myTime < score->myTime)
+			if (score->myReachedGoal == true && highestScore.myTime >= score->myTime)
 			{
 				highestScore.myTime = score->myTime;
 				highestScore.myDeathCount = score->myDeathCount;
