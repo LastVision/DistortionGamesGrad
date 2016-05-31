@@ -16,6 +16,7 @@ struct MovementComponentData
 	float myDashDistance = 0.f;
 	float myDashCooldown = 0.f;
 	float myDashSpeed = 0.f;
+	float myDashSpeedKeepRatio = 0.f;
 	float myMaxAngleWhenLanding = 0.f;
 	float mySteamMinForce = 0.f;
 	CU::Vector2<float> myDrag;
