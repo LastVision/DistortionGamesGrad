@@ -28,7 +28,10 @@ void AcidComponent::Update(float aDeltaTime)
 		if (acidDrop->ShouldBeRemoved() == true)
 		{
 			acidDrop->GetComponent<PhysicsComponent>()->TeleportToPosition({ 0.f, -10.f, 0.f });
-			acidDrop->RemoveFromScene();
+			if (acidDrop->IsInScene() == true)
+			{
+				acidDrop->RemoveFromScene();
+			}
 			acidDrop->SetShouldBeRemoved(false);
 		}
 	}
