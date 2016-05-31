@@ -129,9 +129,9 @@ bool Game::Init(HWND& aHwnd)
 	//Console::GetInstance(); // needed to create console here
 	//myStateStack.PushMainGameState(new LevelSelectState(myController));
 #ifdef RELEASE_BUILD
-#else
 	myStateStack.PushMainGameState(new MainMenuState());
-	//myStateStack.PushMainGameState(new LevelSelectState(false));
+#else
+	myStateStack.PushMainGameState(new LevelSelectState(false));
 	//myStateStack.PushMainGameState(new MainMenuState());
 #endif
 
@@ -160,6 +160,7 @@ bool Game::Update()
 	DEBUG_PRINT(fps);
 	float frameTime = deltaTime * 1000;
 	DEBUG_PRINT(frameTime);
+	DEBUG_PRINT(GC::Gold);
 
 	if (deltaTime > 1.0f / 10.0f)
 	{
