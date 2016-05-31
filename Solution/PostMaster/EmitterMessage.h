@@ -29,12 +29,16 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, Entity* anEntity);
 	EmitterMessage(const std::string& aParticleType, Entity* anEntity, float aEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection, bool aIsAffectedByGravity);
+	EmitterMessage(const std::string& aParticleType, const CU::Matrix44f& aMatrix);
+	EmitterMessage(const std::string& aParticleType, Entity* anEntity);
+
 
 
 
 	Prism::ParticleEmitterInstance* myEmitter = nullptr;
 	Entity* myEntity = nullptr;
 	const std::string myParticleTypeString = "NONE";
+	const CU::Matrix44f myOrientation = CU::Matrix44f();
 	const CU::Vector3f myPosition = CU::Vector3f();
 	const CU::Vector3f mySize = CU::Vector3f();
 	const CU::Vector3f myDirection = CU::Vector3f();
@@ -185,5 +189,19 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 	, myParticleTypeString(aParticleType)
 	, myPosition(aPosition)
 	, myRandomDirection(aRandomDirection)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Matrix44f& aMatrix)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myOrientation(aMatrix)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, Entity* anEntity)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myEntity(anEntity)
 {
 }

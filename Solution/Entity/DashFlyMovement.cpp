@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "BounceComponent.h"
+#include "BounceNote.h"
 #include "DashFlyMovement.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
@@ -13,7 +15,6 @@ DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix4
 	, myHasContact(false)
 {
 }
-
 
 DashFlyMovement::~DashFlyMovement()
 {
@@ -71,12 +72,14 @@ void DashFlyMovement::SetVelocity(const CU::Vector2<float>&)
 }
 
 void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>&
-	, const CU::Vector3<float>&, const CU::Vector3<float>&)
+	, const CU::Vector3<float>&, const CU::Vector3<float>& aHitNormal)
 {
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
-		eEntityType type = aComponent->GetEntity().GetType();
+		Entity& entity = aComponent->GetEntity();
+		eEntityType type = entity.GetType();
+
 		if (type == eEntityType::SCRAP) return;
 
 		myHasContact = true;
@@ -85,14 +88,35 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		{
 			aComponent->GetEntity().SendNote(ShouldDieNote());
 		}
-		else if (type != eEntityType::BOUNCER)
+		else if (type == eEntityType::BOUNCER)
+		{
+			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
+			float force = entity.GetComponent<BounceComponent>()->GetForce();
+
+			if (dot > 0.001f)
+			{
+				entity.SendNote(BounceNote());
+
+				CU::Vector2<float> velocity = { entity.GetOrientation().GetUp().x * force
+					, entity.GetOrientation().GetUp().y * force };
+
+				//velocity += myVelocity * myData.myDashSpeedKeepRatio * 0.10f;
+
+				myMovementComponent.SetState(MovementComponent::eMovementType::FLY, velocity);
+			}
+			else
+			{
+				myMovementComponent.GetEntity().SendNote(ShouldDieNote());
+			}
+		}
+		else// if (type != eEntityType::BOUNCER)
 		{
 			myMovementComponent.GetEntity().SendNote(ShouldDieNote());
 		}
-		else
-		{
-			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
-		}
+		//else
+		//{
+		//	//myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
+		//}
 	}
 }
 

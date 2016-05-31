@@ -21,12 +21,20 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myDashCooldown(0.f)
 	, myDeltaTime(0.f)
 	, myCollisionTimer(0.f)
+	, myVelocities(8)
+	, myVelocityIndex(0)
+	, myAverageVelocityTimer(0.05f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
+
+	for (int i = 0; i < 10.f; ++i)
+	{
+		myVelocities.Add(CU::Vector2<float>());
+	}
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }
@@ -66,6 +74,7 @@ void MovementComponent::Update(float aDeltaTime)
 	myCollisionTimer -= aDeltaTime;
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
+	myAverageVelocityTimer -= aDeltaTime;
 
 	bool shouldCollide = myCollisionTimer <= 0.f;
 	myMovements[myCurrentMovement]->Update(aDeltaTime, shouldCollide);
@@ -78,6 +87,26 @@ void MovementComponent::Update(float aDeltaTime)
 		dist += myData.mySteamMinForce;
 
 		myMovements[myCurrentMovement]->Impulse(mySteamVelocity * aDeltaTime * dist);
+	}
+
+	myVelocity = myMovements[myCurrentMovement]->GetVelocity();
+
+	if (myAverageVelocityTimer < 0.f)
+	{
+		myAverageVelocityTimer = 0.05f;
+		myVelocities[myVelocityIndex] = myVelocity;
+		++myVelocityIndex;
+		if (myVelocityIndex >= myVelocities.Size())
+		{
+			myVelocityIndex = 0;
+		}
+
+		myAverageVelocity = CU::Vector2<float>();
+		for each (const CU::Vector2<float>& velocity in myVelocities)
+		{
+			myAverageVelocity += velocity;
+		}
+		myAverageVelocity /= static_cast<float>(myVelocities.Size());
 	}
 }
 
@@ -186,11 +215,12 @@ void MovementComponent::SetInSteam(bool aIsInSteam, float aForce, float aSteamLe
 void MovementComponent::SetVelocity(const CU::Vector2<float>& aVelocity)
 {
 	myMovements[myCurrentMovement]->SetVelocity(aVelocity);
+	myVelocity = aVelocity;
 }
 
 const CU::Vector2<float>& MovementComponent::GetVelocity() const
 {
-	return myMovements[myCurrentMovement]->GetVelocity();
+	return myVelocity;
 }
 
 void MovementComponent::ReceiveNote(const DeathNote&)

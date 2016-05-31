@@ -14,7 +14,7 @@ public:
 	~SmartCamera();
 
 	void Update(float aDeltaTime);
-	void AddOrientation(const CU::Matrix44f* aPlayerOrientation);
+	void AddPlayer(const CU::Matrix44f* aPlayerOrientation, const CU::Vector2<float>* aPlayerVelocity);
 	void SetActivePlayerCount(int aPlayerCount);
 	void SetStartPosition(const CU::Vector3f& aPosition);
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
@@ -25,6 +25,7 @@ public:
 
 	int GetPlayerCount();
 	int GetActivePlayerCount();
+
 private:
 
 	enum eActivePlayer
@@ -37,9 +38,12 @@ private:
 
 
 	void operator=(SmartCamera&) = delete;
+	CU::Vector3<float> CalcTargetPosition(int aPlayer) const;
+
 	CU::Matrix44f myOrientation;
 	Prism::Camera& myCamera;
 	CU::GrowingArray<const CU::Matrix44f*> myPlayerOrientations;
+	CU::GrowingArray<const CU::Vector2<float>*> myPlayerVelocities;
 	CU::Vector3f myStartPosition;
 
 	std::bitset<_COUNT> myActivePlayers;
@@ -50,6 +54,8 @@ private:
 
 	bool myShouldResetCameraPos;
 	float myCameraAlpha;
-
+	float myResponsiveness;
+	float my2PlayersMoveBackMultiplier;
+	CU::Vector3<float> myVelocityMultiplier;
 };
 

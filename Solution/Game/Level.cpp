@@ -370,15 +370,16 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), -dir, true));
 
-				//Oil Effect
 			}
 			break;
 		case eEntityType::SPIKE:
 			if (aHasEntered == true)
 			{
 				KillPlayer(first);
-				//Spike Effect
-				//Oil Effect
+				CU::Vector3f dir = aContactNormal;
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Spike", first->GetOrientation().GetPos(), dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), dir, true));
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -392,8 +393,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Bounce", second->GetOrientation().GetPos(), second->GetOrientation().GetUp()));
 				}
-				//Bouncer effect
+				
+				else if (first->GetComponent<MovementComponent>()->IsInDashFly() == true)
+				{
+					KillPlayer(first);
+				}
 			}
 			break;
 		case eEntityType::STOMPER:
@@ -505,7 +511,7 @@ void Level::CreatePlayers()
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
 	player->AddToScene();
 	myPlayers.Add(player);
-	mySmartCamera->AddOrientation(&player->GetOrientation());
+	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
 	//mySmartCamera->AddOrientation(&dummyMatrix);
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 2);
@@ -527,11 +533,10 @@ void Level::CreatePlayers()
 		myScene->AddLight(light);
 	}
 
-	mySmartCamera->AddOrientation(&player->GetOrientation());
+	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
 
 	mySmartCamera->SetActivePlayerCount(0);
 	mySmartCamera->SetStartPosition(mySpawnPosition);
-
 }
 
 void Level::EndState()

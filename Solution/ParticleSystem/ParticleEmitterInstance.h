@@ -15,8 +15,9 @@ namespace Prism
 	class ParticleEmitterInstance
 	{
 	public:
-		ParticleEmitterInstance(ParticleEmitterData* someData, bool anAllowManyParticles = false);
+		ParticleEmitterInstance();
 		~ParticleEmitterInstance();
+		void Initiate(ParticleEmitterData* aData, bool anAllowManyParticles);
 		void ReleaseData();
 		void Render();
 		void Update(float aDeltaTime);
@@ -44,6 +45,7 @@ namespace Prism
 		CU::Vector3<float> GetPosition() const;
 
 		void SetRandomizeDirection(bool aShouldBeSet);
+		void SetOtherOrientation(const CU::Matrix44f& aMatrix);
 	private:
 
 		void Reset();
@@ -61,6 +63,8 @@ namespace Prism
 		CU::Vector3<float> CreateSpherePositions();
 		CU::Vector3<float> CreateHollowSquare();
 		CU::Matrix44f myOrientation;
+		CU::Matrix44f myOtherOrientation;
+
 
 		CU::GrowingArray<GraphicalParticle> myParticleToGraphicsCard;
 

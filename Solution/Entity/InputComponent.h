@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include <Subscriber.h>
+#include "../PostMaster/Subscriber.h"
 namespace CU
 {
 	class ControllerInput;
@@ -40,7 +40,7 @@ public:
 	void SetPlayersWinCount(int aWinCount);
 
 	void SetStandingOnStomper(Entity* aStomper);
-
+	const CU::Matrix44f& GetParticleOrientation();
 private:
 
 	const InputComponentData& myComponentData;

@@ -77,6 +77,11 @@ void InputComponent::Update(float aDeltaTime)
 		myMovement->Impulse();
 	}
 
+	myParticlePoint = &myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation()->myJetPack;
+	myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
+	CU::Vector3f pos = myParticleOrientation.GetPos();
+	myParticleOrientation = CU::Matrix44f::CreateRotateAroundZ(CU::Math::DegreeToRad(-25));
+	myParticleOrientation.SetPos(pos);
 	if (myController->IsConnected() == true)
 	{
 		if (myHasCompletedLevel == false)
@@ -86,9 +91,7 @@ void InputComponent::Update(float aDeltaTime)
 				if (myController->ButtonOnDown(eXboxButton::A))
 				{
 					myMovement->Impulse();
-					myParticlePoint = &myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation()->myJetPack;
-					myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
-					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", myParticleOrientation.GetPos(), -myParticleOrientation.GetUp()));
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Impulse", &myEntity));
 				}
 				else
 				{
@@ -214,4 +217,9 @@ bool InputComponent::GetIsActive()
 void InputComponent::ResetIsInLevel()
 {
 	myIsInLevel = false;
+}
+
+const CU::Matrix44f& InputComponent::GetParticleOrientation()
+{
+	return myParticleOrientation;
 }
