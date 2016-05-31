@@ -5,7 +5,7 @@
 #include <Cursor.h>
 #include <ControllerInput.h>
 #include <GUIManager.h>
-#include "HatsSelectionState.h"
+#include "HatState.h"
 #include "InGameState.h"
 #include <InputWrapper.h>
 #include "MainMenuState.h"
@@ -177,9 +177,9 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new OptionState());
 		break;
-	case eOnClickEvent::HAT_SELECTION:
+	case eOnClickEvent::HAT:
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new HatsSelectionState());
+		myStateStack->PushMainGameState(new HatState());
 		break;
 	}
 }

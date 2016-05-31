@@ -102,14 +102,14 @@ void HatManager::UnlockHat(int aID)
 
 	for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
 	{
-		file << myPlayersCurrentHat[i];
+		file << myPlayersCurrentHat[i] << std::endl;
 	}
 
 	myHatsStatus[aID] = 1;
 
 	for (int i = 0; i < myHatsStatus.Size(); ++i)
 	{
-		file << myHatsStatus[i];
+		file << myHatsStatus[i] << std::endl;
 	}
 
 	file.close();
@@ -118,6 +118,7 @@ void HatManager::UnlockHat(int aID)
 void HatManager::SetHatOnPlayer(int aPlayerID, int aHatID)
 {
 	myPlayersCurrentHat[aPlayerID - 1] = aHatID;
+	Save();
 }
 
 int HatManager::GetHatIDOnPlayer(int aPlayerID) const
@@ -140,6 +141,25 @@ bool HatManager::IsHatUnlocked(int aID) const
 int HatManager::GetAmountOfHats() const
 {
 	return myHatsStatus.Size();
+}
+
+void HatManager::Save()
+{
+	std::string hatPath = "Data/UnlockedHats.bin";
+	std::ofstream file;
+	file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::out);
+
+	for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
+	{
+		file << myPlayersCurrentHat[i] << std::endl;
+	}
+
+	for (int i = 0; i < myHatsStatus.Size(); ++i)
+	{
+		file << myHatsStatus[i] << std::endl;
+	}
+
+	file.close();
 }
 
 HatManager::HatManager()

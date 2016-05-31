@@ -32,7 +32,7 @@ void DashFlyMovement::Update(float aDeltaTime, bool)
 	myTimer -= aDeltaTime;
 	if (myTimer <= 0.f)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));
+		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
 	}
 }
 
@@ -91,7 +91,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		}
 		else
 		{
-			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, (myVelocity * 0.3f));
+			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
 		}
 	}
 }

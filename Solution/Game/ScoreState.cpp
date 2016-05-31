@@ -3,15 +3,17 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
-#include "HatsSelectionState.h"
+#include "HatState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
+#include <ModelLoader.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 #include "Score.h"
 #include "ScoreInfo.h"
 #include "ScoreState.h"
 #include "ScoreWidget.h"
+#include <SpriteProxy.h>
 #include <WidgetContainer.h>
 #include <fstream>
 #include <SQLWrapper.h>
@@ -23,6 +25,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myTimer(2.f)
 	, myNumberOfActiveScores(0)
 	, myCurrentLevel(aLevelID)
+	, myGoldBagSprite(nullptr)
 {
 	for each (const Score* score in myScores)
 	{
@@ -52,12 +55,15 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	{
 		sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
 	}
-}
 
+	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
+		, { 128.f, 128.f }, { 64.f, 64.f });
+}
 
 ScoreState::~ScoreState()
 {
 	SAFE_DELETE(myGUIManager);
+	SAFE_DELETE(myGoldBagSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -145,6 +151,11 @@ void ScoreState::Render()
 			myScoreWidgets[i]->Render(CU::Vector2<float>(i * 532.f, 0));
 		}
 	}
+
+	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
+
+	myGoldBagSprite->Render(goldPos);
+	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 }
 
 void ScoreState::ResumeState()
@@ -166,9 +177,9 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
-	case eOnClickEvent::HAT_SELECTION:
+	case eOnClickEvent::HAT:
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new HatsSelectionState());
+		myStateStack->PushMainGameState(new HatState());
 		break;
 	case eOnClickEvent::GAME_QUIT:
 	case eOnClickEvent::RESTART_LEVEL:
@@ -186,13 +197,21 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	{
 		levelsPath = "Data/Score/Score_Nightmare";
 	}
-
 	CU::BuildFoldersInPath(CU::GetMyDocumentFolderPath() + "Data/Score/");
+
 	std::fstream file;
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
+
 	Score currentScore;
+	int currentStars = 0;
 	int levelID = 0;
-	file >> levelID >> currentScore.myTime;
+	int diffStars = 0;
+	int newStars = 0;
+
+	if (file.is_open() == true)
+	{
+		file >> levelID >> currentScore.myTime >> currentStars;
+	}
 	file.close();
 
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
@@ -212,24 +231,29 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 		{
 			highestScore.myTime = currentScore.myTime;
 		}
-
-		int stars = 0;
+	
 		if (highestScore.myTime < myScoreInfo.myShortTime && highestScore.myTime > 0)
 		{
-			stars = 3;
+			newStars = 3;
 		}
 		else if (highestScore.myTime < myScoreInfo.myMediumTime)
 		{
-			stars = 2;
+			newStars = 2;
 		}
 		else if (highestScore.myTime < myScoreInfo.myLongTime)
 		{
-			stars = 1;
+			newStars = 1;
 		}
 
-		file << aLevelID << std::endl << highestScore.myTime << std::endl << stars << std::endl;
+		file << aLevelID << std::endl << highestScore.myTime << std::endl << newStars << std::endl;
 	}
 	file.close();
+
+	diffStars = newStars - currentStars;
+	if (diffStars > 0)
+	{
+		GC::Gold += diffStars;
+	}
 }
 
 void ScoreState::SaveUnlockedLevels(const int aLevelID)

@@ -63,7 +63,7 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myPlayerTwoPortrait = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_portrait_player2.dds", size, size * 0.5f);
 
 	std::string hatPath("Data/Resource/Texture/Hats/T_hat");
-	for (int i = 0; i <= HatManager::GetInstance()->GetAmountOfHats(); ++i)
+	for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
 	{
 		myHats.Add(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f));
 	}

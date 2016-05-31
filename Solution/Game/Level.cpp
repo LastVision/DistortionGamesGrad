@@ -368,6 +368,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), -dir, true));
+
 				//Oil Effect
 			}
 			break;
@@ -487,6 +489,11 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
+				//Acid death effect
+			}
+			else
+			{
+				//acid hit ground effect
 			}
 		}
 	}

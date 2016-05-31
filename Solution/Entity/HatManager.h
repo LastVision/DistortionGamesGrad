@@ -27,6 +27,8 @@ private:
 	~HatManager();
 	static HatManager* myInstance;
 
+	void Save();
+
 	std::unordered_map<int, Prism::ModelProxy*> myHats;
 
 	CU::GrowingArray<int> myPlayersCurrentHat;
