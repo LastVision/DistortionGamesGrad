@@ -209,6 +209,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="HatsSelectionState.h" />
+    <ClInclude Include="HatState.h" />
     <ClInclude Include="HatUnlockState.h" />
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="Level.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="HatsSelectionState.cpp" />
+    <ClCompile Include="HatState.cpp" />
     <ClCompile Include="HatUnlockState.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Level.cpp" />
