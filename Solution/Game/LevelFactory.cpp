@@ -28,8 +28,8 @@ LevelFactory::LevelFactory(const std::string& aLevelListPath
 	, myFinalNightmareLevelID(0)
 	, myHasCreatedUnlockedLevels(true)
 {
-	ReadLevelList(aLevelListPath, myLevelPaths, GC::TotalLevels, myFinalLevelID, false);
-	ReadLevelList(aNightLevelListPath, myNightmareLevelPaths, GC::TotalNightmareLevels, myFinalNightmareLevelID, true);
+	ReadLevelList(aLevelListPath, myLevelPaths, myFinalLevelID, false);
+	ReadLevelList(aNightLevelListPath, myNightmareLevelPaths, myFinalNightmareLevelID, true);
 }
 
 LevelFactory::~LevelFactory()
@@ -90,10 +90,9 @@ Level* LevelFactory::LoadCurrentLevel()
 }
 
 void LevelFactory::ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
-	, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare)
+	, int& aFinalLevel, bool aIsNightmare)
 {
 	aFinalLevel = 0;
-	aTotalLevels = 0;
 
 	aLevelMap.clear();
 	XMLReader reader;
@@ -111,7 +110,6 @@ void LevelFactory::ReadLevelList(const std::string& aLevelListPath, std::unorder
 		aLevelMap[ID] = levelPath;
 
 		aFinalLevel = max(aFinalLevel, ID);
-		aTotalLevels++;
 	}
 
 	myHasCreatedUnlockedLevels = true;
