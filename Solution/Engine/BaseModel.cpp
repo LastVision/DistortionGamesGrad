@@ -72,6 +72,7 @@ namespace Prism
 	void BaseModel::SetTechniqueName(const std::string& aName)
 	{
 		myTechniqueName = aName;
+		myTechniqueNameDepthOnly = myTechniqueName + "_DEPTHONLY";
 	}
 
 	void BaseModel::EvaluateEffectTechnique(bool aInstanced)
@@ -129,6 +130,8 @@ namespace Prism
 		{
 			myTechniqueName += "_INSTANCED";
 		}
+
+		myTechniqueNameDepthOnly = myTechniqueName + "_DEPTHONLY";
 	}
 
 	void BaseModel::Render(bool aIsDepthOnly)
@@ -146,6 +149,7 @@ namespace Prism
 		{
 			techniqueName += "_DEPTHONLY";
 		}
+
 		for (int s = 0; s < mySurfaces.Size(); ++s)
 		{
 			mySurfaces[s]->Activate();

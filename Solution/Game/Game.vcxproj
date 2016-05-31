@@ -82,35 +82,35 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL_Release|Win32'">
-    <IncludePath>$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">
-    <IncludePath>$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DataExporter|Win32'">
-    <IncludePath>$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(SolutionDir)\Memory;$(SolutionDir)\GUI;$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\Script;$(SolutionDir)\Physics;$(SolutionDir)\InputWrapper;$(VTUNE_DIR)\include\;$(SolutionDir)\Audio;$(SolutionDir)\PostMaster;$(SolutionDir)\StreakSystem;$(SolutionDir)\ParticleSystem;$(SolutionDir)\Entity;$(SolutionDir)Network\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -208,6 +208,7 @@
     <ClInclude Include="CreditMenuState.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="HatsSelectionState.h" />
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelFactory.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="CreditMenuState.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="HatsSelectionState.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />

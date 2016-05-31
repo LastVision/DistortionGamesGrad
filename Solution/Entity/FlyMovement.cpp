@@ -11,7 +11,9 @@
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 #include <PostMaster.h>
+#include "StomperComponent.h"
 #include <EmitterMessage.h>
+
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(false)
@@ -27,7 +29,6 @@ FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOr
 		this->HandleRaycastLegs(aComponent, aDirection, aHitPosition, aHitNormal);
 	};
 }
-
 
 FlyMovement::~FlyMovement()
 {
@@ -56,7 +57,11 @@ void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 	Drag(aDeltaTime);
 	Rotate(aDeltaTime);
 
+#ifdef FPS_INDEPENDENT_INPUT
+	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
+#else
 	Translate();
+#endif
 }
 
 void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -100,11 +105,13 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 	if (myIsActive == false) return;
 	if (aComponent != nullptr)
 	{
+		Entity& entity = aComponent->GetEntity();
+
 		myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->HandleCollision(&aComponent->GetEntity());
 
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP) return;
-		if (type == eEntityType::BOUNCER || type == eEntityType::STOMPER)
+		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 
@@ -305,23 +312,4 @@ void FlyMovement::Rotate(float aDeltaTime)
 void FlyMovement::Translate()
 {
 	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity, 0));
-
-	//myOrientation.SetPos(CU::Vector3<float>(myOrientation.GetPos().x, fmaxf(myOrientation.GetPos().y, 0), myOrientation.GetPos().z));
-
-	//if (myOrientation.GetPos().y == 0)
-	//{
-	//	myVelocity.y = 0;
-	//}
-
-
-	//only for debugging, keeping player inside screen:
-	//if (myOrientation.GetPos().x < -15.f)
-	//{
-	//	myVelocity.x = fmaxf(myVelocity.x, 0);
-	//}
-	//else if (myOrientation.GetPos().x > 15.f)
-	//{
-	//	myVelocity.x = fminf(myVelocity.x, 0);
-	//}
-	//debugging out
 }

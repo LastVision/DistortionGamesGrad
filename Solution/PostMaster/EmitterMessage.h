@@ -15,11 +15,11 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, int aEntityID);
 	EmitterMessage(Prism::ParticleEmitterInstance* anInstance, bool aKill);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const bool aRandomDirection);
 	EmitterMessage(const std::string& aParticleType, bool aShouldKillEmitter, float aKilTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, const CU::Vector3f& aSize);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, float aRadius);
-	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection, bool aIsAffectedByGravity);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection);
@@ -177,14 +177,6 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 	, myRandomDirection(aRandomDirection)
 	, myIsAffectedByGravity(aIsAffectedByGravity)
 	, myUseDirection(true)
-{
-}
-
-inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection)
-	: Message(eMessageType::PARTICLE)
-	, myParticleTypeString(aParticleType)
-	, myPosition(aPosition)
-	, myRandomDirection(aRandomDirection)
 {
 }
 

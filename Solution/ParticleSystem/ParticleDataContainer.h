@@ -6,7 +6,7 @@ namespace Prism
 {
 	class Camera;
 	class ParticleEmitterData;
-	
+	class Texture;
 	class ParticleDataContainer
 	{
 	public:

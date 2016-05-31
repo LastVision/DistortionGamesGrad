@@ -3,6 +3,7 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
+#include "HatsSelectionState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
 #include <OnClickMessage.h>
@@ -13,6 +14,7 @@
 #include "ScoreWidget.h"
 #include <WidgetContainer.h>
 #include <fstream>
+#include <SQLWrapper.h>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
@@ -32,6 +34,24 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	}
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
+	CU::SQLWrapper sql;
+	sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+	Score bestScore;
+	bestScore.myActive = false;
+	for each(const Score* score in myScores)
+	{
+		if (score->myActive == true)
+		{
+			if (bestScore.myActive == false || (bestScore.myTime > score->myTime && score->myReachedGoal == true))
+			{
+				bestScore = *score;
+			}
+		}
+	}
+	if (bestScore.myReachedGoal == true)
+	{
+		sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+	}
 }
 
 
@@ -59,7 +79,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
 	{
-		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2)->SetButtonText(std::to_string(nextLevel));
+		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f});
 	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
@@ -129,11 +149,13 @@ void ScoreState::Render()
 
 void ScoreState::ResumeState()
 {
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 }
 
 void ScoreState::PauseState()
 {
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
 void ScoreState::OnResize(int, int)
@@ -144,6 +166,10 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
+	case eOnClickEvent::HAT_SELECTION:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HatsSelectionState());
+		break;
 	case eOnClickEvent::GAME_QUIT:
 	case eOnClickEvent::RESTART_LEVEL:
 	case eOnClickEvent::NEXT_LEVEL:
