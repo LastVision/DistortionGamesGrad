@@ -60,6 +60,21 @@ Game::Game()
 	HatManager::Create();
 	HatManager::GetInstance()->LoadHats();
 	EntityFactory::GetInstance();
+
+	std::fstream file;
+	file.open("GeneratedData/levelcount.bin", std::ios::binary | std::ios::in);
+
+	DL_ASSERT_EXP(file.is_open() == true, "GeneratedData/levelcount.bin doesn't exist! Run level tool.");
+
+	file >> GC::TotalLevels;
+
+	file.close();
+	file.open("GeneratedData/levelcount_nightmare.bin", std::ios::binary | std::ios::in);
+
+	DL_ASSERT_EXP(file.is_open() == true, "GeneratedData/levelcount_nightmare.bin doesn't exist! Run level tool.");
+	file >> GC::TotalNightmareLevels;
+
+	file.close();
 }
 
 Game::~Game()

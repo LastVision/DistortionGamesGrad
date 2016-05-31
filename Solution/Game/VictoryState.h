@@ -23,5 +23,6 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 private:
 	GUI::GUIManager* myGUIManager;
+
 };
 

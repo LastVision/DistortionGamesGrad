@@ -6,7 +6,7 @@
 class LevelReader : public IReader
 {
 public:
-	LevelReader(const std::string& aFile);
+	LevelReader(const std::string& aFile, const std::string& aLevelCountPath);
 	~LevelReader();
 
 	void ReadFile(const std::string& aFile) override;
@@ -16,5 +16,8 @@ private:
 	std::filebuf myBuffer;
 
 	CU::GrowingArray<int> myUsedIDs;
+	std::string myLevelCountPath;
+
+	int myLevelCount;
 };
 
