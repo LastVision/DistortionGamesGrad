@@ -229,6 +229,12 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 	{
 		myMovements[i]->DeActivate();
 	}
+
+	for (int i = 0; i < myVelocities.Size(); ++i)
+	{
+		myVelocities[i] = CU::Vector2<float>();
+	}
+	myAverageVelocity = CU::Vector2<float>();
 }
 
 void MovementComponent::ReceiveNote(const SpawnNote&)
