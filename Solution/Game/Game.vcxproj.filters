@@ -68,6 +68,9 @@
     <ClCompile Include="HatsSelectionState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="HatUnlockState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -139,6 +142,9 @@
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="HatsSelectionState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="HatUnlockState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>
