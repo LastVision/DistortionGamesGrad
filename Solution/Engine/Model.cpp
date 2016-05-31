@@ -345,7 +345,7 @@ namespace Prism
 		}
 		else
 		{
-			DL_ASSERT_EXP(someWorldMatrices.Size() <= myMaxInstances, "Tried to instance too many instances");
+			DL_ASSERT_EXP(someWorldMatrices.Size() <= myMaxInstances, CU::Concatenate("Tried to instance too many instances, model: %s", myFileName.c_str()));
 
 			if (someWorldMatrices.Size() > myMaxInstances)
 			{
