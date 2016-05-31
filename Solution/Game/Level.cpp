@@ -370,7 +370,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), -dir, true));
 
-				//Oil Effect
 			}
 			break;
 		case eEntityType::SPIKE:
@@ -380,7 +379,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Vector3f dir = aContactNormal;
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Spike", first->GetOrientation().GetPos(), dir, true));
-				//Oil Effect
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), dir, true));
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -394,8 +393,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Bounce", second->GetOrientation().GetPos(), second->GetOrientation().GetUp()));
 				}
-				//Bouncer effect
+				
 			}
 			break;
 		case eEntityType::STOMPER:
@@ -600,18 +600,18 @@ void Level::Add(Prism::SpotLight* aLight)
 
 void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 {
-	int playerID = aPlayer->GetComponent<InputComponent>()->GetPlayerID();
-	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
-	{
-		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
-			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-	}
-	if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
-	{
-		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
-			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
-	}
-	aPlayer->SendNote(ShouldDieNote());
+	//int playerID = aPlayer->GetComponent<InputComponent>()->GetPlayerID();
+	//if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+	//{
+	//	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::HEAD
+	//		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	//}
+	//if (aPlayer->GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+	//{
+	//	PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
+	//		, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
+	//}
+	//aPlayer->SendNote(ShouldDieNote());
 }
 
 void Level::UpdateInput(float aDeltaTime)
