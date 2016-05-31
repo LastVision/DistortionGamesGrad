@@ -3,7 +3,7 @@
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <GUIManager.h>
-#include "HatsSelectionState.h"
+#include "HatState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
 #include <ModelLoader.h>
@@ -177,9 +177,9 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
-	case eOnClickEvent::HAT_SELECTION:
+	case eOnClickEvent::HAT:
 		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new HatsSelectionState());
+		myStateStack->PushMainGameState(new HatState());
 		break;
 	case eOnClickEvent::GAME_QUIT:
 	case eOnClickEvent::RESTART_LEVEL:
