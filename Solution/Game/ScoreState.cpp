@@ -27,6 +27,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myNumberOfActiveScores(0)
 	, myCurrentLevel(aLevelID)
 	, myGoldBagSprite(nullptr)
+	, myEarnedStars(0)
+	, myEarnedStarsText("")
 {
 	for each (const Score* score in myScores)
 	{
@@ -165,6 +167,12 @@ void ScoreState::Render()
 
 	myGoldBagSprite->Render(goldPos);
 	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+
+	if (myEarnedStars > 0)
+	{
+		goldPos.y -= myGoldBagSprite->GetSize().y * 0.5f;
+		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, goldPos, Prism::eTextType::RELEASE_TEXT);
+	}
 }
 
 void ScoreState::ResumeState()
@@ -263,6 +271,9 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	{
 		GC::Gold += diffStars;
 	}
+
+	myEarnedStars = diffStars > 0 ? diffStars : 0;
+	myEarnedStarsText = "+" + std::to_string(myEarnedStars);
 }
 
 void ScoreState::SaveUnlockedLevels(const int aLevelID)
