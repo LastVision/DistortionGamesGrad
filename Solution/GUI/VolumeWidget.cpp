@@ -96,8 +96,8 @@ namespace GUI
 
 	VolumeWidget::~VolumeWidget()
 	{
-		SAFE_DELETE(myDecreaseButton);
-		SAFE_DELETE(myIncreaseButton);
+		//SAFE_DELETE(myDecreaseButton);
+		//SAFE_DELETE(myIncreaseButton);
 		PostMaster::GetInstance()->UnSubscribe(this, 0);
 	}
 
