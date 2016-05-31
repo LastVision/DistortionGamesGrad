@@ -366,9 +366,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
 				CU::Normalize(dir);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
-
-				//Sawblade Particle Effect
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true, true));
 				//Oil Effect
 			}
 			break;
@@ -404,7 +402,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				{
 					KillPlayer(first);
 				}
-				//Stomper Effect
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper", first->GetOrientation().GetPos(), true));
 			}
 			break;
 		case eEntityType::ACID_DROP:

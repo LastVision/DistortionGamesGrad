@@ -11,22 +11,6 @@
 namespace Prism
 {
 	ParticleEmitterData::ParticleEmitterData()
-		: myTexture(nullptr)
-		, myEffect(nullptr)
-		, myTechniqueDesc(nullptr)
-		, myInputLayout(nullptr)
-		, myFileName("not initialized")
-		, myEffectName("not initialized")
-		, myTextureName("not initialized")
-		, myRotationDelta(0.f)
-		, myEmitterLifeTime(0.f)
-		, myEmissionRate(0.f)
-		, myParticlesPerEmitt(0)
-		, myMaxParticleAmount(0)
-		, myIsActiveAtStart(false)
-		, myUseEmitterLifeTime(false)
-		, myIsHollow(false)
-		, myIsCircle(false)
 	{
 	}
 
@@ -119,6 +103,7 @@ namespace Prism
 		aReader->ForceReadAttribute(element, "activeAtStart", myIsActiveAtStart);
 		aReader->ForceReadAttribute(element, "circleEmitter", myIsCircle);
 		aReader->ForceReadAttribute(element, "hollowEmitter", myIsHollow);
+		aReader->ForceReadAttribute(element, "affectedByGravity", myIsAffectedByGravity);
 
 		element = aReader->ForceFindFirstChild(anElement, "EmitterSize");
 		aReader->ForceReadAttribute(element, "x", "y", "z", myEmitterSize);

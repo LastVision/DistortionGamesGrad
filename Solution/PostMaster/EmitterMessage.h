@@ -19,6 +19,8 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, const CU::Vector3f& aSize);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, float aRadius);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection, bool aIsAffectedByGravity);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float anEmitterLifeTime);
@@ -26,6 +28,7 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, Entity* anEntity);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, Entity* anEntity);
 	EmitterMessage(const std::string& aParticleType, Entity* anEntity, float aEmitterLifeTime);
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection, bool aIsAffectedByGravity);
 
 
 
@@ -42,6 +45,7 @@ struct EmitterMessage : public Message
 	const bool myRandomDirection = false;
 	const float myEmitterLifeTime = 0.f;
 	const float myRadius = 0.f;
+	const bool myIsAffectedByGravity = false;
 };
 
 inline EmitterMessage::EmitterMessage(const std::string& aParticleType, int aEntityID)
@@ -161,5 +165,33 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 	, myDirection(aDirection)
 	, myRandomDirection(aRandomDirection)
 	, myUseDirection(true)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition
+		, const CU::Vector3f& aDirection, bool aRandomDirection, bool aIsAffectedByGravity)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myDirection(aDirection)
+	, myRandomDirection(aRandomDirection)
+	, myIsAffectedByGravity(aIsAffectedByGravity)
+	, myUseDirection(true)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myRandomDirection(aRandomDirection)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myRandomDirection(aRandomDirection)
 {
 }
