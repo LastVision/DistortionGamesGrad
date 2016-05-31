@@ -3,6 +3,8 @@
 #include <Cursor.h>
 #include "HatState.h"
 #include <HatManager.h>
+#include "HatUnlockState.h"
+#include "HatsSelectionState.h"
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <ModelLoader.h>
@@ -58,7 +60,7 @@ const eStateStatus HatState::Update(const float& aDeltaTime)
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		return eStateStatus::ePopSubState;
+		return eStateStatus::ePopMainState;
 	}
 
 	HandleControllerInMenu(myController, myGUIManager);
@@ -77,19 +79,28 @@ void HatState::ResumeState()
 {
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 }
 
 void HatState::PauseState()
 {
-
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
 void HatState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
+	case eOnClickEvent::HAT_SELECTION:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HatsSelectionState());
+		break;
+	case eOnClickEvent::HAT_UNLOCK:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HatUnlockState());
+		break;
 	case eOnClickEvent::GAME_QUIT:
-		myStateStatus = eStateStatus::ePopSubState;
+		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
 }
