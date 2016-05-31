@@ -142,11 +142,11 @@ int main(int argC,      // Number of strings in array argv
 		system("CLS");
 		std::cout << "\n---| Reading Level |---\n" << std::endl;
 
-		reader = new LevelReader("GeneratedData/LI_level.xml");
+		reader = new LevelReader("GeneratedData/LI_level.xml", "GeneratedData/levelcount.bin");
 		find_directory("Data/Level", *reader);
 		delete reader;
 
-		reader = new LevelReader("GeneratedData/LI_level_nightmare.xml");
+		reader = new LevelReader("GeneratedData/LI_level_nightmare.xml", "GeneratedData/levelcount_nightmare.bin");
 		find_directory("Data/NightmareLevel", *reader);
 		delete reader;
 

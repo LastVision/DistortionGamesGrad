@@ -31,7 +31,7 @@ private:
 	Level* LoadCurrentLevel();
 
 	void ReadLevelList(const std::string& aLevelListPath, std::unordered_map<int, std::string>& aLevelMap
-		, int& aTotalLevels, int& aFinalLevel, bool aIsNightmare);
+		, int& aFinalLevel, bool aIsNightmare);
 	Level* ReadLevel(const std::string& aLevelPath);
 
 	void LoadLevelData(Level* aLevel, XMLReader& aReader, tinyxml2::XMLElement* aElement);
