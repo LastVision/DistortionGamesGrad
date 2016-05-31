@@ -11,6 +11,7 @@
 #include "PhysicsComponent.h"
 #include <PhysicsInterface.h>
 #include <PostMaster.h>
+#include "ShouldDieNote.h"
 #include "StomperComponent.h"
 #include <EmitterMessage.h>
 
@@ -111,13 +112,26 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
-		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
+		if (type == eEntityType::STOMPER && entity.IsStomperMoving() == true)
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
 
 			if (abs(dot) > 0.001f)
 			{
 				return;
+			}
+		}
+		else if (type == eEntityType::BOUNCER)
+		{
+			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());
+
+			if (dot > 0.001f)
+			{
+				return;
+			}
+			else
+			{
+				myMovementComponent.GetEntity().SendNote(ShouldDieNote());
 			}
 		}
 		myHasContact = true;

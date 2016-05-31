@@ -393,6 +393,10 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
 				}
+				else if (first->GetComponent<MovementComponent>()->IsInDashFly() == true)
+				{
+					KillPlayer(first);
+				}
 				//Bouncer effect
 			}
 			break;

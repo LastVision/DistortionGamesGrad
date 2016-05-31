@@ -49,6 +49,8 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 
+	bool IsInDashFly() const;
+
 private:
 	const MovementComponentData& myData;
 
@@ -82,4 +84,9 @@ inline eComponentType MovementComponent::GetTypeStatic()
 inline eComponentType MovementComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline bool MovementComponent::IsInDashFly() const
+{
+	return myCurrentMovement == eMovementType::DASH_FLY;
 }
