@@ -44,6 +44,7 @@ public:
 	void ReceiveNote(const SpawnNote& aMessage) override;
 
 	const CU::Vector2<float>& GetVelocity() const;
+	const CU::Vector2<float>& GetAverageVelocity() const;
 	void SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity);
 
 	static eComponentType GetTypeStatic();
@@ -56,6 +57,11 @@ private:
 
 	CU::StaticArray<Movement*, eMovementType::_COUNT> myMovements;
 	CU::Vector2<float> myVelocity;
+	CU::Vector2<float> myAverageVelocity;
+	CU::GrowingArray<CU::Vector2<float>> myVelocities;
+	int myVelocityIndex;
+	float myAverageVelocityTimer;
+
 	float myDashCooldown;
 
 	bool myIsInSteam;
@@ -83,4 +89,9 @@ inline eComponentType MovementComponent::GetTypeStatic()
 inline eComponentType MovementComponent::GetType()
 {
 	return GetTypeStatic();
+}
+
+inline const CU::Vector2<float>& MovementComponent::GetAverageVelocity() const
+{
+	return myAverageVelocity;
 }
