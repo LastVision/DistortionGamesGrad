@@ -18,6 +18,7 @@ namespace Prism
 		const CU::Vector2<float>& GetSize() const;
 
 		void SetUVZeroToOne(const CU::Vector2<float>& aTopLeft, const CU::Vector2<float>& aRightBottom);
+		void SetUVOutsideZeroToOne(const CU::Vector2<float>& aTopLeft, const CU::Vector2<float>& aRightBottom);
 
 		void ResizeTexture(ID3D11Texture2D* aSrcTexture);
 

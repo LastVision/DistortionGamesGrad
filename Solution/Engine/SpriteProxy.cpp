@@ -43,6 +43,13 @@ namespace Prism
 		myRightBottomUV = aRightBottom;
 	}
 
+
+	void SpriteProxy::SetUVOutsideZeroToOne(const CU::Vector2<float>& aTopLeft, const CU::Vector2<float>& aRightBottom)
+	{
+		myTopLeftUV = aTopLeft;
+		myRightBottomUV = aRightBottom;
+	}
+
 	void SpriteProxy::ResizeTexture(ID3D11Texture2D* aSrcTexture)
 	{
 		if (mySprite != nullptr)
