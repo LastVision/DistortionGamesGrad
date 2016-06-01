@@ -43,5 +43,11 @@ private:
 	CU::GrowingArray<Prism::SpriteProxy*> myHats;
 
 	CU::ControllerInput* mySecondController;
+
+	Prism::SpriteProxy* myLeftArrow;
+	Prism::SpriteProxy* myRightArrow;
+	Prism::SpriteProxy* myArrowBox;
+
+	float myUVScrollingTime;
 };
 

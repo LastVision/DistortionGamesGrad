@@ -15,6 +15,10 @@ HatsSelectionState::HatsSelectionState()
 		, myHats(8)
 		, mySecondControllerPressedLeft(false)
 		, mySecondControllerPressedRight(false)
+		, myLeftArrow(nullptr)
+		, myRightArrow(nullptr)
+		, myArrowBox(nullptr)
+		, myUVScrollingTime(0.f)
 {
 }
 
@@ -33,6 +37,9 @@ HatsSelectionState::~HatsSelectionState()
 	}
 	SAFE_DELETE(mySecondController);
 	SAFE_DELETE(myLockSprite);
+	SAFE_DELETE(myLeftArrow);
+	SAFE_DELETE(myRightArrow);
+	SAFE_DELETE(myArrowBox);
 }
 
 void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -70,6 +77,10 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 
 	myLockSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_lock.dds", size, size * 0.5f);
 
+	myLeftArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_left_arrow.dds", size * 0.5f, size * 0.25f);
+	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
+	myArrowBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_arrow_box.dds", size * 0.5f, size * 0.25f);
+
 }
 
 void HatsSelectionState::EndState()
@@ -90,9 +101,10 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 		myCursor->SetShouldRender(false);
 		return eStateStatus::ePopSubState;
 	}
-
+	myUVScrollingTime += aDeltaTime;
 	//HandleControllerInMenu(myController, myGUIManager);
 	myController->Update(aDeltaTime);
+	mySecondController->Update(aDeltaTime);
 	myGUIManager->Update(aDeltaTime);
 
 	HandleHatSelection(myController, myPlayerOneCurrentHat, 1, myControllerPressedLeft, myControllerPressedRight);
@@ -152,11 +164,20 @@ void HatsSelectionState::HandleHatSelection(CU::ControllerInput* aController, in
 
 void HatsSelectionState::Render()
 {
+	CU::Vector2<float> uvOffset(myUVScrollingTime, 0.f);
+	myLeftArrow->SetUVOutsideZeroToOne({ uvOffset.x, 0.f }, { uvOffset.x + 1.f, 1.f });
+	myRightArrow->SetUVOutsideZeroToOne({ -uvOffset.x, 0.f }, { -uvOffset.x + 1.f, 1.f });
 	myGUIManager->Render();
-
+	CU::Vector2<float> leftOffset(-128.f, -32.f);
+	CU::Vector2<float> rightOffset(128.f, -32.f);
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
+	
 	CU::Vector2<float> playerOneRenderPos(windowSize.x - 256.f, windowSize.y);
 	myPlayerOnePortrait->Render(playerOneRenderPos);
+	myLeftArrow->Render(playerOneRenderPos + leftOffset);
+	myRightArrow->Render(playerOneRenderPos + rightOffset);
+	myArrowBox->Render(playerOneRenderPos + leftOffset);
+	myArrowBox->Render(playerOneRenderPos + rightOffset);
 
 	if (myPlayerOneCurrentHat != -1)
 	{
@@ -168,6 +189,10 @@ void HatsSelectionState::Render()
 	}
 	CU::Vector2<float> playerTwoRenderPos(windowSize.x + 256.f, windowSize.y);
 	myPlayerTwoPortrait->Render(playerTwoRenderPos);
+	myLeftArrow->Render(playerTwoRenderPos + leftOffset);
+	myRightArrow->Render(playerTwoRenderPos + rightOffset);
+	myArrowBox->Render(playerTwoRenderPos + leftOffset);
+	myArrowBox->Render(playerTwoRenderPos + rightOffset);
 	if (myPlayerTwoCurrentHat != -1)
 	{
 		myHats[myPlayerTwoCurrentHat]->Render(playerTwoRenderPos);
