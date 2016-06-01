@@ -14,6 +14,7 @@ struct SpawnNote;
 struct VibrationNote;
 struct SteamVentNote;
 struct PlayAnimationNote;
+struct ReachedGoalNote;
 
 class Component
 {
@@ -35,6 +36,7 @@ public:
 	virtual void ReceiveNote(const VibrationNote&) {}
 	virtual void ReceiveNote(const SteamVentNote&) {}
 	virtual void ReceiveNote(const PlayAnimationNote&) {}
+	virtual void ReceiveNote(const ReachedGoalNote&) {}
 
 	virtual void Init();
 

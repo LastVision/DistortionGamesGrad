@@ -10,6 +10,8 @@
 #include "PlayerComponent.h"
 #include <PostMaster.h>
 #include "PlayerGraphicsComponent.h"
+#include <ReachedGoalMessage.h>
+#include "ReachedGoalNote.h"
 #include "ShouldDieNote.h"
 #include <ScrapMessage.h>
 
@@ -131,7 +133,8 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		const Entity& other(aComponent->GetEntity());
 		if (other.GetType() == eEntityType::GOAL_POINT)
 		{
-			bool CanDanielMakeUsWinLevelHere = true; //?
+			myEntity.SendNote(ReachedGoalNote());
+			PostMaster::GetInstance()->SendMessage(ReachedGoalMessage(&aComponent->GetEntity()));
 		}
 		else if (other.GetType() != eEntityType::SPAWN_POINT
 			&& other.GetType() != eEntityType::PLAYER
