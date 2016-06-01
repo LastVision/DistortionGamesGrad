@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <AudioInterface.h>
+#include <ControllerInput.h>
 #include "SplashState.h"
 #include <Sprite.h>
 #include <SpriteProxy.h>
@@ -107,7 +108,9 @@ const eStateStatus SplashState::Update(const float& aDeltaTime)
 		|| input->KeyDown(DIK_RETURN) == true
 		|| input->MouseDown(0) == true
 		|| input->MouseDown(1) == true
-		|| input->MouseDown(2) == true)
+		|| input->MouseDown(2) == true
+		|| myController->ButtonOnDown(eXboxButton::A)
+		|| myController->ButtonOnDown(eXboxButton::START))
 	{
 		myCurrentTime += myFadeInTime + myDisplayTime;
 	}
