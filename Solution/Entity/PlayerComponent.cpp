@@ -41,15 +41,26 @@ void PlayerComponent::Update(float)
 		myEntity.SendNote(ShouldDieNote());
 	}
 
-	CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
-
-	if (direction != CU::Vector3<float>())
+	if (myEntity.GetComponent<MovementComponent>()->GetShouldCollide() == true)
 	{
-		float length = CU::Length(direction);
-		direction /= length;
+		CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
+		CU::Vector3<float> position(myPreviousPosition);
 
-		Prism::PhysicsInterface::GetInstance()->RayCast(myPreviousPosition, direction, length, myRaycastHandler
-			, myEntity.GetComponent<PhysicsComponent>());
+		if (direction != CU::Vector3<float>())
+		{
+			float length = CU::Length(direction);
+
+			direction /= length;
+
+			float stepSize = 0.1f;
+			while (length > stepSize)
+			{
+				Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
+					, myEntity.GetComponent<PhysicsComponent>());
+				position += direction * stepSize;
+				length -= stepSize;
+			}
+		}
 	}
 	myPreviousPosition = myEntity.GetOrientation().GetPos();
 }
