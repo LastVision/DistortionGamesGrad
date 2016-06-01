@@ -46,5 +46,7 @@ private:
 
 	int myCurrentLevel;
 
+	int myEarnedStars;
+	std::string myEarnedStarsText;
 };
 
