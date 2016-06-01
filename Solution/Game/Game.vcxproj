@@ -206,6 +206,7 @@
     <ClInclude Include="ConsoleHistoryManager.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="CreditMenuState.h" />
+    <ClInclude Include="FirstTimeFinishLevelState.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="HatsSelectionState.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="ConsoleHistoryManager.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CreditMenuState.cpp" />
+    <ClCompile Include="FirstTimeFinishLevelState.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="HatsSelectionState.cpp" />

@@ -74,6 +74,9 @@
     <ClCompile Include="HatState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="FirstTimeFinishLevelState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -151,6 +154,9 @@
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="HatState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstTimeFinishLevelState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>
