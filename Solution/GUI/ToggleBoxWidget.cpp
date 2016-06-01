@@ -172,6 +172,16 @@ namespace GUI
 				myImageCurrent = myImageActive;
 			}
 		}
+		else if (clickEvent == "toggle_offline_mode")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_TOGGLE_OFFLINE_MODE, static_cast<int>(myToggledState));
+			myToggledState = GC::OptionsEnableOffline;
+			myImageCurrent = myImageDeactive;
+			if (myToggledState == true)
+			{
+				myImageCurrent = myImageActive;
+			}
+		}
 		else
 		{
 			std::string message = "[ButtonWidget]: No onclick event named " + clickEvent;
@@ -212,7 +222,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonClick", 0);
 				if (myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_VIBRATION ||
-					myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_SHADOWS)
+					myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_SHADOWS ||
+					myClickEvent->myEvent == eOnClickEvent::OPTIONS_TOGGLE_OFFLINE_MODE)
 				{
 					PostMaster::GetInstance()->SendMessage(OnClickMessage(myClickEvent->myEvent, myToggledState));
 				}

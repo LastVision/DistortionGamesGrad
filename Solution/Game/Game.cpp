@@ -244,6 +244,9 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::OPTIONS_TOGGLE_SHADOWS:
 		GC::OptionsUseShadows = aMessage.myID != 0;
 		break;
+	case eOnClickEvent::OPTIONS_TOGGLE_OFFLINE_MODE:
+		GC::OptionsEnableOffline = aMessage.myID != 0;
+		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;
 	}

@@ -42,22 +42,25 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
 	CU::SQLWrapper sql;
-	sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-	Score bestScore;
-	bestScore.myActive = false;
-	for each(const Score* score in myScores)
+	if (GC::OptionsEnableOffline == false)
 	{
-		if (score->myActive == true)
+		sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+		Score bestScore;
+		bestScore.myActive = false;
+		for each(const Score* score in myScores)
 		{
-			if (bestScore.myActive == false || (bestScore.myTime > score->myTime && score->myReachedGoal == true))
+			if (score->myActive == true)
 			{
-				bestScore = *score;
+				if (bestScore.myActive == false || (bestScore.myTime > score->myTime && score->myReachedGoal == true))
+				{
+					bestScore = *score;
+				}
 			}
 		}
-	}
-	if (bestScore.myReachedGoal == true)
-	{
-		sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+		if (bestScore.myReachedGoal == true)
+		{
+			sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+		}
 	}
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
