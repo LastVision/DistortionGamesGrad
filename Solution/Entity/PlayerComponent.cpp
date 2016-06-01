@@ -55,9 +55,12 @@ void PlayerComponent::Update(float)
 
 			direction /= length;
 
+			int rayCount = 0;
 			float stepSize = 0.1f;
-			while (length > stepSize)
+			while (length > stepSize && rayCount < 32)
 			{
+				++rayCount;
+
 				Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
 					, myEntity.GetComponent<PhysicsComponent>());
 				position += direction * stepSize;
