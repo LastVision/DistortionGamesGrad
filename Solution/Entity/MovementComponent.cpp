@@ -21,12 +21,20 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myDashCooldown(0.f)
 	, myDeltaTime(0.f)
 	, myCollisionTimer(0.f)
+	, myVelocities(8)
+	, myVelocityIndex(0)
+	, myAverageVelocityTimer(0.5f)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::DASH_AIM] = new DashAimMovement(aData, anOrientation, *this, aScene);
 	myMovements[eMovementType::DASH_FLY] = new DashFlyMovement(aData, anOrientation, *this);
 	myMovements[myCurrentMovement]->Activate({ 0.f, 0.f });
+
+	for (int i = 0; i < 10.f; ++i)
+	{
+		myVelocities.Add(CU::Vector2<float>());
+	}
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::PLAYER_ACTIVE);
 }
@@ -66,6 +74,7 @@ void MovementComponent::Update(float aDeltaTime)
 	myCollisionTimer -= aDeltaTime;
 	myDeltaTime = aDeltaTime;
 	myDashCooldown -= aDeltaTime;
+	myAverageVelocityTimer -= aDeltaTime;
 
 	bool shouldCollide = myCollisionTimer <= 0.f;
 	myMovements[myCurrentMovement]->Update(aDeltaTime, shouldCollide);
@@ -81,6 +90,24 @@ void MovementComponent::Update(float aDeltaTime)
 	}
 
 	myVelocity = myMovements[myCurrentMovement]->GetVelocity();
+
+	if (myAverageVelocityTimer < 0.f)
+	{
+		myAverageVelocityTimer = 0.05f;
+		myVelocities[myVelocityIndex] = myVelocity;
+		++myVelocityIndex;
+		if (myVelocityIndex >= myVelocities.Size())
+		{
+			myVelocityIndex = 0;
+		}
+
+		myAverageVelocity = CU::Vector2<float>();
+		for each (const CU::Vector2<float>& velocity in myVelocities)
+		{
+			myAverageVelocity += velocity;
+		}
+		myAverageVelocity /= static_cast<float>(myVelocities.Size());
+	}
 }
 
 void MovementComponent::Render()
@@ -202,10 +229,17 @@ void MovementComponent::ReceiveNote(const DeathNote&)
 	{
 		myMovements[i]->DeActivate();
 	}
+
+	for (int i = 0; i < myVelocities.Size(); ++i)
+	{
+		myVelocities[i] = CU::Vector2<float>();
+	}
+	myAverageVelocity = CU::Vector2<float>();
 }
 
 void MovementComponent::ReceiveNote(const SpawnNote&)
 {
+	myAverageVelocityTimer = 0.5f;
 	myCollisionTimer = 0.4f;
 	myCurrentMovement = eMovementType::FLY;
 	//mySpawnVelocity = { 0.05f, 0.01f };

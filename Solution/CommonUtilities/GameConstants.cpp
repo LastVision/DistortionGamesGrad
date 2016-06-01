@@ -25,7 +25,11 @@ float GC::PlayerHeightWithLegs = 0.5f;
 
 float GC::PlayerRadius = 0.5f;
 
+#ifdef DEBUG
+bool GC::OptionsUseViberations = false;
+#else
 bool GC::OptionsUseViberations = true;
+#endif
 #ifdef SHADOWS
 bool GC::OptionsUseShadows = true;
 #else

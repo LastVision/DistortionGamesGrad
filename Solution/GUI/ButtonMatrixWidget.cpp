@@ -99,7 +99,7 @@ namespace GUI
 	{
 		for (int i = 0; i < myButtonMatrix.Size(); ++i)
 		{
-			myButtonMatrix[i].DeleteAll();
+			myButtonMatrix[i].RemoveAll();
 		}
 	}
 

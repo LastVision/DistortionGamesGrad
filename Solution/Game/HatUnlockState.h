@@ -52,6 +52,7 @@ private:
 
 	Prism::SpriteProxy* myHatWon;
 	Prism::SpriteProxy* mySpinBox;
+	Prism::SpriteProxy* myAllHatsWonText;
 
 };
 

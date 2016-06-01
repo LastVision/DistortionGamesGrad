@@ -61,6 +61,7 @@ Game::Game()
 	HatManager::GetInstance()->LoadHats();
 	EntityFactory::GetInstance();
 	Prism::ParticleDataContainer::GetInstance();
+
 	std::fstream file;
 	file.open("GeneratedData/levelcount.bin", std::ios::binary | std::ios::in);
 
@@ -103,6 +104,7 @@ Game::~Game()
 	EntityFactory::Destroy();
 	PostMaster::Destroy();
 	//	NetworkManager::Destroy();
+
 	std::fstream file;
 	file.open(CU::GetMyDocumentFolderPath() + "Data/save.bin", std::ios::binary | std::ios::out);
 
