@@ -6,14 +6,23 @@
 
 #include <Tweener.h>
 
-StarWidget::StarWidget(bool anActive, int anID, const CU::Vector2<float>& aSize)
+StarWidget::StarWidget(bool anActive, int anID, bool aStartInstantly, const CU::Vector2<float>& aSize)
 	: GUI::Widget()
 	, myID(anID)
 	, myActive(anActive)
 {
 	mySize = aSize;
 
-	myTime = static_cast<float>(-myID) * 1.f - 1.5f;
+	myTime = static_cast<float>(-myID) * 1.f;
+
+	if (aStartInstantly == true)
+	{
+		myTime += 1.0f;
+	}
+	else
+	{
+		myTime -= 1.5f;
+	}
 	
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_star_background.dds", mySize, mySize / 2.f);
 	myStar = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_star.dds", mySize, mySize / 2.f);

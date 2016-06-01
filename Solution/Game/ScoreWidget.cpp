@@ -33,15 +33,15 @@ ScoreWidget::ScoreWidget(const Score* aScore, const ScoreInfo& aScoreInfo)
 
 	if (myScore->myReachedGoal == true)
 	{
-		myStars.Add(new StarWidget(myGoalValue > 0.f, 0));
-		myStars.Add(new StarWidget(myGoalValue > 0.5f, 1));
-		myStars.Add(new StarWidget(myGoalValue >= 1.f, 2));
+		myStars.Add(new StarWidget(myGoalValue > 0.f,  0, false));
+		myStars.Add(new StarWidget(myGoalValue > 0.5f, 1, false));
+		myStars.Add(new StarWidget(myGoalValue >= 1.f, 2, false));
 	}
 	else
 	{
-		myStars.Add(new StarWidget(false, 0));
-		myStars.Add(new StarWidget(false, 1));
-		myStars.Add(new StarWidget(false, 2));
+		myStars.Add(new StarWidget(false, 0, false));
+		myStars.Add(new StarWidget(false, 1, false));
+		myStars.Add(new StarWidget(false, 2, false));
 	}
 
 	myBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_score_window_background.dds", mySize, mySize / 2.f);
