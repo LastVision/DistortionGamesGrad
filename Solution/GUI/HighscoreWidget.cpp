@@ -25,7 +25,7 @@ namespace GUI
 
 		if (GC::OptionsEnableOffline == false)
 		{
-			mySQLWrapper.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
 		}
 		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);

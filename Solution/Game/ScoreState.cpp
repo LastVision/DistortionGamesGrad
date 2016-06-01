@@ -44,7 +44,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	CU::SQLWrapper sql;
 	if (GC::OptionsEnableOffline == false)
 	{
-		sql.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 		Score bestScore;
 		bestScore.myActive = false;
 		for each(const Score* score in myScores)
