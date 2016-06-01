@@ -209,6 +209,12 @@ namespace Prism
 			{
 				instance->SetRandomizeDirection(aMessage.myRandomDirection);
 			}
+
+			if (aMessage.myIsRotated == true)
+			{
+				instance->CalcRotation(aMessage.myDirection);
+			}
+
 		}
 
 		emitter->myFinishedGroups[index] = UNFINISHED;
