@@ -30,6 +30,7 @@
     <ClInclude Include="SpriteWidget.h" />
     <ClInclude Include="StarWidget.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TextWidget.h" />
     <ClInclude Include="ToggleBoxWidget.h" />
     <ClInclude Include="VolumeWidget.h" />
     <ClInclude Include="Widget.h" />
@@ -56,6 +57,7 @@
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">false</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="TextWidget.cpp" />
     <ClCompile Include="ToggleBoxWidget.cpp" />
     <ClCompile Include="VolumeWidget.cpp" />
     <ClCompile Include="Widget.cpp" />

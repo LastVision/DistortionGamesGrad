@@ -10,6 +10,7 @@
 #include "../InputWrapper/InputWrapper.h"
 #include "LevelButtonWidget.h"
 #include "SpriteWidget.h"
+#include "TextWidget.h"
 #include "ToggleBoxWidget.h"
 #include "VolumeWidget.h"
 #include "WidgetContainer.h"
@@ -443,6 +444,11 @@ namespace GUI
 							container->AddWidget(button);
 						}
 					}
+					container->AddWidget(widget);
+				}
+				else if (type == "text")
+				{
+					TextWidget* widget = new TextWidget(&aReader, widgetElement);
 					container->AddWidget(widget);
 				}
 				else if (type == "levelButton")
