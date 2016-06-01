@@ -13,7 +13,10 @@ ScoreComponent::~ScoreComponent()
 
 void ScoreComponent::Update(float aDeltaTime)
 {
-	myScore.myTime += aDeltaTime;
+	if (myScore.myReachedGoal == false)
+	{
+		myScore.myTime += aDeltaTime;
+	}
 }
 
 void ScoreComponent::ReceiveNote(const DeathNote&)
