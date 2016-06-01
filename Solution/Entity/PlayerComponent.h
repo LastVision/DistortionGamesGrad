@@ -30,6 +30,7 @@ public:
 private:
 	const PlayerComponentData& myData;
 	bool myShouldDie;
+	bool myIsAlive;
 	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
 		, const CU::Vector3<float>&)> myRaycastHandler;
 	CU::Vector3<float> myPreviousPosition;

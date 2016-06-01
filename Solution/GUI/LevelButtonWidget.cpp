@@ -19,9 +19,9 @@ namespace GUI
 		, myStarPosition(aStarPosition)
 		, myStarOffset(aStarOffest)
 	{
-		myStars.Add(new StarWidget(someStars > 0, 1, mySize * 0.5f));
-		myStars.Add(new StarWidget(someStars > 1, 2, mySize * 0.5f));
-		myStars.Add(new StarWidget(someStars > 2, 3, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 0, 1, true, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 1, 2, true, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 2, 3, true, mySize * 0.5f));
 	}
 
 	LevelButtonWidget::~LevelButtonWidget()
@@ -64,9 +64,9 @@ namespace GUI
 
 	void LevelButtonWidget::SetStars(const int someStars)
 	{
-		myStars.Add(new StarWidget(someStars > 0, 1, mySize * 0.5f));
-		myStars.Add(new StarWidget(someStars > 1, 2, mySize * 0.5f));
-		myStars.Add(new StarWidget(someStars > 2, 3, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 0, 1, true, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 1, 2, true, mySize * 0.5f));
+		myStars.Add(new StarWidget(someStars > 2, 3, true, mySize * 0.5f));
 
 		myStarPosition = { -64.f, -38.f };
 		myStarOffset.x = 64.f;

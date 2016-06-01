@@ -30,6 +30,10 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myEarnedStars(0)
 	, myEarnedStarsText("")
 {
+	if (GC::NightmareMode == true)
+	{
+		myCurrentLevel += 1000;
+	}
 	for each (const Score* score in myScores)
 	{
 		if (score->myActive == true)

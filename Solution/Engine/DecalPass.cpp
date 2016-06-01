@@ -196,20 +196,28 @@ namespace Prism
 	void DecalPass::SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy)
 	{
 		aGBufferCopy->Copy(*aGBuffer);
+#ifdef PBL_DECALS
 		aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
 
 		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
 		myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
 		myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
 		myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
+#else
+		aGBuffer->SetAlbedoAsRenderTarget(Engine::GetInstance()->GetDepthView());
+		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
+#endif
 	}
 
 	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
 	{
 		myAlbedo->SetResource(aDecal.myTextures->myTexture->GetShaderView());
+
+#ifdef PBL_DECALS
 		myMetalness->SetResource(aDecal.myTextures->myMetalness->GetShaderView());
 		myRoughness->SetResource(aDecal.myTextures->myRoughness->GetShaderView());
 		myNormal->SetResource(aDecal.myTextures->myNormalMap->GetShaderView());
+#endif
 
 		float alpha = min(1.f, aDecal.myTime);
 		if (alpha < 1.f)
