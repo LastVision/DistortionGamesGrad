@@ -281,19 +281,10 @@ namespace Prism
 			}
 
 
-// 			if (myEntity == nullptr)
-// 			{
 				gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
 				gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
 				gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
-			//}
-		/*	else
-			{
-				if (myEntity != nullptr && myEntity->GetComponent<InputComponent>() != nullptr)
-				{
-					gfxParticle.myPosition += (logicParticle.myDirection * logicParticle.mySpeed) * aDeltaTime;
-				}
-			}*/
+
 			gfxParticle.mySize += particleData.mySizeDelta * aDeltaTime;
 			
 			if (myStates[USE_ALPHA_DELTA] == TRUE)
@@ -409,8 +400,12 @@ namespace Prism
 
 			logicParticle.myIsAlive = true;
 
-			logicParticle.myRotation = CU::Math::RandomRange(myParticleEmitterData->myParticleRotation.x, myParticleEmitterData->myParticleRotation.y);
-			gfxParticle.myRotation = logicParticle.myRotation;
+			gfxParticle.myRotation = myRotationToOverrideWith;
+			if (myOverrideRotation == false)
+			{
+				logicParticle.myRotation = CU::Math::RandomRange(myParticleEmitterData->myParticleRotation.x, myParticleEmitterData->myParticleRotation.y);
+				gfxParticle.myRotation = logicParticle.myRotation;
+			}
 
 			logicParticle.myRotationDelta = myParticleEmitterData->myRotationDelta;
 			myParticleIndex += 1;
@@ -507,4 +502,10 @@ namespace Prism
 		myOtherOrientation = aMatrix;
 	}
 
+	void ParticleEmitterInstance::CalcRotation(const CU::Vector3f& aDirectionToCalcFrom)
+	{
+		float angle = acos(CU::Dot(myDirection, aDirectionToCalcFrom));
+		myRotationToOverrideWith = angle;
+		myOverrideRotation = true;
+	}
 }

@@ -393,7 +393,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					first->GetComponent<MovementComponent>()->SetVelocity({ second->GetOrientation().GetUp().x * force
 						, second->GetOrientation().GetUp().y * force });
 					second->SendNote(BounceNote());
-					PostMaster::GetInstance()->SendMessage(EmitterMessage("Bounce", second->GetOrientation().GetPos(), second->GetOrientation().GetUp()));
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Bounce", second->GetOrientation().GetPos(), true, second->GetOrientation().GetUp()));
 				}
 				
 				else if (first->GetComponent<MovementComponent>()->IsInDashFly() == true)
