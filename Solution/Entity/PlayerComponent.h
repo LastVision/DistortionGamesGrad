@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include <functional>
 
 struct PlayerComponentData;
 
@@ -8,6 +9,8 @@ class PlayerComponent : public Component
 public:
 	PlayerComponent(Entity& anEntity, const PlayerComponentData& aData);
 	~PlayerComponent();
+
+	void Reset() override;
 
 	void Update(float aDeltaTime) override;
 	void EvaluateDeath();
@@ -21,9 +24,15 @@ public:
 	void ReceiveNote(const ShouldDieNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
 
+	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
+
 private:
 	const PlayerComponentData& myData;
 	bool myShouldDie;
+	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
+		, const CU::Vector3<float>&)> myRaycastHandler;
+	CU::Vector3<float> myPreviousPosition;
 };
 
 inline eComponentType PlayerComponent::GetTypeStatic()
