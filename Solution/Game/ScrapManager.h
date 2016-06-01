@@ -1,11 +1,13 @@
 #pragma once
-
+#include <AnimationJoint.h>
 class Entity;
 
 namespace Prism
 {
 	class Scene;
 }
+
+class Hat;
 
 class ScrapManager : public Subscriber
 {
@@ -32,8 +34,19 @@ private:
 		float myMaxTime;
 	};
 
-	CU::GrowingArray<BodyPart> myHeads;
-	CU::GrowingArray<BodyPart*> myLiveHeads;
+	struct HeadPart
+	{
+		HeadPart::HeadPart() : myEntity(nullptr), myTimer(0.f), myMaxTime(10.f), myHat(nullptr){}
+		Entity* myEntity;
+		float myTimer;
+		float myMaxTime;
+		
+		Hat* myHat;
+		AnimationJoint myJoint;
+	};
+
+	CU::GrowingArray<HeadPart> myHeads;
+	CU::GrowingArray<HeadPart*> myLiveHeads;
 	int myHeadIndex;
 
 	CU::GrowingArray<BodyPart> myLegs;

@@ -23,6 +23,8 @@ public:
 
 	void ReceiveNote(const ShouldDieNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
+	void ReceiveNote(const ReachedGoalNote& aMessage) override;
+
 
 	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);

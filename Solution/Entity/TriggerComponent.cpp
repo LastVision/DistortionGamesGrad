@@ -32,7 +32,7 @@ void TriggerComponent::Activate()
 {
 }
 
-int TriggerComponent::GetLevelID()
+int TriggerComponent::GetLevelID() const
 {
 	return myLevelToChangeToID;
 }

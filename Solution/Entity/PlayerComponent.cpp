@@ -128,6 +128,10 @@ void PlayerComponent::ReceiveNote(const SpawnNote&)
 	myIsAlive = true;
 }
 
+void PlayerComponent::ReceiveNote(const ReachedGoalNote& aMessage)
+{
+}
+
 void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 {
@@ -136,8 +140,7 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		const Entity& other(aComponent->GetEntity());
 		if (other.GetType() == eEntityType::GOAL_POINT)
 		{
-			myEntity.SendNote(ReachedGoalNote());
-			PostMaster::GetInstance()->SendMessage(ReachedGoalMessage(&aComponent->GetEntity()));
+			myEntity.SendNote(ReachedGoalNote(&aComponent->GetEntity()));
 		}
 		else if (other.GetType() != eEntityType::SPAWN_POINT
 			&& other.GetType() != eEntityType::PLAYER
