@@ -263,6 +263,11 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::RETURN_TO_GAME);
 		}
+		else if (clickEvent == "enable_offline")
+		{
+			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_TOGGLE_OFFLINE_MODE, myId);
+		}
 		else
 		{
 			std::string message = "[ButtonWidget]: No onclick event named " + clickEvent;

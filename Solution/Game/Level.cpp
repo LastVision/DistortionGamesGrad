@@ -12,6 +12,7 @@
 #include <EmitterMessage.h>
 #include <EntityFactory.h>
 #include <FinishLevelMessage.h>
+#include "FirstTimeFinishLevelState.h"
 #include <InputComponent.h>
 #include <InputWrapper.h>
 #include "Level.h"
@@ -194,8 +195,16 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
-		SET_RUNTIME(false);
-		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+		if (GC::FirstTimeScoreSubmit == true)
+		{
+			SET_RUNTIME(false);
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+		}
+		else
+		{
+			SET_RUNTIME(false);
+			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
+		}
 	}
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true ||
@@ -245,9 +254,17 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
 			myShouldRenderCountDown = false;
-			SET_RUNTIME(false);
 			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+			if (GC::FirstTimeScoreSubmit == true)
+			{
+				SET_RUNTIME(false);
+				myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+			}
+			else
+			{
+				SET_RUNTIME(false);
+				myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
+			}
 		}
 	}
 	else
@@ -446,10 +463,18 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				if (myPlayerWinCount >= myPlayersPlaying)
 				{
 					myShouldRenderCountDown = false;
-					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
 
-					SET_RUNTIME(false);
-					myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+					if (GC::FirstTimeScoreSubmit == true)
+					{
+						SET_RUNTIME(false);
+						myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+					}
+					else 
+					{
+						SET_RUNTIME(false);
+						myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
+					}
 				}
 
 			}
