@@ -23,6 +23,9 @@ DashFlyMovement::~DashFlyMovement()
 void DashFlyMovement::Reset()
 {
 	myTimer = myData.myDashFlyTime;
+	myVelocity = CU::Vector2<float>();
+	myIsActive = false;
+	myIsInSteam = false;
 }
 
 void DashFlyMovement::Update(float aDeltaTime, bool)

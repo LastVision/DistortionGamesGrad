@@ -162,6 +162,7 @@ int main(int argC,      // Number of strings in array argv
 
 		reader = new ModelCountReader();
 		reader->ReadFile("GeneratedData/LI_level.xml");
+		reader->ReadFile("GeneratedData/LI_level_nightmare.xml");
 		delete reader;
 
 		std::cout << "\n---| ModelCount Reading Done |---\n" << std::endl;

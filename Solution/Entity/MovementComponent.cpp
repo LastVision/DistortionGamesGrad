@@ -24,6 +24,7 @@ MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentDat
 	, myVelocities(8)
 	, myVelocityIndex(0)
 	, myAverageVelocityTimer(0.5f)
+	, myShouldCollide(true)
 {
 	myMovements[eMovementType::FLY] = new FlyMovement(aData, anOrientation, *this);
 	myMovements[eMovementType::WALK] = new WalkMovement(aData, anOrientation, *this);
@@ -64,6 +65,8 @@ void MovementComponent::Reset()
 		myMovements[i]->Reset();
 	}
 	myDashCooldown = 0.f;
+	myVelocity = CU::Vector2<float>();
+	myShouldCollide = false;
 }
 
 void MovementComponent::Update(float aDeltaTime)
@@ -76,8 +79,8 @@ void MovementComponent::Update(float aDeltaTime)
 	myDashCooldown -= aDeltaTime;
 	myAverageVelocityTimer -= aDeltaTime;
 
-	bool shouldCollide = myCollisionTimer <= 0.f;
-	myMovements[myCurrentMovement]->Update(aDeltaTime, shouldCollide);
+	myShouldCollide = myCollisionTimer <= 0.f;
+	myMovements[myCurrentMovement]->Update(aDeltaTime, myShouldCollide);
 
 	if (myIsInSteam == true)
 	{

@@ -35,6 +35,8 @@ bool GC::OptionsUseShadows = true;
 #else
 bool GC::OptionsUseShadows = false;
 #endif
+bool GC::OptionsEnableOffline = false;
+
 
 bool GC::EnableCheat = false;
 
@@ -50,3 +52,5 @@ bool GC::HasBeenInVictoryScreenNightmare = false;
 int GC::Gold = 0;
 
 int GC::CurrentActivePlayers = 0;
+
+bool GC::FirstTimeScoreSubmit = false;
