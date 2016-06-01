@@ -83,10 +83,10 @@ namespace Prism
 		, myIsSwapping(false)
 		, myIsReading(false)
 	{
-		myRaycastJobs[0].Init(64);
-		myRaycastJobs[1].Init(64);
-		myRaycastResults[0].Init(64);
-		myRaycastResults[1].Init(64);
+		myRaycastJobs[0].Init(256);
+		myRaycastJobs[1].Init(256);
+		myRaycastResults[0].Init(256);
+		myRaycastResults[1].Init(256);
 		myForceJobs[0].Init(64);
 		myForceJobs[1].Init(64);
 		myVelocityJobs[0].Init(64);

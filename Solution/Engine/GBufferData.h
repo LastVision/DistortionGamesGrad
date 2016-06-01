@@ -15,6 +15,8 @@ namespace Prism
 		void Clear(float* aClearColor);
 		void SetAsRenderTarget(Texture* aDepthTexture);
 		void SetAsRenderTarget(ID3D11DepthStencilView* aDepthStencil);
+		void SetAlbedoAsRenderTarget(Texture* aDepthTexture);
+		void SetAlbedoAsRenderTarget(ID3D11DepthStencilView* aDepthStencil);
 
 		void Copy(const GBufferData& aSource);
 

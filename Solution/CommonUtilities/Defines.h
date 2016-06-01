@@ -51,3 +51,4 @@
 
 #define SHADOWS
 #define FPS_INDEPENDENT_INPUT
+//#define PBL_DECALS

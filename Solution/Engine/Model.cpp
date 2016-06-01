@@ -90,6 +90,13 @@ namespace Prism
 			{
 				//EvaluateEffectTechnique(false);
 				myTechniqueName = "Render";
+
+#ifndef PBL_DECALS
+				if (myEffect->GetFileName().find("decal") != std::string::npos)
+				{
+					myTechniqueName += "_NO_PBL";
+				}
+#endif
 				InitInputLayout(vertexDesc, size-6, "Model::InputLayout");
 			}
 			delete[] vertexDesc;

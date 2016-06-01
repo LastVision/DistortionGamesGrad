@@ -19,6 +19,7 @@ PlayerComponent::PlayerComponent(Entity& anEntity, const PlayerComponentData& aD
 	: Component(anEntity)
 	, myData(aData)
 	, myShouldDie(false)
+	, myIsAlive(true)
 {
 	myRaycastHandler = [=](PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 	{
@@ -54,9 +55,12 @@ void PlayerComponent::Update(float)
 
 			direction /= length;
 
+			int rayCount = 0;
 			float stepSize = 0.1f;
-			while (length > stepSize)
+			while (length > stepSize && rayCount < 32)
 			{
+				++rayCount;
+
 				Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
 					, myEntity.GetComponent<PhysicsComponent>());
 				position += direction * stepSize;
@@ -72,6 +76,7 @@ void PlayerComponent::EvaluateDeath()
 	if (myShouldDie == true)
 	{
 		myShouldDie = false;
+		myIsAlive = false;
 		PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::BODY, myEntity.GetOrientation().GetPos()
 			, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 		if (myEntity.GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
@@ -111,12 +116,16 @@ void PlayerComponent::HandleCollision(Entity* aOther)
 
 void PlayerComponent::ReceiveNote(const ShouldDieNote&)
 {
-	myShouldDie = true;
+	if (myIsAlive == true)
+	{
+		myShouldDie = true;
+	}
 }
 
 void PlayerComponent::ReceiveNote(const SpawnNote&)
 {
 	PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+	myIsAlive = true;
 }
 
 void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
