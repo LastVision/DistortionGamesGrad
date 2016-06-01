@@ -22,7 +22,7 @@ struct EmitterMessage : public Message
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, float anEmitterLifeTime, float aRadius);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aRandomDirection, bool aIsAffectedByGravity);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, bool aShouldRotate, const CU::Vector3f& aDirection);
-
+	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float aLifeTime);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, bool aRandomDirection);
 	EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, const CU::Vector3f& aRotation);
@@ -205,5 +205,15 @@ inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU
 	, myPosition(aPosition)
 	, myDirection(aDirection)
 	, myIsRotated(aShouldRotate)
+{
+}
+
+inline EmitterMessage::EmitterMessage(const std::string& aParticleType, const CU::Vector3f& aPosition, const CU::Vector3f& aDirection, float aLifeTime)
+	: Message(eMessageType::PARTICLE)
+	, myParticleTypeString(aParticleType)
+	, myPosition(aPosition)
+	, myDirection(aDirection)
+	, myEmitterLifeTime(aLifeTime)
+	, myUseDirection(true)
 {
 }

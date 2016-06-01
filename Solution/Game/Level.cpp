@@ -395,7 +395,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 					second->SendNote(BounceNote());
 					PostMaster::GetInstance()->SendMessage(EmitterMessage("Bounce", second->GetOrientation().GetPos(), true, second->GetOrientation().GetUp()));
 				}
-				
 				else if (first->GetComponent<MovementComponent>()->IsInDashFly() == true)
 				{
 					KillPlayer(first);
@@ -492,7 +491,6 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
 		{
 			first->SetShouldBeRemoved(true);
-
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
@@ -500,7 +498,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			}
 			else
 			{
-				//acid hit ground effect
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos()));
 			}
 		}
 	}

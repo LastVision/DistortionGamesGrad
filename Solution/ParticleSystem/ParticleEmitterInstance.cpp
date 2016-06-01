@@ -504,7 +504,11 @@ namespace Prism
 
 	void ParticleEmitterInstance::CalcRotation(const CU::Vector3f& aDirectionToCalcFrom)
 	{
-		float angle = acos(CU::Dot(myDirection, aDirectionToCalcFrom));
+		float dot = CU::Dot(aDirectionToCalcFrom, CU::Vector3f(0.f, 1.f, 0.f));
+		float det = CU::Dot(CU::Vector3f(0.f, 0.f, 1.f), CU::Cross(aDirectionToCalcFrom , CU::Vector3f(0.f, 1.f, 0.f)));
+
+		float angle = -atan2(det, dot);
+
 		myRotationToOverrideWith = angle;
 		myOverrideRotation = true;
 	}

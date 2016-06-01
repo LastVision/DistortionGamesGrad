@@ -70,7 +70,7 @@ void InputComponent::Update(float aDeltaTime)
 			myIsInLevel = true;
 			PostMaster::GetInstance()->SendMessage(OnPlayerJoin());
 		}
-		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myOrientation.GetPos(), myOrientation.GetUp(), 2.f));
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Spawn", myOrientation.GetPos(), myOrientation.GetUp(), 2.f));
 		myIntendToSpawn = false;
 		myEntity.SendNote(SpawnNote());
 		myIsActive = true;
