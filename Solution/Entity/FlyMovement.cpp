@@ -43,6 +43,8 @@ void FlyMovement::Init()
 void FlyMovement::Reset()
 {
 	myVelocity = CU::Vector2<float>();
+	myIsActive = false;
+	myIsInSteam = false;
 }
 
 void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)

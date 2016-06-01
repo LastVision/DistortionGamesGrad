@@ -84,6 +84,11 @@ void PlayerComponent::HandleCollision(Entity* aOther)
 		return;
 	}
 
+	if (myEntity.GetComponent<MovementComponent>()->GetShouldCollide() == false)
+	{
+		return;
+	}
+
 	CU::Vector2<float> velocity = myEntity.GetComponent<MovementComponent>()->GetVelocity();
 	if (CU::Length2(velocity) > myData.myDeathSpeed * myData.myDeathSpeed)
 	{
