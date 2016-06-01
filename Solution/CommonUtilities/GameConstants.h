@@ -31,6 +31,7 @@ public:
 
 	static bool OptionsUseViberations;
 	static bool OptionsUseShadows;
+	static bool OptionsEnableOffline;
 
 	static bool EnableCheat;
 
@@ -45,4 +46,6 @@ public:
 	static int Gold;
 
 	static int CurrentActivePlayers;
+
+	static bool FirstTimeScoreSubmit;
 };

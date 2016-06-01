@@ -23,8 +23,11 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "backgroundsprite"), "path", spritePathBackground);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "coopwidget"), "flag", myIsCoop);
 
-		mySQLWrapper.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-		myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+		if (GC::OptionsEnableOffline == false)
+		{
+			mySQLWrapper.Connect("mysql334.loopia.se", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+		}
 		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
 
 		std::stringstream ss;
@@ -119,7 +122,7 @@ namespace GUI
 		myHighscoreTextScore = "Score\n";
 		textPosition.x += 160;
 		myTextScorePosition = textPosition;
-		myLocalBestScoreTextPosition.y = textPosition.y;
+		myLocalBestScoreTextPosition.y = textPosition.y - 400.f;
 		if (mySQLWrapper.GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
@@ -142,13 +145,11 @@ namespace GUI
 
 				ss << score.myScore << "\n";
 				myHighscoreTextScore += ss.str();
-				myLocalBestScoreTextPosition.y -= 40;
 			}
 		}
 		else
 		{
 			myHighscoreTextRank += "No Internet connection active.";
-			myLocalBestScoreTextPosition.y -= 40;
 		}
 		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - 30.f;
 	}
