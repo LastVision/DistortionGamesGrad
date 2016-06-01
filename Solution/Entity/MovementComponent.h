@@ -51,6 +51,7 @@ public:
 	eComponentType GetType() override;
 
 	bool IsInDashFly() const;
+	bool GetShouldCollide() const;
 
 private:
 	const MovementComponentData& myData;
@@ -76,6 +77,7 @@ private:
 
 	CU::Vector2<float> mySpawnVelocity;
 	float myCollisionTimer;
+	bool myShouldCollide;
 };
 
 inline void MovementComponent::SetSpawnVelocity(const CU::Vector2<float>& aSpawnVelocity)
@@ -96,6 +98,11 @@ inline eComponentType MovementComponent::GetType()
 inline bool MovementComponent::IsInDashFly() const
 {
 	return myCurrentMovement == eMovementType::DASH_FLY;
+}
+
+inline bool MovementComponent::GetShouldCollide() const
+{
+	return myShouldCollide;
 }
 
 inline const CU::Vector2<float>& MovementComponent::GetAverageVelocity() const

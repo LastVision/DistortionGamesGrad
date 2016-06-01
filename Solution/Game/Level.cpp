@@ -479,6 +479,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 			}
 			break;
+		default:
+			first->GetComponent<PlayerComponent>()->HandleCollision(second);
+			break;
 		}
 	}
 	else if (first->GetType() == eEntityType::SCRAP)

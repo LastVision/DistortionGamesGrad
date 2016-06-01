@@ -43,7 +43,9 @@ DashAimMovement::~DashAimMovement()
 
 void DashAimMovement::Reset()
 {
-
+	myVelocity = CU::Vector2<float>();
+	myIsActive = false;
+	myIsInSteam = false;
 }
 
 void DashAimMovement::Update(float aDeltaTime, bool)

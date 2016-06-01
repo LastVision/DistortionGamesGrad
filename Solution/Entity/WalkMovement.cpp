@@ -30,6 +30,8 @@ void WalkMovement::Reset()
 	myPreviousVelocity.x = 0.f;
 	myPreviousVelocity.y = 0.f;
 	myHasContact = true;
+	myIsActive = false;
+	myIsInSteam = false;
 }
 
 void WalkMovement::Update(float aDeltaTime, bool)
