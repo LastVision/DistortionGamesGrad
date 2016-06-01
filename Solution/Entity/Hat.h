@@ -15,6 +15,6 @@ public:
 
 	Prism::Instance* myInstance;
 	CU::Matrix44<float> myOrientation;
-	int myID;
+
 };
 

@@ -2,10 +2,15 @@
 
 #include <Entity.h>
 #include <EntityFactory.h>
+#include <Hat.h>
+#include <HatManager.h>
+#include <Instance.h>
+#include <ModelLoader.h>
 #include <PhysicsComponent.h>
 #include <PostMaster.h>
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
+#include <Scene.h>
 
 ScrapManager::ScrapManager(Prism::Scene* aScene, int aPlayerID)
 	: myPlayerID(aPlayerID)
@@ -37,6 +42,8 @@ ScrapManager::~ScrapManager()
 	for (int i = 0; i < myHeads.Size(); ++i)
 	{
 		SAFE_DELETE(myHeads[i].myEntity);
+		SAFE_DELETE(myHeads[i].myHat->myInstance);
+		SAFE_DELETE(myHeads[i].myHat);
 	}
 	for (int i = 0; i < myBodies.Size(); ++i)
 	{
@@ -58,12 +65,21 @@ void ScrapManager::Update(float aDeltaTime)
 {
 	for (int i = myLiveHeads.Size() - 1; i >= 0; --i)
 	{
-		myLiveHeads[i]->myTimer += aDeltaTime;
-		myLiveHeads[i]->myEntity->Update(aDeltaTime);
-
-		if (myLiveHeads[i]->myTimer >= myLiveHeads[i]->myMaxTime)
+		HeadPart& head = *myLiveHeads[i];
+		head.myTimer += aDeltaTime;
+		head.myEntity->Update(aDeltaTime);
+		if (head.myHat != nullptr)
 		{
-			myLiveHeads[i]->myEntity->RemoveFromScene();
+			head.myHat->Update(head.myEntity->GetOrientation(), head.myJoint, aDeltaTime);
+		}
+		if (head.myTimer >= head.myMaxTime)
+		{
+			if (head.myHat != nullptr)
+			{
+				head.myEntity->GetScene()->RemoveInstance(head.myHat->myInstance);
+			}
+			head.myEntity->RemoveFromScene();
+
 			//myLiveHeads[i]->myEntity->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			myLiveHeads.RemoveCyclicAtIndex(i);
 		}
@@ -98,16 +114,17 @@ void ScrapManager::Update(float aDeltaTime)
 
 	for (int i = myLiveGibs.Size() - 1; i >= 0; --i)
 	{
-		myLiveGibs[i]->myTimer += aDeltaTime;
-		myLiveGibs[i]->myScrew->Update(aDeltaTime);
-		myLiveGibs[i]->myScrewNut->Update(aDeltaTime);
-		myLiveGibs[i]->mySpring->Update(aDeltaTime);
+		GibPart& gib = *myLiveGibs[i];
+		gib.myTimer += aDeltaTime;
+		gib.myScrew->Update(aDeltaTime);
+		gib.myScrewNut->Update(aDeltaTime);
+		gib.mySpring->Update(aDeltaTime);
 
-		if (myLiveGibs[i]->myTimer >= myLiveGibs[i]->myMaxTime)
+		if (gib.myTimer >= gib.myMaxTime)
 		{
-			myLiveGibs[i]->myScrew->RemoveFromScene();
-			myLiveGibs[i]->myScrewNut->RemoveFromScene();
-			myLiveGibs[i]->mySpring->RemoveFromScene();
+			gib.myScrew->RemoveFromScene();
+			gib.myScrewNut->RemoveFromScene();
+			gib.mySpring->RemoveFromScene();
 			//myLiveGibs[i]->myScrew->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			//myLiveGibs[i]->myScrewNut->GetComponent<PhysicsComponent>()->RemoveFromScene();
 			//myLiveGibs[i]->mySpring->GetComponent<PhysicsComponent>()->RemoveFromScene();
@@ -127,7 +144,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myHeadIndex = 0;
 		}
 
-		BodyPart* toAdd = &myHeads[myHeadIndex];
+		HeadPart* toAdd = &myHeads[myHeadIndex];
 		toAdd->myTimer = 0.f;
 		bool isAlreadyInScene = toAdd->myEntity->IsInScene();
 		if (isAlreadyInScene == false)
@@ -136,6 +153,10 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 			myLiveHeads.Add(toAdd);
 
 			toAdd->myEntity->AddToScene();
+			if (toAdd->myHat != nullptr)
+			{
+				toAdd->myEntity->GetScene()->AddInstance(toAdd->myHat->myInstance, true);
+			}
 			if (toAdd->myEntity->GetComponent<PhysicsComponent>()->IsInScene() == false)
 			{
 				toAdd->myEntity->GetComponent<PhysicsComponent>()->AddToScene();
@@ -281,10 +302,25 @@ void ScrapManager::CreateHeads()
 {
 	std::string headName("head");
 	headName += std::to_string(myPlayerID);
+
+	int hatID = HatManager::GetInstance()->GetHatIDOnPlayer(myPlayerID);
+
+	std::string fbxName("Data/Resource/Model/Player/SM_character_head_hatjoint_player" + std::to_string(myPlayerID) + ".fbx");
+
 	for (int i = 0; i < myHeads.GetCapacity(); ++i)
 	{
-		BodyPart toAdd;
+		HeadPart toAdd;
 		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, headName, myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
+
+		while (Prism::ModelLoader::GetInstance()->IsLoading());
+
+		Prism::ModelLoader::GetInstance()->GetHierarchyToBone(fbxName, "hat_jnt-1", toAdd.myJoint);
+
+		if (hatID != -1)
+		{
+			toAdd.myHat = new Hat();
+			toAdd.myHat->myInstance = new Prism::Instance(*HatManager::GetInstance()->GetHat(hatID), toAdd.myHat->myOrientation);
+		}
 		myHeads.Add(toAdd);
 	}
 }
