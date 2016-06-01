@@ -36,6 +36,7 @@ private:
 	void LoadEntity(const char* aEntityPath);
 	void ReloadEntity(const std::string& aEntityPath);
 	void ReadComponents(XMLReader& aReader, tinyxml2::XMLElement* aEntityElement, EntityData& someEntityData);
+	void WatchFile(const std::string& aEntityPath);
 
 	EntityFactory();
 	~EntityFactory();

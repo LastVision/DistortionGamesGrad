@@ -37,7 +37,8 @@ void EntityFactory::LoadEntities(const char* aEntityListXML)
 		entityListDocument.ForceReadAttribute(e, "src", entityPath);
 		LoadEntity(entityPath.c_str());
 
-		myFileWatcher.WatchFileChange(entityPath, std::bind(&EntityFactory::ReloadEntity, this, std::placeholders::_1));
+
+		WatchFile(entityPath);
 	}
 
 	entityListDocument.CloseDocument();
@@ -242,6 +243,18 @@ void EntityFactory::ReadComponents(XMLReader& aReader, tinyxml2::XMLElement* aEn
 				" is not Supported. Please check if you spelled correctly.";
 			DL_ASSERT(errorMessage.c_str());
 		}
+	}
+}
+
+void EntityFactory::WatchFile(const std::string& aEntityPath)
+{
+	int startIndex = aEntityPath.rfind("/") - 6;
+	int endIndex = startIndex + 6;
+	std::string folderName(aEntityPath.begin() + startIndex, aEntityPath.begin() + endIndex);
+
+	if (folderName == "Entity")
+	{
+		myFileWatcher.WatchFileChange(aEntityPath, std::bind(&EntityFactory::ReloadEntity, this, std::placeholders::_1));
 	}
 }
 
