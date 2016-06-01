@@ -169,6 +169,7 @@
     <ClInclude Include="OnPlayerLevelComplete.h" />
     <ClInclude Include="PlayerActiveMessage.h" />
     <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="ReachedGoalMessage.h" />
     <ClInclude Include="ResizeMessage.h" />
     <ClInclude Include="ReturnToMenuMessage.h" />
     <ClInclude Include="ScrapMessage.h" />

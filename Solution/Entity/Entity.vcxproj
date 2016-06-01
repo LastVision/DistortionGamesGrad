@@ -200,6 +200,7 @@
     <ClInclude Include="PlayerGraphicsComponent.h" />
     <ClInclude Include="PlayerGraphicsComponentData.h" />
     <ClInclude Include="PollingStation.h" />
+    <ClInclude Include="ReachedGoalNote.h" />
     <ClInclude Include="SawBladeComponent.h" />
     <ClInclude Include="SawBladeComponentData.h" />
     <ClInclude Include="Score.h" />

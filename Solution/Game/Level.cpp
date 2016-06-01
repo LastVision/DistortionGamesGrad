@@ -46,6 +46,7 @@
 #include <TextureContainer.h>
 #include "PauseMenuState.h"
 #include <PointLight.h>
+#include <ReachedGoalMessage.h>
 #include <VibrationNote.h>
 
 #include <Texture.h>
@@ -77,7 +78,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH | eMessageType::REACHED_GOAL);
 
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
@@ -606,6 +607,29 @@ void Level::ReceiveMessage(const OnDeathMessage& aMessage)
 		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
 			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight());
+		}
+	}
+}
+
+void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
+{
+	myPlayerWinCount++;
+	TriggerComponent* trigger = aMessage.myGoalEntity->GetComponent<TriggerComponent>();
+	myLevelToChangeToID = trigger->GetLevelID();
+	if (myPlayerWinCount >= myPlayersPlaying)
+	{
+		myShouldRenderCountDown = false;
+
+		PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+		if (GC::FirstTimeScoreSubmit == true)
+		{
+			SET_RUNTIME(false);
+			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+		}
+		else
+		{
+			SET_RUNTIME(false);
+			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
 		}
 	}
 }

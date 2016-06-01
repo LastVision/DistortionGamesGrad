@@ -15,6 +15,7 @@ public:
 
 	void ReceiveNote(const DeathNote& aMessage) override;
 	void ReceiveNote(const SpawnNote& aMessage) override;
+	void ReceiveNote(const ReachedGoalNote& aMessage) override;
 
 	const Score* GetScore() const;
 

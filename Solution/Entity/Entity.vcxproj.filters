@@ -278,5 +278,8 @@
     </ClInclude>
     <ClInclude Include="Hat.h" />
     <ClInclude Include="HatManager.h" />
+    <ClInclude Include="ReachedGoalNote.h">
+      <Filter>Notes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
