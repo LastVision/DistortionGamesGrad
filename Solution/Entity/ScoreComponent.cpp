@@ -37,8 +37,8 @@ void ScoreComponent::ReceiveNote(const ReachedGoalNote& aMessage)
 {
 	if (myScore.myReachedGoal == false)
 	{
-		PostMaster::GetInstance()->SendMessage(ReachedGoalMessage(aMessage.myGoal, &myEntity));
 		myScore.myReachedGoal = true;
+		PostMaster::GetInstance()->SendMessage(ReachedGoalMessage(aMessage.myGoal, &myEntity));
 	}
 }
 
