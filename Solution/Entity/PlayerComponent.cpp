@@ -4,6 +4,8 @@
 #include "InputComponent.h"
 #include "MovementComponent.h"
 #include <OnDeathMessage.h>
+#include "PhysicsComponent.h"
+#include <PhysicsInterface.h>
 #include <PlayerActiveMessage.h>
 #include "PlayerComponent.h"
 #include <PostMaster.h>
@@ -16,10 +18,19 @@ PlayerComponent::PlayerComponent(Entity& anEntity, const PlayerComponentData& aD
 	, myData(aData)
 	, myShouldDie(false)
 {
+	myRaycastHandler = [=](PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+	{
+		this->HandleRaycast(aComponent, aDirection, aHitPosition, aHitNormal);
+	};
 }
 
 PlayerComponent::~PlayerComponent()
 {
+}
+
+void PlayerComponent::Reset()
+{
+	myPreviousPosition = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::Update(float)
@@ -29,6 +40,29 @@ void PlayerComponent::Update(float)
 	{
 		myEntity.SendNote(ShouldDieNote());
 	}
+
+	if (myEntity.GetComponent<MovementComponent>()->GetShouldCollide() == true)
+	{
+		CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
+		CU::Vector3<float> position(myPreviousPosition);
+
+		if (direction != CU::Vector3<float>())
+		{
+			float length = CU::Length(direction);
+
+			direction /= length;
+
+			float stepSize = 0.1f;
+			while (length > stepSize)
+			{
+				Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
+					, myEntity.GetComponent<PhysicsComponent>());
+				position += direction * stepSize;
+				length -= stepSize;
+			}
+		}
+	}
+	myPreviousPosition = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::EvaluateDeath()
@@ -81,4 +115,23 @@ void PlayerComponent::ReceiveNote(const ShouldDieNote&)
 void PlayerComponent::ReceiveNote(const SpawnNote&)
 {
 	PostMaster::GetInstance()->SendMessage(PlayerActiveMessage(true, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+}
+
+void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
+{
+	if (aComponent != nullptr)
+	{
+		const Entity& other(aComponent->GetEntity());
+		if (other.GetType() == eEntityType::GOAL_POINT)
+		{
+			bool CanDanielMakeUsWinLevelHere = true; //?
+		}
+		else if (other.GetType() != eEntityType::SPAWN_POINT
+			&& other.GetType() != eEntityType::PLAYER
+			&& other.GetType() != eEntityType::SCRAP)
+		{
+			myEntity.SendNote<ShouldDieNote>(ShouldDieNote());
+		}
+	}
 }
