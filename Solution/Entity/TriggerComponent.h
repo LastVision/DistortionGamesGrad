@@ -20,7 +20,7 @@ public:
 	eComponentType GetType() override;
 
 	eTriggerType GetTriggerType() const;
-	int GetLevelID();
+	int GetLevelID() const;
 
 	void SetLevelChangeID(int anID);
 

@@ -27,7 +27,7 @@ public:
 	static eComponentType GetTypeStatic();
 	eComponentType GetType() override;
 	void SetPlayerID(int aPlayerID);
-	int GetPlayerID();
+	int GetPlayerID() const;
 	bool GetIsFlipped() const;
 	void SetIsFlipped(bool aIsFlipped);
 	void ReceiveNote(const DeathNote& aMessage) override;
