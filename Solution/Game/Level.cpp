@@ -210,6 +210,29 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		}
 	}
 
+#ifndef RELEASE_BUILD
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
+	{
+		GC::DebugRenderTexture = 0;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_2))
+	{
+		GC::DebugRenderTexture = 1;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_3))
+	{
+		GC::DebugRenderTexture = 2;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_4))
+	{
+		GC::DebugRenderTexture = 3;
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_5))
+	{
+		GC::DebugRenderTexture = 4;
+	}
+#endif
+
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true ||
 		(myController->IsConnected() == true && myController->ButtonOnDown(eXboxButton::START)))
 	{
@@ -293,9 +316,15 @@ void Level::Render()
 
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
-	myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
-		, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
-
+	if (GC::DebugRenderTexture == 0)
+	{
+		myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetFinishedTexture()
+			, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
+	}
+	else
+	{
+		myFullscreenRenderer->DebugRender(myDeferredRenderer->GetGBuffer());
+	}
 
 	for each(Entity* player in myPlayers)
 	{

@@ -33,19 +33,30 @@ namespace Prism
 		myDownSampleVariable = myDownSampleEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 	}
 
+	void HDRData::OnEffectLoad()
+	{
+		myOriginalTexture = myHDREffect->GetEffect()->GetVariableByName("Original")->AsShaderResource();
+		myAverageColorTexture = myHDREffect->GetEffect()->GetVariableByName("AverageColor")->AsShaderResource();
+	}
+
 	FullScreenHelper::FullScreenHelper()
 	{
 		//myFogOfWarEffect = EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_fog_of_war.fx");
 		CreateCombineData();
 		CreateRenderToTextureData();
 		CreateBloomData();
+		CreateHDRData();
 
 		CU::Vector2<float> screenSize(static_cast<float>(Engine::GetInstance()->GetWindowSize().x)
 			, static_cast<float>(Engine::GetInstance()->GetWindowSize().y));
 		myProcessingTexture = new Texture();
 		myProcessingTexture->Init(screenSize.x, screenSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
+		myPreBloomSourceTexture = new Texture();
+		myPreBloomSourceTexture->Init(screenSize.x, screenSize.y
+			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
@@ -109,6 +120,15 @@ namespace Prism
 
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessingTexture->GetRenderTargetView(), myClearColor);
 		CopyTexture(aSource, myProcessingTexture);
+		CopyTexture(aSource, myPreBloomSourceTexture);
+
+		if (aEffect & ePostProcessing::HDR)
+		{
+			HDRDownSample(aSource);
+			HDREffect(aSource);
+		}
+
+
 		if (aEffect & ePostProcessing::BLOOM)
 		{
 			Engine::GetInstance()->GetContex()->ClearRenderTargetView(
@@ -118,10 +138,11 @@ namespace Prism
 			Engine::GetInstance()->GetContex()->ClearRenderTargetView(
 				myBloomData.myFinalTexture->GetRenderTargetView(), myClearColor);
 
-			BloomEffect(aEmissiveTexture, "BLOOM_DOWNSAMPLE");
+			BloomEffect(myPreBloomSourceTexture, "BLOOM_DOWNSAMPLE");
 
 			Engine::GetInstance()->RestoreViewPort();
-			CombineTextures(myBloomData.myFinalTexture, aSource, myProcessingTexture, false);
+			CombineTextures(myBloomData.myFinalTexture, myPreBloomSourceTexture, myProcessingTexture, false);
+			//CombineTextures(myBloomData.myFinalTexture, aSource, myProcessingTexture, false);
 		}
 
 		CopyTexture(myProcessingTexture, aTarget);
@@ -132,6 +153,7 @@ namespace Prism
 
 	void FullScreenHelper::RenderToScreen(Texture* aSource)
 	{
+		ActivateBuffers();
 		Engine::GetInstance()->RestoreViewPort();
 		Engine::GetInstance()->SetBackBufferAsTarget();
 		Engine::GetInstance()->SetRasterizeState(eRasterizer::NO_CULLING);
@@ -243,25 +265,25 @@ namespace Prism
 		myBloomData.myFinalTexture->Init(Engine::GetInstance()->GetWindowSize().x / 4.f
 			, Engine::GetInstance()->GetWindowSize().y / 4.f
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 		myBloomData.myMiddleMan = new Texture();
 		myBloomData.myMiddleMan->Init(Engine::GetInstance()->GetWindowSize().x / 4.f
 			, Engine::GetInstance()->GetWindowSize().y / 4.f
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 		myBloomData.myDownSampleTextures[0] = new Texture();
 		myBloomData.myDownSampleTextures[0]->Init(Engine::GetInstance()->GetWindowSize().x / 2.f
 			, Engine::GetInstance()->GetWindowSize().y / 2.f
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 		myBloomData.myDownSampleTextures[1] = new Texture();
 		myBloomData.myDownSampleTextures[1]->Init(Engine::GetInstance()->GetWindowSize().x / 4.f
 			, Engine::GetInstance()->GetWindowSize().y / 4.f
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 
 		myBloomData.myBloomEffect
@@ -273,6 +295,33 @@ namespace Prism
 		myBloomData.OnEffectLoad();
 		myBloomData.myBloomEffect->AddListener(&myBloomData);
 		myBloomData.myDownSampleEffect->AddListener(&myBloomData);
+	}
+
+
+	void FullScreenHelper::CreateHDRData()
+	{
+		float width = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().x);
+		float height = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().y);
+		int hdrTextureCount = HDRLog2(min(width, height)) + 1;
+
+		myHDRData.myHDRDownSamples = new Texture[hdrTextureCount];
+		float size = min(width, height);
+		for (int i = 0; i < hdrTextureCount; ++i)
+		{
+			myHDRData.myHDRDownSamples[i].Init(size, size
+				, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+				, DXGI_FORMAT_R16G16B16A16_FLOAT);
+
+			size /= 2.f;
+		}
+
+		myHDRData.myFinalHDRDownSample = &myHDRData.myHDRDownSamples[hdrTextureCount - 1];
+
+		myHDRData.myHDREffect
+			= EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_hdr.fx");
+
+		myHDRData.OnEffectLoad();
+		myHDRData.myHDREffect->AddListener(&myBloomData);
 	}
 
 	void FullScreenHelper::CreateVertices()
@@ -391,6 +440,50 @@ namespace Prism
 
 		Render(myBloomData.myBloomEffect, "BLOOM_Y");
 		myBloomData.myBloomVariable->SetResource(nullptr);
+	}
+
+
+	void FullScreenHelper::HDRDownSample(Texture* aSource)
+	{
+		float width = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().x);
+		float height = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().y);
+		int hdrTextureCount = HDRLog2(min(width, height)) + 1;
+		float size = min(width, height);
+
+		for (int i = 0; i < hdrTextureCount; ++i)
+		{
+			if (i == 0)
+			{
+				DownSample(&myHDRData.myHDRDownSamples[i], aSource, size, size, "HDR_DOWNSAMPLE");
+			}
+			else
+			{
+				DownSample(&myHDRData.myHDRDownSamples[i], &myHDRData.myHDRDownSamples[i-1], size, size, "HDR_DOWNSAMPLE");
+			}
+
+			size /= 2.f;
+		}
+	}
+
+
+	void FullScreenHelper::HDREffect(Texture* aSource)
+	{
+		Engine::GetInstance()->RestoreViewPort();
+
+		ID3D11RenderTargetView* target = myPreBloomSourceTexture->GetRenderTargetView();
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
+			, Engine::GetInstance()->GetDepthView());
+
+
+		myHDRData.myAverageColorTexture->SetResource(myHDRData.myFinalHDRDownSample->GetShaderView());
+		myHDRData.myOriginalTexture->SetResource(aSource->GetShaderView());
+
+		Render(myHDRData.myHDREffect);
+	}
+
+	float FullScreenHelper::HDRLog2(float aNumber)
+	{
+		return log(aNumber) / log(2.f);
 	}
 
 	void FullScreenHelper::OnResize(float aWidth, float aHeight)

@@ -54,3 +54,5 @@ int GC::Gold = 0;
 int GC::CurrentActivePlayers = 0;
 
 bool GC::FirstTimeScoreSubmit = false;
+
+int GC::DebugRenderTexture = 0;

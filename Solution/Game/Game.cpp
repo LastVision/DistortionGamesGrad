@@ -197,7 +197,7 @@ bool Game::Update()
 	myStateStack.RenderCurrentState();
 
 #ifdef RELEASE_BUILD
-	myTimerManager->CapFrameRate(60.f);
+	myTimerManager->CapFrameRate(65.f);
 #endif
 	myCursor->Update();
 	myCursor->Render();
@@ -245,7 +245,16 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 		GC::OptionsUseShadows = aMessage.myID != 0;
 		break;
 	case eOnClickEvent::OPTIONS_TOGGLE_OFFLINE_MODE:
-		GC::OptionsEnableOffline = aMessage.myID != 0;
+		{
+			GC::OptionsEnableOffline = aMessage.myID != 0;
+			std::ofstream file(CU::GetMyDocumentFolderPath() + "Data\\Setting\\SET_game_setting.bin", std::ios::binary | std::ios::out);
+			if (file.is_open() == true)
+			{
+				file.write(reinterpret_cast<const char*>(&GC::FirstTimeScoreSubmit), sizeof(bool));
+				file.write(reinterpret_cast<const char*>(&GC::OptionsEnableOffline), sizeof(bool));
+				file.close();
+			}
+		}
 		break;
 	case eOnClickEvent::GAME_QUIT:
 		break;

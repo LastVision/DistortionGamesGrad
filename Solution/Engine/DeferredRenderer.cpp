@@ -79,12 +79,12 @@ namespace Prism
 		myFinishedTexture = new Texture();
 		myFinishedTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 		myFinishedSceneTexture = new Texture();
 		myFinishedSceneTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 
 		myParticleTexture = new Texture();
@@ -231,6 +231,11 @@ namespace Prism
 	Prism::Texture* DeferredRenderer::GetDepthStencilTexture()
 	{
 		return myDepthStencilTexture;
+	}
+
+	Prism::GBufferData* DeferredRenderer::GetGBuffer()
+	{
+		return myGBufferData;
 	}
 
 	void DeferredRenderer::InitFullscreenQuad()

@@ -37,6 +37,7 @@ namespace CU
 		bool GetIsOnline();
 	private:
 		void WriteError(MYSQL* aMySQL);
+		void CheckAndClearRankHigherThanMax(const int aLevelID);
 
 		bool myIsOnline;
 		MYSQL* myConnection;
