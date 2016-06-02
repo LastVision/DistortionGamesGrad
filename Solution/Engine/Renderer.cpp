@@ -18,7 +18,7 @@ namespace Prism
 		myFinalTexture = new Texture();
 		myFinalTexture->Init(screenSize.x, screenSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 		myFullScreenHelper = new FullScreenHelper();
 

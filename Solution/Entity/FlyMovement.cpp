@@ -159,7 +159,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 				}
 				else if (myVelocity.y < 0.f)
 				{
-					myVelocity.y = 0;
+					myVelocity.y = fmaxf(0, myVelocity.y);
 					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
 				}
 			}
@@ -181,17 +181,17 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 		else if (aHitNormal.y < -0.5f)
 		{
 			resetPos.y = aHitPosition.y - GC::PlayerRadius * 1.1f;
-			myVelocity.y = 0;
+			myVelocity.y = fminf(0, myVelocity.y);
 		}
 		else if (aDirection.x > 0)
 		{
 			resetPos.x = aHitPosition.x - GC::PlayerRadius* 1.1f;
-			myVelocity.x = 0;
+			myVelocity.x = fminf(0, myVelocity.x);
 		}
 		else if (aDirection.x < 0)
 		{
 			resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
-			myVelocity.x = 0;
+			myVelocity.x = fmaxf(0, myVelocity.x);
 		}
 		myOrientation.SetPos(resetPos);
 	}
@@ -234,7 +234,7 @@ void FlyMovement::RaycastBody()
 	float raycastLengthWithLegs = GC::PlayerHeightWithLegs + 0.05f;
 	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
 	{
-		raycastLengthWithLegs *= 0.8f;
+		raycastLengthWithLegs *= 0.4f;
 	}
 
 	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, raycastLengthWithLegs, myRaycastHandler
