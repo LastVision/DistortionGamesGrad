@@ -23,7 +23,7 @@ namespace Prism
 		, myOverrideDirection(false)
 		, myParticleToGraphicsCard(256)
 	{
-	
+
 	}
 
 	ParticleEmitterInstance::~ParticleEmitterInstance()
@@ -60,7 +60,7 @@ namespace Prism
 			LogicalParticle tempLogic;
 			myLogicalParticles.Add(tempLogic);
 		}
-		
+
 
 		Reset();
 
@@ -278,16 +278,20 @@ namespace Prism
 			if (myStates[AFFECTED_BY_GRAVITY] == TRUE)
 			{
 				logicParticle.myDirection.y -= (9.82f * 0.1f) * aDeltaTime;
-
+				CalcRotation(logicParticle.myDirection);
+				gfxParticle.myRotation = myRotationToOverrideWith;
 			}
 
 
-				gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
-				gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
-				gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
+			gfxParticle.myPosition.x += (logicParticle.myDirection.x * logicParticle.mySpeed) * aDeltaTime;
+			gfxParticle.myPosition.z += (logicParticle.myDirection.z * logicParticle.mySpeed) * aDeltaTime;
+			gfxParticle.myPosition.y += (logicParticle.myDirection.y * logicParticle.mySpeed) * aDeltaTime;
+
+
+
 
 			gfxParticle.mySize += particleData.mySizeDelta * aDeltaTime;
-			
+
 			if (myStates[USE_ALPHA_DELTA] == TRUE)
 			{
 				gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
@@ -506,7 +510,7 @@ namespace Prism
 	void ParticleEmitterInstance::CalcRotation(const CU::Vector3f& aDirectionToCalcFrom)
 	{
 		float dot = CU::Dot(aDirectionToCalcFrom, CU::Vector3f(0.f, 1.f, 0.f));
-		float det = CU::Dot(CU::Vector3f(0.f, 0.f, 1.f), CU::Cross(aDirectionToCalcFrom , CU::Vector3f(0.f, 1.f, 0.f)));
+		float det = CU::Dot(CU::Vector3f(0.f, 0.f, 1.f), CU::Cross(aDirectionToCalcFrom, CU::Vector3f(0.f, 1.f, 0.f)));
 
 		float angle = -atan2(det, dot);
 
