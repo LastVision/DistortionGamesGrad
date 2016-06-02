@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+
+#ifndef RELEASE_BUILD
 #include <FileWatcher.h>
+#endif
 
 namespace Prism
 {
@@ -28,7 +31,8 @@ namespace Prism
 
 		static ParticleDataContainer* myInstance;
 
-
+#ifndef RELEASE_BUILD
 		CU::FileWatcher myFileWatcher;
+#endif
 	};
 };

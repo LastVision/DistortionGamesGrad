@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "ScoreComponent.h"
 #include "PhysicsComponent.h"
+#include <PostMaster.h>
+#include <ReachedGoalMessage.h>
+#include "ReachedGoalNote.h"
 
 ScoreComponent::ScoreComponent(Entity& anEntity)
 	: Component(anEntity)
@@ -30,9 +33,13 @@ void ScoreComponent::ReceiveNote(const SpawnNote&)
 	myScore.myTime = 0;
 }
 
-void ScoreComponent::ReceiveNote(const ReachedGoalNote&)
+void ScoreComponent::ReceiveNote(const ReachedGoalNote& aMessage)
 {
-	myScore.myReachedGoal = true;
+	if (myScore.myReachedGoal == false)
+	{
+		myScore.myReachedGoal = true;
+		PostMaster::GetInstance()->SendMessage(ReachedGoalMessage(aMessage.myGoal, &myEntity));
+	}
 }
 
 void ScoreComponent::ReachedGoal()

@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+
+#ifndef RELEASE_BUILD
 #include <FileWatcher.h>
+#endif
 
 namespace Prism
 {
@@ -33,7 +36,10 @@ namespace Prism
 		std::unordered_map<std::string, Effect*> myEffects;
 		CU::GrowingArray<Effect*> myEffectArrays;
 		std::string myCubeMap;
+
+#ifndef RELEASE_BUILD
 		CU::FileWatcher myFilewatcher;
+#endif
 
 		static EffectContainer* myInstance;
 	};

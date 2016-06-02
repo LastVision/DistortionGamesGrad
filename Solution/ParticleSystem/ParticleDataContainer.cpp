@@ -43,7 +43,10 @@ namespace Prism
 		if (it == myParticleData.end())
 		{
 			LoadParticleData(aFilePath);
+
+#ifndef RELEASE_BUILD
 			myFileWatcher.WatchFileChange(aFilePath, std::bind(&ParticleDataContainer::ReloadParticleData, this, std::placeholders::_1));
+#endif
 		}
 
 		return myParticleData[aFilePath];
@@ -79,7 +82,9 @@ namespace Prism
 
 	void ParticleDataContainer::Update()
 	{
+#ifndef RELEASE_BUILD
 		myFileWatcher.FlushChanges();
+#endif
 	}
 
 }

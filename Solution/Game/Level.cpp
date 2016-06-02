@@ -27,6 +27,7 @@
 #include <PlayerComponent.h>
 #include <PollingStation.h>
 #include <PostMaster.h>
+#include <ReachedGoalNote.h>
 #include <Renderer.h>
 #include <ReturnToMenuMessage.h>
 #include <Scene.h>
@@ -453,30 +454,12 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{
-				TriggerComponent* firstTrigger = second->GetComponent<TriggerComponent>();
-				DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
-				PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(first->GetComponent<InputComponent>()->GetPlayerID()));
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", first->GetOrientation().GetPos()));
-				myPlayerWinCount++;
-				first->GetComponent<ScoreComponent>()->ReachedGoal();
+				
+				//myPlayerWinCount++;
+				//first->GetComponent<ScoreComponent>()->ReachedGoal();
 
-				myLevelToChangeToID = firstTrigger->GetLevelID();
-				if (myPlayerWinCount >= myPlayersPlaying)
-				{
-					myShouldRenderCountDown = false;
+				first->SendNote(ReachedGoalNote(second));
 
-					PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-					if (GC::FirstTimeScoreSubmit == true)
-					{
-						SET_RUNTIME(false);
-						myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-					}
-					else 
-					{
-						SET_RUNTIME(false);
-						myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-					}
-				}
 
 			}
 			break;
@@ -612,9 +595,16 @@ void Level::ReceiveMessage(const OnDeathMessage& aMessage)
 
 void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
 {
-	myPlayerWinCount++;
-	TriggerComponent* trigger = aMessage.myGoalEntity->GetComponent<TriggerComponent>();
-	myLevelToChangeToID = trigger->GetLevelID();
+	const TriggerComponent* firstTrigger = aMessage.myGoalEntity->GetComponent<TriggerComponent>();
+	DL_ASSERT_EXP(firstTrigger != nullptr, "Goal point has to have a trigger component");
+
+	PostMaster::GetInstance()->SendMessage(OnPlayerLevelComplete(aMessage.myPlayer->GetComponent<InputComponent>()->GetPlayerID()));
+	PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", aMessage.myPlayer->GetOrientation().GetPos()));
+
+	myLevelToChangeToID = firstTrigger->GetLevelID();
+
+	++myPlayerWinCount;
+
 	if (myPlayerWinCount >= myPlayersPlaying)
 	{
 		myShouldRenderCountDown = false;

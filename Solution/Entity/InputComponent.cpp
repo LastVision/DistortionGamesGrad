@@ -153,7 +153,7 @@ void InputComponent::SetPlayerID(int aPlayerID)
 	myPlayerID = aPlayerID;
 }
 
-int InputComponent::GetPlayerID()
+int InputComponent::GetPlayerID() const
 {
 	return myPlayerID;
 }
