@@ -197,7 +197,6 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
-		myPlayers[0]->GetComponent<ScoreComponent>()->ReachedGoal();
 		if (GC::FirstTimeScoreSubmit == true)
 		{
 			SET_RUNTIME(false);
