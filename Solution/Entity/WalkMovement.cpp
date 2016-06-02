@@ -10,6 +10,8 @@
 #include "ShouldDieNote.h"
 #include "StomperComponent.h"
 #include "WalkMovement.h"
+#include <EmitterMessage.h>
+#include <PostMaster.h>
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -59,7 +61,7 @@ void WalkMovement::Update(float aDeltaTime, bool)
 #endif
 
 	if (myVelocity.x != myPreviousVelocity.x)
-	{	
+	{
 		if (myVelocity.x != 0.f)
 		{
 			myMovementComponent.GetEntity().SendNote(CharacterAnimationNote(eCharacterAnimationType::WALK));
@@ -104,9 +106,12 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 	myIsActive = true;
 
 	float dir = CU::Dot(myOrientation.GetUp(), CU::Vector3<float>(0.f, 1.f, 0.f));
+
 	if (dir < myData.myMaxAngleWhenLanding)
 	{
 		myMovementComponent.GetEntity().SendNote(ShouldDieNote());
+
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Prop_Death", myOrientation.GetPos(), true, CU::Vector3f(0.f,1.f,0.f), true));
 	}
 	else
 	{
@@ -195,7 +200,7 @@ void WalkMovement::HandleContact()
 
 	CU::Vector3<float> down(0.f, -1.f, 0.f);
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs+0.01f, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, GC::PlayerHeightWithLegs + 0.01f, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, GC::PlayerHeightWithLegs + 0.01f, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());

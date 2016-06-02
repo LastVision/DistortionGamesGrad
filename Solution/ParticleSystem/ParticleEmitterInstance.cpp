@@ -159,6 +159,7 @@ namespace Prism
 		CheckFlags();
 
 		myEmitterLife = myParticleEmitterData->myEmitterLifeTime;
+		myEmissionTime = 0;
 	}
 
 	void ParticleEmitterInstance::CreateVertexBuffer()
@@ -362,8 +363,8 @@ namespace Prism
 
 				float randomAngle = CU::Math::RandomRange(-45.f, 45.f) * (M_PI / 180.f);
 
-				CU::Vector3f newDirection = { (myDirection.x * cos(-randomAngle * 0.5f)) - (myDirection.y * sin(-randomAngle * 0.5f))
-					, (myDirection.y * cos(-randomAngle * 0.5f)) - (myDirection.x * sin(-randomAngle * 0.5f)), 0.f };
+				CU::Vector3f newDirection = { (myDirection.x * cos(-randomAngle)) - (myDirection.y * sin(-randomAngle))
+					, (myDirection.y * cos(-randomAngle)) - (myDirection.x * sin(-randomAngle)), 0.f };
 				CU::Normalize(newDirection);
 				logicParticle.myDirection = newDirection;
 			}

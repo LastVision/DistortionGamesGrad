@@ -16,6 +16,7 @@
 #include "ScoreComponent.h"
 #include "ShouldDieNote.h"
 #include <ScrapMessage.h>
+#include <EmitterMessage.h>
 
 PlayerComponent::PlayerComponent(Entity& anEntity, const PlayerComponentData& aData)
 	: Component(anEntity)
@@ -52,24 +53,24 @@ void PlayerComponent::Update(float)
 		CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
 		CU::Vector3<float> position(myPreviousPosition);
 
-		if (direction != CU::Vector3<float>())
-		{
-			float length = CU::Length(direction);
+if (direction != CU::Vector3<float>())
+{
+	float length = CU::Length(direction);
 
-			direction /= length;
+	direction /= length;
 
-			int rayCount = 0;
-			float stepSize = 0.1f;
-			while (length > stepSize && rayCount < 32)
-			{
-				++rayCount;
+	int rayCount = 0;
+	float stepSize = 0.1f;
+	while (length > stepSize && rayCount < 32)
+	{
+		++rayCount;
 
-				Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
-					, myEntity.GetComponent<PhysicsComponent>());
-				position += direction * stepSize;
-				length -= stepSize;
-			}
-		}
+		Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
+			, myEntity.GetComponent<PhysicsComponent>());
+		position += direction * stepSize;
+		length -= stepSize;
+	}
+}
 	}
 	myPreviousPosition = myEntity.GetOrientation().GetPos();
 }
@@ -114,6 +115,12 @@ void PlayerComponent::HandleCollision(Entity* aOther)
 	if (CU::Length2(velocity) > myData.myDeathSpeed * myData.myDeathSpeed)
 	{
 		myEntity.SendNote(ShouldDieNote());
+		if (aOther->GetType() == eEntityType::PROP)
+		{
+			CU::Vector3f dir = aOther->GetOrientation().GetPos() - myEntity.GetOrientation().GetPos();
+			CU::Normalize(dir);
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Prop_Death", myEntity.GetOrientation().GetPos(), true, dir, true));
+		}
 	}
 }
 
@@ -150,6 +157,12 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 			&& other.GetType() != eEntityType::SCRAP)
 		{
 			myEntity.SendNote<ShouldDieNote>(ShouldDieNote());
+
+			if (other.GetType() == eEntityType::PROP)
+			{
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Prop_Death", aHitPosition, true, aHitNormal, true));
+			}
+
 		}
 	}
 }

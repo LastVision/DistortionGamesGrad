@@ -2,7 +2,7 @@
 #include "../PostMaster/Subscriber.h"
 #include <GrowingArray.h>
 #include <bitset>
-#define PREALLOCATED_EMITTERGROUP 32
+#define PREALLOCATED_EMITTERGROUP 128
 
 class Entity;
 class ParticleEmitterComponent;
