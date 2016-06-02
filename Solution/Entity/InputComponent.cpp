@@ -18,6 +18,8 @@
 #include <GameConstants.h>
 #include <ModelLoader.h>
 
+#include "LoseBodyPartNote.h"
+
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
 	, myComponentData(aInputData)
@@ -100,6 +102,11 @@ void InputComponent::Update(float aDeltaTime)
 				if (myController->ButtonOnDown(eXboxButton::X))
 				{
 					myEntity.SendNote(ShouldDieNote());
+				}
+				int debugByfabianHere = true | 1 & 2 ^1;
+				if (myController->ButtonOnDown(eXboxButton::B))
+				{
+					myEntity.SendNote(LoseBodyPartNote(eScrapPart::LEGS));
 				}
 
 				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
