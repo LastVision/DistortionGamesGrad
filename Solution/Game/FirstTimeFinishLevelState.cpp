@@ -9,6 +9,7 @@
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 #include "ScoreState.h"
+#include <fstream>
 
 FirstTimeFinishLevelState::FirstTimeFinishLevelState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
@@ -41,6 +42,14 @@ void FirstTimeFinishLevelState::InitState(StateStackProxy* aStateStackProxy, CU:
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+	GC::FirstTimeScoreSubmit = true;
+	std::ofstream file(CU::GetMyDocumentFolderPath() + "Data\\Setting\\SET_game_setting.bin", std::ios::binary | std::ios::out);
+	if (file.is_open() == true)
+	{
+		file.write(reinterpret_cast<const char*>(&GC::FirstTimeScoreSubmit), sizeof(bool));
+		file.write(reinterpret_cast<const char*>(&GC::OptionsEnableOffline), sizeof(bool));
+		file.close();
+	}
 }
 
 void FirstTimeFinishLevelState::EndState() 
@@ -97,7 +106,6 @@ void FirstTimeFinishLevelState::ReceiveMessage(const OnClickMessage& aMessage)
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new ScoreState(myScores, myScoreInfo, myLevelID));
 		myIsActiveState = false;
-		GC::FirstTimeScoreSubmit = true;
 		myRenderFlag = false;
 		break;
 	}
