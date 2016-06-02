@@ -103,11 +103,6 @@ void InputComponent::Update(float aDeltaTime)
 				{
 					myEntity.SendNote(ShouldDieNote());
 				}
-				int debugByfabianHere = true | 1 & 2 ^1;
-				if (myController->ButtonOnDown(eXboxButton::B))
-				{
-					myEntity.SendNote(LoseBodyPartNote(eScrapPart::LEGS));
-				}
 
 				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
 				{
