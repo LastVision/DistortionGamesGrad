@@ -12,6 +12,8 @@
 #include "PlayerGraphicsComponent.h"
 #include <ReachedGoalMessage.h>
 #include "ReachedGoalNote.h"
+#include "Score.h"
+#include "ScoreComponent.h"
 #include "ShouldDieNote.h"
 #include <ScrapMessage.h>
 
@@ -39,7 +41,8 @@ void PlayerComponent::Reset()
 void PlayerComponent::Update(float)
 {
 	CU::Vector3<float> position(myEntity.GetOrientation().GetPos());
-	if (position.x < 0.f || position.x > 70.f || position.y < 0.f || position.y > 38.f)
+	if ((position.x < 0.f || position.x > 70.f || position.y < 0.f || position.y > 38.f)
+		&& myEntity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == false)
 	{
 		myEntity.SendNote(ShouldDieNote());
 	}
