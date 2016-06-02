@@ -539,6 +539,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Vector3f dir = aContactNormal;
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, dir, true));
+				myDeferredRenderer->AddDecal(aContactPoint, -aContactNormal, eDecalType::LAVA);
 			}
 		}
 	}
@@ -618,7 +619,7 @@ void Level::ReceiveMessage(const OnDeathMessage& aMessage)
 	{
 		if (player->GetComponent<InputComponent>()->GetPlayerID() == aMessage.myPlayerID)
 		{
-			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight());
+			myDeferredRenderer->AddDecal(player->GetOrientation().GetPos(), player->GetOrientation().GetRight(), eDecalType::OIL);
 		}
 	}
 }
