@@ -15,14 +15,17 @@ namespace CU
 
 	FileWatcher::~FileWatcher()
 	{
-		myShouldEndThread = true;
-		while (!myThreadIsDone)
+		if (myThread != nullptr)
 		{
-			Sleep(1);
-		}
+			myShouldEndThread = true;
+			while (!myThreadIsDone)
+			{
+				Sleep(1);
+			}
 
-		myThread->join();
-		SAFE_DELETE(myThread);
+			myThread->join();
+			SAFE_DELETE(myThread);
+		}
 	}
 
 	void FileWatcher::FlushChanges()
