@@ -137,6 +137,9 @@ namespace Prism
 		{
 			myStates[AFFECTED_BY_GRAVITY] = TRUE;
 		}
+
+		myTexture = myParticleEmitterData->myTexture;
+		myEmissiveTexture = myParticleEmitterData->myEmissiveTexture;
 	}
 
 	void ParticleEmitterInstance::Reset()

@@ -68,11 +68,11 @@ void StomperComponent::Update(float aDeltaTime)
 						CU::Vector3f newPos = myStomperMaxPosition;
 						if (myEntity.GetOrientation().GetUp().y < 0)
 						{
-							newPos.y -= 1.2;
+							newPos.y -= 1.35;
 						}
 						else
 						{
-							newPos.y += 1.2;
+							newPos.y += 1.35;
 						}
 						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper_Poof", newPos));
 
