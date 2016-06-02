@@ -64,6 +64,8 @@ private:
 	eCharacterAnimationType myCurrentAnimationType; // debug syfte
 
 	eCharacterAnimationType myPreviousAnimation;
+
+	int mySpawnCountdown;
 };
 
 inline eComponentType PlayerGraphicsComponent::GetTypeStatic()

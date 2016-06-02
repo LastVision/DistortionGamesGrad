@@ -42,6 +42,7 @@ namespace Prism
 
 
 		Texture*				myTexture = nullptr;
+		Texture*				myEmissiveTexture = nullptr;
 		Effect*					myEffect = nullptr; 
 		ID3D11InputLayout*		myInputLayout = nullptr;
 		_D3DX11_TECHNIQUE_DESC*	myTechniqueDesc = nullptr;
@@ -53,6 +54,7 @@ namespace Prism
 
 		std::string	myEffectName = "not initialized";
 		std::string	myTextureName = "not initialized";
+		std::string	myEmissiveName = "not initialized";
 
 		CU::Vector3f myEmitterSize;
 		CU::Vector3f myMinDirection;

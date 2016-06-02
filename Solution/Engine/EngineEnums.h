@@ -45,7 +45,6 @@ namespace Prism
 	{
 		NONE = 0,
 		BLOOM = 1,
-		HDR = 2,
 	};
 
 	enum class eFont

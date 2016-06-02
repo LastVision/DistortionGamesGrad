@@ -48,7 +48,7 @@ namespace Prism
 		void SetOtherOrientation(const CU::Matrix44f& aMatrix);
 		void CalcRotation(const CU::Vector3f& aDirectionToCalcFrom);
 	private:
-
+		void CheckFlags();
 		void Reset();
 		void CreateVertexBuffer();
 
@@ -78,6 +78,8 @@ namespace Prism
 		CU::Vector3<float> myPoints[8];
 		
 		Texture* myTexture;
+		Texture* myEmissiveTexture;
+
 		ParticleEmitterData* myParticleEmitterData;
 		VertexBufferWrapper* myVertexWrapper;
 

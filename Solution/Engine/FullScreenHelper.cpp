@@ -45,7 +45,10 @@ namespace Prism
 		CreateCombineData();
 		CreateRenderToTextureData();
 		CreateBloomData();
+
+#ifdef HDR_RENDERING
 		CreateHDRData();
+#endif
 
 		CU::Vector2<float> screenSize(static_cast<float>(Engine::GetInstance()->GetWindowSize().x)
 			, static_cast<float>(Engine::GetInstance()->GetWindowSize().y));
@@ -104,6 +107,11 @@ namespace Prism
 		SAFE_DELETE(myBloomData.myMiddleMan);
 		SAFE_DELETE(myBloomData.myDownSampleTextures[0]);
 		SAFE_DELETE(myBloomData.myDownSampleTextures[1]);
+		SAFE_DELETE(myPreBloomSourceTexture);
+
+#ifdef HDR_RENDERING
+		SAFE_ARRAY_DELETE(myHDRData.myHDRDownSamples);
+#endif
 	}
 
 	void FullScreenHelper::Process(Texture* aSource, Texture* aTarget, Texture* aEmissiveTexture, int aEffect)
@@ -122,12 +130,10 @@ namespace Prism
 		CopyTexture(aSource, myProcessingTexture);
 		CopyTexture(aSource, myPreBloomSourceTexture);
 
-		if (aEffect & ePostProcessing::HDR)
-		{
-			HDRDownSample(aSource);
-			HDREffect(aSource);
-		}
-
+#ifdef HDR_RENDERING
+		HDRDownSample(aSource);
+		HDREffect(aSource);
+#endif
 
 		if (aEffect & ePostProcessing::BLOOM)
 		{

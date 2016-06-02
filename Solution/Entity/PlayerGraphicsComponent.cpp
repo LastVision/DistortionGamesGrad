@@ -30,6 +30,7 @@ PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGr
 	, myShowArrow(false)
 	, myPreviousAnimation(eCharacterAnimationType::FLY)
 	, myCurrentAnimationType(eCharacterAnimationType::FLY)
+	, mySpawnCountdown(1)
 {
 	int hatID = HatManager::GetInstance()->GetHatIDOnPlayer(myPlayerID);
 	if (hatID != -1)
@@ -132,19 +133,27 @@ void PlayerGraphicsComponent::Reset()
 
 void PlayerGraphicsComponent::Activate()
 {
-	myLeftLeg.SetActive(true);
-	myRightLeg.SetActive(true);
-	myHead.SetActive(true);
 	myPreviousAnimation = eCharacterAnimationType::FLY;
 	myCurrentAnimationType = eCharacterAnimationType::FLY;
 	myCurrentAnimation = &myFlyAnimation;
-	myCurrentAnimation->SetActive(true);
 	//myArrow->SetShouldRender(true);
+	mySpawnCountdown = 1;
 }
 
 
 void PlayerGraphicsComponent::Update(float aDeltaTime)
 {
+	if (mySpawnCountdown != 0)
+	{
+		--mySpawnCountdown;
+		if (mySpawnCountdown == 0)
+		{
+			myLeftLeg.SetActive(true);
+			myRightLeg.SetActive(true);
+			myHead.SetActive(true);
+			myCurrentAnimation->SetActive(true);
+		}
+	}
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
 		myCurrentAnimation->SetActive(false);

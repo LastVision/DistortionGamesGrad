@@ -2,6 +2,8 @@
 #include "EntityFactory.h"
 #include "PhysicsComponent.h"
 #include "StomperComponent.h"
+#include <PostMaster.h>
+#include <EmitterMessage.h>
 
 StomperComponent::StomperComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation)
 	: Component(anEntity)
@@ -63,12 +65,24 @@ void StomperComponent::Update(float aDeltaTime)
 						myStomper->SetPosition(myStomperMaxPosition);
 						myHasReachedMax = true;
 						myStomper->SetStomperMoving(false);
+						CU::Vector3f newPos = myStomperMaxPosition;
+						if (myEntity.GetOrientation().GetUp().y < 0)
+						{
+							newPos.y -= 1.35;
+						}
+						else
+						{
+							newPos.y += 1.35;
+						}
+						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper_Poof", newPos));
+
 					}
 				}
 			}
 			else
 			{
 				myStomper->SetStomperMoving(false);
+				
 			}
 
 			myStompDownTimer -= aDeltaTime;
