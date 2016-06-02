@@ -24,6 +24,13 @@ enum class eScrapPart
 	_COUNT
 };
 
+enum eDecalType
+{
+	OIL,
+	LAVA,
+	_DECALCOUNT,
+};
+
 enum class eWeaponType
 {
 	PISTOL,

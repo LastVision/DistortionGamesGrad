@@ -12,7 +12,8 @@ namespace Prism
 		myAlbedoTexture = new Texture();
 		myAlbedoTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
+		//DXGI_FORMAT_R8G8B8A8_UNORM
 
 		myNormalTexture = new Texture();
 		myNormalTexture->Init(windowSize.x, windowSize.y
@@ -72,9 +73,10 @@ namespace Prism
 
 	void GBufferData::SetAlbedoAsRenderTarget(ID3D11DepthStencilView* aDepthStencil)
 	{
-		ID3D11RenderTargetView* target = myAlbedoTexture->GetRenderTargetView();
+		ID3D11RenderTargetView* targets[1];
+		targets[0] = myAlbedoTexture->GetRenderTargetView();
 
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, targets
 			, aDepthStencil);
 	}
 
@@ -83,8 +85,8 @@ namespace Prism
 		Engine::GetInstance()->GetContex()->CopyResource(myAlbedoTexture->GetTexture(), aSource.myAlbedoTexture->GetTexture());
 
 #ifdef PBL_DECALS
-		Engine::GetInstance()->GetContex()->CopyResource(myNormalTexture->GetTexture(), aSource.myNormalTexture->GetTexture());
 		Engine::GetInstance()->GetContex()->CopyResource(myEmissiveTexture->GetTexture(), aSource.myEmissiveTexture->GetTexture());
+		Engine::GetInstance()->GetContex()->CopyResource(myNormalTexture->GetTexture(), aSource.myNormalTexture->GetTexture());
 		Engine::GetInstance()->GetContex()->CopyResource(myDepthTexture->GetTexture(), aSource.myDepthTexture->GetTexture());
 #endif
 	}

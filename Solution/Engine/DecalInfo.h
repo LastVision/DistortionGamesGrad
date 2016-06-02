@@ -9,6 +9,7 @@ namespace Prism
 	struct DecalTextures
 	{
 		Texture* myTexture;
+		Texture* myEmissive;
 		Texture* myMetalness;
 		Texture* myRoughness;
 		Texture* myNormalMap;

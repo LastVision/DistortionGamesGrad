@@ -14,8 +14,8 @@
 namespace Prism
 {
 	DecalPass::DecalPass()
-		: myDecals(16)
-		, myDecalTextures(8)
+		: myOilDecals(16)
+		, myLavaDecals(16)
 	{
 		myEffect = EffectContainer::GetInstance()->GetEffect("Data/Resource/Shader/S_effect_deferred_decal.fx");
 		ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Decals/SM_decal_box.fbx", "Data/Resource/Shader/S_effect_deferred_decal.fx");
@@ -27,48 +27,44 @@ namespace Prism
 		myEffect->AddListener(this);
 	}
 
-
 	DecalPass::~DecalPass()
 	{
 		SAFE_DELETE(myInstance);
 	}
 
-	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
+	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection, eDecalType aType)
 	{
-		if (myDecals.Size() > 0)
+		switch (aType)
 		{
-			DecalInfo& decal = myDecals.GetLast();
-			decal.myIsFading = true;
-			decal.myTime = myFadeTime;
+		case OIL:
+			AddDecal(aPosition, aDirection, myOilDecals, myDecalTextures[aType]);
+			break;
+		case LAVA:
+			AddDecal(aPosition, aDirection, myLavaDecals, myDecalTextures[aType]);
+			break;
+		default:
+			DL_ASSERT("Invalid Decal-Type");
+			break;
 		}
-
-		if (myDecals.Size() > myMaxDecalCount)
-		{
-			myDecals.RemoveNonCyclicAtIndex(0);
-		}
-
-		int textureIndex = rand() % myDecalTextures.Size();
-
-		DecalInfo info;
-		info.myPosition = aPosition;
-		info.myDirection = aDirection;
-		info.myTextures = &myDecalTextures[textureIndex];
-		info.myIsFading = false;
-		info.myTime = myFadeTime;
-		myDecals.Add(info);
 	}
 
 	void DecalPass::Update(float aDelta)
 	{
-		for (int i = myDecals.Size() - 1; i >= 0; --i)
+		UpdateDecals(myOilDecals, aDelta);
+		UpdateDecals(myLavaDecals, aDelta);
+	}
+
+	void DecalPass::UpdateDecals(CU::GrowingArray<DecalInfo>& someDecals, float aDelta)
+	{
+		for (int i = someDecals.Size() - 1; i >= 0; --i)
 		{
-			DecalInfo& decal = myDecals[i];
+			DecalInfo& decal = someDecals[i];
 			if (decal.myIsFading == true)
 			{
 				decal.myTime -= aDelta;
 				if (decal.myTime <= 0.f)
 				{
-					myDecals.RemoveNonCyclicAtIndex(i);
+					someDecals.RemoveNonCyclicAtIndex(i);
 				}
 			}
 		}
@@ -93,20 +89,9 @@ namespace Prism
 
 			lastOrientation = aCamera.GetOrientation();
 
-			for each (const DecalInfo& info in myDecals)
-			{
-				SetDecalVariables(effect, info);
-
-				myOrientation = CalculateOrientation(info.myPosition, info.myDirection);
-				SetShaderVariables(effect, info.myDirection);
-				SetGBufferData(aGBuffer, aGBufferCopy);
-				myInstance->Render(aCamera);
-
-				myOrientation = CalculateOrientation(info.myPosition, CU::Vector3<float>(0.f, 0.f, 1.f));
-				SetShaderVariables(effect, CU::Vector3<float>(0.f, 0.f, 1.f));
-				SetGBufferData(aGBuffer, aGBufferCopy);
-				myInstance->Render(aCamera);
-			}
+			//aGBufferCopy->Copy(*aGBuffer);
+			RenderDecals(myOilDecals, effect, aGBuffer, aGBufferCopy, aCamera);
+			RenderDecals(myLavaDecals, effect, aGBuffer, aGBufferCopy, aCamera);
 
 			myGAlbedo->SetResource(nullptr);
 			myGNormal->SetResource(nullptr);
@@ -126,6 +111,7 @@ namespace Prism
 		myGDepth = myEffect->GetEffect()->GetVariableByName("DepthTexture")->AsShaderResource();
 
 		myAlbedo = myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
+		myEmissive = myEffect->GetEffect()->GetVariableByName("DecalEmissiveTexture")->AsShaderResource();
 		myMetalness = myEffect->GetEffect()->GetVariableByName("MetalnessTexture")->AsShaderResource();
 		myRoughness = myEffect->GetEffect()->GetVariableByName("RoughnessTexture")->AsShaderResource();
 		myNormal = myEffect->GetEffect()->GetVariableByName("DecalNormalTexture")->AsShaderResource();
@@ -144,28 +130,93 @@ namespace Prism
 		tinyxml2::XMLElement* fadeTime = reader.ForceFindFirstChild(root, "FadeTime");
 		reader.ForceReadAttribute(fadeTime, "value", myFadeTime);
 
-		tinyxml2::XMLElement* decalElement = reader.ForceFindFirstChild(root, "Decal");
-		for (; decalElement != nullptr; decalElement = reader.FindNextElement(decalElement, "Decal"))
+		myDecalTextures[eDecalType::OIL].Init(16);
+		tinyxml2::XMLElement* oilElement = reader.ForceFindFirstChild(root, "Oil");
+		for (; oilElement != nullptr; oilElement = reader.FindNextElement(oilElement, "Oil"))
 		{
-			std::string albedo;
-			std::string normal;
-			std::string metalness;
-			std::string roughness;
+			myDecalTextures[eDecalType::OIL].Add(LoadDecalTextures(reader, oilElement));
+		}
 
-			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Albedo"), "path", albedo);
-			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Normal"), "path", normal);
-			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Metalness"), "path", metalness);
-			reader.ForceReadAttribute(reader.ForceFindFirstChild(decalElement, "Roughness"), "path", roughness);
-
-			DecalTextures textures;
-			textures.myTexture = TextureContainer::GetInstance()->GetTexture(albedo);
-			textures.myNormalMap = TextureContainer::GetInstance()->GetTexture(normal);
-			textures.myMetalness = TextureContainer::GetInstance()->GetTexture(metalness);
-			textures.myRoughness = TextureContainer::GetInstance()->GetTexture(roughness);
-			myDecalTextures.Add(textures);
+		myDecalTextures[eDecalType::LAVA].Init(16);
+		tinyxml2::XMLElement* lavaElement = reader.ForceFindFirstChild(root, "Lava");
+		for (; lavaElement != nullptr; lavaElement = reader.FindNextElement(lavaElement, "Lava"))
+		{
+			myDecalTextures[eDecalType::LAVA].Add(LoadDecalTextures(reader, lavaElement));
 		}
 
 		reader.CloseDocument();
+	}
+
+	Prism::DecalTextures DecalPass::LoadDecalTextures(XMLReader& aReader, tinyxml2::XMLElement* aElement)
+	{
+		std::string albedo;
+		std::string emissive;
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Albedo"), "path", albedo);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Emissive"), "path", emissive);
+		DecalTextures textures;
+		textures.myTexture = TextureContainer::GetInstance()->GetTexture(albedo);
+		textures.myEmissive = TextureContainer::GetInstance()->GetTexture(emissive);
+
+#ifdef PBL_DECALS
+		std::string normal;
+		std::string metalness;
+		std::string roughness;
+
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Normal"), "path", normal);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Metalness"), "path", metalness);
+		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Roughness"), "path", roughness);
+
+		textures.myNormalMap = TextureContainer::GetInstance()->GetTexture(normal);
+		textures.myMetalness = TextureContainer::GetInstance()->GetTexture(metalness);
+		textures.myRoughness = TextureContainer::GetInstance()->GetTexture(roughness);
+#endif
+
+		return textures;
+	}
+
+	void DecalPass::AddDecal(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection
+		, CU::GrowingArray<DecalInfo>& someDecals, CU::GrowingArray<DecalTextures>& someTextures)
+	{
+		if (someDecals.Size() > 0)
+		{
+			DecalInfo& decal = someDecals.GetLast();
+			decal.myIsFading = true;
+			decal.myTime = myFadeTime;
+		}
+
+		if (someDecals.Size() > myMaxDecalCount)
+		{
+			someDecals.RemoveNonCyclicAtIndex(0);
+		}
+
+		int textureIndex = rand() % someTextures.Size();
+
+		DecalInfo info;
+		info.myPosition = aPosition;
+		info.myDirection = aDirection;
+		info.myTextures = &someTextures[textureIndex];
+		info.myIsFading = false;
+		info.myTime = myFadeTime;
+		someDecals.Add(info);
+	}
+
+	void DecalPass::RenderDecals(const CU::GrowingArray<DecalInfo>& someDecals, Effect* aEffect
+		, GBufferData* aGBuffer, GBufferData* aGBufferCopy, const Camera& aCamera)
+	{
+		for each (const DecalInfo& info in someDecals)
+		{
+			SetDecalVariables(aEffect, info);
+
+			myOrientation = CalculateOrientation(info.myPosition, info.myDirection);
+			SetShaderVariables(aEffect, info.myDirection);
+			SetGBufferData(aGBuffer, aGBufferCopy);
+			myInstance->Render(aCamera);
+
+			myOrientation = CalculateOrientation(info.myPosition, CU::Vector3<float>(0.f, 0.f, 1.f));
+			SetShaderVariables(aEffect, CU::Vector3<float>(0.f, 0.f, 1.f));
+			SetGBufferData(aGBuffer, aGBufferCopy);
+			myInstance->Render(aCamera);
+		}
 	}
 
 	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
@@ -201,8 +252,9 @@ namespace Prism
 
 		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
 		myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
-		myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
 		myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
+		myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
+
 #else
 		aGBuffer->SetAlbedoAsRenderTarget(Engine::GetInstance()->GetDepthView());
 		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
@@ -212,6 +264,7 @@ namespace Prism
 	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
 	{
 		myAlbedo->SetResource(aDecal.myTextures->myTexture->GetShaderView());
+		myEmissive->SetResource(aDecal.myTextures->myEmissive->GetShaderView());
 
 #ifdef PBL_DECALS
 		myMetalness->SetResource(aDecal.myTextures->myMetalness->GetShaderView());
