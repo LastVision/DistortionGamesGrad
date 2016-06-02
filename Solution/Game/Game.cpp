@@ -197,7 +197,7 @@ bool Game::Update()
 	myStateStack.RenderCurrentState();
 
 #ifdef RELEASE_BUILD
-	myTimerManager->CapFrameRate(60.f);
+	myTimerManager->CapFrameRate(65.f);
 #endif
 	myCursor->Update();
 	myCursor->Render();

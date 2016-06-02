@@ -19,6 +19,7 @@ FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOr
 	: Movement(aData, anOrientation, aMovementComponent)
 	, myHasContact(false)
 	, myPlayerData(nullptr)
+	, mySpawn(false)
 {
 	myRaycastHandlerHead = [=](PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 	{
@@ -42,9 +43,11 @@ void FlyMovement::Init()
 
 void FlyMovement::Reset()
 {
+	
 	myVelocity = CU::Vector2<float>();
 	myIsActive = false;
 	myIsInSteam = false;
+	mySpawn = true;
 }
 
 void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
@@ -74,7 +77,11 @@ void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 
 void FlyMovement::Impulse()
 {
-	myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+	if (mySpawn == true || myMovementComponent.GetShouldCollide() == true)
+	{
+		mySpawn = false;
+		myVelocity += CU::Vector3<float>(CU::Vector3<float>(0, myData.myImpulse, 0) * myOrientation).GetVector2();
+	}
 }
 
 void FlyMovement::Impulse(const CU::Vector2<float>& aVelocity)
