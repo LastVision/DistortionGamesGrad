@@ -13,7 +13,7 @@ namespace Prism
 	class Scene;
 	class SpotLightShadow;
 	class Texture;
-
+	class GBufferData;
 	struct SceneData;
 
 	class Renderer
@@ -24,6 +24,7 @@ namespace Prism
 
 		void ProcessShadow(SpotLightShadow* aShadowSpotLight, Scene* aScene);
 		void Render(Texture* aSource, Texture* aEmissiveTexture, Texture* aDepthStencilTexture, int aEffect);
+		void DebugRender(GBufferData* aGBuffer);
 
 		void SetRenderTargets(ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepthBuffer);
 

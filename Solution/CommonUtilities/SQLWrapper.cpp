@@ -82,6 +82,7 @@ namespace CU
 		{
 			std::string query = "INSERT INTO Highscore(Name, Score, LevelID) VALUES('" + aUsername + "', " + std::to_string(aTime) + ", " + std::to_string(aLevelID) + ")";
 			ExecuteQuery(query.c_str());
+			CheckAndClearRankHigherThanMax(aLevelID);
 		}
 		file << "\n" << aUsername << "\n" << aTime << "\n" << aLevelID;
 		file.close();
@@ -264,5 +265,62 @@ namespace CU
 	void SQLWrapper::WriteError(MYSQL* aMySQL)
 	{
 		DL_DEBUG("[Warning]: %s", mysql_error(aMySQL));
+	}
+
+	void SQLWrapper::CheckAndClearRankHigherThanMax(const int aLevelID)
+	{
+		std::string query("SET @rownum:=0; SELECT Rank, Name, Score, LevelID, ID FROM( SELECT @rownum:=@rownum+1 AS Rank, Score, Name, LevelID, ID FROM (SELECT * FROM Highscore ORDER BY Score) small WHERE LevelID = " + std::to_string(aLevelID) + " ORDER BY Score) result ORDER BY Rank DESC");
+		ExecuteQuery(query.c_str());
+		if (myResult != nullptr)
+		{
+			int num_fields = mysql_num_fields(myResult);
+			MYSQL_ROW row;
+			int num_rows = 0;
+			CU::GrowingArray<int> toRemove(32);
+			while ((row = mysql_fetch_row(myResult)))
+			{
+				Highscore score;
+				for (int i = 0; i < num_fields; ++i)
+				{
+					if (i == 0)
+					{
+						score.myRank = std::atoi(row[i]);
+					}
+					else if (i == 1)
+					{
+						score.myName = row[i];
+					}
+					else if (i == 2)
+					{
+						score.myScore = static_cast<float>(std::atof(row[i]));
+					}
+					else if (i == 3)
+					{
+						score.myLevelID = std::atoi(row[i]);
+					}
+					else if (i == 4)
+					{
+						if (score.myRank > 256)
+						{
+							toRemove.Add(std::atoi(row[i]));
+						}
+					}
+				}
+				
+				if (score.myRank <= 256)
+				{
+					//This makes sure that we don't delete anything below 256 and is an early exit.
+					break;
+				}
+			}
+
+			std::string deleteQuery;
+			for each (int score in toRemove)
+			{
+				deleteQuery = "DELETE FROM Highscore WHERE ID = " + std::to_string(score);
+				ExecuteQuery(deleteQuery.c_str());
+			}
+		}
+
 	}
 }

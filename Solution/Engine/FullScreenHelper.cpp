@@ -132,6 +132,7 @@ namespace Prism
 
 	void FullScreenHelper::RenderToScreen(Texture* aSource)
 	{
+		ActivateBuffers();
 		Engine::GetInstance()->RestoreViewPort();
 		Engine::GetInstance()->SetBackBufferAsTarget();
 		Engine::GetInstance()->SetRasterizeState(eRasterizer::NO_CULLING);

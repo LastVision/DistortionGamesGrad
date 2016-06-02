@@ -14,6 +14,7 @@
 bool engineIsRunning = true;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath);
+void ReadGameSetup(const std::string& aFilePath);
 void OnResize();
 
 Game* globalGame = nullptr;
@@ -109,7 +110,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 	{
 		return 1;
 	}
-
+	ReadGameSetup(CU::GetMyDocumentFolderPath() + "Data\\Setting\\SET_game_setting.bin");
 	HWND hwnd;
 
 	if (Prism::Engine::Create(hwnd, WndProc, globalSetup) == false)
@@ -451,4 +452,27 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 
 
 	return true;
+}
+
+void ReadGameSetup(const std::string& aFilePath)
+{
+	std::ifstream file(aFilePath, std::ios::binary | std::ios::in);
+	int firstTimeScoreState = 0;
+	int enableOffline = 0;
+	if(file.is_open() == true)
+	{
+		file.read((char*)&firstTimeScoreState, sizeof(bool));
+		file.read((char*)&enableOffline, sizeof(bool));
+		file.close();
+	}
+	GC::FirstTimeScoreSubmit = false;
+	if (firstTimeScoreState == 1)
+	{
+		GC::FirstTimeScoreSubmit = true;
+	}
+	GC::OptionsEnableOffline = false;
+	if (enableOffline == 1)
+	{
+		GC::OptionsEnableOffline = true;
+	}
 }
