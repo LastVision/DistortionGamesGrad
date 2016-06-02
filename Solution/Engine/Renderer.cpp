@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "GBufferData.h"
 #include "FullScreenHelper.h"
 #include "Texture.h"
 #include "Renderer.h"
@@ -85,6 +86,33 @@ namespace Prism
 		myFullScreenHelper->RenderToScreen(myFinalTexture);
 
 		Engine::GetInstance()->SetDepthStencil(aDepthStencilTexture->GetDepthStencilView());
+	}
+
+	void Renderer::DebugRender(GBufferData* aGBuffer)
+	{
+		std::string renderMode;
+		if (GC::DebugRenderTexture == 1)
+		{
+			renderMode = "Albedo";
+			myFullScreenHelper->RenderToScreen(aGBuffer->myAlbedoTexture);
+		}
+		else if (GC::DebugRenderTexture == 2)
+		{
+			renderMode = "Normal";
+			myFullScreenHelper->RenderToScreen(aGBuffer->myNormalTexture);
+		}
+		else if (GC::DebugRenderTexture == 3)
+		{
+			renderMode = "Emissive";
+			myFullScreenHelper->RenderToScreen(aGBuffer->myEmissiveTexture);
+		}
+		else if (GC::DebugRenderTexture == 4)
+		{
+			renderMode = "Depth";
+			myFullScreenHelper->RenderToScreen(aGBuffer->myDepthTexture);
+		}
+
+		DEBUG_PRINT(renderMode);
 	}
 
 	void Renderer::SetRenderTargets(ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepthBuffer)

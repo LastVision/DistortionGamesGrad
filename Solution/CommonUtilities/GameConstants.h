@@ -48,4 +48,6 @@ public:
 	static int CurrentActivePlayers;
 
 	static bool FirstTimeScoreSubmit;
+
+	static int DebugRenderTexture;
 };

@@ -233,6 +233,11 @@ namespace Prism
 		return myDepthStencilTexture;
 	}
 
+	Prism::GBufferData* DeferredRenderer::GetGBuffer()
+	{
+		return myGBufferData;
+	}
+
 	void DeferredRenderer::InitFullscreenQuad()
 	{
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =

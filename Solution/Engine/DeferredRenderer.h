@@ -41,6 +41,7 @@ namespace Prism
 		Texture* GetFinishedTexture();
 		Texture* GetEmissiveTexture();
 		Texture* GetDepthStencilTexture();
+		GBufferData* GetGBuffer();
 
 	private:
 		void InitFullscreenQuad();
