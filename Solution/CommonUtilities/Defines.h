@@ -52,3 +52,4 @@
 #define SHADOWS
 #define FPS_INDEPENDENT_INPUT
 //#define PBL_DECALS
+//#define HDR_RENDERING
