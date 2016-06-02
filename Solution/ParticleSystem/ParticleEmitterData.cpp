@@ -27,7 +27,7 @@ namespace Prism
 	{
 		myFilePath = aFilePath;
 		ReloadDataFile();
-		myEffect = EffectContainer::GetInstance()->GetEffect(myEffectName.c_str());
+		myEffect = EffectContainer::GetInstance()->GetEffect(myEffectName);
 
 		CreateInputLayout();
 		myTechniqueDesc = new _D3DX11_TECHNIQUE_DESC();
@@ -47,6 +47,10 @@ namespace Prism
 		element = read.ForceFindFirstChild(emitter, "Texture");
 		read.ReadAttribute(element, "filepath", myTextureName);
 
+
+		element = read.ForceFindFirstChild(emitter, "EmissiveTexture");
+		read.ReadAttribute(element, "filepath", myEmissiveName);
+
 		ReadEmitterData(&read, emitter);
 		ReadParticleData(&read, emitter);
 
@@ -55,7 +59,8 @@ namespace Prism
 		myData.myStartColor /= 255.f;
 		myData.myEndColor /= 255.f;
 
-		myTexture = TextureContainer::GetInstance()->GetTexture(myTextureName.c_str());
+		myTexture = TextureContainer::GetInstance()->GetTexture(myTextureName);
+		myEmissiveTexture = TextureContainer::GetInstance()->GetTexture(myEmissiveName);
 		RESET_RUNTIME;
 	}
 
@@ -112,6 +117,7 @@ namespace Prism
 	{
 		tinyxml2::XMLElement* element = nullptr;
 		element = aReader->ForceFindFirstChild(anElement, "EmitterFlags");
+
 		aReader->ForceReadAttribute(element, "activeAtStart", myIsActiveAtStart);
 		aReader->ForceReadAttribute(element, "circleEmitter", myIsCircle);
 		aReader->ForceReadAttribute(element, "hollowEmitter", myIsHollow);

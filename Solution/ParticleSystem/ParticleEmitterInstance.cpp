@@ -64,8 +64,8 @@ namespace Prism
 
 		Reset();
 
-		myTexture = TextureContainer::GetInstance()->GetTexture(myParticleEmitterData->myTextureName);
-
+		myTexture = myParticleEmitterData->myTexture;
+		myEmissiveTexture = myParticleEmitterData->myEmissiveTexture;
 		CreateVertexBuffer();
 	}
 
@@ -78,6 +78,7 @@ namespace Prism
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
 		myParticleEmitterData->myEffect->SetTexture(myTexture);
+		myParticleEmitterData->myEffect->SetEmissiveTexture(myEmissiveTexture);
 
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		context->IASetVertexBuffers(
