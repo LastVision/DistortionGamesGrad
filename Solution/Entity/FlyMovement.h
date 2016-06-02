@@ -53,5 +53,6 @@ private:
 		, const CU::Vector3<float>&)> myRaycastHandlerLegs;
 
 	bool myHasContact;
+	bool mySpawn;
 };
 
