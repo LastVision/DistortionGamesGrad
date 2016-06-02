@@ -51,6 +51,17 @@ namespace Prism
 		void OnEffectLoad() override;
 	};
 
+	struct HDRData : public EffectListener
+	{
+		Effect* myHDREffect;
+		ID3DX11EffectShaderResourceVariable* myOriginalTexture;
+		ID3DX11EffectShaderResourceVariable* myAverageColorTexture;
+		Texture* myHDRDownSamples;
+		Texture* myFinalHDRDownSample;
+
+		void OnEffectLoad() override;
+	};
+
 	class FullScreenHelper : public BaseModel
 	{
 	public:
@@ -72,6 +83,7 @@ namespace Prism
 		void CreateCombineData();
 		void CreateRenderToTextureData();
 		void CreateBloomData();
+		void CreateHDRData();
 		void CreateVertices();
 		void ActivateBuffers();
 
@@ -81,11 +93,17 @@ namespace Prism
 		void DownSample(Texture* aTarget, Texture* aSource, float aWidth, float aHeight, const std::string& aTechnique);
 		void BloomEffect(Texture* aSource, const std::string& aTechnique);
 		void DoBloom(Texture* aSource, Texture* aTarget);
+		void HDRDownSample(Texture* aSource);
+		void HDREffect(Texture* aSource);
+
+		float HDRLog2(float aNumber);
 
 		CombineData myCombineData;
 		RenderToTextureData myRenderToTextureData;
 		BloomData myBloomData;
+		HDRData myHDRData;
 		Texture* myProcessingTexture;
+		Texture* myPreBloomSourceTexture;
 		D3D11_VIEWPORT myViewPort;
 		float myClearColor[4];
 	};
