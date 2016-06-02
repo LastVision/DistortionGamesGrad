@@ -35,7 +35,7 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
-
+	myIsLetThrough = true;
 	myController->SetIsInMenu(true);
 }
 
@@ -47,7 +47,7 @@ void PauseMenuState::EndState()
 
 const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 {
-	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::START)
 		|| myController->ButtonOnDown(eXboxButton::B))
 	{
 		myIsActiveState = false;
