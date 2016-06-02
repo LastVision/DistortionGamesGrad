@@ -19,39 +19,22 @@
 #include <SpriteProxy.h>
 
 MainMenuState::MainMenuState()
-	: myLogoPosition(0.f, 0.f)
-	, myLogoAlpha(0.f)
-	, myMenuAlpha(0.f)
-	, myDustAlpha(0.f)
+	: myMenuAlpha(0.f)
 	, myGUIPosition(0.f, 0.f)
 	, myGUIEndPosition(0.f, 0.f)
-	, myGUIStartPosition(-512.f, 0.f)
-	, myLogoDone(false)
+	, myGUIStartPosition(-850.f, 0.f)
 	, myGUIManager(nullptr)
 	, myHasRunOnce(false)
 {
-	CU::Vector2<float> logoSize(1024.f, 256.f);
-	myLogo = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/MainMenu/T_gamelogo.dds"
-		, logoSize, logoSize * 0.5f);
-	myLogoDust = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/MainMenu/T_gamelogo_dust.dds"
-		, logoSize, logoSize * 0.5f);
-
 	myWindowSize = CU::Vector2<float>(float(Prism::Engine::GetInstance()->GetWindowSize().x)
 		, float(Prism::Engine::GetInstance()->GetWindowSize().y));
 
-	myLogoPosition.x = myWindowSize.x * 0.5f;
-	myLogoPosition.y = myWindowSize.y + (logoSize.y * 2.f);
-	myLogoStartPosition = myLogoPosition;
-	myLogoEndPosition.x = myLogoPosition.x;
-	myLogoEndPosition.y = myWindowSize.y - (myLogo->GetSize().y * 0.5f);
 
 	myGUIPosition = myGUIStartPosition;
 }
 
 MainMenuState::~MainMenuState()
 {
-	SAFE_DELETE(myLogo);
-	SAFE_DELETE(myLogoDust);
 	SAFE_DELETE(myGUIManager);
 	myCursor = nullptr;
 	myController = nullptr;
@@ -96,35 +79,17 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 	}
 	else
 	{
-		if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK))
-		{
-			myIsActiveState = false;
-			return eStateStatus::ePopMainState;
-		}
-		myLogoAlpha += aDeltaTime;
-		if (myLogoPosition.y - 25.f > myLogoEndPosition.y)
-		{
-			myLogoPosition.y = myTweener.DoTween(myLogoAlpha, myLogoStartPosition.y, myLogoEndPosition.y - myLogoStartPosition.y, 1.5f, eTweenType::EXPONENTIAL_HALF);
-		}
-		else
-		{
-			myLogoPosition.y = myLogoEndPosition.y + 25.f;
-			myMenuAlpha += aDeltaTime;
-			if (myLogoDone == false)
-			{
-				myLogoDone = true;
-				myMenuAlpha = 0.f;
-				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Logo_Thud", 0);
-			}
-			if (myGUIPosition.x < 0.f)
-			{
-				myGUIPosition.x = myTweener.DoTween(myMenuAlpha, myGUIStartPosition.x, myGUIEndPosition.x - myGUIStartPosition.x, 1.5f, eTweenType::EXPONENTIAL_HALF);
-			}
-		}
+		//if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK))
+		//{
+		//	myIsActiveState = false;
+		//	return eStateStatus::ePopMainState;
+		//}
 
-		myDustAlpha = fmaxf(myLogoAlpha - 2.5f, 0.f);
-		myDustAlpha *= 3.f;
-		myDustAlpha = fminf(myDustAlpha, 1.f);
+		myMenuAlpha += aDeltaTime;
+		if (myGUIPosition.x < 0.f)
+		{
+			myGUIPosition.x = myTweener.DoTween(myMenuAlpha, myGUIStartPosition.x, myGUIEndPosition.x - myGUIStartPosition.x, 1.f, eTweenType::EXPONENTIAL_HALF);
+		}
 
 		HandleControllerInMenu(myController, myGUIManager);
 
@@ -137,8 +102,6 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 void MainMenuState::Render()
 {
 	myGUIManager->Render();
-	//myLogo->Render(myLogoPosition);
-	//myLogoDust->Render({ myLogoEndPosition.x, myLogoEndPosition.y + 25.f }, CU::Vector2<float>(0.95f + myDustAlpha * 0.05f, 0.95f + myDustAlpha * 0.05f), CU::Vector4<float>(1.f, 1.f, 1.f, myDustAlpha));
 }
 
 void MainMenuState::ResumeState()
