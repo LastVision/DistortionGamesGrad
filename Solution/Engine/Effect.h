@@ -78,6 +78,8 @@ namespace Prism
 		void SetDecalDirection(const CU::Vector3<float>& aDirection);
 		void SetAlpha(float aValue);
 
+		void SetEmissiveTexture(Texture* aEmissiveTexture);
+
 	private:
 		ID3DX11Effect* myEffect;
 		ID3DX11EffectTechnique* myTechnique;
@@ -110,6 +112,7 @@ namespace Prism
 		ID3DX11EffectShaderResourceVariable* myDepthTexture;
 		ID3DX11EffectShaderResourceVariable* myFogOfWarTexture;
 		ID3DX11EffectShaderResourceVariable* myShadowDepthTexture;
+		ID3DX11EffectShaderResourceVariable* myEmissiveTexture;
 
 		ID3DX11EffectVectorVariable* mySpritePosAndScale;
 		ID3DX11EffectMatrixVariable* mySpriteOrientation;

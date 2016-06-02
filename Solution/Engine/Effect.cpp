@@ -205,6 +205,14 @@ namespace Prism
 		}
 	}
 
+	void Effect::SetEmissiveTexture(Texture* aEmissiveTexture)
+	{
+		if (myEmissiveTexture != nullptr)
+		{
+			myEmissiveTexture->SetResource(aEmissiveTexture ? aEmissiveTexture->GetShaderView() : nullptr);
+		}
+	}
+
 	void Effect::SetPosAndScale(const CU::Vector2<float>& aPos
 		, const CU::Vector2<float>& aScale)
 	{
@@ -571,6 +579,12 @@ namespace Prism
 			myAlpha = nullptr;
 		}
 
+		myEmissiveTexture = myEffect->GetVariableByName("EmissiveTexture")->AsShaderResource();
+		if (myEmissiveTexture->IsValid() == false)
+		{
+			myEmissiveTexture = nullptr;
+		}
+		
 		return true;
 	}
 
