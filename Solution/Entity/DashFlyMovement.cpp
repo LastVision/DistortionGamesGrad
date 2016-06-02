@@ -83,7 +83,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		Entity& entity = aComponent->GetEntity();
 		eEntityType type = entity.GetType();
 
-		if (type == eEntityType::SCRAP) return;
+		if (type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
 
 		myHasContact = true;
 
@@ -135,7 +135,7 @@ void DashFlyMovement::HandleContact()
 	float raycastLengthWithLegs = GC::PlayerHeightWithLegs * 0.8f;
 	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
 	{
-		raycastLengthWithLegs *= 0.8f;
+		raycastLengthWithLegs *= 0.4f;
 	}
 
 	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, down, raycastLengthWithLegs, myRaycastHandler

@@ -41,23 +41,13 @@ private:
 	GUI::GUIManager* myGUIManager;
 
 	Tweener<float> myTweener;
-	CU::Vector2<float> myLogoStartPosition;
-	CU::Vector2<float> myLogoEndPosition;
-	Prism::SpriteProxy* myLogo;
-	Prism::SpriteProxy* myLogoDust;
-	CU::Vector2<float> myLogoPosition;
 	CU::Vector2<float> myWindowSize;
-	float myLogoAlpha;
 	float myMenuAlpha;
-	float myDustAlpha;
 
 	CU::Vector2<float> myGUIStartPosition;
 	CU::Vector2<float> myGUIEndPosition;
 	CU::Vector2<float> myGUIPosition;
-
 	
-	bool myLogoDone;
-
 	bool myHasRunOnce;
 };
 

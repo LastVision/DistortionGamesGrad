@@ -18,6 +18,8 @@
 #include <GameConstants.h>
 #include <ModelLoader.h>
 
+#include "LoseBodyPartNote.h"
+
 InputComponent::InputComponent(Entity& aEntity, const InputComponentData& aInputData, CU::Matrix44<float>& aOrientation)
 	: Component(aEntity)
 	, myComponentData(aInputData)
