@@ -65,13 +65,24 @@ void StomperComponent::Update(float aDeltaTime)
 						myStomper->SetPosition(myStomperMaxPosition);
 						myHasReachedMax = true;
 						myStomper->SetStomperMoving(false);
+						CU::Vector3f newPos = myStomperMaxPosition;
+						if (myEntity.GetOrientation().GetUp().y < 0)
+						{
+							newPos.y -= 1.2;
+						}
+						else
+						{
+							newPos.y += 1.2;
+						}
+						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper_Poof", newPos));
+
 					}
 				}
 			}
 			else
 			{
 				myStomper->SetStomperMoving(false);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper_Poof", myStomperMaxPosition));
+				
 			}
 
 			myStompDownTimer -= aDeltaTime;

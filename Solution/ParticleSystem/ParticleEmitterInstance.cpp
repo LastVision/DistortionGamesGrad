@@ -101,20 +101,8 @@ namespace Prism
 		UpdateEmitter(aDeltaTime);
 	}
 
-	void ParticleEmitterInstance::Reset()
+	void ParticleEmitterInstance::CheckFlags()
 	{
-
-		for (int i = 0; i < myGraphicalParticles.GetCapacity(); ++i)
-		{
-			myGraphicalParticles[i] = GraphicalParticle();
-			myLogicalParticles[i] = LogicalParticle();
-		}
-
-		myLiveParticleCount = 0;
-
-		myDiffColor = (myParticleEmitterData->myData.myEndColor - myParticleEmitterData->myData.myStartColor)
-			/ myParticleEmitterData->myData.myParticleLifeTime;
-
 		if (myParticleEmitterData->myIsActiveAtStart == true)
 		{
 			myStates[ACTIVE] = TRUE;
@@ -149,6 +137,23 @@ namespace Prism
 		{
 			myStates[AFFECTED_BY_GRAVITY] = TRUE;
 		}
+	}
+
+	void ParticleEmitterInstance::Reset()
+	{
+
+		for (int i = 0; i < myGraphicalParticles.GetCapacity(); ++i)
+		{
+			myGraphicalParticles[i] = GraphicalParticle();
+			myLogicalParticles[i] = LogicalParticle();
+		}
+
+		myLiveParticleCount = 0;
+
+		myDiffColor = (myParticleEmitterData->myData.myEndColor - myParticleEmitterData->myData.myStartColor)
+			/ myParticleEmitterData->myData.myParticleLifeTime;
+
+		CheckFlags();
 
 		myEmitterLife = myParticleEmitterData->myEmitterLifeTime;
 	}
@@ -225,6 +230,7 @@ namespace Prism
 	{
 		if (myStates[ACTIVE] == TRUE)
 		{
+			CheckFlags();
 			myEmissionTime -= aDeltaTime;
 			myEmitterLife -= aDeltaTime;
 
@@ -420,7 +426,7 @@ namespace Prism
 	CU::Vector3<float> ParticleEmitterInstance::CreateCirclePositions()
 	{
 		CU::Vector3f toReturn = CreateSpherePositions();
-		toReturn.z = 0.f;
+		toReturn.y = 0.f;
 		CU::Vector3f toNormalize = toReturn - myOrientation.GetPos();
 		CU::Normalize(toNormalize);
 		myLogicalParticles[myParticleIndex].myDirection = toReturn;

@@ -48,7 +48,7 @@ namespace Prism
 		void SetOtherOrientation(const CU::Matrix44f& aMatrix);
 		void CalcRotation(const CU::Vector3f& aDirectionToCalcFrom);
 	private:
-
+		void CheckFlags();
 		void Reset();
 		void CreateVertexBuffer();
 
