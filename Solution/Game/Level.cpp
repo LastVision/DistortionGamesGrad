@@ -509,7 +509,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				}
 			case STEAM:
 			case SPIKE:
-				aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
+				//aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
 				break;
 			case SAW_BLADE:
 				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
