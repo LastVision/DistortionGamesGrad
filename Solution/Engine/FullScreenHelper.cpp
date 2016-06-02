@@ -104,6 +104,8 @@ namespace Prism
 		SAFE_DELETE(myBloomData.myMiddleMan);
 		SAFE_DELETE(myBloomData.myDownSampleTextures[0]);
 		SAFE_DELETE(myBloomData.myDownSampleTextures[1]);
+		SAFE_DELETE(myPreBloomSourceTexture);
+		SAFE_ARRAY_DELETE(myHDRData.myHDRDownSamples);
 	}
 
 	void FullScreenHelper::Process(Texture* aSource, Texture* aTarget, Texture* aEmissiveTexture, int aEffect)
