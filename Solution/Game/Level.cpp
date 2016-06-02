@@ -416,8 +416,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 
 				CU::Vector3f dir = second->GetOrientation().GetPos() - first->GetOrientation().GetPos();
 				CU::Normalize(dir);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), -dir, true));
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), -dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), true, -dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), true, -dir, true));
 
 			}
 			break;
@@ -427,8 +427,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				KillPlayer(first);
 				CU::Vector3f dir = aContactNormal;
 				CU::Normalize(dir);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Spike", first->GetOrientation().GetPos(), dir, true));
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Spike", first->GetOrientation().GetPos(), true, second->GetOrientation().GetUp(), true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), true, second->GetOrientation().GetUp(), true));
 			}
 			break;
 		case eEntityType::BOUNCER:
@@ -537,7 +537,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			}
 			else
 			{
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos()));
+				CU::Vector3f dir = aContactNormal;
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, dir, true));
 			}
 		}
 	}

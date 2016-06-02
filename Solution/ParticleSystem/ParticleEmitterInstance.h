@@ -78,6 +78,8 @@ namespace Prism
 		CU::Vector3<float> myPoints[8];
 		
 		Texture* myTexture;
+		Texture* myEmissiveTexture;
+
 		ParticleEmitterData* myParticleEmitterData;
 		VertexBufferWrapper* myVertexWrapper;
 
