@@ -318,7 +318,7 @@ void Level::Render()
 
 	if (GC::DebugRenderTexture == 0)
 	{
-		myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetEmissiveTexture()
+		myFullscreenRenderer->Render(myDeferredRenderer->GetFinishedTexture(), myDeferredRenderer->GetFinishedTexture()
 			, myDeferredRenderer->GetDepthStencilTexture(), Prism::ePostProcessing::BLOOM);
 	}
 	else
