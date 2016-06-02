@@ -248,6 +248,7 @@ void EntityFactory::ReadComponents(XMLReader& aReader, tinyxml2::XMLElement* aEn
 
 void EntityFactory::WatchFile(const std::string& aEntityPath)
 {
+#ifndef RELEASE_BUILD
 	int startIndex = aEntityPath.rfind("/") - 6;
 	int endIndex = startIndex + 6;
 	std::string folderName(aEntityPath.begin() + startIndex, aEntityPath.begin() + endIndex);
@@ -256,6 +257,7 @@ void EntityFactory::WatchFile(const std::string& aEntityPath)
 	{
 		myFileWatcher.WatchFileChange(aEntityPath, std::bind(&EntityFactory::ReloadEntity, this, std::placeholders::_1));
 	}
+#endif
 }
 
 EntityFactory::EntityFactory()

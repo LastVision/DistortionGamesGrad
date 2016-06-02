@@ -1,6 +1,10 @@
 #pragma once
 #include <EngineEnums.h>
+
+#ifndef RELEASE_BUILD
 #include <FileWatcher.h>
+#endif
+
 class ComponentLoader;
 class Entity;
 class XMLReader;
@@ -45,7 +49,10 @@ private:
 	std::unordered_map<std::string, EntityData> myLoadedSubEntityData;
 
 	ComponentLoader* myComponentLoader;
+
+#ifndef RELEASE_BUILD
 	CU::FileWatcher myFileWatcher;
+#endif
 
 	static EntityFactory* myInstance;
 };

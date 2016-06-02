@@ -47,7 +47,9 @@ namespace Prism
 		{
 			LoadEffect(aFilePath);
 
+#ifndef RELEASE_BUILD
 			myFilewatcher.WatchFileChangeWithDependencies(aFilePath, std::bind(&EffectContainer::ReloadShader, this, std::placeholders::_1));
+#endif
 		}
 
 		return myEffects[aFilePath];
@@ -143,7 +145,9 @@ namespace Prism
 
 	void EffectContainer::Update(const float aDeltaTime)
 	{
+#ifndef RELEASE_BUILD
 		myFilewatcher.FlushChanges();
+#endif
 
 		for (int i = 0; i < myEffectArrays.Size(); ++i)
 		{
