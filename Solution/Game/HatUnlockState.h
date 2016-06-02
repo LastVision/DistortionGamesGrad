@@ -1,7 +1,7 @@
 #pragma once
 #include "Subscriber.h"
 #include "GameState.h"
-
+#include <Tweener.h>
 namespace GUI
 {
 	class GUIManager;
@@ -30,6 +30,7 @@ private:
 	GUI::GUIManager* myGUIManager;
 	void Spin();
 	void WinHat(int aHatID);
+	void WrapIndex();
 	bool myIsSpinning;
 	struct HatUnlock
 	{
@@ -47,12 +48,19 @@ private:
 
 	float mySpinTimer;
 	float myMaxSpinTime;
-	float myTotalTime;
 	bool myHasWonAllHats;
 
 	Prism::SpriteProxy* myHatWon;
 	Prism::SpriteProxy* mySpinBox;
 	Prism::SpriteProxy* myAllHatsWonText;
+
+	int myLeftIndex;
+	int myMiddleIndex;
+
+	float myMoveAmount;
+	CU::Vector2<float> myRenderPosition;
+
+	Tweener<float> myTweener;
 
 };
 

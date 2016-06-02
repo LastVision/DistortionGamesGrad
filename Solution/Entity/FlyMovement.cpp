@@ -204,7 +204,8 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vector3<float>&
 	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
-	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed)
+	if (aComponent != nullptr && (CU::Length2(myVelocity) > myPlayerData->myLoseHeadSpeed * myPlayerData->myLoseHeadSpeed 
+		|| (aComponent->GetEntity().GetType() == eEntityType::SPIKE || aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)))
 	{
 		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP
 			&& aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
@@ -217,7 +218,8 @@ void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vect
 void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>&
 	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
-	if (aComponent != nullptr && CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed)
+	if (aComponent != nullptr && (CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed
+		|| (aComponent->GetEntity().GetType() == eEntityType::SPIKE || aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)))
 	{
 		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
 		{

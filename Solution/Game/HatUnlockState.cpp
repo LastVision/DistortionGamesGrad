@@ -14,12 +14,12 @@ HatUnlockState::HatUnlockState()
 	: myGUIManager(nullptr)
 	, myIsSpinning(false)
 	, mySpinTimer(0.f)
-	, myMaxSpinTime(5.f)
+	, myMaxSpinTime(10.f)
 	, myCurrentHatToWin(0)
 	, myHats(8)
 	, myHatWon(nullptr)
 	, myHasWonAllHats(false)
-	, myTotalTime(0.f)
+	, myMoveAmount(0.f)
 {
 }
 
@@ -57,8 +57,8 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myController->SetIsInMenu(true);
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
-	
-	CU::Vector2<float> size(128.f, 128.f);
+
+	CU::Vector2<float> size(256.f, 256.f);
 	std::string hatPath("Data/Resource/Texture/Hats/T_hat");
 	for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
 	{
@@ -72,9 +72,20 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		myHasWonAllHats = true;
 	}
 
-	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", size * 4.f, size * 2.f);
+	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
 	myAllHatsWonText = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_all_hats_won.dds"
-		, { size.x * 4.f, size.y * 2.f }, { size.x * 2, size.y });
+		, { size.x * 2.f, size.y }, { size.x, size.y * 0.5f });
+
+	if (myHats.Size() == 1)
+	{
+		myLeftIndex = 0;
+		myMiddleIndex = 0;
+	}
+	else
+	{
+		myLeftIndex = 0;
+		myMiddleIndex = 1;
+	}
 }
 
 void HatUnlockState::EndState()
@@ -101,18 +112,27 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 
 	if (myIsSpinning == true)
 	{
-		if (mySpinTimer > 0.f)
+
+		mySpinTimer -= aDeltaTime;
+
+		myMoveAmount = myTweener.DoTween(mySpinTimer, 12288.f, -12288.f, myMaxSpinTime, eTweenType::EXPONENTIAL);
+
+
+		myLeftIndex = int(int(myMoveAmount) / 256) % myHats.Size();
+		myMiddleIndex = myLeftIndex - 1;
+		if (myMiddleIndex < 0)
 		{
-			mySpinTimer -= aDeltaTime;
-			myCurrentHatToWin = rand() % myHats.Size();
+			myMiddleIndex = myHats.Size() - 1;
 		}
-		else if (mySpinTimer <= 0.f)
+		myCurrentHatToWin = myLeftIndex;
+
+		if (mySpinTimer < -5.f)
 		{
 			WinHat(myHats[myCurrentHatToWin].myID);
 		}
 	}
 
-	myTotalTime += aDeltaTime;
+
 
 
 	return myStateStatus;
@@ -122,6 +142,22 @@ void HatUnlockState::Render()
 {
 	myGUIManager->Render();
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
+
+	myRenderPosition = windowSize;
+	myRenderPosition.x -= 256.f;
+	myRenderPosition.x += fmod(myMoveAmount, 256.f);
+	if (myIsSpinning == true)
+	{
+		myHats[myLeftIndex].mySprite->Render(myRenderPosition);
+		myRenderPosition.x += 256.f;
+		myHats[myMiddleIndex].mySprite->Render(myRenderPosition);
+
+	}
+	else if (myHatWon != nullptr)
+	{
+		myHatWon->Render(windowSize);
+	}
+
 	if (myHasWonAllHats == true)
 	{
 		myAllHatsWonText->Render(windowSize);
@@ -130,15 +166,6 @@ void HatUnlockState::Render()
 	{
 		mySpinBox->Render(windowSize);
 	}
-	if (myIsSpinning == true)
-	{
-		myHats[myCurrentHatToWin].mySprite->Render(windowSize, { fabs(cos(myTotalTime)), fabs(cos(myTotalTime)) });
-	}
-	else if (myHatWon != nullptr)
-	{
-		myHatWon->Render(windowSize);
-	}
-
 }
 
 void HatUnlockState::ResumeState()
@@ -198,4 +225,18 @@ void HatUnlockState::WinHat(int aHatID)
 		}
 	}
 	//ta bort rätt hatt ur my hats!!!
+}
+
+void HatUnlockState::WrapIndex()
+{
+	--myMiddleIndex;
+
+	if (myLeftIndex < 0)
+	{
+		myLeftIndex = myHats.Size() - 1;
+	}
+	if (myMiddleIndex < 0)
+	{
+		myMiddleIndex = myHats.Size() - 1;
+	}
 }
