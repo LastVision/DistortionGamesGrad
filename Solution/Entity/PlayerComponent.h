@@ -29,6 +29,8 @@ public:
 	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
 
+	float GetDeathSpeed() const;
+
 private:
 	const PlayerComponentData& myData;
 	bool myShouldDie;

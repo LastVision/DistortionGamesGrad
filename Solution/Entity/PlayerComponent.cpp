@@ -166,3 +166,8 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		}
 	}
 }
+
+float PlayerComponent::GetDeathSpeed() const
+{
+	return myData.myDeathSpeed;
+}
