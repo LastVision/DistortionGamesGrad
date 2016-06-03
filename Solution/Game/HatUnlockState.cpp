@@ -20,6 +20,10 @@ HatUnlockState::HatUnlockState()
 	, myHatWon(nullptr)
 	, myHasWonAllHats(false)
 	, myMoveAmount(0.f)
+	, mySpinCost(3)
+	, myShowGoldCost(false)
+	, myGoldCostMovement(0.f)
+	, myGoldCostFade(1.f)
 {
 }
 
@@ -37,6 +41,7 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myHatWon);
 	SAFE_DELETE(mySpinBox);
 	SAFE_DELETE(myAllHatsWonText);
+	SAFE_DELETE(myGoldBagSprite);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -86,6 +91,11 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		myLeftIndex = 0;
 		myMiddleIndex = 1;
 	}
+
+	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
+		, { 128.f, 128.f }, { 64.f, 64.f });
+
+	mySpinCost = 3;
 }
 
 void HatUnlockState::EndState()
@@ -132,6 +142,11 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		}
 	}
 
+	if (myShowGoldCost == true)
+	{
+		myGoldCostMovement += 25.f * aDeltaTime;
+		myGoldCostFade -= 0.25f * aDeltaTime;
+	}
 
 
 
@@ -166,6 +181,17 @@ void HatUnlockState::Render()
 	{
 		mySpinBox->Render(windowSize);
 	}
+
+	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
+
+	myGoldBagSprite->Render(goldPos);
+	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+
+	if (myShowGoldCost == true)
+	{
+		Prism::Engine::GetInstance()->PrintText(-mySpinCost, { goldPos.x, goldPos.y + myGoldCostMovement }
+		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+	}
 }
 
 void HatUnlockState::ResumeState()
@@ -186,7 +212,7 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::SPIN:
 		if (myIsSpinning == false)
 		{
-			if (myHats.Size() > 0)
+			if (myHats.Size() > 0 && GC::Gold >= mySpinCost)
 			{
 				Spin();
 			}
@@ -197,7 +223,10 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 		}
 		break;
 	case eOnClickEvent::GAME_QUIT:
-		myStateStatus = eStateStatus::ePopSubState;
+		if (myIsSpinning == false)
+		{
+			myStateStatus = eStateStatus::ePopSubState;
+		}
 		break;
 	}
 }
@@ -206,6 +235,11 @@ void HatUnlockState::Spin()
 {
 	myIsSpinning = true;
 	mySpinTimer = myMaxSpinTime;
+	GC::Gold -= mySpinCost;
+
+	myShowGoldCost = true;
+	myGoldCostMovement = 0.f;
+	myGoldCostFade = 1.f;
 }
 
 void HatUnlockState::WinHat(int aHatID)

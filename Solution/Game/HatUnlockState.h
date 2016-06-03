@@ -53,6 +53,7 @@ private:
 	Prism::SpriteProxy* myHatWon;
 	Prism::SpriteProxy* mySpinBox;
 	Prism::SpriteProxy* myAllHatsWonText;
+	Prism::SpriteProxy* myGoldBagSprite;
 
 	int myLeftIndex;
 	int myMiddleIndex;
@@ -62,5 +63,9 @@ private:
 
 	Tweener<float> myTweener;
 
+	int mySpinCost;
+	bool myShowGoldCost;
+	float myGoldCostMovement;
+	float myGoldCostFade;
 };
 
