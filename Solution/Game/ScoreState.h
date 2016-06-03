@@ -48,5 +48,8 @@ private:
 
 	int myEarnedStars;
 	std::string myEarnedStarsText;
+
+	float myGoldCostMovement;
+	float myGoldCostFade;
 };
 

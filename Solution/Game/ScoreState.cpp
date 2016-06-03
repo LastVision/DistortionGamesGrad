@@ -29,6 +29,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myGoldBagSprite(nullptr)
 	, myEarnedStars(0)
 	, myEarnedStarsText("")
+	, myGoldCostMovement(0.f)
+	, myGoldCostFade(1.f)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -135,6 +137,12 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 
 		myGUIManager->Update(aDeltaTime);
 	}
+
+	if (myEarnedStars > 0)
+	{
+		myGoldCostMovement += 25.f * aDeltaTime;
+		myGoldCostFade -= 0.25f * aDeltaTime;
+	}
 	return myStateStatus;
 }
 
@@ -177,8 +185,8 @@ void ScoreState::Render()
 
 	if (myEarnedStars > 0)
 	{
-		goldPos.y -= myGoldBagSprite->GetSize().y * 0.5f;
-		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, goldPos, Prism::eTextType::RELEASE_TEXT);
+		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
+		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 	}
 }
 
