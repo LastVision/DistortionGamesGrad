@@ -339,12 +339,11 @@ namespace Prism
 
 
 #ifdef USE_LIGHT
+		RenderDirectionalLights(aScene);
+
 		myPointLightPass->Render(aScene, *myGBufferData, myCubemap);
 		mySpotLightPass->Render(aScene, *myGBufferData, myCubemap, false);
 		mySpotLightPass->Render(aScene, *myGBufferData, myCubemap, true);
-
-		ActivateBuffers();
-		RenderDirectionalLights(aScene);
 #endif
 	}
 
