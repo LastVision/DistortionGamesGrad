@@ -63,7 +63,7 @@ void ScoreWidget::Update(float aDeltaTime)
 
 	for each(StarWidget* star in myStars)
 	{
-		star->Update(aDeltaTime);
+		star->UpdateScoreStars(aDeltaTime);
 	}
 }
 
@@ -74,7 +74,7 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 		myBackground->Render(myPosition + aParentPosition);
 		myBar->Render(myPosition + aParentPosition);
 		
-		CU::Vector2<float> starOffset(138.f, -200.f);
+		CU::Vector2<float> starOffset(138.f, -150.f);
 
 		for (int i = 0; i < myStars.Size(); ++i)
 		{

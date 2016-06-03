@@ -29,13 +29,15 @@ public:
 	void HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
 		, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal);
 
+	float GetDeathSpeed() const;
+
 private:
 	const PlayerComponentData& myData;
 	bool myShouldDie;
 	bool myIsAlive;
 	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
 		, const CU::Vector3<float>&)> myRaycastHandler;
-	CU::Vector3<float> myPreviousPosition;
+	CU::Vector3<float> myPreviousPositions[2];
 };
 
 inline eComponentType PlayerComponent::GetTypeStatic()
