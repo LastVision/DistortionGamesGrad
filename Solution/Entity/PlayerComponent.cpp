@@ -36,7 +36,8 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::Reset()
 {
-	myPreviousPosition = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[0] = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[1] = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::Update(float)
@@ -50,29 +51,30 @@ void PlayerComponent::Update(float)
 
 	if (myEntity.GetComponent<MovementComponent>()->GetShouldCollide() == true)
 	{
-		CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
-		CU::Vector3<float> position(myPreviousPosition);
+		CU::Vector3<float> direction(myPreviousPositions[0] - myPreviousPositions[1]);
+		CU::Vector3<float> position(myPreviousPositions[1]);
 
-if (direction != CU::Vector3<float>())
-{
-	float length = CU::Length(direction);
+		if (direction != CU::Vector3<float>())
+		{
+			float length = CU::Length(direction);
 
-	direction /= length;
+			direction /= length;
 
-	int rayCount = 0;
-	float stepSize = 0.1f;
-	while (length > stepSize && rayCount < 32)
-	{
-		++rayCount;
+			int rayCount = 0;
+			float stepSize = 0.1f;
+			while (length > stepSize && rayCount < 1)
+			{
+				++rayCount;
 
-		Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
-			, myEntity.GetComponent<PhysicsComponent>());
-		position += direction * stepSize;
-		length -= stepSize;
+				Prism::PhysicsInterface::GetInstance()->RayCast(position + CU::Vector3<float>(0.5f, 0, 0), direction, length, myRaycastHandler
+					, myEntity.GetComponent<PhysicsComponent>());
+				position += direction * stepSize;
+				length -= stepSize;
+			}
+		}
 	}
-}
-	}
-	myPreviousPosition = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[1] = myPreviousPositions[0];
+	myPreviousPositions[0] = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::EvaluateDeath()
@@ -165,4 +167,9 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 
 		}
 	}
+}
+
+float PlayerComponent::GetDeathSpeed() const
+{
+	return myData.myDeathSpeed;
 }

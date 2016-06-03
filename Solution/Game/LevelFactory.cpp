@@ -466,9 +466,17 @@ void LevelFactory::LoadDirectionalLights(Level* aLevel, XMLReader& aReader, tiny
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "B", color.z);
 		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(lightElement, "color"), "A", color.w);
 
+
+		CU::Matrix44<float> orientation;
+
+		orientation = orientation * CU::Matrix44f::CreateRotateAroundZ(direction.z);
+		orientation = orientation * CU::Matrix44f::CreateRotateAroundX(direction.x);
+		orientation = orientation * CU::Matrix44f::CreateRotateAroundY(direction.y);
+
+
 		Prism::DirectionalLight* light = new Prism::DirectionalLight();
 		light->SetColor(color);
-		light->SetDir(CU::Vector4<float>(direction, 0.f));
+		light->SetDir(CU::Vector4<float>(orientation.GetForward(), 0.f));
 		aLevel->Add(light);
 	}
 }
