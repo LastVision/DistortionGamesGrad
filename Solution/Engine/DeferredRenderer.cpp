@@ -155,10 +155,8 @@ namespace Prism
 		myActualParticleDepth->CopyDepthBuffer(myDepthStencilTexture->GetDepthTexture());
 		aScene->RenderSea(myParticleDepth);
 
-		ActivateBuffers();
-
 		RenderDeferred(aScene);
-
+		ActivateBuffers();
 
 		if (GC::OptionsUseShadows == true)
 		{
@@ -215,12 +213,7 @@ namespace Prism
 
 	Prism::Texture* DeferredRenderer::GetFinishedTexture()
 	{
-		if (GC::OptionsUseShadows == true)
-		{
-			return myFinishedTexture;
-		}
-
-		return myFinishedSceneTexture;
+		return myFinishedTexture;
 	}
 
 	Prism::Texture* DeferredRenderer::GetEmissiveTexture()
@@ -333,6 +326,7 @@ namespace Prism
 		context->ClearRenderTargetView(renderTarget, myClearColor);
 		context->OMSetRenderTargets(1, &renderTarget, Engine::GetInstance()->GetDepthView());
 
+		ActivateBuffers();
 		RenderAmbientPass(aScene);
 
 		context->OMSetRenderTargets(1, &renderTarget, myDepthStencilTexture->GetDepthStencilView());
@@ -367,17 +361,7 @@ namespace Prism
 	{
 		if (aBackground != nullptr && aBackground->GetShaderView() != nullptr)
 		{
-			ID3D11RenderTargetView* backbuffer = nullptr;
-			if (GC::OptionsUseShadows == true)
-			{
-				backbuffer = myFinishedTexture->GetRenderTargetView();
-			}
-			else
-			{
-				backbuffer = myFinishedSceneTexture->GetRenderTargetView();
-			}
-
-
+			ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
 			Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, Engine::GetInstance()->GetDepthView());
 			Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 
@@ -422,16 +406,7 @@ namespace Prism
 
 	void DeferredRenderer::RenderParticles(EmitterManager* aParticleEmitterManager)
 	{
-		ID3D11RenderTargetView* backbuffer = nullptr;
-		if (GC::OptionsUseShadows == true)
-		{
-			backbuffer = myFinishedTexture->GetRenderTargetView();
-		}
-		else
-		{
-			backbuffer = myFinishedSceneTexture->GetRenderTargetView();
-		}
-
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myActualParticleDepth->GetDepthStencilView());
 		aParticleEmitterManager->RenderEmitters(myParticleDepth);
 		/*

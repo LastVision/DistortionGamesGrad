@@ -294,9 +294,10 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
-	//myBackground->Render(myWindowSize * 0.5f);
-	//myScene->Render();
+	if (GC::OptionsUseShadows == true)
+	{
+		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
+	}
 
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
