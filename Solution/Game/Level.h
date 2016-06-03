@@ -66,6 +66,7 @@ public:
 private:
 
 	void KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity = { 0.f, 0.f });
+	void FinishLevel();
 
 	void operator=(Level&) = delete;
 
@@ -113,6 +114,7 @@ private:
 	void UpdateInput(float aDeltaTime);
 
 	bool myShouldRenderCountDown;
+	bool myShouldFinishLevel;
 };
 
 inline Prism::Scene* Level::GetScene() const
