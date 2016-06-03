@@ -174,7 +174,8 @@ namespace Prism
 #endif
 
 		float clearColor[4] = { myClearColor.x, myClearColor.y, myClearColor.z, 0.f };
-		myDirectX->Clear(clearColor);
+		myDirectX->ClearBackBuffer(clearColor);
+		myDirectX->ClearDepthBuffer();
 
 		VTUNE_EVENT_END();
 	}
@@ -213,6 +214,12 @@ namespace Prism
 		myDirectX->SetFullscreen(aFullscreen);
 	}
 
+
+	void Engine::ClearBackBuffer(const CU::Vector4<float>& aClearColor)
+	{
+		float clearColor[4] = { aClearColor.x, aClearColor.y, aClearColor.z, 0.f };
+		myDirectX->ClearBackBuffer(clearColor);
+	}
 
 	Model* Engine::DLLLoadModel(const std::string& aModelPath, Effect* aEffect)
 	{

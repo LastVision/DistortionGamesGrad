@@ -29,10 +29,14 @@ namespace Prism
 		mySwapChain->Present(aSyncInterval, aFlags);
 	}
 
-	void DirectX::Clear(const float aClearColor[4])
+	void DirectX::ClearBackBuffer(const float aClearColor[4])
 	{
-		//myContext->OMSetRenderTargets(1, &myBackbufferRenderTarget, myBackbufferDepthStencil);
 		myContext->ClearRenderTargetView(myBackbufferRenderTarget, aClearColor);
+	}
+
+
+	void DirectX::ClearDepthBuffer()
+	{
 		myContext->ClearDepthStencilView(myBackbufferDepthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
