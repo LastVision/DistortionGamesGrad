@@ -49,6 +49,7 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myAllHatsWonText);
 	SAFE_DELETE(myGoldBagSprite);
 	SAFE_DELETE(myAnimator);
+	SAFE_DELETE(mySpinHandleAnimator);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -63,6 +64,11 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_hat_unlock.xml", nullptr, -1);
 
 	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/UnlockHatAnimation.xml");
+	mySpinHandleAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/HatSpinHandleAnimation.xml");
+
+	mySpinHandleAnimator->RestartAnimation();
+	mySpinHandleAnimator->ResetAnimation();
+	mySpinHandleAnimator->PauseAnimation();
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
@@ -146,7 +152,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		}
 		myCurrentHatToWin = myLeftIndex;
 
-		if (mySpinTimer < -5.f)
+		if (mySpinTimer < -3.f)
 		{
 			WinHat(myHats[myCurrentHatToWin].myID);
 		}
@@ -169,6 +175,10 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 	if (myAnimator != nullptr)
 	{
 		myAnimator->Update(aDeltaTime);
+	}
+	if (mySpinHandleAnimator != nullptr)
+	{
+		mySpinHandleAnimator->Update(aDeltaTime);
 	}
 
 
@@ -205,6 +215,11 @@ void HatUnlockState::Render()
 		mySpinBox->Render(windowSize);
 	}
 
+	if (mySpinHandleAnimator != nullptr && myHasWonAllHats == false)
+	{
+		mySpinHandleAnimator->Render(windowSize + CU::Vector2<float>(385.f, 0.f));
+	}
+
 	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
 
 	myGoldBagSprite->Render(goldPos);
@@ -229,6 +244,7 @@ void HatUnlockState::Render()
 			
 		}
 	}
+
 
 }
 
@@ -287,6 +303,8 @@ void HatUnlockState::ReadXML()
 
 void HatUnlockState::Spin()
 {
+	mySpinHandleAnimator->RestartAnimation();
+	mySpinHandleAnimator->UnPauseAnimation();
 	myIsSpinning = true;
 	mySpinTimer = myMaxSpinTime;
 	GC::Gold -= mySpinCost;
@@ -318,10 +336,6 @@ void HatUnlockState::WinHat(int aHatID)
 		}
 	}
 
-	if (myHats.Size() == 0)
-	{
-		myHasWonAllHats = true;
-	}
 	//ta bort rätt hatt ur my hats!!!
 }
 
