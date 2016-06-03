@@ -7,6 +7,7 @@ class ScoreWidget;
 namespace Prism
 {
 	class SpriteProxy;
+	class SpriteAnimator;
 }
 
 struct Score;
@@ -51,5 +52,8 @@ private:
 
 	float myGoldCostMovement;
 	float myGoldCostFade;
+
+	Prism::SpriteAnimator* myAnimator;
+	int myAnimationsToRun;
 };
 

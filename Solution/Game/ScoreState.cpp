@@ -17,6 +17,7 @@
 #include <SpriteProxy.h>
 #include <WidgetContainer.h>
 #include <fstream>
+#include <SpriteAnimator.h>
 #include <SQLWrapper.h>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
@@ -31,6 +32,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myEarnedStarsText("")
 	, myGoldCostMovement(0.f)
 	, myGoldCostFade(1.f)
+	, myAnimationsToRun(0)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -75,6 +77,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 ScoreState::~ScoreState()
 {
+	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(myGUIManager);
 	SAFE_DELETE(myGoldBagSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
@@ -93,6 +96,8 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myIsActiveState = true;
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_score_screen.xml", nullptr, myCurrentLevel);
 	myGUIManager->SetSelectedButton(0, 6);
+
+	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/WinBoltAnimation.xml");
 
 	int nextLevel = myCurrentLevel + 1;
 
@@ -135,6 +140,12 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 	{
 		HandleControllerInMenu(myController, myGUIManager);
 
+		if (myAnimationsToRun > 0 && myAnimator->IsPlayingAnimation() == false)
+		{
+			--myAnimationsToRun;
+			myAnimator->RestartAnimation();
+		}
+
 		myGUIManager->Update(aDeltaTime);
 	}
 
@@ -142,6 +153,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 	{
 		myGoldCostMovement += 25.f * aDeltaTime;
 		myGoldCostFade -= 0.25f * aDeltaTime;
+
+		if (myAnimator != nullptr)
+		{
+			myAnimator->Update(aDeltaTime);
+		}
 	}
 	return myStateStatus;
 }
@@ -187,6 +203,10 @@ void ScoreState::Render()
 	{
 		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+		if (myAnimator != nullptr)
+		{
+			myAnimator->Render(goldPos);
+		}
 	}
 }
 
@@ -290,6 +310,8 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 
 	myEarnedStars = diffStars > 0 ? diffStars : 0;
 	myEarnedStarsText = "+" + std::to_string(myEarnedStars);
+
+	myAnimationsToRun = myEarnedStars;
 }
 
 void ScoreState::SaveUnlockedLevels(const int aLevelID)
