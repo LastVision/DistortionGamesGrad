@@ -73,7 +73,7 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 

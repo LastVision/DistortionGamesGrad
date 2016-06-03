@@ -19,3 +19,4 @@ void Subscriber::ReceiveMessage(const OnPlayerLevelComplete&){}
 void Subscriber::ReceiveMessage(const OnPlayerJoin&){}
 void Subscriber::ReceiveMessage(const ReturnToMenuMessage&){}
 void Subscriber::ReceiveMessage(const ReachedGoalMessage&) {}
+void Subscriber::ReceiveMessage(const UnhoverControllerMessage&) {}

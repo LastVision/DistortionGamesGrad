@@ -2,6 +2,8 @@
 #include <CommonHelper.h>
 #include "Cursor.h"
 #include "../InputWrapper/InputWrapper.h"
+#include <PostMaster.h>
+#include <UnhoverControllerMessage.h>
 
 namespace GUI
 {
@@ -50,6 +52,7 @@ namespace GUI
 			|| CU::InputWrapper::GetInstance()->GetMouseDY() > 0.f))
 		{
 			myIsUsingController = false;
+			PostMaster::GetInstance()->SendMessage(UnhoverControllerMessage());
 		}
 	}
 

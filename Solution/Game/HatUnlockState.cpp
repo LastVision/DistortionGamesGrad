@@ -126,7 +126,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopSubState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 	myGUIManager->Update(aDeltaTime);
 
 	if (myIsSpinning == true)

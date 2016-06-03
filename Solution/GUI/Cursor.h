@@ -35,6 +35,8 @@ namespace GUI
 		void SetShouldRender(bool aShouldRender);
 		void SetIsUsingController(bool aIsUsingController);
 
+		bool IsUsingController() const;
+
 	private:
 		CU::Vector2<float> myPosition;
 		CU::Vector2<float> myPreviousPosition;
@@ -70,5 +72,10 @@ namespace GUI
 		{
 			myPreviousPosition = myPosition;
 		}
+	}
+
+	inline bool Cursor::IsUsingController() const
+	{
+		return myIsUsingController;
 	}
 }

@@ -133,7 +133,7 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 
 	if (myTimer < 0)
 	{
-		HandleControllerInMenu(myController, myGUIManager);
+		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 		myGUIManager->Update(aDeltaTime);
 	}

@@ -14,6 +14,7 @@ struct ScrapMessage;
 struct OnPlayerJoin;
 struct ReturnToMenuMessage;
 struct ReachedGoalMessage;
+struct UnhoverControllerMessage;
 
 class Subscriber
 {
@@ -35,5 +36,6 @@ public:
 	virtual void ReceiveMessage(const OnPlayerJoin& aMessage);
 	virtual void ReceiveMessage(const ReturnToMenuMessage& aMessage);
 	virtual void ReceiveMessage(const ReachedGoalMessage& aMessage);
+	virtual void ReceiveMessage(const UnhoverControllerMessage& aMessage);
 };
 
