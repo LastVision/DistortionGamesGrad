@@ -155,6 +155,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 				if (myIsInSteam == false)
 				{
 					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					myOrientation.SetPos(resetPos);
 					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 				}
 				else if (myVelocity.y < 0.f)
@@ -174,6 +175,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 				else
 				{
 					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					myOrientation.SetPos(resetPos);
 					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 					if (aComponent->GetEntity().GetType() == eEntityType::PROP)
 					{
@@ -197,7 +199,11 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 			resetPos.x = aHitPosition.x + GC::PlayerRadius* 1.1f;
 			myVelocity.x = fmaxf(0, myVelocity.x);
 		}
-		myOrientation.SetPos(resetPos);
+
+		if (myIsActive == true)
+		{
+			myOrientation.SetPos(resetPos);
+		}
 	}
 }
 
@@ -218,12 +224,15 @@ void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vect
 void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vector3<float>&
 	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
-	if (aComponent != nullptr && (CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed
-		|| (aComponent->GetEntity().GetType() == eEntityType::SPIKE || aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)))
+	if (aComponent != nullptr)
 	{
-		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
+		if ((CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed
+			|| (aComponent->GetEntity().GetType() == eEntityType::SPIKE || aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)))
 		{
-			myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+			if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
+			{
+				myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+			}
 		}
 	}
 }

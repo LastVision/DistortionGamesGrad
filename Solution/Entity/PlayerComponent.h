@@ -35,7 +35,7 @@ private:
 	bool myIsAlive;
 	std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&
 		, const CU::Vector3<float>&)> myRaycastHandler;
-	CU::Vector3<float> myPreviousPosition;
+	CU::Vector3<float> myPreviousPositions[2];
 };
 
 inline eComponentType PlayerComponent::GetTypeStatic()

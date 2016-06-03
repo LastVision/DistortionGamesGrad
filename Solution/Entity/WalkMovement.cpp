@@ -122,8 +122,8 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 		if (right.x < 0)
 		{
 			myOrientation = CU::Matrix44<float>::CreateRotateAroundY(static_cast<float>(M_PI));
-			myOrientation.SetPos(oldPos);
 		}
+		myOrientation.SetPos(oldPos);
 	}
 }
 
