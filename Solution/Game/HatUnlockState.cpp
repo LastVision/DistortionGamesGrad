@@ -249,9 +249,12 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::SPIN:
 		if (myIsSpinning == false)
 		{
-			if (myHats.Size() > 0 && GC::Gold >= mySpinCost)
+			if (myHats.Size() > 0)
 			{
-				Spin();
+				if (GC::Gold >= mySpinCost)
+				{
+					Spin();
+				}
 			}
 			else
 			{
@@ -311,6 +314,11 @@ void HatUnlockState::WinHat(int aHatID)
 			myHats.RemoveCyclicAtIndex(i);
 			break;
 		}
+	}
+
+	if (myHats.Size() == 0)
+	{
+		myHasWonAllHats = true;
 	}
 	//ta bort rätt hatt ur my hats!!!
 }

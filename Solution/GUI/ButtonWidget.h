@@ -1,6 +1,8 @@
 #pragma once
 #include "Widget.h"
 
+#include <Tweener.h>
+
 namespace Prism
 {
 	class SpriteProxy;
@@ -75,6 +77,12 @@ namespace GUI
 		float myLerpScale;
 		CU::Vector2<float> myOriginalSize;
 		CU::Vector2<float> myOriginalHotSpot;
+
+		bool myShouldAnimate;
+		float myAnimationAlpha;
+		float myAnimationStart;
+
+		Tweener<float> myTweener;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const
