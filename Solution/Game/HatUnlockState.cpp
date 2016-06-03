@@ -259,7 +259,7 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			}
 		}
 		break;
-	case eOnClickEvent::GAME_QUIT:
+	case eOnClickEvent::HAT_QUIT:
 		if (myIsSpinning == false)
 		{
 			myStateStatus = eStateStatus::ePopSubState;
