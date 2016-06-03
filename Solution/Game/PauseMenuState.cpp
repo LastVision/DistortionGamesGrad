@@ -2,6 +2,7 @@
 
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include <GUIManager.h>
 #include "HatsSelectionState.h"
 #include <InputWrapper.h>
@@ -37,6 +38,8 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myIsLetThrough = true;
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void PauseMenuState::EndState()
@@ -74,6 +77,8 @@ void PauseMenuState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void PauseMenuState::PauseState()

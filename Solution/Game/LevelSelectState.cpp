@@ -2,6 +2,7 @@
 #include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include <InputWrapper.h>
 #include <GUIManager.h>
 #include "LevelSelectState.h"
@@ -55,6 +56,8 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
 	}
 #endif
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void LevelSelectState::EndState()
@@ -107,6 +110,7 @@ void LevelSelectState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void LevelSelectState::PauseState()

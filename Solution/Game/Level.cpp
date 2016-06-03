@@ -11,6 +11,7 @@
 #include "EmitterManager.h"
 #include <EmitterMessage.h>
 #include <EntityFactory.h>
+#include <FadeMessage.h>
 #include <FinishLevelMessage.h>
 #include "FirstTimeFinishLevelState.h"
 #include <InputComponent.h>
@@ -153,6 +154,8 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -574,6 +577,7 @@ void Level::EndState()
 void Level::ResumeState()
 {
 	myController->SetIsInMenu(false);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void Level::PauseState()

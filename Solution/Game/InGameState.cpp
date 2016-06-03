@@ -7,6 +7,7 @@
 #include "Console.h"
 #include <ControllerInput.h>
 #include <CommonHelper.h>
+#include <FadeMessage.h>
 #include <GameStateMessage.h>
 #include <EffectContainer.h>
 #include <EntityFactory.h>
@@ -79,6 +80,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 	myNextLevel = 1;
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void InGameState::EndState()
@@ -123,6 +126,8 @@ void InGameState::ResumeState()
 	myIsActiveState = true;
 	myLevelToLoad = -1;
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void InGameState::PauseState()

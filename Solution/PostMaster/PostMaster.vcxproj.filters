@@ -71,5 +71,8 @@
     <ClInclude Include="UnhoverControllerMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="FadeMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

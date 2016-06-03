@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include "HatUnlockState.h"
 #include <HatManager.h>
 #include <GUIManager.h>
@@ -104,7 +105,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
 		, { 128.f, 128.f }, { 64.f, 64.f });
 
-
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatUnlockState::EndState()
@@ -235,6 +236,7 @@ void HatUnlockState::ResumeState()
 {
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatUnlockState::PauseState()

@@ -4,6 +4,7 @@
 #include "CreditMenuState.h"
 #include <Cursor.h>
 #include <ControllerInput.h>
+#include <FadeMessage.h>
 #include <GUIManager.h>
 #include "HatState.h"
 #include "InGameState.h"
@@ -61,6 +62,7 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void MainMenuState::EndState()
@@ -112,6 +114,7 @@ void MainMenuState::ResumeState()
 	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void MainMenuState::PauseState()
