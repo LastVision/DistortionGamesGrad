@@ -68,7 +68,7 @@ const eStateStatus CreditMenuState::Update(const float& aDeltaTime)
 		myStateStatus = eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 

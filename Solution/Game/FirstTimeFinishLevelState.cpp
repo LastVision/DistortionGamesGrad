@@ -60,7 +60,7 @@ void FirstTimeFinishLevelState::EndState()
 
 const eStateStatus FirstTimeFinishLevelState::Update(const float& aDeltaTime) 
 {
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 

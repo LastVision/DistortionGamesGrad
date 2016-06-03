@@ -70,6 +70,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myDirectionalLights(4)
 	, mySpotLights(16)
 	, myShouldRenderCountDown(true)
+	, myShouldFinishLevel(false)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -195,21 +196,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myIsFreeCam = !myIsFreeCam;
 	}
 
+#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
-		if (GC::FirstTimeScoreSubmit == true)
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-		}
-		else
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-		}
+		myShouldFinishLevel = true;
 	}
 
-#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
 	{
 		GC::DebugRenderTexture = 0;
@@ -278,18 +270,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
 		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
-			myShouldRenderCountDown = false;
-			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			if (GC::FirstTimeScoreSubmit == true)
-			{
-				SET_RUNTIME(false);
-				myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-			}
-			else
-			{
-				SET_RUNTIME(false);
-				myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-			}
+			myShouldFinishLevel = true;
 		}
 	}
 	else
@@ -297,12 +278,13 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myShouldRenderCountDown = true;
 	}
 
-
-
 	myDeferredRenderer->Update(aDeltaTime);
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-
+	if (myShouldFinishLevel == true)
+	{
+		FinishLevel();
+	}
 
 	return myStateStatus;
 }
@@ -638,19 +620,7 @@ void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
 
 	if (myPlayerWinCount >= myPlayersPlaying)
 	{
-		myShouldRenderCountDown = false;
-
-		PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-		if (GC::FirstTimeScoreSubmit == true)
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-		}
-		else
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-		}
+		myShouldFinishLevel = true;
 	}
 }
 
@@ -756,4 +726,20 @@ void Level::Add(Prism::PointLight* aLight)
 {
 	myPointLights.Add(aLight);
 	myScene->AddLight(aLight);
+}
+
+void Level::FinishLevel()
+{
+	myShouldRenderCountDown = false;
+	PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+	if (GC::FirstTimeScoreSubmit == true)
+	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+	}
+	else
+	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
+	}
 }

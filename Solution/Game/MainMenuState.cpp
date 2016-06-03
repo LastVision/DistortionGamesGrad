@@ -91,7 +91,7 @@ const eStateStatus MainMenuState::Update(const float& aDeltaTime)
 			myGUIPosition.x = myTweener.DoTween(myMenuAlpha, myGUIStartPosition.x, myGUIEndPosition.x - myGUIStartPosition.x, 1.f, eTweenType::EXPONENTIAL_HALF);
 		}
 
-		HandleControllerInMenu(myController, myGUIManager);
+		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 		myGUIManager->SetPosition(myGUIPosition);
 		myGUIManager->Update(aDeltaTime);

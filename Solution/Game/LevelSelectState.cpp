@@ -51,8 +51,8 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 #ifdef RELEASE_BUILD
 	if (myIsNightmare == false && GC::HasWonGame == false)
 	{
-		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetLast())->SetActive(false);
-
+		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
+		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
 	}
 #endif
 }
@@ -73,7 +73,7 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 

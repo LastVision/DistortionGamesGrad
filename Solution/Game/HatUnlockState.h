@@ -7,6 +7,11 @@ namespace GUI
 	class GUIManager;
 }
 
+namespace Prism
+{
+	class SpriteAnimator;
+}
+
 class HatUnlockState : public GameState, public Subscriber
 {
 public:
@@ -28,6 +33,7 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+	void ReadXML();
 	void Spin();
 	void WinHat(int aHatID);
 	void WrapIndex();
@@ -51,8 +57,11 @@ private:
 	bool myHasWonAllHats;
 
 	Prism::SpriteProxy* myHatWon;
+	float myTotalTime;
+	float myHatWonScaling;
 	Prism::SpriteProxy* mySpinBox;
 	Prism::SpriteProxy* myAllHatsWonText;
+	Prism::SpriteProxy* myGoldBagSprite;
 
 	int myLeftIndex;
 	int myMiddleIndex;
@@ -62,5 +71,11 @@ private:
 
 	Tweener<float> myTweener;
 
+	int mySpinCost;
+	bool myShowGoldCost;
+	float myGoldCostMovement;
+	float myGoldCostFade;
+
+	Prism::SpriteAnimator* myAnimator;
 };
 
