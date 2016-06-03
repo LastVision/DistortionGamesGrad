@@ -55,7 +55,7 @@ const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopSubState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 

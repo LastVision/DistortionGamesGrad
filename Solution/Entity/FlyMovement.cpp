@@ -140,7 +140,11 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 			}
 			else
 			{
-				myMovementComponent.GetEntity().SendNote(ShouldDieNote());
+				float deathSpeed = myMovementComponent.GetEntity().GetComponent<PlayerComponent>()->GetDeathSpeed();
+ 				if (myVelocity.x >= deathSpeed || myVelocity.y >= deathSpeed)
+				{
+					myMovementComponent.GetEntity().SendNote(ShouldDieNote());
+				}
 			}
 		}
 		myHasContact = true;

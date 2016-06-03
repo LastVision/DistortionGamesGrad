@@ -33,6 +33,7 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+	void ReadXML();
 	void Spin();
 	void WinHat(int aHatID);
 	void WrapIndex();

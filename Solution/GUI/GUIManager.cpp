@@ -9,6 +9,7 @@
 #include "HighscoreWidget.h"
 #include "../InputWrapper/InputWrapper.h"
 #include "LevelButtonWidget.h"
+#include <PostMaster.h>
 #include "SpriteWidget.h"
 #include "TextWidget.h"
 #include "ToggleBoxWidget.h"
@@ -37,6 +38,8 @@ namespace GUI
 		ReadXML(aXMLPath);
 
 		OnResize(Prism::Engine::GetInstance()->GetWindowSizeInt().x, Prism::Engine::GetInstance()->GetWindowSizeInt().y);
+
+		PostMaster::GetInstance()->Subscribe(this, eMessageType::UNHOVER_CONTROLLER);
 	}
 
 	GUIManager::~GUIManager()
@@ -44,6 +47,7 @@ namespace GUI
 		myButtons.RemoveAll();
 		SAFE_DELETE(myWidgets);
 		myActiveWidget = nullptr;
+		PostMaster::GetInstance()->UnSubscribe(this, 0);
 	}
 
 	void GUIManager::AddWidget(Widget* aWidget)
@@ -54,16 +58,18 @@ namespace GUI
 	void GUIManager::Update(float aDelta)
 	{
 		myMousePosition = myCursor->GetMousePosition();
-
 		myWidgets->Update(aDelta);
 
-		CheckMouseMoved();
-		CheckMouseExited();
-		CheckMouseDown();
-		CheckMousePressed();
-		CheckMouseReleased();
+		if (myCursor->IsUsingController() == false)
+		{
+			CheckMouseMoved();
+			CheckMouseExited();
+			CheckMouseDown();
+			CheckMousePressed();
+			CheckMouseReleased();
 
-		CheckMouseEntered();
+			CheckMouseEntered();
+		}
 	}
 
 	void GUIManager::Render()
@@ -298,7 +304,7 @@ namespace GUI
 			{
 				int levelID = 0;
 				float time = 0;
-				file >> levelID >> time >> stars;		
+				file >> levelID >> time >> stars;
 			}
 
 			myLevelButtons[i]->SetStars(stars);
@@ -306,6 +312,21 @@ namespace GUI
 		}
 	}
 
+	void GUIManager::ReceiveMessage(const UnhoverControllerMessage& aMessage)
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+		myControllerButtonIndexX = 0;
+		myControllerButtonIndexY = 0;
+	}
+
+	void GUIManager::Unhover()
+	{
+		if (myActiveWidget != nullptr)
+		{
+			myActiveWidget->OnMouseExit();
+			myActiveWidget = nullptr;
+		}
+	}
 
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{

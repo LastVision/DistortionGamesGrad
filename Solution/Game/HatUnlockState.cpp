@@ -10,6 +10,7 @@
 #include <PostMaster.h>
 #include <SpriteProxy.h>
 #include <SpriteAnimator.h>
+#include <XMLReader.h>
 
 HatUnlockState::HatUnlockState()
 	: myGUIManager(nullptr)
@@ -28,6 +29,7 @@ HatUnlockState::HatUnlockState()
 	, myTotalTime(2.09f)
 	, myHatWonScaling(1.f)
 {
+	ReadXML();
 }
 
 HatUnlockState::~HatUnlockState()
@@ -59,6 +61,8 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myCursor->SetShouldRender(true);
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_hat_unlock.xml", nullptr, -1);
 
+	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/UnlockHatAnimation.xml");
+
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 
@@ -79,6 +83,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	if (myHats.Size() <= 0)
 	{
 		myHasWonAllHats = true;
+		myAnimator->RestartAnimation();
 	}
 
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
@@ -99,9 +104,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
 		, { 128.f, 128.f }, { 64.f, 64.f });
 
-	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/UnlockHatAnimation.xml");
 
-	mySpinCost = 3;
 }
 
 void HatUnlockState::EndState()
@@ -123,7 +126,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopSubState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 	myGUIManager->Update(aDeltaTime);
 
 	if (myIsSpinning == true)
@@ -190,6 +193,10 @@ void HatUnlockState::Render()
 
 	if (myHasWonAllHats == true)
 	{
+		if (myAnimator != nullptr)
+		{
+			myAnimator->Render(windowSize);
+		}
 		myAllHatsWonText->Render(windowSize);
 	}
 	else
@@ -216,7 +223,9 @@ void HatUnlockState::Render()
 			{
 				myAnimator->Render(windowSize);
 			}
+
 			myHatWon->Render(windowSize, { myHatWonScaling, myHatWonScaling });
+			
 		}
 	}
 
@@ -250,13 +259,25 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			}
 		}
 		break;
-	case eOnClickEvent::GAME_QUIT:
+	case eOnClickEvent::HAT_QUIT:
 		if (myIsSpinning == false)
 		{
 			myStateStatus = eStateStatus::ePopSubState;
 		}
 		break;
 	}
+}
+
+void HatUnlockState::ReadXML()
+{
+	XMLReader reader;
+	reader.OpenDocument("Data/Setting/SpinSettings.xml");
+	tinyxml2::XMLElement* rootElement = reader.FindFirstChild("root");
+
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "spinTime"), "value", myMaxSpinTime);
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "spinCost"), "value", mySpinCost);
+
+	reader.CloseDocument();
 }
 
 void HatUnlockState::Spin()

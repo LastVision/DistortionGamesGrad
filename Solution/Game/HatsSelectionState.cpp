@@ -219,7 +219,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
-	case eOnClickEvent::GAME_QUIT:
+	case eOnClickEvent::HAT_QUIT:
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	}

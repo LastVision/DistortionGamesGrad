@@ -31,6 +31,7 @@ namespace GUI
 		void OnLeftMouseUp() override;
 		void OnMouseEnter() override;
 		void OnMouseExit() override;
+		void Update(float aDeltaTime) override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 
@@ -66,6 +67,14 @@ namespace GUI
 		OnClickMessage* myClickEvent;
 
 		CU::Vector2<float> myTextOffset;
+
+		bool myShouldBeBigger;
+		bool myShouldBeSmaller;
+		float myLerpAlpha;
+		float myScale;
+		float myLerpScale;
+		CU::Vector2<float> myOriginalSize;
+		CU::Vector2<float> myOriginalHotSpot;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const
