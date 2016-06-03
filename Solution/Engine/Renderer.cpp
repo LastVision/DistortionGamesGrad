@@ -90,6 +90,7 @@ namespace Prism
 
 	void Renderer::DebugRender(GBufferData* aGBuffer)
 	{
+		Engine::GetInstance()->ClearBackBuffer({ 0.f, 0.f, 0.f, 0.f });
 		std::string renderMode;
 		if (GC::DebugRenderTexture == 1)
 		{

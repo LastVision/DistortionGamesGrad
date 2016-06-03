@@ -27,7 +27,8 @@ namespace Prism
 		~DirectX();
 
 		void Present(const unsigned int aSyncInterval, const unsigned int aFlags);
-		void Clear(const float aClearColor[4]);
+		void ClearBackBuffer(const float aClearColor[4]);
+		void ClearDepthBuffer();
 
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
 
