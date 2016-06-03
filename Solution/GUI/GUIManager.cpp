@@ -57,12 +57,11 @@ namespace GUI
 
 	void GUIManager::Update(float aDelta)
 	{
+		myMousePosition = myCursor->GetMousePosition();
+		myWidgets->Update(aDelta);
+
 		if (myCursor->IsUsingController() == false)
 		{
-			myMousePosition = myCursor->GetMousePosition();
-
-			myWidgets->Update(aDelta);
-
 			CheckMouseMoved();
 			CheckMouseExited();
 			CheckMouseDown();
