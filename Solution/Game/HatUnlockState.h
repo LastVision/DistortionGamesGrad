@@ -7,6 +7,11 @@ namespace GUI
 	class GUIManager;
 }
 
+namespace Prism
+{
+	class SpriteAnimator;
+}
+
 class HatUnlockState : public GameState, public Subscriber
 {
 public:
@@ -51,6 +56,8 @@ private:
 	bool myHasWonAllHats;
 
 	Prism::SpriteProxy* myHatWon;
+	float myTotalTime;
+	float myHatWonScaling;
 	Prism::SpriteProxy* mySpinBox;
 	Prism::SpriteProxy* myAllHatsWonText;
 	Prism::SpriteProxy* myGoldBagSprite;
@@ -67,5 +74,7 @@ private:
 	bool myShowGoldCost;
 	float myGoldCostMovement;
 	float myGoldCostFade;
+
+	Prism::SpriteAnimator* myAnimator;
 };
 
