@@ -175,6 +175,7 @@
     <ClInclude Include="ScrapMessage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Subscriber.h" />
+    <ClInclude Include="UnhoverControllerMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameStateMessage.cpp" />

@@ -68,5 +68,8 @@
     <ClInclude Include="ReachedGoalMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="UnhoverControllerMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
