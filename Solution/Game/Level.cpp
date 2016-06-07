@@ -34,6 +34,7 @@
 #include <Scene.h>
 #include <ScoreComponent.h>
 #include "ScoreInfo.h"
+#include <ScoreComponent.h>
 #include "ScoreState.h"
 #include "ScrapManager.h"
 #include <ScrapMessage.h>
@@ -237,7 +238,8 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
 	{
-		if (player->GetComponent<InputComponent>()->GetIsActive() == true)
+		if (player->GetComponent<InputComponent>()->GetIsActive() == true 
+			&& player->GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == false)
 		{
 			++playersAlive;
 			player->GetComponent<InputComponent>()->SetPlayersWinCount(myPlayerWinCount);
