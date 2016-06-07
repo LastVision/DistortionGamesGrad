@@ -303,7 +303,7 @@ namespace GUI
 		{
 			int stars = 0;
 			std::fstream file;
-			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score_Nightmare" + std::to_string(i + 1) + ".bin", std::ios::binary | std::ios::in);
+			file.open(CU::GetMyDocumentFolderPath() + "Data/Score/Score" + std::to_string(i + 1 + 1000) + ".bin", std::ios::binary | std::ios::in);
 
 			if (file.is_open() == true)
 			{
