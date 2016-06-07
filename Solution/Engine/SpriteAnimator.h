@@ -19,6 +19,8 @@ namespace Prism
 		void RestartAnimation(int anID = 0);
 		void StopAnimation();
 		void ResetAnimation();
+		void PauseAnimation();
+		void UnPauseAnimation();
 
 		void AddAnimation(float aFPS, int aNumberOfFrames, CU::Vector2<float> aFrameSize
 			, SpriteProxy* aSpriteSheet, bool aIsLooping);
@@ -33,5 +35,8 @@ namespace Prism
 		CU::GrowingArray<SpriteAnimation*> myAnimations;
 		SpriteAnimation *myCurrentAnimation;
 		SpriteProxy* emptySprite;
+
+		bool myIsPaused;
+		bool myShouldStopAtLastFrame;
 	};
 }

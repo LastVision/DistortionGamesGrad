@@ -80,10 +80,13 @@ namespace GUI
 		myTextRankPosition *= ratio;
 		myTextNamePosition *= ratio;
 		myTextScorePosition *= ratio;
+		myLocalBestScoreTextPosition *= ratio;
+		myLocalScorePosition *= ratio;
 	}
 
 	void HighscoreWidget::ConstructHighscoreText()
 	{
+		float textHeight = 36.f;
 		CU::Vector2<float> textPosition;
 		textPosition = myPosition + myTextPosition;
 		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
@@ -102,7 +105,7 @@ namespace GUI
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition.x += myTextPosition.x / 2.f;
 		textPosition.x += 150;
-		textPosition.y -= 10;
+		textPosition.y -= textHeight * 0.5f;
 		myTextPosition = textPosition;
 		myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
 
@@ -112,7 +115,7 @@ namespace GUI
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition -= myTextRankPosition.x;
 		textPosition.x += 90;
-		textPosition.y -= 40;
+		textPosition.y -= textHeight * 1.f;
 		myTextRankPosition = textPosition;
 
 		myHighscoreTextName = "Name\n";
@@ -122,7 +125,7 @@ namespace GUI
 		myHighscoreTextScore = "Score\n";
 		textPosition.x += 160;
 		myTextScorePosition = textPosition;
-		myLocalBestScoreTextPosition.y = textPosition.y - 400.f;
+		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 11.f;
 		if (mySQLWrapper.GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
@@ -151,6 +154,6 @@ namespace GUI
 		{
 			myHighscoreTextRank += "No Internet connection active.";
 		}
-		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - 30.f;
+		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - textHeight * 1.f;
 	}
 }

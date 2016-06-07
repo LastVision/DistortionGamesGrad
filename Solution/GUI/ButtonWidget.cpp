@@ -3,6 +3,8 @@
 #include "ButtonWidget.h"
 #include <CommonHelper.h>
 #include <Engine.h>
+#include <MathHelper.h>
+#include <NightmareIsLockedMessage.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 
@@ -20,6 +22,13 @@ namespace GUI
 		, myCanBeClicked(true)
 		, myId(-1)
 		, myColor(1.f, 1.f, 1.f, 1.f)
+		, myShouldBeBigger(false)
+		, myShouldBeSmaller(false)
+		, myScale(1.f)
+		, myLerpScale(1.f)
+		, myShouldAnimate(false)
+		, myAnimationAlpha(0.f)
+		, myAnimationStart(1.f)
 	{
 		std::string spritePathNormal = "";
 		std::string spritePathHover = "";
@@ -51,6 +60,9 @@ namespace GUI
 		myImagePressed = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathPressed, mySize, mySize / 2.f);
 		myImageCurrent = myImageNormal;
 
+		myOriginalSize = myImageCurrent->GetSize();
+		myOriginalHotSpot = myImageCurrent->GetHotspot();
+
 		tinyxml2::XMLElement* hoverElement = aReader->FindFirstChild(anXMLElement, "hover");
 		if (hoverElement != nullptr)
 		{
@@ -75,6 +87,13 @@ namespace GUI
 		, myId(-1)
 		, myColor(1.f, 1.f, 1.f, 1.f)
 		, myTextOffset(aTextOffset)
+		, myShouldBeBigger(false)
+		, myShouldBeSmaller(false)
+		, myScale(1.f)
+		, myLerpScale(1.f)
+		, myShouldAnimate(false)
+		, myAnimationAlpha(0.f)
+		, myAnimationStart(1.f)
 	{
 		mySize = aSize;
 		myPosition = aPosition;
@@ -83,6 +102,9 @@ namespace GUI
 		myImagePressed = Prism::ModelLoader::GetInstance()->LoadSprite(aSpritePressedPath, mySize, mySize / 2.f);
 		myImageHover = Prism::ModelLoader::GetInstance()->LoadSprite(aSpriteHoverPath, mySize, mySize / 2.f);
 		myImageCurrent = myImageNormal;
+
+		myOriginalSize = myImageCurrent->GetSize();
+		myOriginalHotSpot = myImageCurrent->GetHotspot();
 
 		if (aButtonText == "default")
 		{
@@ -136,15 +158,73 @@ namespace GUI
 		myImageCurrent = myImageHover;
 	}
 
-	void ButtonWidget::OnMouseEnter()
+	void ButtonWidget::OnMouseEnter(bool aShouldSound)
 	{
-		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonHover", 0);
+		if (aShouldSound == true)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonHover", 0);
+		}
 		myImageCurrent = myImageHover;
+		if (myCanBeClicked == true)
+		{
+			myLerpScale = myScale;
+			myShouldBeBigger = true;
+			myShouldBeSmaller = false;
+			myLerpAlpha = 0.f;
+			myShouldAnimate = false;
+		}
 	}
 
 	void ButtonWidget::OnMouseExit()
 	{
 		myImageCurrent = myImageNormal;
+		if (myCanBeClicked == true)
+		{
+			myLerpScale = myScale;
+			myShouldBeSmaller = true;
+			myShouldBeBigger = false;
+			myLerpAlpha = 0.f;
+		}
+	}
+
+	void ButtonWidget::Update(float aDeltaTime)
+	{
+		myLerpAlpha += aDeltaTime * 10.f;
+		if (myShouldBeBigger == true)
+		{
+			myScale = CU::Math::Lerp(myLerpScale, 1.3f, myLerpAlpha);
+			myImageCurrent->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+
+			if (myScale >= 1.3f)
+			{
+				myShouldBeBigger = false;
+				myShouldAnimate = true;
+				myAnimationAlpha = 0.f;
+				myAnimationStart = myScale;
+			}
+		}
+		if (myShouldBeSmaller == true)
+		{
+			myScale = CU::Math::Lerp(myLerpScale, 1.f, myLerpAlpha);
+			myImageCurrent->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+
+			if (myScale <= 1.f)
+			{
+				myShouldBeSmaller = false;
+			}
+		}
+
+		myAnimationAlpha += aDeltaTime;
+		if (myImageCurrent == myImageHover && myShouldBeBigger == false && myShouldBeSmaller == false)
+		{
+			if (myShouldAnimate == true)
+			{
+				//myAnimationScale = CU::Math::Lerp(myAnimationLerpScale, 1.1f, myAnimationAlpha);
+				myScale = myTweener.DoTween(myAnimationAlpha, myAnimationStart, 0.1f, 0.25f, eTweenType::SINUS);
+				myImageCurrent->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+
+			}
+		}
 	}
 
 	void ButtonWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
@@ -315,6 +395,10 @@ namespace GUI
 			}
 			else
 			{
+				if (myClickEvent->myEvent == eOnClickEvent::LEVEL_SELECT && myClickEvent->myIsNightmareLevel == true)
+				{
+					PostMaster::GetInstance()->SendMessage(NightmareIsLockedMessage());
+				}
 				// nope sound
 			}
 		}

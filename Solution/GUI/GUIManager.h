@@ -1,4 +1,5 @@
 #pragma once
+#include <Subscriber.h>
 
 namespace CU
 {
@@ -27,7 +28,7 @@ namespace GUI
 	class Cursor;
 	class LevelButtonWidget;
 
-	class GUIManager
+	class GUIManager : public Subscriber
 	{
 	public:
 		GUIManager(Cursor* aCursor, const std::string& aXMLPath, const Prism::Camera* aCamera, int aLeveID);
@@ -63,8 +64,13 @@ namespace GUI
 		void SelectButtonLeft();
 		void PressSelectedButton();
 		void HoverSelectedButton();
+		void HoverSelectedButtonWithoutSound();
 
 		void CheckUnlockedNightmareLevels();
+
+		void ReceiveMessage(const UnhoverControllerMessage& aMessage) override;
+
+		void Unhover();
 
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);

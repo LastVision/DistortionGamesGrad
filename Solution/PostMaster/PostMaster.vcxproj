@@ -159,10 +159,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EmitterMessage.h" />
+    <ClInclude Include="FadeMessage.h" />
     <ClInclude Include="FinishLevelMessage.h" />
     <ClInclude Include="GameStateMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
+    <ClInclude Include="NightmareIsLockedMessage.h" />
     <ClInclude Include="OnClickMessage.h" />
     <ClInclude Include="OnDeathMessage.h" />
     <ClInclude Include="OnPlayerJoin.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="ScrapMessage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Subscriber.h" />
+    <ClInclude Include="UnhoverControllerMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameStateMessage.cpp" />

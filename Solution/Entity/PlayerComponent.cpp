@@ -36,12 +36,14 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::Reset()
 {
-	myPreviousPosition = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[0] = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[1] = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::Update(float)
 {
 	CU::Vector3<float> position(myEntity.GetOrientation().GetPos());
+
 	if ((position.x < 0.f || position.x > 70.f || position.y < 0.f || position.y > 38.f)
 		&& myEntity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == false)
 	{
@@ -50,29 +52,21 @@ void PlayerComponent::Update(float)
 
 	if (myEntity.GetComponent<MovementComponent>()->GetShouldCollide() == true)
 	{
-		CU::Vector3<float> direction(myEntity.GetOrientation().GetPos() - myPreviousPosition);
-		CU::Vector3<float> position(myPreviousPosition);
+		CU::Vector3<float> direction(myPreviousPositions[0] - myPreviousPositions[1]);
+		CU::Vector3<float> position(myPreviousPositions[1]);
 
-if (direction != CU::Vector3<float>())
-{
-	float length = CU::Length(direction);
+		if (direction != CU::Vector3<float>())
+		{
+			float length = CU::Length(direction);
 
-	direction /= length;
+			direction /= length;
 
-	int rayCount = 0;
-	float stepSize = 0.1f;
-	while (length > stepSize && rayCount < 32)
-	{
-		++rayCount;
-
-		Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
-			, myEntity.GetComponent<PhysicsComponent>());
-		position += direction * stepSize;
-		length -= stepSize;
+			Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
+					, myEntity.GetComponent<PhysicsComponent>());
+		}
 	}
-}
-	}
-	myPreviousPosition = myEntity.GetOrientation().GetPos();
+	myPreviousPositions[1] = myPreviousPositions[0];
+	myPreviousPositions[0] = myEntity.GetOrientation().GetPos();
 }
 
 void PlayerComponent::EvaluateDeath()
@@ -156,6 +150,16 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 			&& other.GetType() != eEntityType::PLAYER
 			&& other.GetType() != eEntityType::SCRAP)
 		{
+			if (other.GetType() == eEntityType::BOUNCER)
+			{
+				float dot = CU::Dot(aHitNormal, other.GetOrientation().GetUp());
+
+				if (dot > 0.001f)
+				{
+					return;
+				}
+			}
+
 			myEntity.SendNote<ShouldDieNote>(ShouldDieNote());
 
 			if (other.GetType() == eEntityType::PROP)
@@ -165,4 +169,9 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 
 		}
 	}
+}
+
+float PlayerComponent::GetDeathSpeed() const
+{
+	return myData.myDeathSpeed;
 }

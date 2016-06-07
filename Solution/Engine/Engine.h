@@ -56,6 +56,7 @@ namespace Prism
 		void OnResize(int aWidth, int aHeigth);
 		bool IsFullscreen() const;
 		void SetFullscreen(bool aFullscreen);
+		void ClearBackBuffer(const CU::Vector4<float>& aClearColor);
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();

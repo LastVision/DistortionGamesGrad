@@ -11,6 +11,7 @@
 #include "EmitterManager.h"
 #include <EmitterMessage.h>
 #include <EntityFactory.h>
+#include <FadeMessage.h>
 #include <FinishLevelMessage.h>
 #include "FirstTimeFinishLevelState.h"
 #include <InputComponent.h>
@@ -70,6 +71,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myDirectionalLights(4)
 	, mySpotLights(16)
 	, myShouldRenderCountDown(true)
+	, myShouldFinishLevel(false)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -89,8 +91,6 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
 	Prism::ModelLoader::GetInstance()->UnPause();
 
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
-
 	CU::Vector2<float> size(256.f, 256.f);
 	std::string texturePath("Data/Resource/Texture/Countdown/T_countdown_");
 	for (int i = 0; i < 10; ++i)
@@ -109,7 +109,6 @@ Level::~Level()
 	{
 		SAFE_DELETE(myCountdownSprites[i]);
 	}
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
 	for (int i = 0; i < myScrapManagers.Size(); ++i)
 	{
@@ -152,6 +151,9 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -195,21 +197,12 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myIsFreeCam = !myIsFreeCam;
 	}
 
+#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
-		if (GC::FirstTimeScoreSubmit == true)
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-		}
-		else
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-		}
+		myShouldFinishLevel = true;
 	}
 
-#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
 	{
 		GC::DebugRenderTexture = 0;
@@ -278,18 +271,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myCurrentCountdownSprite = int(myTimeToLevelChange);
 		if (myTimeToLevelChange < 0.f || playersAlive == 0)
 		{
-			myShouldRenderCountDown = false;
-			PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-			if (GC::FirstTimeScoreSubmit == true)
-			{
-				SET_RUNTIME(false);
-				myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-			}
-			else
-			{
-				SET_RUNTIME(false);
-				myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-			}
+			myShouldFinishLevel = true;
 		}
 	}
 	else
@@ -297,21 +279,23 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myShouldRenderCountDown = true;
 	}
 
-
-
 	myDeferredRenderer->Update(aDeltaTime);
 	myEmitterManager->UpdateEmitters(aDeltaTime);
 
-
+	if (myShouldFinishLevel == true)
+	{
+		FinishLevel();
+	}
 
 	return myStateStatus;
 }
 
 void Level::Render()
 {
-	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
-	//myBackground->Render(myWindowSize * 0.5f);
-	//myScene->Render();
+	if (GC::OptionsUseShadows == true)
+	{
+		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
+	}
 
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
@@ -591,11 +575,31 @@ void Level::EndState()
 
 void Level::ResumeState()
 {
+	//höj ingame musik
+
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Increase_NightmareInGame", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Increase_InGameMusic", 0);
+	}
+
 	myController->SetIsInMenu(false);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void Level::PauseState()
 {
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Lower_NightmareInGame", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Lower_InGameMusic", 0);
+	}
 	for each(Entity* player in myPlayers)
 	{
 		player->SendNote(VibrationNote(0, 0, 0));
@@ -638,19 +642,7 @@ void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
 
 	if (myPlayerWinCount >= myPlayersPlaying)
 	{
-		myShouldRenderCountDown = false;
-
-		PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
-		if (GC::FirstTimeScoreSubmit == true)
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
-		}
-		else
-		{
-			SET_RUNTIME(false);
-			myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
-		}
+		myShouldFinishLevel = true;
 	}
 }
 
@@ -756,4 +748,20 @@ void Level::Add(Prism::PointLight* aLight)
 {
 	myPointLights.Add(aLight);
 	myScene->AddLight(aLight);
+}
+
+void Level::FinishLevel()
+{
+	myShouldRenderCountDown = false;
+	PostMaster::GetInstance()->SendMessage(FinishLevelMessage(myLevelToChangeToID));
+	if (GC::FirstTimeScoreSubmit == true)
+	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new ScoreState(myScores, *myScoreInfo, myLevelID));
+	}
+	else
+	{
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new FirstTimeFinishLevelState(myScores, *myScoreInfo, myLevelID));
+	}
 }

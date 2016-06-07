@@ -3,6 +3,7 @@
 #include <AudioInterface.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
@@ -36,6 +37,8 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void OptionState::EndState()
@@ -54,7 +57,7 @@ const eStateStatus OptionState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 
@@ -73,6 +76,8 @@ void OptionState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void OptionState::PauseState()

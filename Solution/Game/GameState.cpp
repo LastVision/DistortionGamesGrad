@@ -1,11 +1,10 @@
 #include "stdafx.h"
-
 #include <Cursor.h>
 #include <ControllerInput.h>
 #include "GameState.h"
 #include <GUIManager.h>
 
-void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager)
+void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor)
 {
 	if (aController->IsConnected())
 	{
@@ -68,6 +67,13 @@ void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GU
 		{
 			myControllerPressedLeft = false;
 		}
+
+		if (myControllerPressedDown == true || myControllerPressedLeft == true
+			|| myControllerPressedRight == true || myControllerPressedUp)
+		{
+			aCursor->SetIsUsingController(true);
+			aManager->Unhover();
+		}
 	}
 }
 
@@ -82,7 +88,7 @@ void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIM
 
 	if (aController->CheckConnection() == true)
 	{
-		aManager->HoverSelectedButton();
+		aManager->HoverSelectedButtonWithoutSound();
 		aCursor->SetIsUsingController(true);
 	}
 }

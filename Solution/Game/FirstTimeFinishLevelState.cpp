@@ -2,6 +2,7 @@
 
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include "FirstTimeFinishLevelState.h"
 #include <GrowingArray.h>
 #include <GUIManager.h>
@@ -50,6 +51,7 @@ void FirstTimeFinishLevelState::InitState(StateStackProxy* aStateStackProxy, CU:
 		file.write(reinterpret_cast<const char*>(&GC::OptionsEnableOffline), sizeof(bool));
 		file.close();
 	}
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void FirstTimeFinishLevelState::EndState() 
@@ -60,7 +62,7 @@ void FirstTimeFinishLevelState::EndState()
 
 const eStateStatus FirstTimeFinishLevelState::Update(const float& aDeltaTime) 
 {
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 
@@ -83,6 +85,7 @@ void FirstTimeFinishLevelState::ResumeState()
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 	myRenderFlag = true;
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void FirstTimeFinishLevelState::PauseState() 

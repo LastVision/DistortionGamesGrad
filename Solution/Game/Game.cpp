@@ -11,6 +11,7 @@
 #include <DebugFont.h>
 #include <Engine.h>
 #include <EntityFactory.h>
+#include <FadeMessage.h>
 #include <FileWatcher.h>
 #include "Game.h"
 #include <HatManager.h>
@@ -259,4 +260,9 @@ void Game::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::GAME_QUIT:
 		break;
 	}
+}
+
+void Game::ReceiveMessage(const FadeMessage& aMessage)
+{
+	Prism::Engine::GetInstance()->StartFade(aMessage.myFadeTime);
 }

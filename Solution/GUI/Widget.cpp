@@ -50,7 +50,7 @@ namespace GUI
 	{
 	}
 
-	void Widget::OnMouseEnter()
+	void Widget::OnMouseEnter(bool)
 	{
 	}
 

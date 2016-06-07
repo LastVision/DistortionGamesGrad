@@ -19,7 +19,7 @@ namespace GUI
 		virtual void OnRightMousePressed(const CU::Vector2<float>& aPosition);
 		virtual void OnLeftMouseUp();
 		virtual void OnRightMouseUp();
-		virtual void OnMouseEnter();
+		virtual void OnMouseEnter(bool aShouldSound = true);
 		virtual void OnMouseExit();
 		virtual void OnMouseMoved(const CU::Vector2<float>& aPosition);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include "HatsSelectionState.h"
 #include <HatManager.h>
 #include <GUIManager.h>
@@ -81,6 +82,7 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
 	myArrowBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_arrow_box.dds", size * 0.5f, size * 0.25f);
 
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatsSelectionState::EndState()
@@ -208,6 +210,7 @@ void HatsSelectionState::ResumeState()
 {
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatsSelectionState::PauseState()
@@ -219,7 +222,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 {
 	switch (aMessage.myEvent)
 	{
-	case eOnClickEvent::GAME_QUIT:
+	case eOnClickEvent::HAT_QUIT:
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	}

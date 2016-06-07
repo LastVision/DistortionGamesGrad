@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include "HatState.h"
 #include <HatManager.h>
 #include "HatUnlockState.h"
@@ -42,6 +43,8 @@ void HatState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput*
 	myController->SetIsInMenu(true);
 
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatState::EndState()
@@ -63,7 +66,7 @@ const eStateStatus HatState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 	myGUIManager->Update(aDeltaTime);
 
 
@@ -80,6 +83,7 @@ void HatState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatState::PauseState()

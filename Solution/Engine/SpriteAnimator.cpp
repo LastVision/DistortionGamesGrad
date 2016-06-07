@@ -10,6 +10,7 @@ namespace Prism
 		, myCurrentFrame(0)
 		, myCurrentAnimation(nullptr)
 		, emptySprite(nullptr)
+		, myIsPaused(false)
 	{
 		myAnimations.Init(1);
 
@@ -49,7 +50,7 @@ namespace Prism
 
 	void SpriteAnimator::Update(float aDelta)
 	{
-		if (myCurrentAnimation == nullptr)
+		if (myCurrentAnimation == nullptr || myIsPaused == true)
 		{
 			return;
 		}
@@ -63,11 +64,18 @@ namespace Prism
 
 			if (myCurrentFrame >= myCurrentAnimation->GetNumberOfFrames())
 			{
-				myCurrentFrame = 0;
-
-				if (myCurrentAnimation->IsLooping() == false)
+				if (myShouldStopAtLastFrame == false)
 				{
-					myCurrentAnimation = nullptr;
+					myCurrentFrame = 0;
+
+					if (myCurrentAnimation->IsLooping() == false)
+					{
+						myCurrentAnimation = nullptr;
+					}
+				}
+				else
+				{
+					myCurrentFrame = myCurrentAnimation->GetNumberOfFrames() - 1;
 				}
 			}
 		}
@@ -105,6 +113,17 @@ namespace Prism
 	void SpriteAnimator::ResetAnimation()
 	{
 		myCurrentFrame = 0;
+	}
+
+	void SpriteAnimator::PauseAnimation()
+	{
+		myIsPaused = true;
+		myShouldStopAtLastFrame = true;
+	}
+
+	void SpriteAnimator::UnPauseAnimation()
+	{
+		myIsPaused = false;
 	}
 
 	void SpriteAnimator::AddAnimation(float aFPS, int aNumberOfFrames, CU::Vector2<float> aFrameSize

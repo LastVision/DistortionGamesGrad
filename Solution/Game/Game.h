@@ -33,6 +33,7 @@ public:
 	void OnResize(int aWidth, int aHeight);
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
+	void ReceiveMessage(const FadeMessage& aMessage) override;
 
 private:
 	void operator=(Game& aApp) = delete;

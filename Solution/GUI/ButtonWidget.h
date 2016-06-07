@@ -1,6 +1,8 @@
 #pragma once
 #include "Widget.h"
 
+#include <Tweener.h>
+
 namespace Prism
 {
 	class SpriteProxy;
@@ -29,8 +31,9 @@ namespace GUI
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
-		void OnMouseEnter() override;
+		void OnMouseEnter(bool aShouldSound = true) override;
 		void OnMouseExit() override;
+		void Update(float aDeltaTime) override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 
@@ -66,6 +69,20 @@ namespace GUI
 		OnClickMessage* myClickEvent;
 
 		CU::Vector2<float> myTextOffset;
+
+		bool myShouldBeBigger;
+		bool myShouldBeSmaller;
+		float myLerpAlpha;
+		float myScale;
+		float myLerpScale;
+		CU::Vector2<float> myOriginalSize;
+		CU::Vector2<float> myOriginalHotSpot;
+
+		bool myShouldAnimate;
+		float myAnimationAlpha;
+		float myAnimationStart;
+
+		Tweener<float> myTweener;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const

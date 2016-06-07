@@ -105,7 +105,8 @@ void DashAimMovement::ReceiveNote(const ContactNote&)
 void DashAimMovement::HandleRaycast(PhysicsComponent*, const CU::Vector3<float>&
 	, const CU::Vector3<float>&, const CU::Vector3<float>&)
 {
-
+	int apa;
+	apa = 5;
 }
 
 void DashAimMovement::Rotate(float aDeltaTime)

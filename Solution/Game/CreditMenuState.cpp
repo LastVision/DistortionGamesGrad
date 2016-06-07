@@ -3,6 +3,7 @@
 #include <ControllerInput.h>
 #include "CreditMenuState.h"
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include "InGameState.h"
 #include "InputWrapper.h"
 #include "GUIManager.h"
@@ -41,11 +42,11 @@ void CreditMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controlle
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void CreditMenuState::EndState()
 {
-
 }
 
 void CreditMenuState::OnResize(int aWidth, int aHeight)
@@ -68,7 +69,7 @@ const eStateStatus CreditMenuState::Update(const float& aDeltaTime)
 		myStateStatus = eStateStatus::ePopMainState;
 	}
 
-	HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
 
@@ -85,6 +86,7 @@ void CreditMenuState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void CreditMenuState::PauseState()

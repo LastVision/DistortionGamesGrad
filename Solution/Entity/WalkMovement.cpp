@@ -122,8 +122,8 @@ void WalkMovement::Activate(const CU::Vector2<float>&)
 		if (right.x < 0)
 		{
 			myOrientation = CU::Matrix44<float>::CreateRotateAroundY(static_cast<float>(M_PI));
-			myOrientation.SetPos(oldPos);
 		}
+		myOrientation.SetPos(oldPos);
 	}
 }
 
@@ -164,8 +164,8 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 		}
 		myHasContact = true;
 		CU::Vector3<float> resetPos(myOrientation.GetPos());
-
-		float walkOffset = GC::PlayerHeightWithLegs;
+		float epsilon = 0.001f;
+		float walkOffset = GC::PlayerHeightWithLegs - epsilon;
 		if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
 		{
 			walkOffset *= 0.4f;
@@ -194,6 +194,7 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 
 void WalkMovement::HandleContact()
 {
+	myHasContact = false;
 	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
 	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
 	CU::Vector3<float> centerPosition(myOrientation.GetPos());
@@ -218,9 +219,6 @@ void WalkMovement::HandleContact()
 		Prism::PhysicsInterface::GetInstance()->RayCast(centerPosition, right, GC::PlayerRadius, myRaycastHandler
 			, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 	}
-
-
-	myHasContact = false;
 }
 
 void WalkMovement::Drag(float aDeltaTime)

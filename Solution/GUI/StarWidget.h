@@ -13,6 +13,7 @@ public:
 	~StarWidget();
 
 	void Update(float aDeltaTime) override;
+	void UpdateScoreStars(float aDeltaTime);
 	void Render(const CU::Vector2<float>& aParentPosition) override;
 
 	void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
@@ -23,4 +24,8 @@ private:
 	float myTime;
 	int myID;
 	bool myActive;
+
+	float myTotalTime;
+
+	CU::Vector2<float> myParentPosition;
 };

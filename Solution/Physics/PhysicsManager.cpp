@@ -83,10 +83,6 @@ namespace Prism
 		, myIsSwapping(false)
 		, myIsReading(false)
 	{
-		myRaycastJobs[0].Init(256);
-		myRaycastJobs[1].Init(256);
-		myRaycastResults[0].Init(256);
-		myRaycastResults[1].Init(256);
 		myForceJobs[0].Init(64);
 		myForceJobs[1].Init(64);
 		myVelocityJobs[0].Init(64);
@@ -395,13 +391,7 @@ namespace Prism
 				myPhysicsComponentCallbacks[i].myUpdateCallback();
 			}
 		}
-
-		for (int i = 0; i < myRaycastJobs[myCurrentIndex ^ 1].Size(); ++i)
-		{
-			RayCast(myRaycastJobs[myCurrentIndex ^ 1][i]);
-		}
-		myRaycastJobs[myCurrentIndex ^ 1].RemoveAll();
-
+		
 		for (int i = 0; i < myOnTriggerResults[myCurrentIndex ^ 1].Size(); ++i)
 		{
 
@@ -552,7 +542,11 @@ namespace Prism
 				}
 			}
 		}
-		myRaycastResults[myCurrentIndex ^ 1].Add(RaycastResult(ent, aRaycastJob.myNormalizedDirection, hitPosition, hitNormal, aRaycastJob.myFunctionToCall));
+		RaycastResult result(ent, aRaycastJob.myNormalizedDirection, hitPosition, hitNormal, aRaycastJob.myFunctionToCall);
+
+		result.myFunctionToCall(result.myPhysicsComponent
+			, result.myDirection, result.myHitPosition
+			, result.myHitNormal);
 	}
 
 	void PhysicsManager::AddForce(physx::PxRigidDynamic* aDynamicBody, const CU::Vector3<float>& aDirection, float aMagnitude)
@@ -1074,16 +1068,7 @@ namespace Prism
 		{
 		}
 		myIsReading = true;
-
-		for (int i = 0; i < myRaycastResults[myCurrentIndex].Size(); ++i)
-		{
-			myRaycastResults[myCurrentIndex][i].myFunctionToCall(myRaycastResults[myCurrentIndex][i].myPhysicsComponent
-				, myRaycastResults[myCurrentIndex][i].myDirection, myRaycastResults[myCurrentIndex][i].myHitPosition
-				, myRaycastResults[myCurrentIndex][i].myHitNormal);
-		}
-		myRaycastResults[myCurrentIndex].RemoveAll();
-		//myMoveJobs[myCurrentIndex].RemoveAll();
-
+		
 		myIsReading = false;
 	}
 }
