@@ -135,7 +135,7 @@ void DashFlyMovement::HandleContact()
 	CU::Vector3<float> down(0.f, -1.f, 0.f);
 	CU::Vector3<float> up(0.f, 1.f, 0.f);
 
-	float raycastLengthWithLegs = GC::PlayerHeightWithLegs + 0.05f;
+	float raycastLengthWithLegs = GC::PlayerHeightWithLegs * 0.8f;
 	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
 	{
 		raycastLengthWithLegs *= 0.4f;
@@ -146,9 +146,9 @@ void DashFlyMovement::HandleContact()
 	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, down, raycastLengthWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
-	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, up, GC::PlayerHeightWithLegs + 0.025f, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(leftOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
-	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, up, GC::PlayerHeightWithLegs + 0.025f, myRaycastHandler
+	Prism::PhysicsInterface::GetInstance()->RayCast(rightOrigin, up, GC::PlayerHeightWithLegs, myRaycastHandler
 		, myMovementComponent.GetEntity().GetComponent<PhysicsComponent>());
 
 

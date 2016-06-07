@@ -529,9 +529,18 @@ namespace Prism
 					{
 						continue;
 					}
+					
+					physx::PxFilterData filterData = buffer.touches[i].shape->getSimulationFilterData();
+					if (filterData.word2 & DYNAMIC_FLAG)
+					{
+						continue;
+					}
+					
+
+					ent = static_cast<PhysicsComponent*>(buffer.touches[i].actor->userData);
+					
 
 					closestDist = buffer.touches[i].distance;
-					ent = static_cast<PhysicsComponent*>(buffer.touches[i].actor->userData);
 					hitPosition.x = buffer.touches[i].position.x;
 					hitPosition.y = buffer.touches[i].position.y;
 					hitPosition.z = buffer.touches[i].position.z;
@@ -797,6 +806,7 @@ namespace Prism
 			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
 			fd.word0 = physx::PxU32(OTHER_FLAG);
 			fd.word1 = physx::PxU32(KINEMATIC_FLAG);
+			fd.word2 = physx::PxU32(0);
 			(*someShapesOut[0])->setSimulationFilterData(fd);
 			/*
 			physx::PxShape** statShape = new physx::PxShape*;
@@ -842,6 +852,7 @@ namespace Prism
 			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
 			fd.word0 = physx::PxU32(KINEMATIC_FLAG | OTHER_FLAG);
 			fd.word1 = physx::PxU32(OTHER_FLAG | KINEMATIC_FLAG);
+			fd.word2 = physx::PxU32(DYNAMIC_FLAG);
 			(*someShapesOut[0])->setSimulationFilterData(fd);
 		}
 		else if (aPhysData.myData->myPhysicsType == ePhysics::KINEMATIC)
@@ -880,6 +891,7 @@ namespace Prism
 			physx::PxFilterData fd = (*someShapesOut[0])->getSimulationFilterData();
 			fd.word0 = physx::PxU32(KINEMATIC_FLAG | OTHER_FLAG);
 			fd.word1 = physx::PxU32(OTHER_FLAG | KINEMATIC_FLAG);
+			fd.word2 = physx::PxU32(0);
 			(*someShapesOut[0])->setSimulationFilterData(fd);
 
 			/*
