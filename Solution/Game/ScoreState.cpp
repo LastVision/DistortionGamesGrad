@@ -20,6 +20,7 @@
 #include <fstream>
 #include <SpriteAnimator.h>
 #include <SQLWrapper.h>
+#include <XMLReader.h>
 
 ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const ScoreInfo& aScoreInfo, const int aLevelID)
 	: myScores(someScores)
@@ -28,12 +29,14 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myTimer(2.f)
 	, myNumberOfActiveScores(0)
 	, myCurrentLevel(aLevelID)
-	//, myGoldBagSprite(nullptr)
+	, myHatsArrowSprite(nullptr)
 	, myEarnedStars(0)
 	, myEarnedStarsText("")
 	, myGoldCostMovement(0.f)
 	, myGoldCostFade(1.f)
 	, myAnimationsToRun(0)
+	, mySpinCost(0)
+	, myHatsArrowAlphaIsIncreasing(false)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -72,15 +75,23 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 		}
 	}
 
-	//myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
-	//	, { 128.f, 128.f }, { 64.f, 64.f });
+	XMLReader reader;
+	reader.OpenDocument("Data/Setting/SpinSettings.xml");
+	tinyxml2::XMLElement* rootElement = reader.FindFirstChild("root");
+
+	reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "spinCost"), "value", mySpinCost);
+
+	reader.CloseDocument();
+
+	myHatsArrowSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_hats_arrow.dds"
+		, { 256.f, 64.f }, { 128.f, 64.f });
 }
 
 ScoreState::~ScoreState()
 {
 	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(myGUIManager);
-	//SAFE_DELETE(myGoldBagSprite);
+	SAFE_DELETE(myHatsArrowSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -106,6 +117,11 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	{
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f});
 	}
+
+	myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
+		->At(2)->GetPosition();
+	myHatsArrowPosition.y -= static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
+		->At(2)->GetSize().y * 0.5f;
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 
@@ -184,6 +200,28 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		myAnimator->Update(aDeltaTime);
 	}
 
+	if (GC::Gold >= mySpinCost)
+	{
+		if (myHatsArrowAlphaIsIncreasing == true)
+		{
+			myHatsArrowAlpha += aDeltaTime;
+			if (myHatsArrowAlpha >= 1.f)
+			{
+				myHatsArrowAlpha = 1.f;
+				myHatsArrowAlphaIsIncreasing = false;
+			}
+		}
+		else
+		{
+			myHatsArrowAlpha -= aDeltaTime;
+			if (myHatsArrowAlpha <= 0.f)
+			{
+				myHatsArrowAlpha = 0.f;
+				myHatsArrowAlphaIsIncreasing = true;
+			}
+		}
+	}
+
 	return myStateStatus;
 }
 
@@ -226,9 +264,25 @@ void ScoreState::Render()
 		}
 	}
 
-	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
+	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
+	if (myNumberOfActiveScores == 1)
+	{
+		goldPos.x *= 0.25f;
+	}
+	else
+	{
+		goldPos.x *= 0.1f;
+	}
+	goldPos.y *= 0.2f;
 
-	//myGoldBagSprite->Render(goldPos);
+	if (myAnimator != nullptr)
+	{
+		myAnimator->Render(goldPos);
+	}
+
+	goldPos.x += myAnimator->GetFrameSize().x * 0.15f;
+	goldPos.y += myAnimator->GetFrameSize().y * 0.3f;
+
 	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myEarnedStars > 0)
@@ -237,9 +291,9 @@ void ScoreState::Render()
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 	}
 
-	if (myAnimator != nullptr)
+	if (GC::Gold >= mySpinCost)
 	{
-		myAnimator->Render(goldPos);
+		myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
 	}
 }
 

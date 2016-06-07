@@ -43,6 +43,8 @@ namespace GUI
 			if (*myCurrentValueFloat * mySize.x != myValueSprite->GetSize().x)
 			{
 				float newSize = *myCurrentValueFloat / *myMaxValueFloat;
+				newSize *= 0.841796875f;
+				newSize += 0.0791015625f;
 				myValueSprite->SetSize({ mySize.x * newSize, mySize.y }, mySize / 2.f);
 				myValueSprite->SetUVZeroToOne(CU::Vector2<float>(0, 0), CU::Vector2<float>(newSize, 1.f));
 			}
