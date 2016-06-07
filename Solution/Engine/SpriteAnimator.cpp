@@ -176,4 +176,9 @@ namespace Prism
 	{
 		return myCurrentFrame;
 	}
+
+	const CU::Vector2<float>& SpriteAnimator::GetFrameSize() const
+	{
+		return myCurrentAnimation->GetFrameSize();
+	}
 }

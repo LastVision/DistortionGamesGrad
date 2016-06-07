@@ -30,6 +30,8 @@ namespace Prism
 		bool IsPlayingAnimation() const;
 		int GetCurrentFrame();
 
+		const CU::Vector2<float>& GetFrameSize() const;
+
 	private:
 		float myTimeSinceLastFrame;
 		int myCurrentFrame;

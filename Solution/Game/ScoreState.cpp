@@ -264,12 +264,24 @@ void ScoreState::Render()
 		}
 	}
 
-	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
-
-	if (GC::Gold >= mySpinCost)
+	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
+	if (myNumberOfActiveScores == 1)
 	{
-		myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
+		goldPos.x *= 0.25f;
 	}
+	else
+	{
+		goldPos.x *= 0.1f;
+	}
+	goldPos.y *= 0.2f;
+
+	if (myAnimator != nullptr)
+	{
+		myAnimator->Render(goldPos);
+	}
+
+	goldPos.x += myAnimator->GetFrameSize().x * 0.15f;
+	goldPos.y += myAnimator->GetFrameSize().y * 0.3f;
 
 	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
@@ -279,9 +291,9 @@ void ScoreState::Render()
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 	}
 
-	if (myAnimator != nullptr)
+	if (GC::Gold >= mySpinCost)
 	{
-		myAnimator->Render(goldPos);
+		myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
 	}
 }
 
