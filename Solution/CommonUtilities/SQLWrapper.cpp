@@ -78,9 +78,9 @@ namespace CU
 	{
 		std::fstream file(CU::GetMyDocumentFolderPath() + "/Data/HS_Level" + std::to_string(aLevelID) + ".bin",
 			std::ios::binary | std::ios::in | std::ios::app);
-		char* name = "";
-		mysql_real_escape_string(myConnection, name, aUsername.c_str(), aUsername.length());
-		std::string username(name);
+		/*char* name = "";
+		mysql_real_escape_string(myConnection, name, aUsername.c_str(), aUsername.length());*/
+		std::string username(aUsername);
 		if (GetIsOnline() == true)
 		{
 			std::string query = "INSERT INTO Highscore(Name, Score, LevelID) VALUES('" + username + "', " + std::to_string(aTime) + ", " + std::to_string(aLevelID) + ")";
