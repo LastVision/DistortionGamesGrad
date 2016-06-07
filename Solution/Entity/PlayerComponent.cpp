@@ -95,7 +95,7 @@ void PlayerComponent::EvaluateDeath()
 
 void PlayerComponent::HandleCollision(Entity* aOther)
 {
-	if (aOther->GetType() == eEntityType::BOUNCER || aOther->GetType() == eEntityType::SCRAP)
+	if (aOther->GetType() == eEntityType::BOUNCER || aOther->GetType() == eEntityType::SCRAP || aOther->GetType() == eEntityType::GOAL_POINT)
 	{
 		return;
 	}

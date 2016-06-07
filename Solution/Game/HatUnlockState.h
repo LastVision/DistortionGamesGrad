@@ -52,6 +52,7 @@ private:
 
 	int myCurrentHatToWin;
 
+	float mySoundAmount;
 	float mySpinTimer;
 	float myMaxSpinTime;
 	bool myHasWonAllHats;

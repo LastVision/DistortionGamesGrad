@@ -80,12 +80,12 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myScene = new Prism::Scene();
 	myScene->SetCamera(aCamera);
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
-	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_PLAYER_JOIN | eMessageType::ON_DEATH | eMessageType::REACHED_GOAL);
 
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
+	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
@@ -644,6 +644,8 @@ void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
 	{
 		myShouldFinishLevel = true;
 	}
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LevelWon", 0);
 }
 
 void Level::Add(Entity* anEntity)
