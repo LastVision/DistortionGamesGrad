@@ -321,29 +321,29 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 void ScoreState::SaveScoreToFile(const int aLevelID)
 {
 	std::string levelsPath = "Data/Score/Score";
-
+	int levelID = aLevelID;
 	if (GC::NightmareMode == true)
 	{
-		levelsPath = "Data/Score/Score_Nightmare";
+		levelID += 1000;
 	}
 	CU::BuildFoldersInPath(CU::GetMyDocumentFolderPath() + "Data/Score/");
 
 	std::fstream file;
-	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::in);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(levelID).c_str() + ".bin", std::ios::binary | std::ios::in);
 
 	Score currentScore;
 	int currentStars = 0;
-	int levelID = 0;
+	int levelIDScore = 0;
 	int diffStars = 0;
 	int newStars = 0;
 
 	if (file.is_open() == true)
 	{
-		file >> levelID >> currentScore.myTime >> currentStars;
+		file >> levelIDScore >> currentScore.myTime >> currentStars;
 	}
 	file.close();
 
-	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(aLevelID).c_str() + ".bin", std::ios::binary | std::ios::out);
+	file.open(CU::GetMyDocumentFolderPath() + levelsPath + std::to_string(levelID).c_str() + ".bin", std::ios::binary | std::ios::out);
 	if (file.is_open() == true)
 	{
 		Score highestScore;
@@ -373,6 +373,10 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 		else if (highestScore.myTime < myScoreInfo.myLongTime)
 		{
 			newStars = 1;
+		}
+		if (highestScore.myTime >= 1000000.f)
+		{
+			highestScore.myTime = 0.f;
 		}
 
 		file << aLevelID << std::endl << highestScore.myTime << std::endl << newStars << std::endl;
