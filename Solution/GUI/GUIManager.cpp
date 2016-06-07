@@ -238,6 +238,11 @@ namespace GUI
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
+	
+	void GUIManager::HoverSelectedButtonWithoutSound()
+	{
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter(false);
+	}
 
 	void GUIManager::CheckUnlockedNightmareLevels()
 	{

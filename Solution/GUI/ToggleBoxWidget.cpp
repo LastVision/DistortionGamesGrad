@@ -101,8 +101,12 @@ namespace GUI
 		}
 	}
 
-	void ToggleBoxWidget::OnMouseEnter()
+	void ToggleBoxWidget::OnMouseEnter(bool aShouldSound)
 	{
+		if (aShouldSound == true)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonHover", 0);
+		}
 		myImageCurrent = myImageDeactiveHover;
 		if (myToggledState == true)
 		{

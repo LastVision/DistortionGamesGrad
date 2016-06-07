@@ -31,7 +31,7 @@ namespace GUI
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
-		void OnMouseEnter() override;
+		void OnMouseEnter(bool aShouldSound = true) override;
 		void OnMouseExit() override;
 		void Update(float aDeltaTime) override;
 

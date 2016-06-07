@@ -88,7 +88,7 @@ void GameState::InitControllerInMenu(CU::ControllerInput* aController, GUI::GUIM
 
 	if (aController->CheckConnection() == true)
 	{
-		aManager->HoverSelectedButton();
+		aManager->HoverSelectedButtonWithoutSound();
 		aCursor->SetIsUsingController(true);
 	}
 }
