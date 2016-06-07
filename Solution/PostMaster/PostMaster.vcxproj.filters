@@ -74,5 +74,8 @@
     <ClInclude Include="FadeMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="NightmareIsLockedMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

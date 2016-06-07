@@ -8,12 +8,18 @@
 #include <InputWrapper.h>
 #include <GUIManager.h>
 #include "LevelSelectState.h"
+#include <ModelLoader.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
+#include <SpriteProxy.h>
 #include <WidgetContainer.h>
 
 LevelSelectState::LevelSelectState(bool aIsNightmare)
 	: myIsNightmare(aIsNightmare)
+	, myNightmareIsLockedSprite(nullptr)
+	, myRenderNightmareIsLocked(false)
+	, myTimeToShowNightmareIsLocked(5.f)
+	, myShowNightmareIsLockedTimer(0.f)
 {
 
 }
@@ -21,6 +27,7 @@ LevelSelectState::LevelSelectState(bool aIsNightmare)
 LevelSelectState::~LevelSelectState()
 {
 	SAFE_DELETE(myGUIManager);
+	SAFE_DELETE(myNightmareIsLockedSprite);
 	myStateStack = nullptr;
 	myCursor = nullptr;
 	myController = nullptr;
@@ -47,10 +54,15 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK | eMessageType::NIGHTMARE_IS_LOCKED);
 
 	//RetrieveUnlockedLevelsFromFile();
 	myController->SetIsInMenu(true);
+
+	CU::Vector2<float> size = { 256.f, 128.f };
+
+	myNightmareIsLockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_banner_nightmare_is_locked.dds"
+		, size, size * 0.5f);
 
 #ifdef RELEASE_BUILD
 	if (myIsNightmare == false && GC::HasWonGame == false)
@@ -95,12 +107,27 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 
 	myGUIManager->Update(aDeltaTime);
 
+	if (myRenderNightmareIsLocked == true)
+	{
+		myShowNightmareIsLockedTimer -= aDeltaTime;
+		if (myShowNightmareIsLockedTimer <= 0.f)
+		{
+			myRenderNightmareIsLocked = false;
+			myShowNightmareIsLockedTimer = 0.;
+		}
+	}
+
 	return myStateStatus;
 }
 
 void LevelSelectState::Render()
 {
 	myGUIManager->Render();
+
+	if (myRenderNightmareIsLocked == true)
+	{
+		myNightmareIsLockedSprite->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+	}
 }
 
 void LevelSelectState::ResumeState()
@@ -146,6 +173,12 @@ void LevelSelectState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
+}
+
+void LevelSelectState::ReceiveMessage(const NightmareIsLockedMessage& aMessage)
+{
+	myRenderNightmareIsLocked = true;
+	myShowNightmareIsLockedTimer = myTimeToShowNightmareIsLocked;
 }
 
 CU::GrowingArray<bool> LevelSelectState::RetrieveUnlockedLevelsFromFile()

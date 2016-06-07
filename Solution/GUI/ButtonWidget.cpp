@@ -4,6 +4,7 @@
 #include <CommonHelper.h>
 #include <Engine.h>
 #include <MathHelper.h>
+#include <NightmareIsLockedMessage.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 
@@ -391,6 +392,10 @@ namespace GUI
 			}
 			else
 			{
+				if (myClickEvent->myEvent == eOnClickEvent::LEVEL_SELECT && myClickEvent->myIsNightmareLevel == true)
+				{
+					PostMaster::GetInstance()->SendMessage(NightmareIsLockedMessage());
+				}
 				// nope sound
 			}
 		}
