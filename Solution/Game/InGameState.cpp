@@ -35,6 +35,8 @@ InGameState::InGameState(int aLevelID)
 	, myHasStartedMusicBetweenLevels(false)
 	, myLastLevel(aLevelID)
 	, myNextLevel(-1)
+	, myIsFirstFrame(true)
+	, myLoadingScreen(nullptr)
 {
 	myIsActiveState = false;
 
@@ -45,6 +47,9 @@ InGameState::InGameState(int aLevelID)
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
+	CU::Vector2<float> size = Prism::Engine::GetInstance()->GetWindowSize();
+
+	myLoadingScreen = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen.dds", size, size * 0.5f);
 }
 
 InGameState::~InGameState()
@@ -81,7 +86,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myNextLevel = 1;
 	myController->SetIsInMenu(false);
 
-	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 
 
 	if (GC::NightmareMode == true)
@@ -94,7 +99,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 	}
-	
+
 }
 
 void InGameState::EndState()
@@ -110,33 +115,40 @@ void InGameState::EndState()
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	}
-	
+
 }
 
 const eStateStatus InGameState::Update(const float&)
 {
-	if (myStateStatus != eStateStatus::eKeepState)
+	if (myIsFirstFrame == false)
 	{
-		return myStateStatus;
-	}
-
-	SET_RUNTIME(false);
-	Level* level = nullptr;
-	if (myLevelFactory->LoadLevel(level) == true)
-	{
-		myStateStack->PushMainGameState(level);
-	}
-	else
-	{
-		if (GC::NightmareMode == false && GC::HasBeenInVictoryScreen == false 
-			|| GC::NightmareMode == true && GC::HasBeenInVictoryScreenNightmare == false)
+		if (myStateStatus != eStateStatus::eKeepState)
 		{
-			myStateStack->PushSubGameState(new VictoryState());
+			return myStateStatus;
+		}
+
+		SET_RUNTIME(false);
+		Level* level = nullptr;
+		if (myLevelFactory->LoadLevel(level) == true)
+		{
+			myStateStack->PushMainGameState(level);
 		}
 		else
 		{
-			myStateStatus = eStateStatus::ePopMainState;
+			if (GC::NightmareMode == false && GC::HasBeenInVictoryScreen == false
+				|| GC::NightmareMode == true && GC::HasBeenInVictoryScreenNightmare == false)
+			{
+				myStateStack->PushSubGameState(new VictoryState());
+			}
+			else
+			{
+				myStateStatus = eStateStatus::ePopMainState;
+			}
 		}
+	}
+	else
+	{
+		myIsFirstFrame = false;
 	}
 
 	return myStateStatus;
@@ -144,6 +156,7 @@ const eStateStatus InGameState::Update(const float&)
 
 void InGameState::Render()
 {
+	myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
 }
 
 void InGameState::ResumeState()
@@ -151,6 +164,7 @@ void InGameState::ResumeState()
 	myIsActiveState = true;
 	myLevelToLoad = -1;
 	myController->SetIsInMenu(false);
+	myIsFirstFrame = true;
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
