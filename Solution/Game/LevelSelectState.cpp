@@ -170,6 +170,8 @@ void LevelSelectState::ResumeState()
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
+	myRenderNightmareIsLocked = false;
 }
 
 void LevelSelectState::PauseState()
