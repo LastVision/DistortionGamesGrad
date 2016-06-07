@@ -117,6 +117,6 @@ void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& so
 CU::Vector3f SawBladeComponent::GetParticlePos() const
 {
 	CU::Vector3f toReturn = myEntity.GetOrientation().GetPos();
-	toReturn.z -= 0.5f;
+	toReturn.z -= 0.17f;
 	return toReturn;
 }
