@@ -39,7 +39,7 @@ private:
 	const ScoreInfo& myScoreInfo;
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
 
-	Prism::SpriteProxy* myGoldBagSprite;
+	//Prism::SpriteProxy* myGoldBagSprite;
 
 	float myTimer;
 
