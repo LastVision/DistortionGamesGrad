@@ -471,6 +471,18 @@ namespace Prism
 			myDepthStencilShaderView = nullptr;
 		}
 
+		if (myTexture != nullptr)
+		{
+			myTexture->Release();
+			myTexture = nullptr;
+		}
+
+		if (myDepthTexture != nullptr)
+		{
+			myDepthTexture->Release();
+			myDepthTexture = nullptr;
+		}
+
 		if (myIsDepthTexture == true)
 		{
 			InitAsDepthBuffer(aWidth, aHeight);
