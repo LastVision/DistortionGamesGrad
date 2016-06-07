@@ -115,7 +115,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
 	{
-		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f});
+		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
 	}
 
 	myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
@@ -131,11 +131,13 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	if (GC::NightmareMode == false && myCurrentLevel >= GC::TotalLevels)
 	{
 		GC::HasWonGame = true;
-	}	
+	}
 
 	while (Prism::ModelLoader::GetInstance()->IsLoading())
 	{
 	}
+
+	myAnimationFrameSize = { 256.f, 256.f};
 
 	if (myEarnedStars == 0)
 	{
@@ -187,37 +189,37 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		}
 
 		myGUIManager->Update(aDeltaTime);
-	}
 
-	if (myEarnedStars > 0)
-	{
-		myGoldCostMovement += 25.f * aDeltaTime;
-		myGoldCostFade -= 0.25f * aDeltaTime;
-	}
-
-	if (myAnimator != nullptr)
-	{
-		myAnimator->Update(aDeltaTime);
-	}
-
-	if (GC::Gold >= mySpinCost)
-	{
-		if (myHatsArrowAlphaIsIncreasing == true)
+		if (myEarnedStars > 0)
 		{
-			myHatsArrowAlpha += aDeltaTime;
-			if (myHatsArrowAlpha >= 1.f)
-			{
-				myHatsArrowAlpha = 1.f;
-				myHatsArrowAlphaIsIncreasing = false;
-			}
+			myGoldCostMovement += 25.f * aDeltaTime;
+			myGoldCostFade -= 0.25f * aDeltaTime;
 		}
-		else
+
+		if (myAnimator != nullptr)
 		{
-			myHatsArrowAlpha -= aDeltaTime;
-			if (myHatsArrowAlpha <= 0.f)
+			myAnimator->Update(aDeltaTime);
+		}
+
+		if (GC::Gold >= mySpinCost)
+		{
+			if (myHatsArrowAlphaIsIncreasing == true)
 			{
-				myHatsArrowAlpha = 0.f;
-				myHatsArrowAlphaIsIncreasing = true;
+				myHatsArrowAlpha += aDeltaTime;
+				if (myHatsArrowAlpha >= 1.f)
+				{
+					myHatsArrowAlpha = 1.f;
+					myHatsArrowAlphaIsIncreasing = false;
+				}
+			}
+			else
+			{
+				myHatsArrowAlpha -= aDeltaTime;
+				if (myHatsArrowAlpha <= 0.f)
+				{
+					myHatsArrowAlpha = 0.f;
+					myHatsArrowAlphaIsIncreasing = true;
+				}
 			}
 		}
 	}
@@ -236,6 +238,38 @@ void ScoreState::Render()
 	if (myTimer < 0)
 	{
 		myGUIManager->Render();
+
+		CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
+		if (myNumberOfActiveScores == 1)
+		{
+			goldPos.x *= 0.25f;
+		}
+		else
+		{
+			goldPos.x *= 0.1f;
+		}
+		goldPos.y *= 0.2f;
+
+		if (myAnimator != nullptr)
+		{
+			myAnimator->Render(goldPos);
+		}
+
+		goldPos.x += myAnimationFrameSize.x * 0.15f;
+		goldPos.y += myAnimationFrameSize.y * 0.3f;
+
+		Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+
+		if (myEarnedStars > 0)
+		{
+			Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
+			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+		}
+
+		if (GC::Gold >= mySpinCost)
+		{
+			myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
+		}
 	}
 
 	if (myNumberOfActiveScores == 1)
@@ -249,7 +283,7 @@ void ScoreState::Render()
 			}
 		}
 	}
-	else 
+	else
 	{
 		for (int i = 0; i < myScoreWidgets.Size(); ++i)
 		{
@@ -257,43 +291,11 @@ void ScoreState::Render()
 			{
 				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f));
 			}
-			else 
+			else
 			{
 				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f));
 			}
 		}
-	}
-
-	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
-	if (myNumberOfActiveScores == 1)
-	{
-		goldPos.x *= 0.25f;
-	}
-	else
-	{
-		goldPos.x *= 0.1f;
-	}
-	goldPos.y *= 0.2f;
-
-	if (myAnimator != nullptr)
-	{
-		myAnimator->Render(goldPos);
-	}
-
-	goldPos.x += myAnimator->GetFrameSize().x * 0.15f;
-	goldPos.y += myAnimator->GetFrameSize().y * 0.3f;
-
-	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
-
-	if (myEarnedStars > 0)
-	{
-		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
-		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
-	}
-
-	if (GC::Gold >= mySpinCost)
-	{
-		myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
 	}
 }
 

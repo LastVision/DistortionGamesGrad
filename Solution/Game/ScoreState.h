@@ -57,6 +57,7 @@ private:
 	float myGoldCostFade;
 
 	Prism::SpriteAnimator* myAnimator;
+	CU::Vector2<float> myAnimationFrameSize;
 	int myAnimationsToRun;
 
 	int mySpinCost;
