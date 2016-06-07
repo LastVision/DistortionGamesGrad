@@ -644,6 +644,8 @@ void Level::ReceiveMessage(const ReachedGoalMessage& aMessage)
 	{
 		myShouldFinishLevel = true;
 	}
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LevelWon", 0);
 }
 
 void Level::Add(Entity* anEntity)
