@@ -50,5 +50,6 @@ private:
 
 	float myTimeToShowNightmareIsLocked;
 	float myShowNightmareIsLockedTimer;
+	float myNightmareIsLockedScale;
 };
 

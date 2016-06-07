@@ -20,6 +20,7 @@ LevelSelectState::LevelSelectState(bool aIsNightmare)
 	, myRenderNightmareIsLocked(false)
 	, myTimeToShowNightmareIsLocked(5.f)
 	, myShowNightmareIsLockedTimer(0.f)
+	, myNightmareIsLockedScale(0.f)
 {
 
 }
@@ -56,7 +57,6 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK | eMessageType::NIGHTMARE_IS_LOCKED);
 
-	//RetrieveUnlockedLevelsFromFile();
 	myController->SetIsInMenu(true);
 
 	CU::Vector2<float> size = { 256.f, 128.f };
@@ -110,6 +110,7 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 	if (myRenderNightmareIsLocked == true)
 	{
 		myShowNightmareIsLockedTimer -= aDeltaTime;
+		myNightmareIsLockedScale -= aDeltaTime;
 		if (myShowNightmareIsLockedTimer <= 0.f)
 		{
 			myRenderNightmareIsLocked = false;
@@ -126,12 +127,15 @@ void LevelSelectState::Render()
 
 	if (myRenderNightmareIsLocked == true)
 	{
+		// don't ask
 		float timeToFade = myTimeToShowNightmareIsLocked * 0.2f;
+		float timeToScale = myTimeToShowNightmareIsLocked * 0.85f;
 		float alpha = myShowNightmareIsLockedTimer < timeToFade ? myShowNightmareIsLockedTimer / timeToFade : 1.f;
+		float scale = myShowNightmareIsLockedTimer > timeToScale ? fmax(myNightmareIsLockedScale, timeToScale / myShowNightmareIsLockedTimer) : 1.f;
 		CU::Vector2<float> position = Prism::Engine::GetInstance()->GetWindowSize();
 		position.x *= 0.5f;
 		position.y *= 0.15f;
-		myNightmareIsLockedSprite->Render(position, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
+		myNightmareIsLockedSprite->Render(position, { scale, scale }, { 1.f, 1.f, 1.f, alpha });
 	}
 }
 
@@ -152,12 +156,22 @@ void LevelSelectState::ResumeState()
 	}
 	SET_RUNTIME(runtime);
 
+#ifdef RELEASE_BUILD
+	if (myIsNightmare == false && GC::HasWonGame == false)
+	{
+		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
+		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
+	}
+#endif
+
 	myIsActiveState = true;
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
+	myRenderNightmareIsLocked = false;
 }
 
 void LevelSelectState::PauseState()
@@ -184,6 +198,7 @@ void LevelSelectState::ReceiveMessage(const NightmareIsLockedMessage& aMessage)
 {
 	myRenderNightmareIsLocked = true;
 	myShowNightmareIsLockedTimer = myTimeToShowNightmareIsLocked;
+	myNightmareIsLockedScale = 1.2f;
 }
 
 CU::GrowingArray<bool> LevelSelectState::RetrieveUnlockedLevelsFromFile()
