@@ -121,6 +121,13 @@ namespace Prism
 		myShouldStopAtLastFrame = true;
 	}
 
+	void SpriteAnimator::PauseAnimationAtLastFrame()
+	{
+		myShouldStopAtLastFrame = true;
+		myCurrentAnimation = myAnimations[0];
+		myCurrentFrame = myCurrentAnimation->GetNumberOfFrames() - 1;
+	}
+
 	void SpriteAnimator::UnPauseAnimation()
 	{
 		myIsPaused = false;

@@ -20,6 +20,7 @@ namespace Prism
 		void StopAnimation();
 		void ResetAnimation();
 		void PauseAnimation();
+		void PauseAnimationAtLastFrame();
 		void UnPauseAnimation();
 
 		void AddAnimation(float aFPS, int aNumberOfFrames, CU::Vector2<float> aFrameSize
