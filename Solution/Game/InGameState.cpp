@@ -101,6 +101,9 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 	}
 
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true)
+	{
+	}
 }
 
 void InGameState::EndState()
