@@ -15,6 +15,7 @@ public:
 	eComponentType GetType() override;
 
 	void SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& somePositions, float aSpeed, float aDelayBeforePatrol = 0.f);
+	CU::Vector3f GetParticlePos() const;
 private:
 
 	CU::GrowingArray<CU::Vector3<float>> myPositions;

@@ -121,6 +121,7 @@ namespace Prism
 			|| aFilePath == "Data/Resource/Shader/S_effect_deferred_decal.fx"
 			|| aFilePath == "Data/Resource/Shader/S_effect_render_background.fx"
 			|| aFilePath == "Data/Resource/Shader/S_effect_hdr.fx"
+			|| aFilePath == "Data/Resource/Shader/S_effect_particle_no_soft.fx"
 			, CU::Concatenate("Found invalid Shader: %s", aFilePath.c_str()));
 	}
 
