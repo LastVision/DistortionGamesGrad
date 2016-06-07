@@ -61,9 +61,14 @@ void ScoreWidget::Update(float aDeltaTime)
 
 	myBar->Update(aDeltaTime);
 
-	for each(StarWidget* star in myStars)
+	for (int i = 0; i < myStars.Size(); ++i)
 	{
-		star->UpdateScoreStars(aDeltaTime);
+		myStars[i]->UpdateScoreStars(aDeltaTime);
+		std::string eventName("Play_ScoreFilled" + std::to_string(i));
+		if (myStars[i]->GetIsDone() == true)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent(eventName.c_str(), 0);
+		}
 	}
 }
 

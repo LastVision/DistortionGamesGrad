@@ -66,7 +66,10 @@ private:
 	int myNextLevel;
 
 	Prism::TextProxy* myText;
+	Prism::SpriteProxy* myLoadingScreen;
 
 	bool myHasStartedMusicBetweenLevels;
 	int myLastLevel;
+
+	bool myIsFirstFrame;
 };

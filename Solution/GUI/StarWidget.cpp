@@ -11,6 +11,7 @@ StarWidget::StarWidget(bool anActive, int anID, bool aStartInstantly, const CU::
 	, myID(anID)
 	, myActive(anActive)
 	, myTotalTime(0.f)
+	, myHasPlayedSound(false)
 {
 	mySize = aSize;
 
