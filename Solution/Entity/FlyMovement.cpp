@@ -59,15 +59,18 @@ void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 		RaycastLegs();
 	}
 
-	myVelocity.y += myData.myGravity * aDeltaTime;
-	Drag(aDeltaTime);
-	Rotate(aDeltaTime);
+	if (myIsActive == true)
+	{
+		myVelocity.y += myData.myGravity * aDeltaTime;
+		Drag(aDeltaTime);
+		Rotate(aDeltaTime);
 
 #ifdef FPS_INDEPENDENT_INPUT
-	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
+		myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
 #else
-	Translate();
+		Translate();
 #endif
+	}
 }
 
 void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
