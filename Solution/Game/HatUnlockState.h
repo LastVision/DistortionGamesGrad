@@ -52,6 +52,7 @@ private:
 
 	int myCurrentHatToWin;
 
+	float mySoundAmount;
 	float mySpinTimer;
 	float myMaxSpinTime;
 	bool myHasWonAllHats;
@@ -81,5 +82,9 @@ private:
 	Prism::SpriteAnimator* mySpinHandleAnimator;
 
 	Prism::SpriteProxy* myNotEnoughCashSprite;
+	float myNotEnoughCashScale;
+	float myNotEnoughCashTimer;
+	float myTimeToNotEnoughCash;
+	bool myAnimateNotEnoughCash;
 };
 

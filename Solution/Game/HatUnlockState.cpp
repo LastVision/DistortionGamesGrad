@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <FadeMessage.h>
@@ -30,6 +32,11 @@ HatUnlockState::HatUnlockState()
 	, myTotalTime(2.09f)
 	, myHatWonScaling(1.f)
 	, myNotEnoughCashSprite(nullptr)
+	, myNotEnoughCashScale(1.f)
+	, myAnimateNotEnoughCash(false)
+	, myNotEnoughCashTimer(0.f)
+	, myTimeToNotEnoughCash(2.f)
+	, mySoundAmount(256.f)
 {
 	ReadXML();
 }
@@ -145,11 +152,19 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 	{
 
 		mySpinTimer -= aDeltaTime;
-
+		float oldAmount(myMoveAmount);
 		myMoveAmount = myTweener.DoTween(mySpinTimer, 12288.f, -12288.f, myMaxSpinTime, eTweenType::EXPONENTIAL);
 
+		int newIndex = int(int(myMoveAmount) / 256) % myHats.Size();
 
-		myLeftIndex = int(int(myMoveAmount) / 256) % myHats.Size();
+		mySoundAmount += fabs(oldAmount - myMoveAmount);
+
+		if (mySoundAmount >= 256.f)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonClick", 0);
+			mySoundAmount = 0.f;
+		}
+		myLeftIndex = newIndex;
 		myMiddleIndex = myLeftIndex - 1;
 		if (myMiddleIndex < 0)
 		{
@@ -186,7 +201,20 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		mySpinHandleAnimator->Update(aDeltaTime);
 	}
 
+	if (myAnimateNotEnoughCash == true)
+	{
+		myNotEnoughCashTimer -= aDeltaTime * 2.f;
 
+		if (myNotEnoughCashTimer <= 0.f)
+		{
+			myAnimateNotEnoughCash = false;
+			myNotEnoughCashTimer = 0.f;
+		}
+	}
+	else if (myNotEnoughCashScale != 0.f)
+	{
+		myNotEnoughCashScale += (1.f - myNotEnoughCashScale) * aDeltaTime * 2.f;
+	}
 
 	return myStateStatus;
 }
@@ -252,8 +280,14 @@ void HatUnlockState::Render()
 
 	if (GC::Gold < mySpinCost)
 	{
+		if (myAnimateNotEnoughCash == true)
+		{
+			myNotEnoughCashScale = CU::Math::Lerp(1.f, 1.3f
+				, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
+		}
+
 		goldPos.y -= myGoldBagSprite->GetSize().y * 1.1f;
-		myNotEnoughCashSprite->Render(goldPos);
+		myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });	
 	}
 }
 
@@ -281,6 +315,11 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 				if (GC::Gold >= mySpinCost)
 				{
 					Spin();
+				}
+				else if (myAnimateNotEnoughCash == false)
+				{
+					myAnimateNotEnoughCash = true;
+					myNotEnoughCashTimer = myTimeToNotEnoughCash;
 				}
 			}
 			else
@@ -334,6 +373,9 @@ void HatUnlockState::WinHat(int aHatID)
 	{
 		myAnimator->RestartAnimation();
 	}
+
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LevelWon", 0);
 
 	for (int i = myHats.Size() - 1; i >= 0; --i)
 	{
