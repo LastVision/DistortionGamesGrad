@@ -251,7 +251,8 @@ void FlyMovement::RaycastBody()
 	CU::Vector3<float> up(0.f, 1.f, 0.f);
 
 	float raycastLengthWithLegs = GC::PlayerHeightWithLegs + 0.05f;
-	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false
+		&& myVelocity.y > -10.f)
 	{
 		raycastLengthWithLegs *= 0.4f;
 	}
