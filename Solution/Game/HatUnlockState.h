@@ -79,5 +79,7 @@ private:
 	Prism::SpriteAnimator* myAnimator;
 
 	Prism::SpriteAnimator* mySpinHandleAnimator;
+
+	Prism::SpriteProxy* myNotEnoughCashSprite;
 };
 
