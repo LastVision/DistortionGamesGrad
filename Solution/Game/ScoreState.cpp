@@ -2,6 +2,7 @@
 
 #include <ControllerInput.h>
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include <GUIManager.h>
 #include <GameConstants.h>
 #include "HatState.h"
@@ -115,6 +116,8 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	{
 		GC::HasWonGame = true;
 	}
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void ScoreState::EndState()
@@ -214,6 +217,8 @@ void ScoreState::ResumeState()
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void ScoreState::PauseState()

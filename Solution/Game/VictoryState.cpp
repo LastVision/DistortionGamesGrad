@@ -3,9 +3,11 @@
 #include <ControllerInput.h>
 #include "CreditMenuState.h"
 #include <Cursor.h>
+#include <FadeMessage.h>
 #include <GUIManager.h>
 #include <InputWrapper.h>
 #include "VictoryState.h"
+#include <PostMaster.h>
 
 VictoryState::VictoryState()
 	: myGUIManager(nullptr)
@@ -42,6 +44,8 @@ void VictoryState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerIn
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
 	myController->SetIsInMenu(true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void VictoryState::EndState()
@@ -52,6 +56,7 @@ void VictoryState::EndState()
 void VictoryState::ResumeState()
 {
 	myController->SetIsInMenu(true);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void VictoryState::PauseState()

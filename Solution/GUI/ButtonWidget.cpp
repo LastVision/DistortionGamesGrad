@@ -4,6 +4,7 @@
 #include <CommonHelper.h>
 #include <Engine.h>
 #include <MathHelper.h>
+#include <NightmareIsLockedMessage.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
 
@@ -25,6 +26,9 @@ namespace GUI
 		, myShouldBeSmaller(false)
 		, myScale(1.f)
 		, myLerpScale(1.f)
+		, myShouldAnimate(false)
+		, myAnimationAlpha(0.f)
+		, myAnimationStart(1.f)
 	{
 		std::string spritePathNormal = "";
 		std::string spritePathHover = "";
@@ -87,6 +91,9 @@ namespace GUI
 		, myShouldBeSmaller(false)
 		, myScale(1.f)
 		, myLerpScale(1.f)
+		, myShouldAnimate(false)
+		, myAnimationAlpha(0.f)
+		, myAnimationStart(1.f)
 	{
 		mySize = aSize;
 		myPosition = aPosition;
@@ -155,19 +162,26 @@ namespace GUI
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ButtonHover", 0);
 		myImageCurrent = myImageHover;
-		myLerpScale = myScale;
-		myShouldBeBigger = true;
-		myShouldBeSmaller = false;
-		myLerpAlpha = 0.f;
+		if (myCanBeClicked == true)
+		{
+			myLerpScale = myScale;
+			myShouldBeBigger = true;
+			myShouldBeSmaller = false;
+			myLerpAlpha = 0.f;
+			myShouldAnimate = false;
+		}
 	}
 
 	void ButtonWidget::OnMouseExit()
 	{
 		myImageCurrent = myImageNormal;
-		myLerpScale = myScale;
-		myShouldBeSmaller = true;
-		myShouldBeBigger = false;
-		myLerpAlpha = 0.f;
+		if (myCanBeClicked == true)
+		{
+			myLerpScale = myScale;
+			myShouldBeSmaller = true;
+			myShouldBeBigger = false;
+			myLerpAlpha = 0.f;
+		}
 	}
 
 	void ButtonWidget::Update(float aDeltaTime)
@@ -181,6 +195,9 @@ namespace GUI
 			if (myScale >= 1.3f)
 			{
 				myShouldBeBigger = false;
+				myShouldAnimate = true;
+				myAnimationAlpha = 0.f;
+				myAnimationStart = myScale;
 			}
 		}
 		if (myShouldBeSmaller == true)
@@ -191,6 +208,18 @@ namespace GUI
 			if (myScale <= 1.f)
 			{
 				myShouldBeSmaller = false;
+			}
+		}
+
+		myAnimationAlpha += aDeltaTime;
+		if (myImageCurrent == myImageHover && myShouldBeBigger == false && myShouldBeSmaller == false)
+		{
+			if (myShouldAnimate == true)
+			{
+				//myAnimationScale = CU::Math::Lerp(myAnimationLerpScale, 1.1f, myAnimationAlpha);
+				myScale = myTweener.DoTween(myAnimationAlpha, myAnimationStart, 0.1f, 0.25f, eTweenType::SINUS);
+				myImageCurrent->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+
 			}
 		}
 	}
@@ -363,6 +392,10 @@ namespace GUI
 			}
 			else
 			{
+				if (myClickEvent->myEvent == eOnClickEvent::LEVEL_SELECT && myClickEvent->myIsNightmareLevel == true)
+				{
+					PostMaster::GetInstance()->SendMessage(NightmareIsLockedMessage());
+				}
 				// nope sound
 			}
 		}

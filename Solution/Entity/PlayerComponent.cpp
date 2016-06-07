@@ -61,8 +61,8 @@ void PlayerComponent::Update(float)
 
 			direction /= length;
 
-			Prism::PhysicsInterface::GetInstance()->RayCast(position + CU::Vector3<float>(0.5f, 0, 0), direction, length, myRaycastHandler
-				, myEntity.GetComponent<PhysicsComponent>());
+			Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
+					, myEntity.GetComponent<PhysicsComponent>());
 		}
 	}
 	myPreviousPositions[1] = myPreviousPositions[0];
@@ -150,6 +150,16 @@ void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 			&& other.GetType() != eEntityType::PLAYER
 			&& other.GetType() != eEntityType::SCRAP)
 		{
+			if (other.GetType() == eEntityType::BOUNCER)
+			{
+				float dot = CU::Dot(aHitNormal, other.GetOrientation().GetUp());
+
+				if (dot > 0.001f)
+				{
+					return;
+				}
+			}
+
 			myEntity.SendNote<ShouldDieNote>(ShouldDieNote());
 
 			if (other.GetType() == eEntityType::PROP)

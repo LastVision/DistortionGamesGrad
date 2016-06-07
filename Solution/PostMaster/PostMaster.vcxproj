@@ -159,10 +159,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EmitterMessage.h" />
+    <ClInclude Include="FadeMessage.h" />
     <ClInclude Include="FinishLevelMessage.h" />
     <ClInclude Include="GameStateMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
+    <ClInclude Include="NightmareIsLockedMessage.h" />
     <ClInclude Include="OnClickMessage.h" />
     <ClInclude Include="OnDeathMessage.h" />
     <ClInclude Include="OnPlayerJoin.h" />

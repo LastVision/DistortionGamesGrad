@@ -7,6 +7,7 @@
 #include "Console.h"
 #include <ControllerInput.h>
 #include <CommonHelper.h>
+#include <FadeMessage.h>
 #include <GameStateMessage.h>
 #include <EffectContainer.h>
 #include <EntityFactory.h>
@@ -79,10 +80,37 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 	myNextLevel = 1;
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
+
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_NightmareInGame", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareMenu", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
+	}
+	
 }
 
 void InGameState::EndState()
 {
+
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareInGame", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_NightmareMenu", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
+	}
+	
 }
 
 const eStateStatus InGameState::Update(const float&)
@@ -123,6 +151,8 @@ void InGameState::ResumeState()
 	myIsActiveState = true;
 	myLevelToLoad = -1;
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void InGameState::PauseState()

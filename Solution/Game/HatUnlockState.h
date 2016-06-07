@@ -77,5 +77,7 @@ private:
 	float myGoldCostFade;
 
 	Prism::SpriteAnimator* myAnimator;
+
+	Prism::SpriteAnimator* mySpinHandleAnimator;
 };
 

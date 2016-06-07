@@ -20,3 +20,4 @@ void Subscriber::ReceiveMessage(const OnPlayerJoin&){}
 void Subscriber::ReceiveMessage(const ReturnToMenuMessage&){}
 void Subscriber::ReceiveMessage(const ReachedGoalMessage&) {}
 void Subscriber::ReceiveMessage(const UnhoverControllerMessage&) {}
+void Subscriber::ReceiveMessage(const NightmareIsLockedMessage&) {}

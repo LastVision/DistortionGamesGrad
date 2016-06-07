@@ -11,6 +11,7 @@
 #include "EmitterManager.h"
 #include <EmitterMessage.h>
 #include <EntityFactory.h>
+#include <FadeMessage.h>
 #include <FinishLevelMessage.h>
 #include "FirstTimeFinishLevelState.h"
 #include <InputComponent.h>
@@ -90,8 +91,6 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
 	Prism::ModelLoader::GetInstance()->UnPause();
 
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_InGameMusic", 0);
-
 	CU::Vector2<float> size(256.f, 256.f);
 	std::string texturePath("Data/Resource/Texture/Countdown/T_countdown_");
 	for (int i = 0; i < 10; ++i)
@@ -110,7 +109,6 @@ Level::~Level()
 	{
 		SAFE_DELETE(myCountdownSprites[i]);
 	}
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 	SAFE_DELETE(myEmitterManager);
 	for (int i = 0; i < myScrapManagers.Size(); ++i)
 	{
@@ -153,6 +151,9 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 		myScrapManagers.Add(new ScrapManager(myScene, myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID()));
 	}
 	myController->SetIsInMenu(false);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -291,9 +292,10 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
-	//myBackground->Render(myWindowSize * 0.5f);
-	//myScene->Render();
+	if (GC::OptionsUseShadows == true)
+	{
+		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
+	}
 
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 
@@ -573,11 +575,31 @@ void Level::EndState()
 
 void Level::ResumeState()
 {
+	//höj ingame musik
+
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Increase_NightmareInGame", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Increase_InGameMusic", 0);
+	}
+
 	myController->SetIsInMenu(false);
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void Level::PauseState()
 {
+	if (GC::NightmareMode == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Lower_NightmareInGame", 0);
+	}
+	else
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Lower_InGameMusic", 0);
+	}
 	for each(Entity* player in myPlayers)
 	{
 		player->SendNote(VibrationNote(0, 0, 0));
