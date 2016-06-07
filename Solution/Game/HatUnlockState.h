@@ -81,5 +81,9 @@ private:
 	Prism::SpriteAnimator* mySpinHandleAnimator;
 
 	Prism::SpriteProxy* myNotEnoughCashSprite;
+	float myNotEnoughCashScale;
+	float myNotEnoughCashTimer;
+	float myTimeToNotEnoughCash;
+	bool myAnimateNotEnoughCash;
 };
 
