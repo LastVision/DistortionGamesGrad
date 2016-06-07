@@ -39,7 +39,10 @@ private:
 	const ScoreInfo& myScoreInfo;
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
 
-	//Prism::SpriteProxy* myGoldBagSprite;
+	Prism::SpriteProxy* myHatsArrowSprite;
+	CU::Vector2<float> myHatsArrowPosition;
+	float myHatsArrowAlpha;
+	bool myHatsArrowAlphaIsIncreasing;
 
 	float myTimer;
 
@@ -55,5 +58,8 @@ private:
 
 	Prism::SpriteAnimator* myAnimator;
 	int myAnimationsToRun;
+
+	int mySpinCost;
+
 };
 
