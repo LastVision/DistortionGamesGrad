@@ -12,6 +12,7 @@ namespace GUI
 		: Widget()
 		, myHighscores(64)
 		, myCurrentLevel(aLevelID)
+		, myTextScale(1.f)
 	{
 		std::string spritePathBackground = "";
 
@@ -62,12 +63,12 @@ namespace GUI
 		{
 			Prism::Engine* engine = Prism::Engine::GetInstance();
 			myBackgroundSprite->Render(myPosition + aParentPosition);
-			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT);
-			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT);
-			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT);
-			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT);
-			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT);
-			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT);
+			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
 		}
 	}
 
@@ -76,6 +77,7 @@ namespace GUI
 		Widget::OnResize(aNewSize, anOldSize);
 		myBackgroundSprite->SetSize(mySize, mySize / 2.f);
 		CU::Vector2<float> ratio = aNewSize / anOldSize;
+		myTextScale = ratio.y;
 		myTextPosition *= ratio;
 		myTextRankPosition *= ratio;
 		myTextNamePosition *= ratio;
