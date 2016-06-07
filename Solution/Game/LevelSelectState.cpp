@@ -113,7 +113,7 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 		if (myShowNightmareIsLockedTimer <= 0.f)
 		{
 			myRenderNightmareIsLocked = false;
-			myShowNightmareIsLockedTimer = 0.;
+			myShowNightmareIsLockedTimer = 0.f;
 		}
 	}
 
@@ -126,7 +126,12 @@ void LevelSelectState::Render()
 
 	if (myRenderNightmareIsLocked == true)
 	{
-		myNightmareIsLockedSprite->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+		float timeToFade = myTimeToShowNightmareIsLocked * 0.2f;
+		float alpha = myShowNightmareIsLockedTimer < timeToFade ? myShowNightmareIsLockedTimer / timeToFade : 1.f;
+		CU::Vector2<float> position = Prism::Engine::GetInstance()->GetWindowSize();
+		position.x *= 0.5f;
+		position.y *= 0.15f;
+		myNightmareIsLockedSprite->Render(position, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
 	}
 }
 

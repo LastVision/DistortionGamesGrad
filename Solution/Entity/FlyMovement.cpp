@@ -59,15 +59,18 @@ void FlyMovement::Update(float aDeltaTime, bool aShouldCollide)
 		RaycastLegs();
 	}
 
-	myVelocity.y += myData.myGravity * aDeltaTime;
-	Drag(aDeltaTime);
-	Rotate(aDeltaTime);
+	if (myIsActive == true)
+	{
+		myVelocity.y += myData.myGravity * aDeltaTime;
+		Drag(aDeltaTime);
+		Rotate(aDeltaTime);
 
 #ifdef FPS_INDEPENDENT_INPUT
-	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
+		myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity * aDeltaTime, 0));
 #else
-	Translate();
+		Translate();
 #endif
+	}
 }
 
 void FlyMovement::SetDirectionTarget(const CU::Vector2<float>& aDirection)
@@ -251,7 +254,8 @@ void FlyMovement::RaycastBody()
 	CU::Vector3<float> up(0.f, 1.f, 0.f);
 
 	float raycastLengthWithLegs = GC::PlayerHeightWithLegs + 0.05f;
-	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+	if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false
+		&& myVelocity.y > -10.f)
 	{
 		raycastLengthWithLegs *= 0.4f;
 	}
