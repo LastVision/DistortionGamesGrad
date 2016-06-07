@@ -199,9 +199,21 @@ namespace Prism
 		myGBufferData->myNormalTexture->Resize(aWidth, aHeight);
 		myGBufferData->myEmissiveTexture->Resize(aWidth, aHeight);
 		myGBufferData->myDepthTexture->Resize(aWidth, aHeight);
+		myGBufferDataCopy->myAlbedoTexture->Resize(aWidth, aHeight);
+		myGBufferDataCopy->myNormalTexture->Resize(aWidth, aHeight);
+		myGBufferDataCopy->myEmissiveTexture->Resize(aWidth, aHeight);
+		myGBufferDataCopy->myDepthTexture->Resize(aWidth, aHeight);
+
 		myDepthStencilTexture->Resize(aWidth, aHeight);
-		myFinishedTexture->Resize(aWidth, aHeight);
 		myParticleTexture->Resize(aWidth, aHeight);
+
+		myFinishedTexture->Resize(aWidth, aHeight);
+		myFinishedSceneTexture->Resize(aWidth, aHeight);
+
+		myDecal->OnResize(aWidth, aHeight);
+
+		myParticleDepth->Resize(aWidth, aHeight);
+		myActualParticleDepth->Resize(aWidth, aHeight);
 	}
 
 	void DeferredRenderer::SetCubeMap(const std::string& aFilePath)

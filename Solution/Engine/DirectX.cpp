@@ -57,6 +57,8 @@ namespace Prism
 		myBackbufferRenderTarget->Release();
 		myBackbufferShaderResource->Release();
 		myBackbufferTexture->Release();
+		myOriginalBackbufferDepthStencil->Release();
+		myDepthbufferTexture->Release();
 		myContext->Flush();
 
 

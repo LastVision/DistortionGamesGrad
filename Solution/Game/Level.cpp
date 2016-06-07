@@ -608,8 +608,8 @@ void Level::PauseState()
 
 void Level::OnResize(int aWidth, int aHeight)
 {
-	aWidth;
-	aHeight;
+	myDeferredRenderer->OnResize(static_cast<float>(aWidth), static_cast<float>(aHeight));
+	myFullscreenRenderer->OnResize(static_cast<float>(aWidth), static_cast<float>(aHeight));
 }
 
 void Level::ReceiveMessage(const OnPlayerJoin&)

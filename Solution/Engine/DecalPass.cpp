@@ -103,6 +103,29 @@ namespace Prism
 		Engine::GetInstance()->SetRasterizeState(eRasterizer::CULL_BACK);
 	}
 
+	void DecalPass::OnResize(float aWidth, float aHeight)
+	{
+		for (int i = myOilDecals.Size() - 1; i >= 0; --i)
+		{
+			DecalInfo& decal = myOilDecals[i];
+			decal.myTextures->myTexture->Resize(aWidth, aHeight);
+			decal.myTextures->myNormalMap->Resize(aWidth, aHeight);
+			decal.myTextures->myMetalness->Resize(aWidth, aHeight);
+			decal.myTextures->myRoughness->Resize(aWidth, aHeight);
+			decal.myTextures->myEmissive->Resize(aWidth, aHeight);
+		}
+
+		for (int i = myLavaDecals.Size() - 1; i >= 0; --i)
+		{
+			DecalInfo& decal = myLavaDecals[i];
+			decal.myTextures->myTexture->Resize(aWidth, aHeight);
+			decal.myTextures->myNormalMap->Resize(aWidth, aHeight);
+			decal.myTextures->myMetalness->Resize(aWidth, aHeight);
+			decal.myTextures->myRoughness->Resize(aWidth, aHeight);
+			decal.myTextures->myEmissive->Resize(aWidth, aHeight);
+		}
+	}
+
 	void DecalPass::OnEffectLoad()
 	{
 		myGAlbedo = myEffect->GetEffect()->GetVariableByName("AlbedoTexture")->AsShaderResource();

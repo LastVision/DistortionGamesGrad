@@ -500,5 +500,6 @@ namespace Prism
 		myBloomData.myDownSampleTextures[1]->Resize(aWidth/4.f, aHeight/4.f);
 
 		myProcessingTexture->Resize(aWidth, aHeight);
+		myPreBloomSourceTexture->Resize(aWidth, aHeight);
 	}
 }

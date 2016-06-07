@@ -27,6 +27,7 @@ namespace Prism
 		void DebugRender(GBufferData* aGBuffer);
 
 		void SetRenderTargets(ID3D11RenderTargetView* aRenderTarget, ID3D11DepthStencilView* aDepthBuffer);
+		void OnResize(float aWidth, float aHeight);
 
 	private:
 		

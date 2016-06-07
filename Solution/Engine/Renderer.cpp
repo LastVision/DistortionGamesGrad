@@ -70,8 +70,15 @@ namespace Prism
 		context->OMSetRenderTargets(1, &originalRenderTargetView, originalDepthStencilView);
 
 		int IsThisNeededToPreventGPUMemoryCrash = 5;
-		//originalDepthStencilView->Release();
-		//originalRenderTargetView->Release();
+		if (originalDepthStencilView != nullptr)
+		{
+			originalDepthStencilView->Release();
+		}
+
+		if (originalRenderTargetView != nullptr)
+		{
+			originalRenderTargetView->Release();
+		}
 
 		context->RSSetViewports(1, &oldVp);
 		aScene->SetCamera(*oldCamera);
@@ -122,4 +129,11 @@ namespace Prism
 		ID3D11DepthStencilView* depth = aDepthBuffer;
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target, depth);
 	}
+
+	void Renderer::OnResize(float aWidth, float aHeight)
+	{
+		myFinalTexture->Resize(aWidth, aHeight);
+		myFullScreenHelper->OnResize(aWidth, aHeight);
+	}
+
 }

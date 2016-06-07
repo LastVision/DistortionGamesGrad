@@ -24,6 +24,7 @@ namespace Prism
 
 		void Update(float aDelta);
 		void Render(const Camera& aCamera, Texture* aDepthTexture, GBufferData* aGBuffer, GBufferData* aGBufferCopy);
+		void OnResize(float aWidth, float aHeight);
 
 	private:
 		void OnEffectLoad();
