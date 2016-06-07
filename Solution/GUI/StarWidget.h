@@ -36,7 +36,7 @@ inline const bool StarWidget::GetIsDone()
 {
 	if (myActive == false) return false;
 
-	if (myTime >= 1.f && myHasPlayedSound == false)
+	if (myTime >= 0.9f && myHasPlayedSound == false)
 	{
 		myHasPlayedSound = true;
 		return true;
