@@ -4,7 +4,8 @@
 #include "SawBladeComponent.h"
 #include "SoundComponent.h"
 #include "PhysicsComponent.h"
-
+#include <PostMaster.h>
+#include <EmitterMessage.h>
 SawBladeComponent::SawBladeComponent(Entity& anEntity)
 	: Component(anEntity)
 	, myPatrolSpeed(0.f)
@@ -42,6 +43,8 @@ void SawBladeComponent::Update(float aDeltaTime)
 		myDelayBeforePatrol -= aDeltaTime;
 		return;
 	}
+
+
 
 	if (myPositions.Size() > 0)
 	{
@@ -103,4 +106,17 @@ void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& so
 		myStartPosition = myEntity.GetOrientation().GetPos();
 		myTotalCurrentLength = CU::Length(myStartPosition - myPositions[0]);
 	}
+
+	if (myPatrolSpeed > 0.f)
+	{
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Patrol", &myEntity));
+	}
+
+}
+
+CU::Vector3f SawBladeComponent::GetParticlePos() const
+{
+	CU::Vector3f toReturn = myEntity.GetOrientation().GetPos();
+	toReturn.z -= 0.5f;
+	return toReturn;
 }

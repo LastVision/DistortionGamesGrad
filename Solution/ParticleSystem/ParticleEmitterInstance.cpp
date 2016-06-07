@@ -11,6 +11,7 @@
 #include <Engine.h>
 #include "../Entity/Entity.h"
 #include "../Entity/InputComponent.h"
+#include "../Entity/SawbladeComponent.h"
 
 namespace Prism
 {
@@ -240,10 +241,17 @@ namespace Prism
 
 			if (myEntity != nullptr)
 			{
-				myOrientation.SetPos(myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetPos());
-				myDirection = -myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetUp();
-				myOverrideDirection = true;
-				int apa = 5;
+				if (myEntity->GetComponent<InputComponent>() != nullptr)
+				{
+					myOrientation.SetPos(myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetPos());
+					myDirection = -myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetUp();
+					myOverrideDirection = true;
+					int apa = 5;
+				}
+				else if (myEntity->GetComponent<SawBladeComponent>() != nullptr)
+				{
+					myOrientation.SetPos(myEntity->GetComponent<SawBladeComponent>()->GetParticlePos());
+				}
 			}
 
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
