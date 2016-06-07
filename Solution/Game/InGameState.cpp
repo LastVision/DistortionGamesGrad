@@ -60,6 +60,7 @@ InGameState::~InGameState()
 	SAFE_DELETE(myCamera);
 	SAFE_DELETE(myLevelFactory);
 	SAFE_DELETE(myText);
+	SAFE_DELETE(myLoadingScreen);
 }
 
 void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
