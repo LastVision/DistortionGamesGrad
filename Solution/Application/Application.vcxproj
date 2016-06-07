@@ -85,35 +85,35 @@
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\Workbed\bin\</OutDir>
     <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(FBX_SDK_ROOT)\include\;$(SolutionDir)..\FBX\;$(SolutionDir)\Memory;$(SolutionDir)\Engine;$(SolutionDir)\DL_Debug;$(SolutionDir)\Game;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\PostMaster;$(SolutionDir)\Script;$(SolutionDir)\InputWrapper;$(SolutionDir)\..\VisualLeakDetector\;$(SolutionDir)\..\DirectX\Include;$(VTUNE_DIR)\include\;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <TargetName>SpareParty_$(Configuration)</TargetName>
     <LibraryPath>$(SolutionDir)..\Libs3rdParty\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\vs12\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\Workbed\bin\</OutDir>
     <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(FBX_SDK_ROOT)\include\;$(SolutionDir)..\FBX\;$(SolutionDir)\Memory;$(SolutionDir)\Engine;$(SolutionDir)\DL_Debug;$(SolutionDir)\Game;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\PostMaster;$(SolutionDir)\Script;$(SolutionDir)\InputWrapper;$(SolutionDir)\..\VisualLeakDetector\;$(SolutionDir)\..\DirectX\Include;$(VTUNE_DIR)\include\;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <TargetName>SpareParty_$(Configuration)</TargetName>
     <LibraryPath>$(SolutionDir)..\Libs3rdParty\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\vs12\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL_Release|Win32'">
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\Workbed\bin\</OutDir>
     <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(FBX_SDK_ROOT)\include\;$(SolutionDir)..\FBX\;$(SolutionDir)\Memory;$(SolutionDir)\Engine;$(SolutionDir)\DL_Debug;$(SolutionDir)\Game;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\PostMaster;$(SolutionDir)\Script;$(SolutionDir)\InputWrapper;$(SolutionDir)\..\VisualLeakDetector\;$(SolutionDir)\..\DirectX\Include;$(VTUNE_DIR)\include\;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <TargetName>SpareParty_$(Configuration)</TargetName>
     <LibraryPath>$(SolutionDir)..\Libs3rdParty\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\vs12\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\Workbed\bin\</OutDir>
     <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(FBX_SDK_ROOT)\include\;$(SolutionDir)..\FBX\;$(SolutionDir)\Memory;$(SolutionDir)\Engine;$(SolutionDir)\DL_Debug;$(SolutionDir)\Game;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\PostMaster;$(SolutionDir)\Script;$(SolutionDir)\InputWrapper;$(SolutionDir)\..\VisualLeakDetector\;$(SolutionDir)\..\DirectX\Include;$(VTUNE_DIR)\include\;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <TargetName>SpareParty_$(Configuration)</TargetName>
     <LibraryPath>$(SolutionDir)..\Libs3rdParty\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\vs12\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DataExporter|Win32'">
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\Workbed\bin\</OutDir>
     <IncludePath>$(SolutionDir)..\Libs3rdParty\MySQLC\include\;$(SolutionDir)Game_Shared\;$(FBX_SDK_ROOT)\include\;$(SolutionDir)..\FBX\;$(SolutionDir)\Memory;$(SolutionDir)\Engine;$(SolutionDir)\DL_Debug;$(SolutionDir)\Game;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\PostMaster;$(SolutionDir)\Script;$(SolutionDir)\InputWrapper;$(SolutionDir)\..\VisualLeakDetector\;$(SolutionDir)\..\DirectX\Include;$(VTUNE_DIR)\include\;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <TargetName>SpareParty_$(Configuration)</TargetName>
     <LibraryPath>$(SolutionDir)..\Libs3rdParty\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\;$(SolutionDir)..\Libs3rdParty\MySQLC\lib\vs12\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
