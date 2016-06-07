@@ -152,7 +152,7 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	}
 	myController->SetIsInMenu(false);
 
-	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 
 }
 

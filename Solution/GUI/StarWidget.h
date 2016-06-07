@@ -17,7 +17,7 @@ public:
 	void Render(const CU::Vector2<float>& aParentPosition) override;
 
 	void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
-
+	const bool GetIsDone();
 private:
 	Prism::SpriteProxy* myBackground;
 	Prism::SpriteProxy* myStar;
@@ -27,5 +27,20 @@ private:
 
 	float myTotalTime;
 
+	bool myHasPlayedSound;
+
 	CU::Vector2<float> myParentPosition;
 };
+
+inline const bool StarWidget::GetIsDone()
+{
+	if (myActive == false) return false;
+
+	if (myTime >= 1.f && myHasPlayedSound == false)
+	{
+		myHasPlayedSound = true;
+		return true;
+	}
+
+	return false;
+}

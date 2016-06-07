@@ -180,7 +180,14 @@ void ScoreState::Render()
 
 	if (myNumberOfActiveScores == 1)
 	{
-		myScoreWidgets[0]->Render(CU::Vector2<float>((myScoreWidgets[0]->GetSize().x / 2.f), -80.f));
+		for (int i = 0; i < myScores.Size(); ++i)
+		{
+			if (myScores[i]->myActive == true)
+			{
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f));
+				return;
+			}
+		}
 	}
 	else 
 	{
