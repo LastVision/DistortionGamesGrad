@@ -32,6 +32,10 @@ HatUnlockState::HatUnlockState()
 	, myTotalTime(2.09f)
 	, myHatWonScaling(1.f)
 	, myNotEnoughCashSprite(nullptr)
+	, myNotEnoughCashScale(1.f)
+	, myAnimateNotEnoughCash(false)
+	, myNotEnoughCashTimer(0.f)
+	, myTimeToNotEnoughCash(2.f)
 	, mySoundAmount(256.f)
 {
 	ReadXML();
@@ -197,7 +201,20 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		mySpinHandleAnimator->Update(aDeltaTime);
 	}
 
+	if (myAnimateNotEnoughCash == true)
+	{
+		myNotEnoughCashTimer -= aDeltaTime * 2.f;
 
+		if (myNotEnoughCashTimer <= 0.f)
+		{
+			myAnimateNotEnoughCash = false;
+			myNotEnoughCashTimer = 0.f;
+		}
+	}
+	else if (myNotEnoughCashScale != 0.f)
+	{
+		myNotEnoughCashScale += (1.f - myNotEnoughCashScale) * aDeltaTime * 2.f;
+	}
 
 	return myStateStatus;
 }
@@ -263,8 +280,14 @@ void HatUnlockState::Render()
 
 	if (GC::Gold < mySpinCost)
 	{
+		if (myAnimateNotEnoughCash == true)
+		{
+			myNotEnoughCashScale = CU::Math::Lerp(1.f, 1.3f
+				, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
+		}
+
 		goldPos.y -= myGoldBagSprite->GetSize().y * 1.1f;
-		myNotEnoughCashSprite->Render(goldPos);
+		myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });	
 	}
 }
 
@@ -292,6 +315,11 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 				if (GC::Gold >= mySpinCost)
 				{
 					Spin();
+				}
+				else if (myAnimateNotEnoughCash == false)
+				{
+					myAnimateNotEnoughCash = true;
+					myNotEnoughCashTimer = myTimeToNotEnoughCash;
 				}
 			}
 			else
