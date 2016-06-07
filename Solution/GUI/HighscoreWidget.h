@@ -44,5 +44,7 @@ namespace GUI
 		CU::GrowingArray<Highscore> myHighscores;
 
 		Prism::SpriteProxy* myBackgroundSprite;
+
+		float myTextScale;
 	};
 }
