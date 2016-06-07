@@ -99,14 +99,16 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 void InGameState::EndState()
 {
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
+
 	if (GC::NightmareMode == true)
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareInGame", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_NightmareMenu", 0);
 	}
 	else
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	}
 	
 }
