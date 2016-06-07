@@ -53,7 +53,6 @@ void MainMenuState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerI
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_main_menu.xml", nullptr, -1);
 
 
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	myGUIManager->SetPosition(myGUIPosition);
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
 	OnResize(windowSize.x, windowSize.y);
@@ -111,7 +110,6 @@ void MainMenuState::ResumeState()
 	myIsActiveState = true;
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myCursor->SetShouldRender(true);
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -119,7 +117,6 @@ void MainMenuState::ResumeState()
 
 void MainMenuState::PauseState()
 {
-	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 

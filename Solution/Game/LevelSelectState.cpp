@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
@@ -19,6 +21,7 @@ LevelSelectState::LevelSelectState(bool aIsNightmare)
 	, myTimeToShowNightmareIsLocked(5.f)
 	, myShowNightmareIsLockedTimer(0.f)
 {
+
 }
 
 LevelSelectState::~LevelSelectState()
@@ -69,6 +72,12 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	}
 #endif
 
+	if (myIsNightmare == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_NightmareMenu", 0);
+	}
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -76,6 +85,12 @@ void LevelSelectState::EndState()
 {
 	myIsActiveState = false;
 	myCursor->SetShouldRender(false);
+
+	if (myIsNightmare == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareMenu", 0);
+	}
 }
 
 const eStateStatus LevelSelectState::Update(const float& aDeltaTime)

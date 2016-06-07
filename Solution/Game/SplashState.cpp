@@ -63,7 +63,6 @@ void SplashState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 	if (myStartSound == true)
 	{
-		//Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Menu", 0);
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	}
 
