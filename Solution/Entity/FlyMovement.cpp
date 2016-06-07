@@ -161,7 +161,13 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 			{
 				if (myIsInSteam == false)
 				{
-					resetPos.y = aHitPosition.y + GC::PlayerRadius * 1.f;
+					float epsilon = 0.001f;
+					float walkOffset = GC::PlayerHeightWithLegs - epsilon;
+					if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == false)
+					{
+						walkOffset *= 0.4f;
+					}
+					resetPos.y = aHitPosition.y + walkOffset;
 					myOrientation.SetPos(resetPos);
 					myMovementComponent.SetState(MovementComponent::eMovementType::WALK, myVelocity);
 				}

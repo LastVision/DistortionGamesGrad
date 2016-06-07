@@ -112,9 +112,15 @@ namespace Prism
 		
 		enum
 		{
-			CCD_FLAG = 1 << 29,
+			/*CCD_FLAG = 1 << 29,
 			KINEMATIC_FLAG = 1 << 30,
-			OTHER_FLAG = 1 << 31
+			OTHER_FLAG = 1 << 31,
+			DYNAMIC_FLAG = 1 << 32*/
+
+			CCD_FLAG = 1,
+			KINEMATIC_FLAG = 2,
+			OTHER_FLAG = 4,
+			DYNAMIC_FLAG = 8
 		};
 
 
