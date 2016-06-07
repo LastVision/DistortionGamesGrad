@@ -29,6 +29,7 @@ HatUnlockState::HatUnlockState()
 	, myGoldCostFade(1.f)
 	, myTotalTime(2.09f)
 	, myHatWonScaling(1.f)
+	, myNotEnoughCashSprite(nullptr)
 {
 	ReadXML();
 }
@@ -50,6 +51,7 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myGoldBagSprite);
 	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(mySpinHandleAnimator);
+	SAFE_DELETE(myNotEnoughCashSprite);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -110,6 +112,9 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
 		, { 128.f, 128.f }, { 64.f, 64.f });
+
+	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
+		, { 512.f, 256.f }, { 256.f, 128.f });
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
@@ -245,7 +250,11 @@ void HatUnlockState::Render()
 		}
 	}
 
-
+	if (GC::Gold < mySpinCost)
+	{
+		goldPos.y -= myGoldBagSprite->GetSize().y * 1.1f;
+		myNotEnoughCashSprite->Render(goldPos);
+	}
 }
 
 void HatUnlockState::ResumeState()

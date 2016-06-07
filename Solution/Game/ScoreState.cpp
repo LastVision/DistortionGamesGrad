@@ -185,7 +185,7 @@ void ScoreState::Render()
 			if (myScores[i]->myActive == true)
 			{
 				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f));
-				return;
+				break;
 			}
 		}
 	}
