@@ -15,7 +15,7 @@ namespace GUI
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
-		void OnMouseEnter() override;
+		void OnMouseEnter(bool aShouldSound = true) override;
 		void OnMouseExit() override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;

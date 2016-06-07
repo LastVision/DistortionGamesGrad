@@ -31,12 +31,15 @@ void DashFlyMovement::Reset()
 void DashFlyMovement::Update(float aDeltaTime, bool)
 {
 	HandleContact();
-	myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity*aDeltaTime, 0));
-
-	myTimer -= aDeltaTime;
-	if (myTimer <= 0.f)
+	if (myIsActive == true)
 	{
-		myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
+		myOrientation.SetPos(myOrientation.GetPos() + CU::Vector3<float>(myVelocity*aDeltaTime, 0));
+
+		myTimer -= aDeltaTime;
+		if (myTimer <= 0.f)
+		{
+			myMovementComponent.SetState(MovementComponent::eMovementType::FLY, myVelocity * myData.myDashSpeedKeepRatio);
+		}
 	}
 }
 

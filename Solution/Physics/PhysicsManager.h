@@ -151,7 +151,6 @@ namespace Prism
 			const PhysicsComponent* myRaycasterComponent;
 		};
 		void RayCast(const RaycastJob& aRaycastJob);
-		CU::GrowingArray<RaycastJob> myRaycastJobs[2];
 
 		struct RaycastResult
 		{
@@ -171,7 +170,6 @@ namespace Prism
 			CU::Vector3<float> myHitNormal;
 			std::function<void(PhysicsComponent*, const CU::Vector3<float>&, const CU::Vector3<float>&, const CU::Vector3<float>&)> myFunctionToCall;
 		};
-		CU::GrowingArray<RaycastResult> myRaycastResults[2];
 
 		struct OnTriggerResult
 		{

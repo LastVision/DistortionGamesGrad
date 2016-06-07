@@ -164,6 +164,7 @@
     <ClInclude Include="GameStateMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
+    <ClInclude Include="NightmareIsLockedMessage.h" />
     <ClInclude Include="OnClickMessage.h" />
     <ClInclude Include="OnDeathMessage.h" />
     <ClInclude Include="OnPlayerJoin.h" />

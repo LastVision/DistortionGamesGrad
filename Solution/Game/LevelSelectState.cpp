@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
@@ -6,18 +8,26 @@
 #include <InputWrapper.h>
 #include <GUIManager.h>
 #include "LevelSelectState.h"
+#include <ModelLoader.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
+#include <SpriteProxy.h>
 #include <WidgetContainer.h>
 
 LevelSelectState::LevelSelectState(bool aIsNightmare)
 	: myIsNightmare(aIsNightmare)
+	, myNightmareIsLockedSprite(nullptr)
+	, myRenderNightmareIsLocked(false)
+	, myTimeToShowNightmareIsLocked(5.f)
+	, myShowNightmareIsLockedTimer(0.f)
 {
+
 }
 
 LevelSelectState::~LevelSelectState()
 {
 	SAFE_DELETE(myGUIManager);
+	SAFE_DELETE(myNightmareIsLockedSprite);
 	myStateStack = nullptr;
 	myCursor = nullptr;
 	myController = nullptr;
@@ -44,10 +54,15 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK | eMessageType::NIGHTMARE_IS_LOCKED);
 
 	//RetrieveUnlockedLevelsFromFile();
 	myController->SetIsInMenu(true);
+
+	CU::Vector2<float> size = { 256.f, 128.f };
+
+	myNightmareIsLockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_banner_nightmare_is_locked.dds"
+		, size, size * 0.5f);
 
 #ifdef RELEASE_BUILD
 	if (myIsNightmare == false && GC::HasWonGame == false)
@@ -57,6 +72,12 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	}
 #endif
 
+	if (myIsNightmare == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_NightmareMenu", 0);
+	}
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -64,6 +85,12 @@ void LevelSelectState::EndState()
 {
 	myIsActiveState = false;
 	myCursor->SetShouldRender(false);
+
+	if (myIsNightmare == true)
+	{
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareMenu", 0);
+	}
 }
 
 const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
@@ -80,12 +107,32 @@ const eStateStatus LevelSelectState::Update(const float& aDeltaTime)
 
 	myGUIManager->Update(aDeltaTime);
 
+	if (myRenderNightmareIsLocked == true)
+	{
+		myShowNightmareIsLockedTimer -= aDeltaTime;
+		if (myShowNightmareIsLockedTimer <= 0.f)
+		{
+			myRenderNightmareIsLocked = false;
+			myShowNightmareIsLockedTimer = 0.f;
+		}
+	}
+
 	return myStateStatus;
 }
 
 void LevelSelectState::Render()
 {
 	myGUIManager->Render();
+
+	if (myRenderNightmareIsLocked == true)
+	{
+		float timeToFade = myTimeToShowNightmareIsLocked * 0.2f;
+		float alpha = myShowNightmareIsLockedTimer < timeToFade ? myShowNightmareIsLockedTimer / timeToFade : 1.f;
+		CU::Vector2<float> position = Prism::Engine::GetInstance()->GetWindowSize();
+		position.x *= 0.5f;
+		position.y *= 0.15f;
+		myNightmareIsLockedSprite->Render(position, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
+	}
 }
 
 void LevelSelectState::ResumeState()
@@ -131,6 +178,12 @@ void LevelSelectState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
+}
+
+void LevelSelectState::ReceiveMessage(const NightmareIsLockedMessage& aMessage)
+{
+	myRenderNightmareIsLocked = true;
+	myShowNightmareIsLockedTimer = myTimeToShowNightmareIsLocked;
 }
 
 CU::GrowingArray<bool> LevelSelectState::RetrieveUnlockedLevelsFromFile()

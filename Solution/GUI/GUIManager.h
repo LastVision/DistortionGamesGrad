@@ -64,6 +64,7 @@ namespace GUI
 		void SelectButtonLeft();
 		void PressSelectedButton();
 		void HoverSelectedButton();
+		void HoverSelectedButtonWithoutSound();
 
 		void CheckUnlockedNightmareLevels();
 

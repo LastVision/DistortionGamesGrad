@@ -43,6 +43,7 @@ void PlayerComponent::Reset()
 void PlayerComponent::Update(float)
 {
 	CU::Vector3<float> position(myEntity.GetOrientation().GetPos());
+
 	if ((position.x < 0.f || position.x > 70.f || position.y < 0.f || position.y > 38.f)
 		&& myEntity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == false)
 	{
@@ -60,17 +61,8 @@ void PlayerComponent::Update(float)
 
 			direction /= length;
 
-			int rayCount = 0;
-			float stepSize = 0.1f;
-			while (length > stepSize && rayCount < 1)
-			{
-				++rayCount;
-
-				Prism::PhysicsInterface::GetInstance()->RayCast(position + CU::Vector3<float>(0.5f, 0, 0), direction, length, myRaycastHandler
+			Prism::PhysicsInterface::GetInstance()->RayCast(position, direction, length, myRaycastHandler
 					, myEntity.GetComponent<PhysicsComponent>());
-				position += direction * stepSize;
-				length -= stepSize;
-			}
 		}
 	}
 	myPreviousPositions[1] = myPreviousPositions[0];
