@@ -149,7 +149,7 @@ void MovementComponent::SetDirectionTarget(const CU::Vector2<float>& aDirection)
 
 void MovementComponent::RightTriggerDown()
 {
-	if (myDashCooldown <= 0.f)
+	if (myDashCooldown <= 0.f && myShouldCollide == true)
 	{
 		SetState(eMovementType::DASH_AIM, { 0.f, 0.f });
 	}

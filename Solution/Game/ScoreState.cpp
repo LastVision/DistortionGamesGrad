@@ -28,7 +28,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myTimer(2.f)
 	, myNumberOfActiveScores(0)
 	, myCurrentLevel(aLevelID)
-	, myGoldBagSprite(nullptr)
+	//, myGoldBagSprite(nullptr)
 	, myEarnedStars(0)
 	, myEarnedStarsText("")
 	, myGoldCostMovement(0.f)
@@ -72,15 +72,15 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 		}
 	}
 
-	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
-		, { 128.f, 128.f }, { 64.f, 64.f });
+	//myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
+	//	, { 128.f, 128.f }, { 64.f, 64.f });
 }
 
 ScoreState::~ScoreState()
 {
 	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(myGUIManager);
-	SAFE_DELETE(myGoldBagSprite);
+	//SAFE_DELETE(myGoldBagSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -115,6 +115,15 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	if (GC::NightmareMode == false && myCurrentLevel >= GC::TotalLevels)
 	{
 		GC::HasWonGame = true;
+	}	
+
+	while (Prism::ModelLoader::GetInstance()->IsLoading())
+	{
+	}
+
+	if (myEarnedStars == 0)
+	{
+		myAnimator->PauseAnimationAtLastFrame();
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -143,10 +152,22 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 	{
 		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
-		if (myAnimationsToRun > 0 && myAnimator->IsPlayingAnimation() == false)
+		if (myAnimator->IsPlayingAnimation() == false)
 		{
-			--myAnimationsToRun;
-			myAnimator->RestartAnimation();
+			if (myAnimationsToRun > 0)
+			{
+				--myAnimationsToRun;
+				if (myAnimationsToRun <= 0)
+				{
+					myAnimator->PauseAnimation();
+					myAnimator->UnPauseAnimation();
+					myAnimator->RestartAnimation();
+				}
+				else
+				{
+					myAnimator->RestartAnimation();
+				}
+			}
 		}
 
 		myGUIManager->Update(aDeltaTime);
@@ -156,12 +177,13 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 	{
 		myGoldCostMovement += 25.f * aDeltaTime;
 		myGoldCostFade -= 0.25f * aDeltaTime;
-
-		if (myAnimator != nullptr)
-		{
-			myAnimator->Update(aDeltaTime);
-		}
 	}
+
+	if (myAnimator != nullptr)
+	{
+		myAnimator->Update(aDeltaTime);
+	}
+
 	return myStateStatus;
 }
 
@@ -206,17 +228,18 @@ void ScoreState::Render()
 
 	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
 
-	myGoldBagSprite->Render(goldPos);
+	//myGoldBagSprite->Render(goldPos);
 	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myEarnedStars > 0)
 	{
 		Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
-		if (myAnimator != nullptr)
-		{
-			myAnimator->Render(goldPos);
-		}
+	}
+
+	if (myAnimator != nullptr)
+	{
+		myAnimator->Render(goldPos);
 	}
 }
 
