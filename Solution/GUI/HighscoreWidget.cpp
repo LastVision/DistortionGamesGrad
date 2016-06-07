@@ -92,7 +92,7 @@ namespace GUI
 		CU::Vector2<float> textPosition;
 		textPosition = myPosition + myTextPosition;
 		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
-		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		//textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition.x += myTextPosition.x / 2.f;
 		textPosition.x += 150;
 		myLocalBestScoreTextPosition = textPosition;
