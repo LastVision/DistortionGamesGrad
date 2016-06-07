@@ -8,6 +8,11 @@ namespace GUI
 	class Cursor;
 }
 
+namespace Prism
+{
+	class SpriteProxy;
+}
+
 namespace CU
 {
 	class ControllerInput;
@@ -29,6 +34,7 @@ public:
 	void OnResize(int aWidth, int aHeight) override;
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
+	void ReceiveMessage(const NightmareIsLockedMessage& aMessage) override;
 
 private:
 
@@ -37,6 +43,12 @@ private:
 
 	GUI::GUIManager* myGUIManager;
 
+	Prism::SpriteProxy* myNightmareIsLockedSprite;
+
 	bool myIsNightmare;
+	bool myRenderNightmareIsLocked;
+
+	float myTimeToShowNightmareIsLocked;
+	float myShowNightmareIsLockedTimer;
 };
 
