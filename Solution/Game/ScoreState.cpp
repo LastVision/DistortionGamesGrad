@@ -5,6 +5,7 @@
 #include <FadeMessage.h>
 #include <GUIManager.h>
 #include <GameConstants.h>
+#include <HatManager.h>
 #include "HatState.h"
 #include "InputWrapper.h"
 #include "LevelFactory.h"
@@ -38,6 +39,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myAnimationsToRun(0)
 	, mySpinCost(0)
 	, myHatsArrowAlphaIsIncreasing(false)
+	, myRenderHatArrow(false)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -121,12 +123,13 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
 	}
 
-	if (GC::Gold >= mySpinCost)
+	if (GC::Gold >= mySpinCost && HatManager::GetInstance()->IsAllHatsUnlocked() == false)
 	{
+		myRenderHatArrow = true;
 		GUI::Widget* hatButton = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2);
 		myHatsArrowPosition = hatButton->GetPosition();
 		myHatsArrowPosition.y -= hatButton->GetSize().y * 0.5f;
-		hatButton->SwitchGradient();
+		hatButton->SwitchGradient(true);
 	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
@@ -162,11 +165,6 @@ void ScoreState::EndState()
 
 const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
-	//if (CU::InputWrapper::GetInstance()->KeyDown(DIK_RETURN) || myController->ButtonOnDown(eXboxButton::A))
-	//{
-	//	return eStateStatus::ePopMainState;
-	//}
-
 	myTimer -= aDeltaTime;
 
 	for each (ScoreWidget* widget in myScoreWidgets)
@@ -209,7 +207,7 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 			myAnimator->Update(aDeltaTime);
 		}
 
-		if (GC::Gold >= mySpinCost)
+		if (myRenderHatArrow == true)
 		{
 			if (myHatsArrowAlphaIsIncreasing == true)
 			{
@@ -274,7 +272,7 @@ void ScoreState::Render()
 			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 		}
 
-		if (GC::Gold >= mySpinCost)
+		if (myRenderHatArrow == true)
 		{
 			myHatsArrowSprite->Render(myHatsArrowPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHatsArrowAlpha });
 		}
@@ -311,6 +309,13 @@ void ScoreState::ResumeState()
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
+
+	if (GC::Gold < mySpinCost || HatManager::GetInstance()->IsAllHatsUnlocked() == true)
+	{
+		myRenderHatArrow = false;
+		GUI::Widget* hatButton = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2);
+		hatButton->SwitchGradient(false);
+	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }

@@ -50,7 +50,7 @@ namespace GUI
 
 		void SetActive(const bool aActiveFlag);
 
-		void SwitchGradient() override;
+		void SwitchGradient(bool aShouldGradient) override;
 
 	protected:
 		void Click();

@@ -43,6 +43,7 @@ private:
 	CU::Vector2<float> myHatsArrowPosition;
 	float myHatsArrowAlpha;
 	bool myHatsArrowAlphaIsIncreasing;
+	bool myRenderHatArrow;
 
 	float myTimer;
 

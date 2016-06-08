@@ -22,6 +22,8 @@ public:
 
 	int GetAmountOfHats() const;
 
+	bool IsAllHatsUnlocked() const;
+
 private:
 	HatManager();
 	~HatManager();
@@ -33,5 +35,6 @@ private:
 
 	CU::GrowingArray<int> myPlayersCurrentHat;
 	CU::GrowingArray<int> myHatsStatus;
+
 };
 
