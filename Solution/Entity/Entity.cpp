@@ -36,6 +36,7 @@ Entity::Entity(const EntityData& aEntityData, Prism::Scene* aScene, const CU::Ve
 	, myStartPosition(aStartPosition)
 	, myStartRotation(aRotation)
 	, myShouldBeRemoved(false)
+	, myScrapSpawnedThisFrame(false)
 {
 	for (int i = 0; i < static_cast<int>(eComponentType::_COUNT); ++i)
 	{

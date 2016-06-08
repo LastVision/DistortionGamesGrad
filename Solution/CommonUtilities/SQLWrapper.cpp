@@ -91,6 +91,15 @@ namespace CU
 		file.close();
 	}
 
+	void SQLWrapper::WriteDeaths(const int aLevelID, const int aNumberOfDeaths)
+	{
+		if (GetIsOnline() == true)
+		{
+			std::string query = "UPDATE DeathTable SET DeathCount=DeathCount+" + std::to_string(aNumberOfDeaths) + " WHERE LevelID = " + std::to_string(aLevelID);
+			ExecuteQuery(query.c_str());
+		}
+	}
+
 	CU::GrowingArray<Highscore> SQLWrapper::RetriveOnlineHighcore(const int aLevelID, const float aScore)
 	{
 		CU::GrowingArray<Highscore> toReturn(11);

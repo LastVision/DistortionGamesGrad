@@ -597,7 +597,15 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				//aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
 				break;
 			case SAW_BLADE:
-				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				if (aFirst->GetEntity().IsScrapSpawnedThisFrame() == false)
+				{
+					aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				}
+				else
+				{
+					int hereAScrapIsSpawnedAndShouldNotGetForce = 5;
+					hereAScrapIsSpawnedAndShouldNotGetForce;
+				}
 				break;
 			case GOAL_POINT:
 				break;
