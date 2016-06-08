@@ -73,4 +73,5 @@ private:
 	int myLastLevel;
 
 	bool myIsFirstFrame;
+	bool myIsBetweenLevels;
 };

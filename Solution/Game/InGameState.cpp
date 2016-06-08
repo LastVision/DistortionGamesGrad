@@ -37,6 +37,7 @@ InGameState::InGameState(int aLevelID)
 	, myNextLevel(-1)
 	, myIsFirstFrame(true)
 	, myLoadingScreen(nullptr)
+	, myIsBetweenLevels(false)
 {
 	myIsActiveState = false;
 
@@ -161,7 +162,10 @@ const eStateStatus InGameState::Update(const float&)
 
 void InGameState::Render()
 {
-	myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+	if (myIsBetweenLevels == false)
+	{
+		myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+	}
 }
 
 void InGameState::ResumeState()
@@ -169,7 +173,7 @@ void InGameState::ResumeState()
 	myIsActiveState = true;
 	myLevelToLoad = -1;
 	myController->SetIsInMenu(false);
-	myIsFirstFrame = true;
+	myIsBetweenLevels = true;
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
