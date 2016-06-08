@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include <algorithm>
 #include <AnimationSystem.h>
 #include "CharacterAnimationNote.h"
@@ -19,6 +20,7 @@
 #include "VibrationNote.h"
 #include <EmitterMessage.h>
 #include "Hat.h"
+#include "SoundComponent.h"
 
 PlayerGraphicsComponent::PlayerGraphicsComponent(Entity& aEntity, const PlayerGraphicsComponentData& aData
 	, const CU::Matrix44<float>& aEntityOrientation, Prism::Scene* aScene, int aPlayerID)
@@ -227,6 +229,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 				, myEntity.GetOrientation().GetPos(), CU::Vector2<float>(), myEntity.GetComponent<InputComponent>()->GetPlayerID()));
 			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Head", myEntity.GetOrientation().GetPos()));
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LooseHead", myEntity.GetComponent<SoundComponent>()->GetAudioSFXID());
 
 		}
 		myHead.SetActive(false);
@@ -239,6 +242,7 @@ void PlayerGraphicsComponent::ReceiveNote(const LoseBodyPartNote& aMessage)
 			myLeftLeg.SetActive(false);
 			myEntity.SendNote(VibrationNote(16000, 16000, 0.3f));
 			PostMaster::GetInstance()->SendMessage(EmitterMessage("Drop_Legs", myEntity.GetOrientation().GetPos()));
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LooseLegs", myEntity.GetComponent<SoundComponent>()->GetAudioSFXID());
 		}
 
 		if (myRightLeg.GetActive() == true)
