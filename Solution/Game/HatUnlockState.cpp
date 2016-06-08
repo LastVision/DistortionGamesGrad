@@ -14,6 +14,7 @@
 #include <SpriteProxy.h>
 #include <SpriteAnimator.h>
 #include <XMLReader.h>
+#include <WidgetContainer.h>
 
 HatUnlockState::HatUnlockState()
 	: myGUIManager(nullptr)
@@ -334,11 +335,13 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 					myNotEnoughCashTimer = myTimeToNotEnoughCash;
 				}
 			}
-			else
+			else 
 			{
 				myHasWonAllHats = true;
-				myHatWon = nullptr;
 
+
+				static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->DeleteButtonAtIndex(0);
+				myGUIManager->DeleteButtonAtIndex(0, 0);
 				SAFE_DELETE(myHatWon);
 			}
 		}

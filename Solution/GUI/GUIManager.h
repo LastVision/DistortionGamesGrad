@@ -72,6 +72,8 @@ namespace GUI
 
 		void Unhover();
 
+		void DeleteButtonAtIndex(int aX, int aY);
+
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);
 		void ReadFiles(XMLReader& aReader, tinyxml2::XMLElement* aFilePathElement);

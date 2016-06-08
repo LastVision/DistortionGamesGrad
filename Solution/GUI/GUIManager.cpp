@@ -333,6 +333,20 @@ namespace GUI
 		}
 	}
 
+	void GUIManager::DeleteButtonAtIndex(int aX, int aY)
+	{
+		//SelectButtonDown();
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+		myButtons[aX].DeleteCyclicAtIndex(aY);
+		myButtons.RemoveCyclicAtIndex(aX);
+
+		myControllerButtonIndexX = 0;
+		myControllerButtonIndexY = 0;
+
+
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
+	}
+
 	void GUIManager::ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement)
 	{
 		std::string path = "";

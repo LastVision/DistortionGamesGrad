@@ -43,6 +43,8 @@ namespace GUI
 		Widget* GetLast();
 		const Widget* GetLast() const;
 
+		void DeleteButtonAtIndex(int aIndex);
+
 	private:
 		CU::GrowingArray<Widget*> myWidgets;
 		Prism::SpriteProxy* myBackground;
@@ -75,5 +77,10 @@ namespace GUI
 	inline const Widget* WidgetContainer::GetLast() const
 	{
 		return myWidgets.GetLast();
+	}
+
+	inline void WidgetContainer::DeleteButtonAtIndex(int aIndex)
+	{
+		myWidgets.DeleteCyclicAtIndex(aIndex);
 	}
 }
