@@ -246,7 +246,6 @@ namespace Prism
 					myOrientation.SetPos(myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetPos());
 					myDirection = -myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetUp();
 					myOverrideDirection = true;
-					int apa = 5;
 				}
 				else if (myEntity->GetComponent<SawBladeComponent>() != nullptr)
 				{
@@ -368,8 +367,7 @@ namespace Prism
 
 			if (myRandomizeDirection == true)
 			{
-
-				float randomAngle = CU::Math::RandomRange(-45.f, 45.f) * (M_PI / 180.f);
+				float randomAngle = CU::Math::RandomRange(-45.f, 45.f) * (3.1415926535f / 180.f);
 
 				CU::Vector3f newDirection = { (myDirection.x * cos(-randomAngle)) - (myDirection.y * sin(-randomAngle))
 					, (myDirection.y * cos(-randomAngle)) - (myDirection.x * sin(-randomAngle)), 0.f };
