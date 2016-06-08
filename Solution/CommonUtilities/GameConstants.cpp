@@ -58,4 +58,4 @@ bool GC::FirstTimeScoreSubmit = false;
 
 int GC::DebugRenderTexture = 0;
 
-float GC::ShadowBufferSize = 512.f;
+float GC::ShadowBufferSize = 2048.f;
