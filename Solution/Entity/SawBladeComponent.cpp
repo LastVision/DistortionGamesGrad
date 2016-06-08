@@ -106,12 +106,6 @@ void SawBladeComponent::SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& so
 		myStartPosition = myEntity.GetOrientation().GetPos();
 		myTotalCurrentLength = CU::Length(myStartPosition - myPositions[0]);
 	}
-
-	if (myPatrolSpeed > 0.f)
-	{
-		PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Patrol", &myEntity));
-	}
-
 }
 
 CU::Vector3f SawBladeComponent::GetParticlePos() const
