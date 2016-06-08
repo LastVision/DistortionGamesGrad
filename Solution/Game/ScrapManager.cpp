@@ -71,6 +71,12 @@ void ScrapManager::Update(float aDeltaTime)
 		HeadPart& head = *myLiveHeads[i];
 		head.myTimer += aDeltaTime;
 		head.myEntity->Update(aDeltaTime);
+
+		if (head.myEntity->IsScrapSpawnedThisFrame() == true)
+		{
+			head.myEntity->SetScrapSpawnedThisFrame(false);
+		}
+
 		if (head.myHat != nullptr)
 		{
 			head.myHat->Update(head.myEntity->GetOrientation(), head.myJoint, aDeltaTime);
@@ -94,6 +100,11 @@ void ScrapManager::Update(float aDeltaTime)
 		myLiveBodies[i]->myTimer += aDeltaTime;
 		myLiveBodies[i]->myEntity->Update(aDeltaTime);
 
+		if (myLiveBodies[i]->myEntity->IsScrapSpawnedThisFrame() == true)
+		{
+			myLiveBodies[i]->myEntity->SetScrapSpawnedThisFrame(false);
+		}
+
 		if (myLiveBodies[i]->myTimer >= myLiveBodies[i]->myMaxTime)
 		{
 			myLiveBodies[i]->myEntity->RemoveFromScene();
@@ -106,6 +117,11 @@ void ScrapManager::Update(float aDeltaTime)
 	{
 		myLiveLegs[i]->myTimer += aDeltaTime;
 		myLiveLegs[i]->myEntity->Update(aDeltaTime);
+
+		if (myLiveLegs[i]->myEntity->IsScrapSpawnedThisFrame() == true)
+		{
+			myLiveLegs[i]->myEntity->SetScrapSpawnedThisFrame(false);
+		}
 
 		if (myLiveLegs[i]->myTimer >= myLiveLegs[i]->myMaxTime)
 		{
@@ -122,6 +138,13 @@ void ScrapManager::Update(float aDeltaTime)
 		gib.myScrew->Update(aDeltaTime);
 		gib.myScrewNut->Update(aDeltaTime);
 		gib.mySpring->Update(aDeltaTime);
+
+		if (gib.myScrew->IsScrapSpawnedThisFrame() == true)
+		{
+			gib.myScrew->SetScrapSpawnedThisFrame(false);
+			gib.myScrewNut->SetScrapSpawnedThisFrame(false);
+			gib.mySpring->SetScrapSpawnedThisFrame(false);
+		}
 
 		if (gib.myTimer >= gib.myMaxTime)
 		{
@@ -170,7 +193,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
 		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-
+		toAdd->myEntity->SetScrapSpawnedThisFrame(true);
 
 		++myHeadIndex;
 		break;
@@ -199,7 +222,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
 		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-
+		toAdd->myEntity->SetScrapSpawnedThisFrame(true);
 
 		++myBodyIndex;
 		break;
@@ -228,7 +251,7 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		CU::Vector3<float> dir(aVelocity.x, aVelocity.y, 0.f);
 		CU::Normalize(dir);
 		toAdd->myEntity->GetComponent<PhysicsComponent>()->AddForce(dir, 10.f);
-
+		toAdd->myEntity->SetScrapSpawnedThisFrame(true);
 
 		++myLegIndex;
 		break;
@@ -276,9 +299,9 @@ void ScrapManager::SpawnScrap(eScrapPart aPart, const CU::Vector3<float>& aPosit
 		toAdd->myScrew->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
 		toAdd->myScrewNut->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
 		toAdd->mySpring->GetComponent<PhysicsComponent>()->AddForce(dir, 0.f);
-
-
-
+		toAdd->myScrew->SetScrapSpawnedThisFrame(true);
+		toAdd->myScrewNut->SetScrapSpawnedThisFrame(true);
+		toAdd->mySpring->SetScrapSpawnedThisFrame(true);
 		++myGibIndex;
 		break;
 	}

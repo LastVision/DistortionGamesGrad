@@ -70,6 +70,9 @@ public:
 	bool IsStomperMoving() const;
 	void SetStomperMoving(bool aIsMoving);
 
+	bool IsScrapSpawnedThisFrame() const;
+	void SetScrapSpawnedThisFrame(bool aIsSpawnedThisFrame);
+
 private:
 	void operator=(Entity&) = delete;
 
@@ -83,6 +86,7 @@ private:
 	bool myIsInScene;
 	bool myShouldBeRemoved;
 	bool myIsStomperMoving;
+	bool myScrapSpawnedThisFrame;
 
 	std::string mySubType;
 
@@ -241,4 +245,14 @@ inline bool Entity::IsStomperMoving() const
 inline void Entity::SetStomperMoving(bool aIsMoving)
 {
 	myIsStomperMoving = aIsMoving;
+}
+
+inline bool Entity::IsScrapSpawnedThisFrame() const
+{
+	return myScrapSpawnedThisFrame;
+}
+
+inline void Entity::SetScrapSpawnedThisFrame(bool aIsSpawnedThisFrame)
+{
+	myScrapSpawnedThisFrame = aIsSpawnedThisFrame;
 }
