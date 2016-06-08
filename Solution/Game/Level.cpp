@@ -466,6 +466,9 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 				KillPlayer(first);
 				second->SetShouldBeRemoved(true);
+				CU::Vector3f dir = aContactNormal;
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, -dir, true));
 			}
 			break;
 		case eEntityType::GOAL_POINT:
