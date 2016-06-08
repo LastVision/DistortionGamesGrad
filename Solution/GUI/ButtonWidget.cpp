@@ -343,6 +343,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::RETURN_TO_GAME);
 		}
+		else if (clickEvent == "returnToMenu")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::RETURN_TO_MENU);
+		}
 		else if (clickEvent == "enable_offline")
 		{
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);

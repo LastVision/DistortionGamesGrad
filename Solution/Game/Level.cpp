@@ -40,6 +40,7 @@
 #include <ScrapMessage.h>
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
+#include <SoundComponent.h>
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
@@ -73,6 +74,13 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, mySpotLights(16)
 	, myShouldRenderCountDown(true)
 	, myShouldFinishLevel(false)
+	, myPressToStartSprite(nullptr)
+	, myPlayerDeathInfos(8)
+	, myPressToStartAlpha(1.f)
+	, myPressToStartIsFading(true)
+	, myShortestTimeSincePlayerDeath(0.f)
+	, myTimeBeforeRenderingPressToStart(4.f)
+	, myTimeBeforeRemovingPressToStartForPlayer(8.f)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -101,7 +109,8 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 
 	PollingStation::Create();
 
-
+	myPressToStartSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start.dds"
+		, { 512.f, 512.f }, { 256.f, 256.f });
 }
 
 Level::~Level()
@@ -115,12 +124,17 @@ Level::~Level()
 	{
 		SAFE_DELETE(myScrapManagers[i]);
 	}
+	for (int i = 0; i < myPlayerDeathInfos.Size(); ++i)
+	{
+		SAFE_DELETE(myPlayerDeathInfos[i].myJoinGameSprite);
+	}
 	SAFE_DELETE(myShadowLight);
 	SAFE_DELETE(mySmartCamera);
 	SAFE_DELETE(myScene);
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
 	SAFE_DELETE(myScoreInfo);
+	SAFE_DELETE(myPressToStartSprite);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
@@ -257,6 +271,9 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		entity->Update(aDeltaTime);
 	}
 
+	float shortestTime = 1000.f;
+	bool playerIsActive = false;
+
 	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
 		Entity* player = myPlayers[i];
@@ -265,6 +282,36 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		Prism::PointLight* light = myPlayerPointLights[i];
 		light->SetPosition(player->GetOrientation().GetPos());
 		light->Update();
+
+		DeathInfo& info = myPlayerDeathInfos[i];
+
+		if (player->GetComponent<PlayerComponent>()->GetIsAlive() == true)
+		{
+			info.myHasBeenActive = true;
+			info.myShouldRender = false;
+			info.myTimeSincePlayerDeath = 0.f;
+		}
+		else
+		{
+			if (info.myHasBeenActive == true)
+			{
+				info.myTimeSincePlayerDeath += aDeltaTime;
+				if (info.myTimeSincePlayerDeath >= myTimeBeforeRemovingPressToStartForPlayer + myTimeBeforeRenderingPressToStart)
+				{
+					info.myHasBeenActive = false;
+				}
+				else if (info.myTimeSincePlayerDeath >= myTimeBeforeRenderingPressToStart)
+				{
+					info.myShouldRender = true;
+				}
+				playerIsActive = true;
+				myShortestTimeSincePlayerDeath = fmin(info.myTimeSincePlayerDeath, shortestTime);
+			}
+		}
+	}
+	if (playerIsActive == false)
+	{
+		myShortestTimeSincePlayerDeath += aDeltaTime;
 	}
 
 	if (myPlayerWinCount >= 1)
@@ -289,6 +336,25 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		FinishLevel();
 	}
 
+	if (myPressToStartIsFading == true)
+	{
+		myPressToStartAlpha -= aDeltaTime;
+		if (myPressToStartAlpha <= 0.f)
+		{
+			myPressToStartAlpha = 0.f;
+			myPressToStartIsFading = false;
+		}
+	}
+	else
+	{
+		myPressToStartAlpha += aDeltaTime;
+		if (myPressToStartAlpha >= 1.f)
+		{
+			myPressToStartAlpha = 1.f;
+			myPressToStartIsFading = true;
+		}
+	}
+
 	return myStateStatus;
 }
 
@@ -311,8 +377,10 @@ void Level::Render()
 		myFullscreenRenderer->DebugRender(myDeferredRenderer->GetGBuffer());
 	}
 
-	for each(Entity* player in myPlayers)
+	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
+		Entity* player = myPlayers[i];
+
 		if (player->GetComponent<MovementComponent>() != nullptr)
 		{
 			player->GetComponent<MovementComponent>()->Render();
@@ -324,6 +392,32 @@ void Level::Render()
 		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
+
+//#ifndef _DEBUG
+	if (myPlayerWinCount == 0)
+	{
+		if (PollingStation::GetInstance()->GetPlayersAlive() == 0)
+		{
+			if (myShortestTimeSincePlayerDeath >= myTimeBeforeRenderingPressToStart)
+			{
+				myPressToStartSprite->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+			}
+		}
+		else
+		{
+			for (int i = 0; i < myPlayerDeathInfos.Size(); i++)
+			{
+				DeathInfo& info = myPlayerDeathInfos[i];
+				if (info.myShouldRender == true && info.myHasBeenActive == true)
+				{
+					info.myJoinGameSprite->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
+						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				}
+			}
+		}
+	}
+//#endif
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)
@@ -403,6 +497,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), true, -dir, true));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), true, -dir, true));
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Sawed", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 
 			}
 			break;
@@ -461,8 +556,12 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::ACID_DROP:
 			if (aHasEntered == true)
 			{
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 				KillPlayer(first);
 				second->SetShouldBeRemoved(true);
+				CU::Vector3f dir = aContactNormal;
+				CU::Normalize(dir);
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, -dir, true));
 			}
 			break;
 		case eEntityType::GOAL_POINT:
@@ -515,6 +614,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
 		{
 			first->SetShouldBeRemoved(true);
+
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", first->GetComponent<SoundComponent>()->GetAudioSFXID());
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
@@ -559,7 +660,14 @@ void Level::CreatePlayers()
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
 		myScene->AddLight(light);
+
+		myPlayerDeathInfos.Add(DeathInfo());
 	}
+
+	myPlayerDeathInfos[0].myJoinGameSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one.dds"
+		, { 256.f, 256.f }, { 128.f, 128.f });
+	myPlayerDeathInfos[1].myJoinGameSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two.dds"
+		, { 256.f, 256.f }, { 128.f, 128.f });
 
 	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
 

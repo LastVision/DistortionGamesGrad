@@ -317,7 +317,7 @@ namespace GUI
 		}
 	}
 
-	void GUIManager::ReceiveMessage(const UnhoverControllerMessage& aMessage)
+	void GUIManager::ReceiveMessage(const UnhoverControllerMessage&)
 	{
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 		myControllerButtonIndexX = 0;

@@ -35,6 +35,7 @@ public:
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 	void ReceiveMessage(const NightmareIsLockedMessage& aMessage) override;
+	void ReceiveMessage(const ReturnToMainMenuMessage& aMessage) override;
 
 private:
 

@@ -174,7 +174,7 @@ namespace CU
 		return toReturn;
 	}
 
-	const float SQLWrapper::RetriveLocalHighscore(const int aLevelID, const float aScore)
+	const float SQLWrapper::RetriveLocalHighscore(const int aLevelID, const float)
 	{
 		float toReturn = 0.f;
 		std::fstream file;
@@ -202,59 +202,6 @@ namespace CU
 		return toReturn;
 	}
 
-	/*CU::GrowingArray<Highscore> SQLWrapper::RetriveLocalHighcore(const int aLevelID, const float aScore)
-	{
-		CU::GrowingArray<Highscore> toReturn(11);
-		CU::GrowingArray<Highscore> unsortedHighscore(11);
-		std::fstream file(CU::GetMyDocumentFolderPath() + "/Data/HS_Level" + std::to_string(aLevelID) + ".bin",
-			std::ios::binary | std::ios::in);
-		bool isEndOfFile = false;
-		int rows = 0;
-		while (isEndOfFile == false)
-		{
-			Highscore score;
-			if (file.eof())
-			{
-				isEndOfFile = true;
-				break;
-			}
-
-			file >> score.myName >> score.myScore >> score.myLevelID;
-			rows++;
-			unsortedHighscore.Add(score);
-			if (rows >= 10)
-			{
-				break;
-			}
-		}
-		file.close();
-		int rank = 1;
-		while (unsortedHighscore.Size() > 0)
-		{
-			Highscore bestScore;
-			bestScore.myScore = 1000000.f;
-			for each(Highscore unscore in unsortedHighscore)
-			{
-				if (bestScore.myScore >= unscore.myScore)
-				{
-					bestScore = unscore;
-				}
-			}
-			bestScore.myRank = rank;
-			unsortedHighscore.RemoveCyclic(bestScore);
-			if (rank <= 10)
-			{
-				toReturn.Add(bestScore);
-			}
-			else if (bestScore.myScore == aScore)
-			{
-				toReturn.Add(bestScore);
-			}
-			rank++;
-		}
-		return toReturn;
-	}*/
-
 	bool SQLWrapper::GetIsOnline()
 	{
 		myIsOnline = false;
@@ -278,7 +225,6 @@ namespace CU
 		{
 			int num_fields = mysql_num_fields(myResult);
 			MYSQL_ROW row;
-			int num_rows = 0;
 			CU::GrowingArray<int> toRemove(32);
 			while ((row = mysql_fetch_row(myResult)))
 			{

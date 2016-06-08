@@ -82,7 +82,8 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	myText = Prism::ModelLoader::GetInstance()->LoadText(Prism::Engine::GetInstance()->GetFont(Prism::eFont::CONSOLE));
 	myText->SetPosition(CU::Vector2<float>(800.f, 800.f));
 
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK | eMessageType::RETURN_TO_MENU);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::LEVEL_FINISHED | eMessageType::ON_CLICK 
+		| eMessageType::RETURN_TO_MENU | eMessageType::RETURN_TO_MAIN_MENU);
 
 	myNextLevel = 1;
 	myController->SetIsInMenu(false);
@@ -203,6 +204,11 @@ void InGameState::ReceiveMessage(const OnClickMessage& aMessage)
 }
 
 void InGameState::ReceiveMessage(const ReturnToMenuMessage&)
+{
+	myStateStatus = eStateStatus::ePopMainState;
+}
+
+void InGameState::ReceiveMessage(const ReturnToMainMenuMessage&)
 {
 	myStateStatus = eStateStatus::ePopMainState;
 }

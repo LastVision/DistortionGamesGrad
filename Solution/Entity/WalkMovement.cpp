@@ -195,8 +195,8 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 void WalkMovement::HandleContact()
 {
 	myHasContact = false;
-	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
-	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> leftOrigin(myOrientation.GetPos().x - GC::PlayerRadius * 0.5f, myOrientation.GetPos().y, 0.f);
+	CU::Vector3<float> rightOrigin(myOrientation.GetPos().x + GC::PlayerRadius * 0.5f, myOrientation.GetPos().y, 0.f);
 	CU::Vector3<float> centerPosition(myOrientation.GetPos());
 
 	CU::Vector3<float> down(0.f, -1.f, 0.f);

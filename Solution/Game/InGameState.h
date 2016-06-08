@@ -49,6 +49,7 @@ public:
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 	void ReceiveMessage(const ReturnToMenuMessage& aMessage) override;
+	void ReceiveMessage(const ReturnToMainMenuMessage& aMessage) override;
 
 private:
 	GUI::GUIManager* myGUIManager;

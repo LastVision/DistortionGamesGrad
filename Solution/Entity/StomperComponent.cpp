@@ -1,9 +1,12 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "EntityFactory.h"
+#include <EmitterMessage.h>
 #include "PhysicsComponent.h"
 #include "StomperComponent.h"
 #include <PostMaster.h>
-#include <EmitterMessage.h>
+#include "SoundComponent.h"
 
 StomperComponent::StomperComponent(Entity& anEntity, Prism::Scene* aScene, const CU::Vector3<float>& aRotation)
 	: Component(anEntity)
@@ -68,14 +71,14 @@ void StomperComponent::Update(float aDeltaTime)
 						CU::Vector3f newPos = myStomperMaxPosition;
 						if (myEntity.GetOrientation().GetUp().y < 0)
 						{
-							newPos.y -= 1.35;
+							newPos.y -= 1.35f;
 						}
 						else
 						{
-							newPos.y += 1.35;
+							newPos.y += 1.35f;
 						}
 						PostMaster::GetInstance()->SendMessage(EmitterMessage("Stomper_Poof", newPos));
-
+						Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_StomperDown", myEntity.GetComponent<SoundComponent>()->GetAudioSFXID());
 					}
 				}
 			}

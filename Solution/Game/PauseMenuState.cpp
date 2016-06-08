@@ -10,6 +10,7 @@
 #include "OptionState.h"
 #include "PauseMenuState.h"
 #include <PostMaster.h>
+#include <ReturnToMainMenuMessage.h>
 
 PauseMenuState::PauseMenuState()
 {
@@ -108,6 +109,10 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::OPTIONS:
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new OptionState());
+		break;
+	case eOnClickEvent::RETURN_TO_MENU:
+		PostMaster::GetInstance()->SendMessage(ReturnToMainMenuMessage());
+		myStateStatus = eStateStatus::ePopMainState;
 		break;
 	}
 }

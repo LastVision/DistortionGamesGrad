@@ -13,6 +13,7 @@
 #include "WalkMovement.h"
 #include <PostMaster.h>
 #include <EmitterMessage.h>
+#include "PlayerGraphicsComponent.h"
 
 MovementComponent::MovementComponent(Entity& aEntity, const MovementComponentData& aData, CU::Matrix44f& anOrientation, Prism::Scene* aScene)
 	: Component(aEntity)
@@ -133,6 +134,10 @@ void MovementComponent::Impulse()
 		if (soundComp != nullptr)
 		{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Impulse", soundComp->GetAudioSFXID());
+				if (myEntity.GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+				{
+					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_ImpulseVoice", soundComp->GetAudioSFXID());
+				}
 		}
 	}
 }
