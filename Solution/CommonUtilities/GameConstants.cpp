@@ -9,6 +9,7 @@ int GC::SHNodeSize = 4;
 
 bool GC::EnableCheapAmbient = false;
 bool GC::EnableVSync = true;
+bool GC::UseLowModels = true;
 
 int GC::Difficulty = 10;
 
@@ -57,4 +58,4 @@ bool GC::FirstTimeScoreSubmit = false;
 
 int GC::DebugRenderTexture = 0;
 
-float GC::ShadowBufferSize = 512.f;
+float GC::ShadowBufferSize = 2048.f;

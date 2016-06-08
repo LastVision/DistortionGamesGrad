@@ -58,23 +58,34 @@ namespace Prism
 				model->myScales.RemoveAll();
 			}
 		}
+	}
 
+
+	void InstancingHelper::DebugPrint()
+	{
 		DEBUG_PRINT(myDrawCalls);
 		myDrawCalls = 0;
 
 		DEBUG_PRINT(myRenderedCount);
 		myRenderedCount = 0;
+
+		DEBUG_PRINT(myIndexCount);
+		myIndexCount = 0;
+
+		DEBUG_PRINT(myOver10kCount);
+		myOver10kCount = 0;
 	}
 
 	void InstancingHelper::RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth)
 	{
-		if (aModel->SetGPUState(aModel->myMatrices, aModel->myScales))
+		if (aModel->SetGPUState(aModel->myMatrices, aModel->myScales, myOver10kCount, myIndexCount))
 		{
 			D3DX11_TECHNIQUE_DESC techDesc;
 			ID3DX11EffectTechnique* tech;
 
 			myRenderedCount += aModel->myMatrices.Size();
 			++myDrawCalls;
+			
 			if (aIsOnlyDepth == true)
 			{
 				tech = aEffect->GetTechnique(aModel->GetTechniqueNameDepthOnly());

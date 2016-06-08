@@ -174,7 +174,7 @@ bool Game::Update()
 
 	for (int i = 0; i < myFrameTimes.Size(); ++i)
 	{
-		DEBUG_PRINT(myFrameTimes[i]);
+		//DEBUG_PRINT(myFrameTimes[i]);
 	}
 	
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_R))

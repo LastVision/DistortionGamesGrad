@@ -51,12 +51,13 @@ private:
 template<typename Message>
 void PostMaster::SendMessage(const Message& aMessage)
 {
+	;
 	for each (const SubscriberInfo& info in mySubscribers)
 	{
 		if ((info.myFlag & aMessage.myMessageType) > 0)
 		{
 #ifdef _DEBUG
-			if (info.mySubscribers.Size() == 0
+			if (info.mySubscribers.Size() == 0 && aMessage.myMessageType != eMessageType::SOUND
 				//&& aMessage.myMessageType != eMessageType::RESIZE
 				)
 			{

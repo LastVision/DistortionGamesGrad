@@ -109,9 +109,6 @@ namespace Prism
 		{
 			DecalInfo& decal = myOilDecals[i];
 			decal.myTextures->myTexture->Resize(aWidth, aHeight);
-			decal.myTextures->myNormalMap->Resize(aWidth, aHeight);
-			decal.myTextures->myMetalness->Resize(aWidth, aHeight);
-			decal.myTextures->myRoughness->Resize(aWidth, aHeight);
 			decal.myTextures->myEmissive->Resize(aWidth, aHeight);
 		}
 
@@ -119,9 +116,6 @@ namespace Prism
 		{
 			DecalInfo& decal = myLavaDecals[i];
 			decal.myTextures->myTexture->Resize(aWidth, aHeight);
-			decal.myTextures->myNormalMap->Resize(aWidth, aHeight);
-			decal.myTextures->myMetalness->Resize(aWidth, aHeight);
-			decal.myTextures->myRoughness->Resize(aWidth, aHeight);
 			decal.myTextures->myEmissive->Resize(aWidth, aHeight);
 		}
 	}
@@ -179,20 +173,6 @@ namespace Prism
 		DecalTextures textures;
 		textures.myTexture = TextureContainer::GetInstance()->GetTexture(albedo);
 		textures.myEmissive = TextureContainer::GetInstance()->GetTexture(emissive);
-
-#ifdef PBL_DECALS
-		std::string normal;
-		std::string metalness;
-		std::string roughness;
-
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Normal"), "path", normal);
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Metalness"), "path", metalness);
-		aReader.ForceReadAttribute(aReader.ForceFindFirstChild(aElement, "Roughness"), "path", roughness);
-
-		textures.myNormalMap = TextureContainer::GetInstance()->GetTexture(normal);
-		textures.myMetalness = TextureContainer::GetInstance()->GetTexture(metalness);
-		textures.myRoughness = TextureContainer::GetInstance()->GetTexture(roughness);
-#endif
 
 		return textures;
 	}
@@ -281,30 +261,14 @@ namespace Prism
 	void DecalPass::SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy)
 	{
 		aGBufferCopy->Copy(*aGBuffer);
-#ifdef PBL_DECALS
-		aGBuffer->SetAsRenderTarget(Engine::GetInstance()->GetDepthView());
-
-		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
-		myGNormal->SetResource(aGBufferCopy->myNormalTexture->GetShaderView());
-		myGDepth->SetResource(aGBufferCopy->myDepthTexture->GetShaderView());
-		myGEmissive->SetResource(aGBufferCopy->myEmissiveTexture->GetShaderView());
-
-#else
 		aGBuffer->SetAlbedoAsRenderTarget(Engine::GetInstance()->GetDepthView());
 		myGAlbedo->SetResource(aGBufferCopy->myAlbedoTexture->GetShaderView());
-#endif
 	}
 
 	void DecalPass::SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal)
 	{
 		myAlbedo->SetResource(aDecal.myTextures->myTexture->GetShaderView());
 		myEmissive->SetResource(aDecal.myTextures->myEmissive->GetShaderView());
-
-#ifdef PBL_DECALS
-		myMetalness->SetResource(aDecal.myTextures->myMetalness->GetShaderView());
-		myRoughness->SetResource(aDecal.myTextures->myRoughness->GetShaderView());
-		myNormal->SetResource(aDecal.myTextures->myNormalMap->GetShaderView());
-#endif
 
 		float alpha = min(1.f, aDecal.myTime);
 		if (alpha < 1.f)

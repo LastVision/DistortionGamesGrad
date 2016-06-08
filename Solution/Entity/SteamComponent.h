@@ -1,12 +1,13 @@
 #pragma once
 #include "Component.h"
+#include <Subscriber.h>
 
 namespace Prism
 {
 	class Scene;
 }
 
-class SteamComponent : public Component
+class SteamComponent : public Component, public Subscriber
 {
 public:
 	SteamComponent(Entity& anEntity);
@@ -21,6 +22,8 @@ public:
 
 	float GetForce() const;
 	void SetForce(float aForce);
+
+	void ReceiveMessage(const SoundMessage& aMessage) override;
 
 private:
 

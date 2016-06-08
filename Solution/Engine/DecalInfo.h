@@ -10,9 +10,6 @@ namespace Prism
 	{
 		Texture* myTexture;
 		Texture* myEmissive;
-		Texture* myMetalness;
-		Texture* myRoughness;
-		Texture* myNormalMap;
 	};
 
 	struct DecalInfo

@@ -169,6 +169,8 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 
+	myScene->SortInstances();
+
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -246,6 +248,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
 		return eStateStatus::ePopMainState;*/
+
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new PauseMenuState());
 	}
@@ -366,6 +369,7 @@ void Level::Render()
 	}
 
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
+	myScene->DebugPrint();
 
 	if (GC::DebugRenderTexture == 0)
 	{

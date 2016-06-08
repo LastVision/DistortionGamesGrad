@@ -17,6 +17,7 @@ struct ReachedGoalMessage;
 struct UnhoverControllerMessage;
 struct NightmareIsLockedMessage;
 struct ReturnToMainMenuMessage;
+struct SoundMessage;
 
 class Subscriber
 {
@@ -41,5 +42,6 @@ public:
 	virtual void ReceiveMessage(const UnhoverControllerMessage& aMessage);
 	virtual void ReceiveMessage(const NightmareIsLockedMessage& aMessage);
 	virtual void ReceiveMessage(const ReturnToMainMenuMessage& aMessage);
+	virtual void ReceiveMessage(const SoundMessage& aMessage);
 };
 

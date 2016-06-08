@@ -91,12 +91,11 @@ namespace Prism
 				//EvaluateEffectTechnique(false);
 				myTechniqueName = "Render";
 
-#ifndef PBL_DECALS
 				if (myEffect->GetFileName().find("decal") != std::string::npos)
 				{
 					myTechniqueName += "_NO_PBL";
 				}
-#endif
+
 				InitInputLayout(vertexDesc, size-6, "Model::InputLayout");
 			}
 			delete[] vertexDesc;
@@ -345,7 +344,7 @@ namespace Prism
 	}
 
 	bool Model::SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices
-		, const CU::GrowingArray<CU::Vector3<float>>& someScales)
+		, const CU::GrowingArray<CU::Vector3<float>>& someScales, int& aOver10kCount, int& aIndexCount)
 	{
 		DL_ASSERT_EXP(mySurfaces.Size() < 2, "We do not support several surfaces yet");
 
@@ -357,8 +356,11 @@ namespace Prism
 		{
 			if (mySurfaces[0]->GetIndexCount() > 10000)
 			{
-				//return false;
+				aOver10kCount += someWorldMatrices.Size();
 			}
+
+			aIndexCount += mySurfaces[0]->GetIndexCount();
+
 
 			DL_ASSERT_EXP(someWorldMatrices.Size() <= myMaxInstances, myToManyInstancesError);
 
