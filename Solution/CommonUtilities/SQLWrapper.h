@@ -29,6 +29,7 @@ namespace CU
 
 		MYSQL_RES* ExecuteQuery(const char* aQuery);
 		void WriteHighscore(const std::string& aUsername, float aTime, int aLevelID);
+		void WriteDeaths(const int aLevelID, const int aNumberOfDeaths);
 
 		CU::GrowingArray<Highscore> RetriveOnlineHighcore(const int aLevelID, const float aScore = 0);
 		//CU::GrowingArray<Highscore> RetriveLocalHighcore(const int aLevelID, const float aScore = 0);
