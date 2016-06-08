@@ -83,12 +83,6 @@ namespace Prism
 	void GBufferData::Copy(const GBufferData& aSource)
 	{
 		Engine::GetInstance()->GetContex()->CopyResource(myAlbedoTexture->GetTexture(), aSource.myAlbedoTexture->GetTexture());
-
-#ifdef PBL_DECALS
-		Engine::GetInstance()->GetContex()->CopyResource(myEmissiveTexture->GetTexture(), aSource.myEmissiveTexture->GetTexture());
-		Engine::GetInstance()->GetContex()->CopyResource(myNormalTexture->GetTexture(), aSource.myNormalTexture->GetTexture());
-		Engine::GetInstance()->GetContex()->CopyResource(myDepthTexture->GetTexture(), aSource.myDepthTexture->GetTexture());
-#endif
 	}
 
 }
