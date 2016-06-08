@@ -36,7 +36,8 @@ namespace Prism
 		void UpdateDecals(CU::GrowingArray<DecalInfo>& someDecals, float aDelta);
 		void RenderDecals(const CU::GrowingArray<DecalInfo>& someDecals, Effect* aEffect
 			, GBufferData* aGBuffer, GBufferData* aGBufferCopy, const Camera& aCamera);
-		CU::Matrix44<float> CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection);
+		CU::Matrix44<float> CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection
+			, float aRotation);
 		void SetGBufferData(GBufferData* aGBuffer, GBufferData* aGBufferCopy);
 		void SetDecalVariables(Effect* aEffect, const DecalInfo& aDecal);
 		void SetShaderVariables(Effect* aEffect, const CU::Vector3<float>& aDirection);
