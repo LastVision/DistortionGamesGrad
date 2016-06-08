@@ -27,6 +27,8 @@ public:
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 
+	void HandleControllerInSelection(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor);
+
 
 private:
 	GUI::GUIManager* myGUIManager;
