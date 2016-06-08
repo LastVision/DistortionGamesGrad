@@ -77,5 +77,8 @@
     <ClInclude Include="NightmareIsLockedMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="ReturnToMainMenuMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
