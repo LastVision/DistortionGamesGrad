@@ -615,7 +615,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		{
 			first->SetShouldBeRemoved(true);
 
-			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", second->GetComponent<SoundComponent>()->GetAudioSFXID());
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", first->GetComponent<SoundComponent>()->GetAudioSFXID());
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
