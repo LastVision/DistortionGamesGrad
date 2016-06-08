@@ -141,7 +141,7 @@ void PlayerComponent::ReceiveNote(const ReachedGoalNote& aMessage)
 {
 }
 
-void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>& aDirection
+void PlayerComponent::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<float>&
 	, const CU::Vector3<float>& aHitPosition, const CU::Vector3<float>& aHitNormal)
 {
 	if (aComponent != nullptr)

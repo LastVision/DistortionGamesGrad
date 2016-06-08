@@ -173,6 +173,7 @@
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="ReachedGoalMessage.h" />
     <ClInclude Include="ResizeMessage.h" />
+    <ClInclude Include="ReturnToMainMenuMessage.h" />
     <ClInclude Include="ReturnToMenuMessage.h" />
     <ClInclude Include="ScrapMessage.h" />
     <ClInclude Include="stdafx.h" />

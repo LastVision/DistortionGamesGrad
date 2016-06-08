@@ -60,11 +60,8 @@ namespace GUI
 			myIncreaseButton->SetEvent(new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_VOLUME));
 			myType = eVolumeType::VOLUME;
 			int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetSFXVolume();
-			if (currentVolume != myValue)
-			{
-				myValue = currentVolume;
-				myText = myTextValue + ": " + std::to_string(myValue);
-			}
+			myValue = currentVolume;
+			myText = myTextValue + ": " + std::to_string(myValue);
 		}
 		else if (buttonEventType == "music")
 		{
@@ -72,11 +69,8 @@ namespace GUI
 			myIncreaseButton->SetEvent(new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_MUSIC));
 			myType = eVolumeType::MUSIC;
 			int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetMusicVolume();
-			if (currentVolume != myValue)
-			{
-				myValue = currentVolume;
-				myText = myTextValue + ": " + std::to_string(myValue);
-			}
+			myValue = currentVolume;
+			myText = myTextValue + ": " + std::to_string(myValue);
 		}
 		else if (buttonEventType == "voice")
 		{
@@ -84,11 +78,8 @@ namespace GUI
 			myIncreaseButton->SetEvent(new OnClickMessage(eOnClickEvent::OPTIONS_INCREASE_VOICE));
 			myType = eVolumeType::VOICE;
 			int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetVoiceVolume();
-			if (currentVolume != myValue)
-			{
-				myValue = currentVolume;
-				myText = myTextValue + ": " + std::to_string(myValue);
-			}
+			myValue = currentVolume;
+			myText = myTextValue + ": " + std::to_string(myValue);
 		}
 
 		PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
@@ -124,11 +115,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("IncreaseVolume", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetSFXVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		case eOnClickEvent::OPTIONS_DECREASE_VOLUME:
@@ -136,11 +124,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("LowerVolume", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetSFXVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		case eOnClickEvent::OPTIONS_INCREASE_VOICE:
@@ -148,11 +133,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("IncreaseVoice", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetVoiceVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		case eOnClickEvent::OPTIONS_DECREASE_VOICE:
@@ -160,11 +142,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("LowerVoice", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetVoiceVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		case eOnClickEvent::OPTIONS_INCREASE_MUSIC:
@@ -172,11 +151,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("IncreaseMusic", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetMusicVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		case eOnClickEvent::OPTIONS_DECREASE_MUSIC:
@@ -184,11 +160,8 @@ namespace GUI
 			{
 				Prism::Audio::AudioInterface::GetInstance()->PostEvent("LowerMusic", 0);
 				int currentVolume = Prism::Audio::AudioInterface::GetInstance()->GetMusicVolume();
-				if (currentVolume != myValue)
-				{
-					myValue = currentVolume;
-					myText = myTextValue + ": " + std::to_string(myValue);
-				}
+				myValue = currentVolume;
+				myText = myTextValue + ": " + std::to_string(myValue);
 			}
 			break;
 		default:

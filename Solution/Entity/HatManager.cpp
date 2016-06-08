@@ -82,7 +82,7 @@ void HatManager::LoadHats()
 		myPlayersCurrentHat.Add(playerOneHat);
 		myPlayersCurrentHat.Add(playerTwoHat);
 
-		for (int i = 0; i < myHats.size(); ++i)
+		for (unsigned int i = 0; i < myHats.size(); ++i)
 		{
 			int hasUnlocked;
 			file >> hasUnlocked;

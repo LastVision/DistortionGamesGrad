@@ -55,7 +55,7 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 
 	myCursor->SetShouldRender(true);
 	InitControllerInMenu(myController, myGUIManager, myCursor);
-	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK | eMessageType::NIGHTMARE_IS_LOCKED);
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK | eMessageType::NIGHTMARE_IS_LOCKED | eMessageType::RETURN_TO_MAIN_MENU);
 
 	myController->SetIsInMenu(true);
 
@@ -194,11 +194,16 @@ void LevelSelectState::ReceiveMessage(const OnClickMessage& aMessage)
 	}
 }
 
-void LevelSelectState::ReceiveMessage(const NightmareIsLockedMessage& aMessage)
+void LevelSelectState::ReceiveMessage(const NightmareIsLockedMessage&)
 {
 	myRenderNightmareIsLocked = true;
 	myShowNightmareIsLockedTimer = myTimeToShowNightmareIsLocked;
 	myNightmareIsLockedScale = 1.2f;
+}
+
+void LevelSelectState::ReceiveMessage(const ReturnToMainMenuMessage&)
+{
+	myStateStatus = eStateStatus::ePopMainState;
 }
 
 CU::GrowingArray<bool> LevelSelectState::RetrieveUnlockedLevelsFromFile()
