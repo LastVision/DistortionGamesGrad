@@ -27,6 +27,8 @@ public:
 
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
 private:
+	void operator=(FirstTimeFinishLevelState&) = delete;
+
 	GUI::GUIManager* myGUIManager;
 
 	const CU::GrowingArray<const Score*>& myScores;
