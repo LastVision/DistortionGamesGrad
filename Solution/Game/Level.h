@@ -130,6 +130,8 @@ private:
 	bool myPressToStartIsFading;
 
 	float myShortestTimeSincePlayerDeath;
+	float myTimeBeforeRenderingPressToStart;
+	float myTimeBeforeRemovingPressToStartForPlayer;
 };
 
 inline Prism::Scene* Level::GetScene() const

@@ -110,6 +110,9 @@ namespace Prism
 			SetupIndexBuffer(myIndexBaseData->myNumberOfIndices, myIndexBaseData->myIndexData, "Model::IndexBuffer");
 			SetupInstancingBuffers();
 			myVertexCount = myVertexBaseData->myNumberOfVertices;
+
+			myToManyInstancesError = CU::Concatenate("Tried to instance too many instances, model: %s, max: %i"
+				, myFileName.c_str(), myMaxInstances);
 		}
 
 		for (int i = 0; i < myChildren.Size(); ++i)
@@ -352,9 +355,12 @@ namespace Prism
 		}
 		else
 		{
-			DL_ASSERT_EXP(someWorldMatrices.Size() <= myMaxInstances
-				, CU::Concatenate("Tried to instance too many instances, model: %s, count: %i, max: %i"
-				, myFileName.c_str(), someWorldMatrices.Size(), myMaxInstances));
+			if (mySurfaces[0]->GetIndexCount() > 10000)
+			{
+				//return false;
+			}
+
+			DL_ASSERT_EXP(someWorldMatrices.Size() <= myMaxInstances, myToManyInstancesError);
 
 			if (someWorldMatrices.Size() > myMaxInstances)
 			{

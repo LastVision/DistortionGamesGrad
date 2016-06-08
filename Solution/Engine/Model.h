@@ -91,6 +91,7 @@ namespace Prism
 		VertexBufferWrapper* myInstancingScaleBuffer;
 		ID3D11Buffer* myVertexBuffers[3];
 		int myMaxInstances;
+		std::string myToManyInstancesError;
 	};
 
 	inline void Model::SetFileName(const std::string& aFileName)

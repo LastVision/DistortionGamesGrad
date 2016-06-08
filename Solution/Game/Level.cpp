@@ -78,7 +78,9 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myPlayerDeathInfos(8)
 	, myPressToStartAlpha(1.f)
 	, myPressToStartIsFading(true)
-	, myShortestTimeSincePlayerDeath(100.f)
+	, myShortestTimeSincePlayerDeath(0.f)
+	, myTimeBeforeRenderingPressToStart(4.f)
+	, myTimeBeforeRemovingPressToStartForPlayer(8.f)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -270,6 +272,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	}
 
 	float shortestTime = 1000.f;
+	bool playerIsActive = false;
 
 	for (int i = 0; i < myPlayers.Size(); ++i)
 	{
@@ -293,18 +296,22 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 			if (info.myHasBeenActive == true)
 			{
 				info.myTimeSincePlayerDeath += aDeltaTime;
-				if (info.myTimeSincePlayerDeath >= 10.f)
+				if (info.myTimeSincePlayerDeath >= myTimeBeforeRemovingPressToStartForPlayer + myTimeBeforeRenderingPressToStart)
 				{
 					info.myHasBeenActive = false;
 				}
-				else if (info.myTimeSincePlayerDeath >= 3.f)
+				else if (info.myTimeSincePlayerDeath >= myTimeBeforeRenderingPressToStart)
 				{
 					info.myShouldRender = true;
 				}
-
+				playerIsActive = true;
 				myShortestTimeSincePlayerDeath = fmin(info.myTimeSincePlayerDeath, shortestTime);
 			}
 		}
+	}
+	if (playerIsActive == false)
+	{
+		myShortestTimeSincePlayerDeath += aDeltaTime;
 	}
 
 	if (myPlayerWinCount >= 1)
@@ -386,12 +393,12 @@ void Level::Render()
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 
-#ifndef _DEBUG
+//#ifndef _DEBUG
 	if (myPlayerWinCount == 0)
 	{
 		if (PollingStation::GetInstance()->GetPlayersAlive() == 0)
 		{
-			if (myShortestTimeSincePlayerDeath >= 3.f)
+			if (myShortestTimeSincePlayerDeath >= myTimeBeforeRenderingPressToStart)
 			{
 				myPressToStartSprite->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
 					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
@@ -410,7 +417,7 @@ void Level::Render()
 			}
 		}
 	}
-#endif
+//#endif
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)

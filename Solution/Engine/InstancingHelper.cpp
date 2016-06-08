@@ -39,22 +39,31 @@ namespace Prism
 
 		for each (Model* model in myModels)
 		{
-			Effect* currEffect = model->GetEffect();
-			if (currEffect != oldEffect)
+			if (model->myMatrices.Size() > 0)
 			{
-				oldEffect = currEffect;
+				Effect* currEffect = model->GetEffect();
+				if (currEffect != oldEffect)
+				{
+					oldEffect = currEffect;
 
-				currEffect->SetViewProjectionMatrix(myCamera->GetViewProjection());
-				currEffect->SetScaleVector({ 1.f, 1.f, 1.f });
-				currEffect->SetCameraPosition(myCamera->GetOrientation().GetPos());
+					currEffect->SetViewProjectionMatrix(myCamera->GetViewProjection());
+					currEffect->SetScaleVector({ 1.f, 1.f, 1.f });
+					currEffect->SetCameraPosition(myCamera->GetOrientation().GetPos());
+				}
+
+				RenderModel(model, currEffect, aIsOnlyDepth);
+
+				
+				model->myMatrices.RemoveAll();
+				model->myScales.RemoveAll();
 			}
-
-			RenderModel(model, currEffect, aIsOnlyDepth);
-
-
-			model->myMatrices.RemoveAll();
-			model->myScales.RemoveAll();
 		}
+
+		DEBUG_PRINT(myDrawCalls);
+		myDrawCalls = 0;
+
+		DEBUG_PRINT(myRenderedCount);
+		myRenderedCount = 0;
 	}
 
 	void InstancingHelper::RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth)
@@ -64,7 +73,8 @@ namespace Prism
 			D3DX11_TECHNIQUE_DESC techDesc;
 			ID3DX11EffectTechnique* tech;
 
-
+			myRenderedCount += aModel->myMatrices.Size();
+			++myDrawCalls;
 			if (aIsOnlyDepth == true)
 			{
 				tech = aEffect->GetTechnique(aModel->GetTechniqueNameDepthOnly());

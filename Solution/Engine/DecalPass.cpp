@@ -213,13 +213,19 @@ namespace Prism
 		}
 
 		int textureIndex = rand() % someTextures.Size();
+		float rotation = CU::Math::RandomRange(0.f, 6.28f);
 
 		DecalInfo info;
 		info.myPosition = aPosition;
-		info.myDirection = aDirection;
+		info.myOrientation = CalculateOrientation(aPosition, aDirection, rotation);
+		info.myOrientationForward = CalculateOrientation(aPosition, CU::Vector3<float>(0.f, 0.f, 1.f),rotation);
+		//info.myDirection = CalculateOrientation(aPosition, aDirection).GetForward();
 		info.myTextures = &someTextures[textureIndex];
 		info.myIsFading = false;
 		info.myTime = myFadeTime;
+
+		
+
 		someDecals.Add(info);
 	}
 
@@ -230,19 +236,22 @@ namespace Prism
 		{
 			SetDecalVariables(aEffect, info);
 
-			myOrientation = CalculateOrientation(info.myPosition, info.myDirection);
-			SetShaderVariables(aEffect, info.myDirection);
+			//myOrientation = CalculateOrientation(info.myPosition, info.myDirection);
+			myOrientation = info.myOrientation;
+			SetShaderVariables(aEffect, info.myOrientation.GetForward());
 			SetGBufferData(aGBuffer, aGBufferCopy);
 			myInstance->Render(aCamera);
 
-			myOrientation = CalculateOrientation(info.myPosition, CU::Vector3<float>(0.f, 0.f, 1.f));
-			SetShaderVariables(aEffect, CU::Vector3<float>(0.f, 0.f, 1.f));
+			//myOrientation = CalculateOrientation(info.myPosition, CU::Vector3<float>(0.f, 0.f, 1.f));
+			myOrientation = info.myOrientationForward;
+			SetShaderVariables(aEffect, info.myOrientationForward.GetForward());
 			SetGBufferData(aGBuffer, aGBufferCopy);
 			myInstance->Render(aCamera);
 		}
 	}
 
-	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection)
+	CU::Matrix44<float> DecalPass::CalculateOrientation(const CU::Vector3<float>& aPosition, const CU::Vector3<float>& aDirection
+		, float aRotation)
 	{
 		CU::Matrix44<float> orientation;
 
@@ -262,6 +271,8 @@ namespace Prism
 			orientation.SetRight(right);
 			orientation.SetForward(forward);
 		}
+
+		orientation = CU::Matrix44<float>::CreateRotateAroundZ(aRotation) * orientation;
 
 		orientation.SetPos(aPosition);
 		return orientation;
