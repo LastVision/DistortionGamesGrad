@@ -43,7 +43,7 @@ namespace Prism
 		void DeActivateSurfaces();
 		
 		bool SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices
-			, const CU::GrowingArray<CU::Vector3<float>>& someScales);
+			, const CU::GrowingArray<CU::Vector3<float>>& someScales, int& aOver10kCount, int& aIndexCount);
 		int GetIndexCount();
 		int GetVertexStart();
 		CU::GrowingArray<Model*>& GetChildren();

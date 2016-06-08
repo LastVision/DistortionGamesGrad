@@ -52,6 +52,16 @@ void ComponentLoader::Load(XMLReader& aDocument, tinyxml2::XMLElement* aSourceEl
 		{
 			aDocument.ForceReadAttribute(e, "modelPath", aOutputData.myModelPath);
 			aDocument.ForceReadAttribute(e, "shaderPath", aOutputData.myEffectPath);
+
+			if (GC::UseLowModels == true)
+			{
+				std::string lowResPath(aOutputData.myModelPath.begin(), aOutputData.myModelPath.end() - 4);
+				lowResPath += "_lod_01.fbx";
+				if (CU::FileExists(lowResPath))
+				{
+					aOutputData.myModelPath = lowResPath;
+				}
+			}
 		}
 		else if (elementName == CU::ToLower("AlwaysRender"))
 		{

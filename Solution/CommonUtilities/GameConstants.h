@@ -15,6 +15,7 @@ public:
 
 	static bool EnableCheapAmbient;
 	static bool EnableVSync;
+	static bool UseLowModels;
 
 	static int Difficulty;
 	static float DamageMultiplier[3];

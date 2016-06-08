@@ -9,6 +9,7 @@ int GC::SHNodeSize = 4;
 
 bool GC::EnableCheapAmbient = false;
 bool GC::EnableVSync = true;
+bool GC::UseLowModels = true;
 
 int GC::Difficulty = 10;
 

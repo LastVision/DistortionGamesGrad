@@ -96,6 +96,11 @@ namespace Prism
 		myInstancingHelper->Render(false);
 	}
 
+	void Scene::DebugPrint()
+	{
+		myInstancingHelper->DebugPrint();
+	}
+
 	void Scene::AddInstance(Instance* aInstance, bool aDynamic)
 	{
 		if (aDynamic == true)
@@ -179,6 +184,23 @@ namespace Prism
 	const CU::GrowingArray<DirectionalLight*>& Scene::GetDirectionalLights() const
 	{
 		return myDirectionalLights;
+	}
+
+	void Scene::SortInstances()
+	{
+		bool complete = false;
+		while (complete == false)
+		{
+			complete = true;
+			for (int i = 0; i < myStaticInstances.Size()-1; ++i)
+			{
+				if (myStaticInstances[i]->GetPosition().z > myStaticInstances[i + 1]->GetPosition().z)
+				{
+					std::swap(myStaticInstances[i], myStaticInstances[i + 1]);
+					complete = false;
+				}
+			}
+		}
 	}
 
 }

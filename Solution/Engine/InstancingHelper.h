@@ -29,6 +29,7 @@ namespace Prism
 			, const CU::Vector3<float>& aScale, float aHeight);
 
 		void Render(bool aIsOnlyDepth);
+		void DebugPrint();
 
 	private:
 		void RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth);
@@ -36,6 +37,8 @@ namespace Prism
 		const Camera* myCamera;
 		int myDrawCalls;
 		int myRenderedCount;
+		int myIndexCount;
+		int myOver10kCount;
 
 		ModelMap myRenderInfo;
 		CU::GrowingArray<Model*> myModels;
