@@ -252,7 +252,7 @@ namespace GUI
 					myGradientIsIncreasing = true;
 				}
 			}
-			myColor.y = myGradient;
+			myColor.x = myGradient;
 			myColor.z = myGradient;
 		}
 	}
