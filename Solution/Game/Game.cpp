@@ -140,6 +140,8 @@ bool Game::Init(HWND& aHwnd)
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));
 	GAME_LOG("Init Successful");
+
+	myFrameTimes.Init(1024);
 	return true;
 }
 
@@ -164,6 +166,21 @@ bool Game::Update()
 	DEBUG_PRINT(fps);
 	float frameTime = deltaTime * 1000;
 	DEBUG_PRINT(frameTime);
+
+	if (myFrameTimes.Size() < 10)
+	{
+		myFrameTimes.Add(frameTime);
+	}
+
+	for (int i = 0; i < myFrameTimes.Size(); ++i)
+	{
+		DEBUG_PRINT(myFrameTimes[i]);
+	}
+	
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_R))
+	{
+		myFrameTimes.RemoveAll();
+	}
 
 	if (deltaTime > 1.0f / 10.0f)
 	{
