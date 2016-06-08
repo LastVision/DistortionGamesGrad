@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include "DeathNote.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
@@ -17,6 +18,7 @@
 #include "ShouldDieNote.h"
 #include <ScrapMessage.h>
 #include <EmitterMessage.h>
+#include "SoundComponent.h"
 
 PlayerComponent::PlayerComponent(Entity& anEntity, const PlayerComponentData& aData)
 	: Component(anEntity)
@@ -77,6 +79,9 @@ void PlayerComponent::EvaluateDeath()
 		myIsAlive = false;
 		PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::BODY, myEntity.GetOrientation().GetPos()
 			, { 0.f, 0.f }, myEntity.GetComponent<InputComponent>()->GetPlayerID()));
+
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_PlayerDeath", myEntity.GetComponent<SoundComponent>()->GetAudioSFXID());
+
 		if (myEntity.GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
 		{
 			PostMaster::GetInstance()->SendMessage(ScrapMessage(eScrapPart::LEGS, myEntity.GetOrientation().GetPos()

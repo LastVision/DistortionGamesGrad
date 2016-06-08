@@ -40,6 +40,7 @@
 #include <ScrapMessage.h>
 #include <ShouldDieNote.h>
 #include "SmartCamera.h"
+#include <SoundComponent.h>
 #include <SpotLight.h>
 #include <SpotLightShadow.h>
 #include <SpriteProxy.h>
@@ -410,6 +411,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				CU::Normalize(dir);
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", first->GetOrientation().GetPos(), true, -dir, true));
 				PostMaster::GetInstance()->SendMessage(EmitterMessage("Oil", first->GetOrientation().GetPos(), true, -dir, true));
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Sawed", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 
 			}
 			break;
@@ -468,6 +470,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::ACID_DROP:
 			if (aHasEntered == true)
 			{
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 				KillPlayer(first);
 				second->SetShouldBeRemoved(true);
 				CU::Vector3f dir = aContactNormal;
@@ -525,6 +528,8 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		if (aHasEntered == true && second->GetType() != eEntityType::ACID && second->GetType() != eEntityType::ACID_DROP)
 		{
 			first->SetShouldBeRemoved(true);
+
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Acid", second->GetComponent<SoundComponent>()->GetAudioSFXID());
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
