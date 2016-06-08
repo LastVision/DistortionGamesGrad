@@ -333,6 +333,10 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::HAT_UNLOCK);
 		}
+		else if (clickEvent == "help_menu")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::HELP_MENU);
+		}
 		else if (clickEvent == "hat_quit")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::HAT_QUIT);

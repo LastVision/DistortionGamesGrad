@@ -5,6 +5,7 @@
 #include <FadeMessage.h>
 #include <GUIManager.h>
 #include "HatsSelectionState.h"
+#include "HelpMenuState.h"
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
 #include "OptionState.h"
@@ -113,6 +114,10 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::RETURN_TO_MENU:
 		PostMaster::GetInstance()->SendMessage(ReturnToMainMenuMessage());
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::HELP_MENU:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HelpMenuState());
 		break;
 	}
 }

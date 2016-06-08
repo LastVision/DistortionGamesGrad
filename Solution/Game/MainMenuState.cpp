@@ -7,6 +7,7 @@
 #include <FadeMessage.h>
 #include <GUIManager.h>
 #include "HatState.h"
+#include "HelpMenuState.h"
 #include "InGameState.h"
 #include <InputWrapper.h>
 #include "MainMenuState.h"
@@ -143,6 +144,10 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::HAT:
 		SET_RUNTIME(false);
 		myStateStack->PushMainGameState(new HatState());
+		break;
+	case eOnClickEvent::HELP_MENU:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new HelpMenuState());
 		break;
 	}
 }

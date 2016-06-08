@@ -2,12 +2,10 @@
 #include "Subscriber.h"
 #include "GameState.h"
 
-
 namespace GUI
 {
 	class GUIManager;
 }
-
 
 class CreditMenuState : public GameState, public Subscriber
 {
