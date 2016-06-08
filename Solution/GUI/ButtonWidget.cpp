@@ -422,9 +422,13 @@ namespace GUI
 		}
 	}
 
-	void ButtonWidget::SwitchGradient()
+	void ButtonWidget::SwitchGradient(bool aShouldGradient)
 	{
-		myIsGradient = true;
+		myIsGradient = aShouldGradient;
+		if (myIsGradient == false)
+		{
+			myColor = { 1.f, 1.f, 1.f, 1.f };
+		}
 	}
 
 	void ButtonWidget::Click()
