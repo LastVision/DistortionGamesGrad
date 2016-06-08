@@ -113,8 +113,20 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	}
 	else
 	{
+		//Insert random here
 		myLeftIndex = 0;
 		myMiddleIndex = 1;
+
+		if (myHats.Size() > 0)
+		{
+			myMiddleIndex = rand() % myHats.Size();
+			myLeftIndex = myMiddleIndex - 1;
+
+			if (myLeftIndex < 0)
+			{
+				myLeftIndex = myHats.Size() - 1;
+			}
+		}
 	}
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
@@ -227,7 +239,7 @@ void HatUnlockState::Render()
 	myRenderPosition = windowSize;
 	myRenderPosition.x -= 256.f;
 	myRenderPosition.x += fmod(myMoveAmount, 256.f);
-	if (myIsSpinning == true)
+	if (myHatWon == nullptr && myHats.Size() > 0)
 	{
 		myHats[myLeftIndex].mySprite->Render(myRenderPosition);
 		myRenderPosition.x += 256.f;
@@ -325,6 +337,9 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			else
 			{
 				myHasWonAllHats = true;
+				myHatWon = nullptr;
+
+				SAFE_DELETE(myHatWon);
 			}
 		}
 		break;
