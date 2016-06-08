@@ -19,6 +19,7 @@
 #include <WidgetContainer.h>
 #include <fstream>
 #include <SpriteAnimator.h>
+#include <SoundMessage.h>
 #include <SQLWrapper.h>
 #include <XMLReader.h>
 
@@ -99,6 +100,7 @@ ScoreState::~ScoreState()
 
 void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(false));
 	myStateStack = aStateStackProxy;
 	myController = aController;
 	myCursor = aCursor;
@@ -155,6 +157,8 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 void ScoreState::EndState()
 {
+
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(true));
 	myCursor->SetShouldRender(false);
 }
 

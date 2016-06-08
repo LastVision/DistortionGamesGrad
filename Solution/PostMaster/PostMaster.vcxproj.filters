@@ -80,5 +80,8 @@
     <ClInclude Include="ReturnToMainMenuMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="SoundMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

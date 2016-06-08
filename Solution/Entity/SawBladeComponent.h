@@ -1,7 +1,8 @@
 #pragma once
 #include "Component.h"
+#include <Subscriber.h>
 
-class SawBladeComponent : public Component
+class SawBladeComponent : public Component, public Subscriber
 {
 public:
 	SawBladeComponent(Entity& anEntity);
@@ -16,6 +17,8 @@ public:
 
 	void SetPatrol(const CU::GrowingArray<CU::Vector3<float>>& somePositions, float aSpeed, float aDelayBeforePatrol = 0.f);
 	CU::Vector3f GetParticlePos() const;
+
+	void ReceiveMessage(const SoundMessage& aMessage) override;
 private:
 
 	CU::GrowingArray<CU::Vector3<float>> myPositions;

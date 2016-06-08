@@ -6,6 +6,7 @@
 #include "PhysicsComponent.h"
 #include <PostMaster.h>
 #include <EmitterMessage.h>
+#include <SoundMessage.h>
 SawBladeComponent::SawBladeComponent(Entity& anEntity)
 	: Component(anEntity)
 	, myPatrolSpeed(0.f)
@@ -25,6 +26,7 @@ SawBladeComponent::~SawBladeComponent()
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Saw", soundComp->GetAudioSFXID());
 	}
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::SOUND);
 }
 
 void SawBladeComponent::Init()
@@ -34,6 +36,8 @@ void SawBladeComponent::Init()
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Saw", soundComp->GetAudioSFXID());
 	}
+
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::SOUND);
 }
 
 void SawBladeComponent::Update(float aDeltaTime)
@@ -113,4 +117,23 @@ CU::Vector3f SawBladeComponent::GetParticlePos() const
 	CU::Vector3f toReturn = myEntity.GetOrientation().GetPos();
 	toReturn.z -= 0.17f;
 	return toReturn;
+}
+
+void SawBladeComponent::ReceiveMessage(const SoundMessage& aMessage)
+{
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (aMessage.myShouldPlaySound == true)
+	{
+		if (soundComp != nullptr)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Saw", soundComp->GetAudioSFXID());
+		}
+	}
+	else
+	{
+		if (soundComp != nullptr)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Saw", soundComp->GetAudioSFXID());
+		}
+	}
 }

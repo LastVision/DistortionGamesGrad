@@ -8,6 +8,7 @@
 #include <PostMaster.h>
 #include "SoundComponent.h"
 #include "SteamVentNote.h"
+#include <SoundMessage.h>
 
 SteamComponent::SteamComponent(Entity& anEntity)
 	: Component(anEntity)
@@ -23,6 +24,7 @@ SteamComponent::SteamComponent(Entity& anEntity)
 	, myIsSmoking(false)
 	, myIsOpen(false)
 {
+	PostMaster::GetInstance()->Subscribe(this, eMessageType::SOUND);
 }
 
 SteamComponent::~SteamComponent()
@@ -33,6 +35,7 @@ SteamComponent::~SteamComponent()
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Steam", soundComp->GetAudioSFXID());
 	}
+	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::SOUND);
 }
 
 void SteamComponent::Update(float aDeltaTime)
@@ -145,4 +148,23 @@ float SteamComponent::GetForce() const
 void SteamComponent::SetForce(float aForce)
 {
 	mySteam->GetComponent<TriggerComponent>()->SetForce(aForce);
+}
+
+void SteamComponent::ReceiveMessage(const SoundMessage& aMessage)
+{
+	SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
+	if (aMessage.myShouldPlaySound == true)
+	{
+		if (soundComp != nullptr)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Steam", soundComp->GetAudioSFXID());
+		}
+	}
+	else
+	{
+		if (soundComp != nullptr)
+		{
+			Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_Steam", soundComp->GetAudioSFXID());
+		}
+	}
 }

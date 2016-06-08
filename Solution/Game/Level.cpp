@@ -246,6 +246,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
 		return eStateStatus::ePopMainState;*/
+
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new PauseMenuState());
 	}
