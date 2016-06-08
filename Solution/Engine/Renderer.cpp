@@ -28,8 +28,8 @@ namespace Prism
 		myClearColor[3] = 0.f;
 
 		myShadowViewport = new D3D11_VIEWPORT[D3D11_VIEWPORT_AND_SCISSORRECT_MAX_INDEX];
-		myShadowViewport->Height = 1024 * 2;
-		myShadowViewport->Width = 1024 * 2;
+		myShadowViewport->Height = GC::ShadowBufferSize;
+		myShadowViewport->Width = GC::ShadowBufferSize;
 		myShadowViewport->TopLeftX = 0;
 		myShadowViewport->TopLeftY = 0;
 		myShadowViewport->MinDepth = 0;

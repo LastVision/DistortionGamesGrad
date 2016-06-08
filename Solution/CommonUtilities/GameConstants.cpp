@@ -56,3 +56,5 @@ int GC::CurrentActivePlayers = 0;
 bool GC::FirstTimeScoreSubmit = false;
 
 int GC::DebugRenderTexture = 0;
+
+float GC::ShadowBufferSize = 512.f;

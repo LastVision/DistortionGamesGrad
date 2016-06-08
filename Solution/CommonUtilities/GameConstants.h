@@ -50,4 +50,6 @@ public:
 	static bool FirstTimeScoreSubmit;
 
 	static int DebugRenderTexture;
+
+	static float ShadowBufferSize;
 };
