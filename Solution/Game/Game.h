@@ -48,4 +48,6 @@ private:
 	bool myLockMouse;
 	bool myShowSystemInfo;
 	bool myIsComplete;
+	
+	CU::GrowingArray<float> myFrameTimes;
 };

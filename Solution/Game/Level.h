@@ -28,6 +28,14 @@ class SmartCamera;
 struct Score;
 struct ScoreInfo;
 
+struct DeathInfo
+{
+	float myTimeSincePlayerDeath = 0.f;
+	bool myHasBeenActive = false;
+	bool myShouldRender = false;
+	Prism::SpriteProxy* myJoinGameSprite = nullptr;
+};
+
 class Level : public Subscriber, public GameState
 {
 public:
@@ -80,6 +88,7 @@ private:
 	CU::GrowingArray<Prism::PointLight*> myPointLights;
 	CU::GrowingArray<Prism::DirectionalLight*> myDirectionalLights;
 	CU::GrowingArray<Prism::SpotLight*> mySpotLights;
+	CU::GrowingArray<DeathInfo> myPlayerDeathInfos;
 	SmartCamera* mySmartCamera;
 	CU::Matrix44<float> dummyMatrix;
 
@@ -117,6 +126,12 @@ private:
 	bool myShouldFinishLevel;
 
 	Prism::SpriteProxy* myPressToStartSprite;
+	float myPressToStartAlpha;
+	bool myPressToStartIsFading;
+
+	float myShortestTimeSincePlayerDeath;
+	float myTimeBeforeRenderingPressToStart;
+	float myTimeBeforeRemovingPressToStartForPlayer;
 };
 
 inline Prism::Scene* Level::GetScene() const

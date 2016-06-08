@@ -20,6 +20,8 @@ namespace Prism
 		DecalTextures* myTextures;
 		CU::Vector3<float> myPosition;
 		CU::Vector3<float> myDirection;
+		CU::Matrix44<float> myOrientation;
+		CU::Matrix44<float> myOrientationForward;
 
 		float myTime;
 		bool myIsFading;

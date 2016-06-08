@@ -31,6 +31,8 @@ public:
 
 	float GetDeathSpeed() const;
 
+	bool GetIsAlive() const;
+
 private:
 	const PlayerComponentData& myData;
 	bool myShouldDie;
@@ -53,4 +55,9 @@ inline eComponentType PlayerComponent::GetType()
 inline const PlayerComponentData* PlayerComponent::GetData() const
 {
 	return &myData;
+}
+
+inline bool PlayerComponent::GetIsAlive() const
+{
+	return myIsAlive;
 }

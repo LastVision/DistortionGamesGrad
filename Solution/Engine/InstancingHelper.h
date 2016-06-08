@@ -34,6 +34,8 @@ namespace Prism
 		void RenderModel(Model* aModel, Effect* aEffect, bool aIsOnlyDepth);
 
 		const Camera* myCamera;
+		int myDrawCalls;
+		int myRenderedCount;
 
 		ModelMap myRenderInfo;
 		CU::GrowingArray<Model*> myModels;
