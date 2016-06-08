@@ -465,7 +465,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				second->SetShouldBeRemoved(true);
 				CU::Vector3f dir = aContactNormal;
 				CU::Normalize(dir);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, -dir, true));
 			}
 			break;
 		case eEntityType::GOAL_POINT:
@@ -521,12 +521,13 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 			if (second->GetType() == eEntityType::PLAYER)
 			{
 				KillPlayer(second);
+				//Acid death effect
 			}
 			else
 			{
 				CU::Vector3f dir = aContactNormal;
 				CU::Normalize(dir);
-				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, -dir, true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Acid", second->GetOrientation().GetPos(), true, dir, true));
 				myDeferredRenderer->AddDecal(aContactPoint, -aContactNormal, eDecalType::LAVA);
 			}
 		}
