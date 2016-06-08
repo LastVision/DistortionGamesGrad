@@ -44,6 +44,8 @@ namespace GUI
 		virtual void SetButtonText(int aButtonId, const std::string& aText, bool& aSuccessOut);
 		virtual void SetButtonText(const std::string& aText, const CU::Vector2<float>& aOffset = { 0.f, 0.f });
 
+		virtual void SwitchGradient() {};
+
 	protected:
 		CU::Vector2<float> myPosition;
 		CU::Vector2<float> mySize;

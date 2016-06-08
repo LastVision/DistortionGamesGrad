@@ -248,6 +248,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		/*PostMaster::GetInstance()->SendMessage(ReturnToMenuMessage());
 		myIsActiveState = false;
 		return eStateStatus::ePopMainState;*/
+
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new PauseMenuState());
 	}
@@ -396,7 +397,7 @@ void Level::Render()
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 
-//#ifndef _DEBUG
+#ifndef _DEBUG
 	if (myPlayerWinCount == 0)
 	{
 		if (PollingStation::GetInstance()->GetPlayersAlive() == 0)
@@ -420,7 +421,7 @@ void Level::Render()
 			}
 		}
 	}
-//#endif
+#endif
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)
@@ -600,7 +601,15 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 				//aFirst->AddForce(second->GetOrientation().GetUp(), 10.f);
 				break;
 			case SAW_BLADE:
-				aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				if (aFirst->GetEntity().IsScrapSpawnedThisFrame() == false)
+				{
+					aFirst->AddForce(first->GetOrientation().GetPos() - second->GetOrientation().GetPos(), 10.f);
+				}
+				else
+				{
+					int hereAScrapIsSpawnedAndShouldNotGetForce = 5;
+					hereAScrapIsSpawnedAndShouldNotGetForce;
+				}
 				break;
 			case GOAL_POINT:
 				break;

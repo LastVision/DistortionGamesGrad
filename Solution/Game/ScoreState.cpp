@@ -19,6 +19,7 @@
 #include <WidgetContainer.h>
 #include <fstream>
 #include <SpriteAnimator.h>
+#include <SoundMessage.h>
 #include <SQLWrapper.h>
 #include <XMLReader.h>
 
@@ -67,6 +68,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 				{
 					bestScore = *score;
 				}
+				sql.WriteDeaths(aLevelID, score->myDeathCount);
 			}
 		}
 		if (bestScore.myReachedGoal == true)
@@ -98,6 +100,7 @@ ScoreState::~ScoreState()
 
 void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
 {
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(false));
 	myStateStack = aStateStackProxy;
 	myController = aController;
 	myCursor = aCursor;
@@ -118,10 +121,13 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
 	}
 
-	myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-		->At(2)->GetPosition();
-	myHatsArrowPosition.y -= static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-		->At(2)->GetSize().y * 0.5f;
+	if (GC::Gold >= mySpinCost)
+	{
+		GUI::Widget* hatButton = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2);
+		myHatsArrowPosition = hatButton->GetPosition();
+		myHatsArrowPosition.y -= hatButton->GetSize().y * 0.5f;
+		hatButton->SwitchGradient();
+	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 
@@ -149,6 +155,8 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 void ScoreState::EndState()
 {
+
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(true));
 	myCursor->SetShouldRender(false);
 }
 

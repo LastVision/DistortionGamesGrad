@@ -11,6 +11,7 @@
 #include "PauseMenuState.h"
 #include <PostMaster.h>
 #include <ReturnToMainMenuMessage.h>
+#include <SoundMessage.h>
 
 PauseMenuState::PauseMenuState()
 {
@@ -41,12 +42,17 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myController->SetIsInMenu(true);
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
+
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(false));
 }
 
 void PauseMenuState::EndState()
 {
 	myIsActiveState = false;
 	myCursor->SetShouldRender(false);
+
+	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(true));
 }
 
 const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
