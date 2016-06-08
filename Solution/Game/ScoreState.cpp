@@ -121,12 +121,10 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	if (GC::Gold >= mySpinCost)
 	{
-		myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-			->At(2)->GetPosition();
-		myHatsArrowPosition.y -= static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-			->At(2)->GetSize().y * 0.5f;
-		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-			->At(2)->SwitchGradient();
+		GUI::Widget* hatButton = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(2);
+		myHatsArrowPosition = hatButton->GetPosition();
+		myHatsArrowPosition.y -= hatButton->GetSize().y * 0.5f;
+		hatButton->SwitchGradient();
 	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
