@@ -115,6 +115,8 @@ private:
 
 	bool myShouldRenderCountDown;
 	bool myShouldFinishLevel;
+
+	Prism::SpriteProxy* myPressToStartSprite;
 };
 
 inline Prism::Scene* Level::GetScene() const

@@ -74,6 +74,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, mySpotLights(16)
 	, myShouldRenderCountDown(true)
 	, myShouldFinishLevel(false)
+	, myPressToStartSprite(nullptr)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -102,7 +103,8 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 
 	PollingStation::Create();
 
-
+	myPressToStartSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start.dds"
+		, { 512.f, 512.f }, { 256.f, 256.f });
 }
 
 Level::~Level()
@@ -122,6 +124,7 @@ Level::~Level()
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
 	SAFE_DELETE(myScoreInfo);
+	SAFE_DELETE(myPressToStartSprite);
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
@@ -324,6 +327,10 @@ void Level::Render()
 	{
 		CU::Vector2<float> countPos(myWindowSize.x * 0.5f, myWindowSize.y * 0.9f);
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
+	}
+	else if (myPlayerWinCount == 0 && PollingStation::GetInstance()->GetPlayersAlive() == 0)
+	{
+		myPressToStartSprite->Render(myWindowSize * 0.5f);
 	}
 }
 
