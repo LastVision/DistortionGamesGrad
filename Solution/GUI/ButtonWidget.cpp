@@ -29,6 +29,9 @@ namespace GUI
 		, myShouldAnimate(false)
 		, myAnimationAlpha(0.f)
 		, myAnimationStart(1.f)
+		, myIsGradient(false)
+		, myGradientIsIncreasing(false)
+		, myGradient(1.f)
 	{
 		std::string spritePathNormal = "";
 		std::string spritePathHover = "";
@@ -94,6 +97,9 @@ namespace GUI
 		, myShouldAnimate(false)
 		, myAnimationAlpha(0.f)
 		, myAnimationStart(1.f)
+		, myIsGradient(false)
+		, myGradientIsIncreasing(false)
+		, myGradient(1.f)
 	{
 		mySize = aSize;
 		myPosition = aPosition;
@@ -224,6 +230,30 @@ namespace GUI
 				myImageCurrent->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
 
 			}
+		}
+
+		if (myIsGradient == true)
+		{
+			if (myGradientIsIncreasing == true)
+			{
+				myGradient += aDeltaTime;
+				if (myGradient >= 1.f)
+				{
+					myGradient = 1.f;
+					myGradientIsIncreasing = false;
+				}
+			}
+			else
+			{
+				myGradient -= aDeltaTime;
+				if (myGradient <= 0.f)
+				{
+					myGradient = 0.f;
+					myGradientIsIncreasing = true;
+				}
+			}
+			myColor.y = myGradient;
+			myColor.z = myGradient;
 		}
 	}
 
@@ -386,6 +416,11 @@ namespace GUI
 			myColor = { 0.5f, 0.5f, 0.5f, 1.f };
 			myCanBeClicked = false;
 		}
+	}
+
+	void ButtonWidget::SwitchGradient()
+	{
+		myIsGradient = true;
 	}
 
 	void ButtonWidget::Click()

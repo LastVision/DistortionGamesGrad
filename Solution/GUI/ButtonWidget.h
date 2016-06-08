@@ -49,6 +49,9 @@ namespace GUI
 		void SetButtonText(const std::string& aText, const CU::Vector2<float>& aOffset = { 0.f, 0.f }) override;
 
 		void SetActive(const bool aActiveFlag);
+
+		void SwitchGradient() override;
+
 	protected:
 		void Click();
 
@@ -83,6 +86,10 @@ namespace GUI
 		float myAnimationStart;
 
 		Tweener<float> myTweener;
+
+		bool myIsGradient;
+		bool myGradientIsIncreasing;
+		float myGradient;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const

@@ -393,7 +393,7 @@ void Level::Render()
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 
-//#ifndef _DEBUG
+#ifndef _DEBUG
 	if (myPlayerWinCount == 0)
 	{
 		if (PollingStation::GetInstance()->GetPlayersAlive() == 0)
@@ -417,7 +417,7 @@ void Level::Render()
 			}
 		}
 	}
-//#endif
+#endif
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)

@@ -118,10 +118,15 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
 	}
 
-	myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-		->At(2)->GetPosition();
-	myHatsArrowPosition.y -= static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
-		->At(2)->GetSize().y * 0.5f;
+	if (GC::Gold >= mySpinCost)
+	{
+		myHatsArrowPosition = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
+			->At(2)->GetPosition();
+		myHatsArrowPosition.y -= static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
+			->At(2)->GetSize().y * 0.5f;
+		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))
+			->At(2)->SwitchGradient();
+	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 
