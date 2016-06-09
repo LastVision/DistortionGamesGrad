@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "BounceComponent.h"
 #include "BounceNote.h"
 #include "DashFlyMovement.h"
@@ -8,6 +10,8 @@
 #include <PhysicsInterface.h>
 #include "PlayerGraphicsComponent.h"
 #include "ShouldDieNote.h"
+#include "SoundComponent.h"
+#include "ScoreComponent.h"
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -66,6 +70,8 @@ void DashFlyMovement::Activate(const CU::Vector2<float>&)
 	myVelocity = myOrientation.GetRight().GetVector2() * myData.myDashSpeed;
 	myTimer = myData.myDashFlyTime;
 	myIsActive = true;
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Dash", 
+		myMovementComponent.GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
 }
 
 void DashFlyMovement::DeActivate()
@@ -87,6 +93,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		eEntityType type = entity.GetType();
 
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
+		if (type == eEntityType::PLAYER && entity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) return;
 
 		myHasContact = true;
 

@@ -46,7 +46,11 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myNewScoreSprite(nullptr)
 	, myShowNewScore(false)
 	, myShowNewScoreTimer(2.f)
-	, myNewScoreScale(1.5f)
+	, myNewScoreScale(0.f)
+	, myAngleToRotate(0.f)
+	, myAngleToRotateTimer(0.f)
+	, myTotalRotation(0.f)
+	, myIsRotating(true)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -181,13 +185,18 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
 	if (myShowNewScore == false)
 	{
-	myTimer -= aDeltaTime;
+		myTimer -= aDeltaTime;
 	}
 	else
 	{
+		myAngleToRotateTimer += aDeltaTime;
+		float oldAngle = myAngleToRotate;
+		myAngleToRotate = myNewScoreAngleTweener.DoTween(myAngleToRotateTimer, 0, 3.14f * 10.f, 1.f, eTweenType::EXPONENTIAL);
+		myAngleToRotate = myAngleToRotate - oldAngle;
+
 		myShowNewScoreTimer -= aDeltaTime;
-		myNewScoreScale -= aDeltaTime;
-		myNewScoreScale = fmax(myNewScoreScale, 1.f);
+		myNewScoreScale += aDeltaTime;
+		myNewScoreScale = fmin(myNewScoreScale, 1.f);
 		if (myShowNewScoreTimer <= 0.f)
 		{
 			myShowNewScore = false;
@@ -284,8 +293,21 @@ void ScoreState::Render()
 
 	if (myShowNewScore == true)
 	{
-		myFadeBackground->Render(myWindowSize * 0.5f);
-		myNewScoreSprite->Render(myWindowSize * 0.5f, { myNewScoreScale, myNewScoreScale });
+		float alpha = myIsRotating == true ? 1.f : myShowNewScoreTimer;
+		myFadeBackground->Render(myWindowSize * 0.5f, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
+		myNewScoreSprite->Render(myWindowSize * 0.5f, { myNewScoreScale, myNewScoreScale }, { 1.f, 1.f, 1.f, alpha });
+
+		if (myTotalRotation <= 3.14f * 20.f)
+		{
+			myTotalRotation += myAngleToRotate;
+			myNewScoreSprite->Rotate(myAngleToRotate);
+		}
+		else if (myIsRotating == true)
+		{
+			float diff = (3.14f * 20.f) - myTotalRotation;
+			myNewScoreSprite->Rotate(diff);
+			myIsRotating = false;
+		}
 	}
 	else if (myTimer < 0)
 	{
@@ -432,13 +454,20 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			if (score->myReachedGoal == true && highestScore.myTime >= score->myTime)
 			{
 				highestScore.myTime = score->myTime;
-				highestScore.myDeathCount = score->myDeathCount;
+				highestScore.myDeathCount = score->myDeathCount;		
 			}
 		}
 
 		if (currentScore.myTime != 0 && currentScore.myTime < highestScore.myTime)
 		{
 			highestScore.myTime = currentScore.myTime;
+		}
+		else
+		{
+			if (hasPreviousScore == true)
+			{
+				myShowNewScore = true;
+			}
 		}
 
 		if (highestScore.myTime < myScoreInfo.myShortTime && highestScore.myTime > 0)
@@ -466,10 +495,6 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	if (diffStars > 0)
 	{
 		GC::Gold += diffStars;
-		if (hasPreviousScore == true)
-		{
-			myShowNewScore = true;
-		}
 	}
 
 	myEarnedStars = diffStars > 0 ? diffStars : 0;

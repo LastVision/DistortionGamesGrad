@@ -74,6 +74,11 @@ namespace GUI
 
 		void DeleteButtonAtIndex(int aX, int aY);
 
+		void Pause();
+		void UnPause();
+
+		bool IsPaused() const;
+
 	private:
 		void ReadContainers(XMLReader& aReader, tinyxml2::XMLElement* aContainerElement);
 		void ReadFiles(XMLReader& aReader, tinyxml2::XMLElement* aFilePathElement);
@@ -103,6 +108,7 @@ namespace GUI
 		int myControllerButtonIndexX;
 		int myControllerButtonIndexY;
 		bool myUseController;
+		bool myIsPaused;
 	};
 
 	inline const Widget* GUIManager::GetActiveWidget() const
@@ -129,5 +135,10 @@ namespace GUI
 		{
 			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
 		}
+	}
+
+	inline bool GUIManager::IsPaused() const
+	{
+		return myIsPaused;
 	}
 }

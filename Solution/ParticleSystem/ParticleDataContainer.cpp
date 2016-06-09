@@ -75,8 +75,7 @@ namespace Prism
 			tempData->myEffect->SetDepthTexture(aDepthTexture);
 			Engine::GetInstance()->GetContex()->IASetInputLayout(tempData->myInputLayout);
 			Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-			tempData->myEffect->GetTechnique("Render")->GetDesc(tempData->myTechniqueDesc);
+		
 		}
 	}
 
