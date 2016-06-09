@@ -456,17 +456,20 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			if (score->myReachedGoal == true && highestScore.myTime >= score->myTime)
 			{
 				highestScore.myTime = score->myTime;
-				highestScore.myDeathCount = score->myDeathCount;
-				if (hasPreviousScore == true)
-				{
-					myShowNewScore = true;
-				}
+				highestScore.myDeathCount = score->myDeathCount;		
 			}
 		}
 
 		if (currentScore.myTime != 0 && currentScore.myTime < highestScore.myTime)
 		{
 			highestScore.myTime = currentScore.myTime;
+		}
+		else
+		{
+			if (hasPreviousScore == true)
+			{
+				myShowNewScore = true;
+			}
 		}
 
 		if (highestScore.myTime < myScoreInfo.myShortTime && highestScore.myTime > 0)
