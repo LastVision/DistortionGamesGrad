@@ -141,8 +141,8 @@ const eStateStatus InGameState::Update(const float&)
 		}
 		else
 		{
-			if (GC::NightmareMode == false && GC::HasBeenInVictoryScreen == false
-				|| GC::NightmareMode == true && GC::HasBeenInVictoryScreenNightmare == false)
+			if ((GC::NightmareMode == false && GC::HasBeenInVictoryScreen == false)
+				|| (GC::NightmareMode == true && GC::HasBeenInVictoryScreenNightmare == false))
 			{
 				myStateStack->PushSubGameState(new VictoryState());
 			}
