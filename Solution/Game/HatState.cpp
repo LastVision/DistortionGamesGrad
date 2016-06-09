@@ -42,6 +42,7 @@ void HatState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput*
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
 
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));

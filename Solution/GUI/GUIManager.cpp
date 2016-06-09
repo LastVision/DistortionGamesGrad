@@ -158,7 +158,7 @@ namespace GUI
 
 	void GUIManager::SelectButtonDown()
 	{
-		CU::Vector2<int> prevIndex(myControllerButtonIndexX, myControllerButtonIndexY);
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexX++;
 		if (myControllerButtonIndexX > myButtons.Size() - 1)
@@ -171,16 +171,12 @@ namespace GUI
 			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
 		}
 
-		if (prevIndex.x != myControllerButtonIndexX || prevIndex.y != myControllerButtonIndexY)
-		{
-			myButtons[prevIndex.x][prevIndex.y]->OnMouseExit();
-			myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
-		}
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
 	void GUIManager::SelectButtonUp()
 	{
-		CU::Vector2<int> prevIndex(myControllerButtonIndexX, myControllerButtonIndexY);
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexX--;
 		if (myControllerButtonIndexX < 0)
@@ -193,16 +189,12 @@ namespace GUI
 			myControllerButtonIndexY = myButtons[myControllerButtonIndexX].Size() - 1;
 		}
 
-		if (prevIndex.x != myControllerButtonIndexX || prevIndex.y != myControllerButtonIndexY)
-		{
-			myButtons[prevIndex.x][prevIndex.y]->OnMouseExit();
-			myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
-		}
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
 	void GUIManager::SelectButtonRight()
 	{
-		CU::Vector2<int> prevIndex(myControllerButtonIndexX, myControllerButtonIndexY);
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexY++;
 		if (myControllerButtonIndexY > myButtons[myControllerButtonIndexX].Size() - 1)
@@ -220,16 +212,12 @@ namespace GUI
 			}
 		}
 
-		if (prevIndex.x != myControllerButtonIndexX || prevIndex.y != myControllerButtonIndexY)
-		{
-			myButtons[prevIndex.x][prevIndex.y]->OnMouseExit();
-			myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
-		}
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
 	void GUIManager::SelectButtonLeft()
 	{
-		CU::Vector2<int> prevIndex(myControllerButtonIndexX, myControllerButtonIndexY);
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
 
 		myControllerButtonIndexY--;
 		if (myControllerButtonIndexY < 0)
@@ -247,11 +235,7 @@ namespace GUI
 			}
 		}
 
-		if (prevIndex.x != myControllerButtonIndexX || prevIndex.y != myControllerButtonIndexY)
-		{
-			myButtons[prevIndex.x][prevIndex.y]->OnMouseExit();
-			myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
-		}
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
 	void GUIManager::PressSelectedButton()

@@ -20,10 +20,10 @@ public:
 
 	void ReceiveMessage(const ScrapMessage& aMessage) override;
 
+	void CreateHeads();
 
 private:
 	int myPlayerID;
-	void CreateHeads();
 	void CreateLegs();
 	void CreateBodies();
 	struct BodyPart

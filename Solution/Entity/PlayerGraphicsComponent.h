@@ -37,6 +37,8 @@ public:
 	bool GetLegsActive() const;
 	bool GetHeadActive() const;
 	BodyAnimation* GetCurrentAnimation();
+
+	void CreateJoints();
 private:
 	const PlayerGraphicsComponentData& myData;
 	const CU::Matrix44<float>& myEntityOrientation;

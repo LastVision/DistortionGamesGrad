@@ -18,6 +18,8 @@ namespace GUI
 		void Update(float aDelta) override;
 		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
+		void ReduceAlpha(float aReduceAmount);
+
 	private:
 		void ConstructHighscoreText();
 

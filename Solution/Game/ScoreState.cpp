@@ -7,6 +7,7 @@
 #include <GameConstants.h>
 #include <HatManager.h>
 #include "HatState.h"
+#include <HighscoreWidget.h>
 #include "InputWrapper.h"
 #include "LevelFactory.h"
 #include <ModelLoader.h>
@@ -51,6 +52,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myAngleToRotateTimer(0.f)
 	, myTotalRotation(0.f)
 	, myIsRotating(true)
+	, myPopStateTimer(0.f)
+	, myShouldPopState(false)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -108,6 +111,11 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 	myNewScoreSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_new_score.dds"
 		, { 512.f, 512.f }, { 256.f, 256.f });
+
+	myBlackSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_black.dds"
+		, myWindowSize, myWindowSize * 0.5f);
+
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 }
 
 ScoreState::~ScoreState()
@@ -117,6 +125,7 @@ ScoreState::~ScoreState()
 	SAFE_DELETE(myHatsArrowSprite);
 	SAFE_DELETE(myFadeBackground);
 	SAFE_DELETE(myNewScoreSprite);
+	SAFE_DELETE(myBlackSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -163,11 +172,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		GC::HasWonGame = true;
 	}
 
-	while (Prism::ModelLoader::GetInstance()->IsLoading())
-	{
-	}
-
-	myAnimationFrameSize = { 256.f, 256.f };
+	myAnimationFrameSize = { 256.f, 256.f};
 
 	if (myEarnedStars == 0)
 	{
@@ -179,13 +184,31 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 void ScoreState::EndState()
 {
-
 	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(true));
 	myCursor->SetShouldRender(false);
 }
 
 const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
+	if (myShouldPopState == true)
+	{
+		if (myPopStateTimer >= 1.f)
+		{
+			return myStateStatus;
+		}
+		if (myPopStateTimer < 0.5f)
+		{
+			myScoreAlpha -= aDeltaTime * 2.f;
+			myGUIAlpha -= aDeltaTime * 2.f;
+			myHatsArrowAlpha -= aDeltaTime * 2.f;
+			GUI::WidgetContainer* container = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+			static_cast<GUI::HighscoreWidget*>(container->At(4))->ReduceAlpha(aDeltaTime*2.f);
+		}
+
+		myPopStateTimer += aDeltaTime;
+		return eStateStatus::eKeepState;
+	}
+
 	if (myShowNewScore == false)
 	{
 		myTimer -= aDeltaTime;
@@ -238,8 +261,6 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 			}
 		}
 
-		myGUIManager->Update(aDeltaTime);
-
 		if (myEarnedStars > 0)
 		{
 			myGoldCostMovement += 25.f * aDeltaTime;
@@ -271,7 +292,10 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 					myHatsArrowAlphaIsIncreasing = true;
 				}
 			}
+
 		}
+
+		myGUIManager->Update(aDeltaTime);
 	}
 	else if (myShowNewScore == false)
 	{
@@ -282,7 +306,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		}
 	}
 
-	return myStateStatus;
+	if (myShouldPopState == false)
+	{
+		return myStateStatus;
+	}
+	return eStateStatus::eKeepState;
 }
 
 void ScoreState::Render()
@@ -315,31 +343,34 @@ void ScoreState::Render()
 	{
 		myGUIManager->Render(myGUIAlpha);
 
-		CU::Vector2<float> goldPos = myWindowSize;
-		if (myNumberOfActiveScores == 1)
+		if (myShouldPopState == false)
 		{
-			goldPos.x *= 0.25f;
-		}
-		else
-		{
-			goldPos.x *= 0.1f;
-		}
-		goldPos.y *= 0.2f;
+			CU::Vector2<float> goldPos = myWindowSize;
+			if (myNumberOfActiveScores == 1)
+			{
+				goldPos.x *= 0.25f;
+			}
+			else
+			{
+				goldPos.x *= 0.1f;
+			}
+			goldPos.y *= 0.2f;
 
-		if (myAnimator != nullptr)
-		{
-			myAnimator->Render(goldPos);
-		}
+			if (myAnimator != nullptr)
+			{
+				myAnimator->Render(goldPos);
+			}
 
-		goldPos.x += myAnimationFrameSize.x * 0.15f;
-		goldPos.y += myAnimationFrameSize.y * 0.3f;
+			goldPos.x += myAnimationFrameSize.x * 0.15f;
+			goldPos.y += myAnimationFrameSize.y * 0.3f;
 
-		Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+			Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
-		if (myEarnedStars > 0)
-		{
-			Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
-			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+			if (myEarnedStars > 0)
+			{
+				Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
+				, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+			}
 		}
 
 		if (myRenderHatArrow == true)
@@ -350,32 +381,41 @@ void ScoreState::Render()
 
 	if (myShowNewScore == false)
 	{
-	if (myNumberOfActiveScores == 1)
-	{
-		for (int i = 0; i < myScores.Size(); ++i)
+		if (myNumberOfActiveScores == 1)
 		{
-			if (myScores[i]->myActive == true)
+			for (int i = 0; i < myScores.Size(); ++i)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
-				break;
+				if (myScores[i]->myActive == true)
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < myScoreWidgets.Size(); ++i)
+			{
+				if (i == 0)
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+				}
+				else
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
+				}
 			}
 		}
 	}
-	else
+
+	if (myShouldPopState == true)
 	{
-		for (int i = 0; i < myScoreWidgets.Size(); ++i)
+		if (myPopStateTimer > 0.5f)
 		{
-			if (i == 0)
-			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
-			}
-			else
-			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
-			}
+			float alpha = myPopStateTimer / (1.f / 3.f);
+			myFadeBackground->Render(myWindowSize * 0.5f, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
 		}
 	}
-}
 }
 
 void ScoreState::ResumeState()
@@ -415,6 +455,7 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::RESTART_LEVEL:
 	case eOnClickEvent::NEXT_LEVEL:
 		myStateStatus = eStateStatus::ePopMainState;
+		myShouldPopState = true;
 		break;
 	}
 }

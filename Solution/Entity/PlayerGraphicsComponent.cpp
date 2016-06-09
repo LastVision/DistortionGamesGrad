@@ -93,17 +93,6 @@ void PlayerGraphicsComponent::Init()
 	}
 	myArrow->SetShouldRender(false);
 
-	while (Prism::ModelLoader::GetInstance()->IsLoading())
-		;
-
-
-	myIdleAnimation.CreateJoints(idle);
-	myWalkAnimation.CreateJoints(walk);
-	myFlyAnimation.CreateJoints(fly);
-	myDashAimAnimation.CreateJoints(dashAim);
-	myDashFlyAnimation.CreateJoints(dashFly);
-	myHead.CreateJoints(head);
-
 
 	myScene->AddInstance(myIdleAnimation.myAnimation, true);
 	myScene->AddInstance(myWalkAnimation.myAnimation, true);
@@ -305,4 +294,28 @@ void PlayerGraphicsComponent::ReceiveNote(const CharacterAnimationNote& aMessage
 BodyAnimation* PlayerGraphicsComponent::GetCurrentAnimation()
 {
 	return myCurrentAnimation;
+}
+
+void PlayerGraphicsComponent::CreateJoints()
+{
+	std::string idle(myData.myIdleAnimation);
+	std::string walk(myData.myWalkAnimation);
+	std::string fly(myData.myFlyAnimation);
+	std::string dashAim(myData.myDashAimAnimation);
+	std::string dashFly(myData.myDashFlyAnimation);
+	std::replace(idle.begin(), idle.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(walk.begin(), walk.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(fly.begin(), fly.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(dashAim.begin(), dashAim.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+	std::replace(dashFly.begin(), dashFly.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+
+	std::string head(myData.myHead);
+	std::replace(head.begin(), head.end(), '%', CU::Concatenate("%i", myPlayerID)[0]);
+
+	myIdleAnimation.CreateJoints(idle);
+	myWalkAnimation.CreateJoints(walk);
+	myFlyAnimation.CreateJoints(fly);
+	myDashAimAnimation.CreateJoints(dashAim);
+	myDashFlyAnimation.CreateJoints(dashFly);
+	myHead.CreateJoints(head);
 }

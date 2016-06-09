@@ -29,7 +29,7 @@ ScrapManager::ScrapManager(Prism::Scene* aScene, int aPlayerID)
 	, myScene(aScene)
 {
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::SPAWN_SCRAP);
-	CreateHeads();
+	//CreateHeads();
 	CreateLegs();
 	CreateBodies();
 	CreateGibs();

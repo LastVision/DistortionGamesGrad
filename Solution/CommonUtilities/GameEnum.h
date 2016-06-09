@@ -56,13 +56,6 @@ enum class eActionEventType
 	MARKER,
 };
 
-enum class eInGameState
-{
-	LEVEL,
-	LOAD_LEVEL,
-	SCORE,
-};
-
 enum class eServerInGameState
 {
 	LEVEL_UPDATE,
