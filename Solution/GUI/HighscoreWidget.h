@@ -15,6 +15,7 @@ namespace GUI
 		HighscoreWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement, const int aLevelID);
 		~HighscoreWidget();
 
+		void Update(float aDelta) override;
 		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 	private:
@@ -46,5 +47,8 @@ namespace GUI
 		Prism::SpriteProxy* myBackgroundSprite;
 
 		float myTextScale;
+
+		float myParentAlpha;
+		float myOwnAlpha;
 	};
 }
