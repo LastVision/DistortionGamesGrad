@@ -68,15 +68,17 @@ namespace GUI
 		myImageCurrent = nullptr;
 	}
 
-	void ToggleBoxWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void ToggleBoxWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
 		if (myIsVisible == true)
 		{
+			myColor.w = anAlpha;
 			myImageCurrent->Render(myPosition + aParentPosition, { 1.f, 1.f }, myColor);
 
 			if (myText != "")
 			{
-				Prism::Engine::GetInstance()->PrintText(myText, { aParentPosition.x + myPosition.x + mySize.x - 10.f, aParentPosition.y + myPosition.y - 10.f }, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myText, { aParentPosition.x + myPosition.x + mySize.x - 10.f
+					, aParentPosition.y + myPosition.y - 10.f }, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, 1.f, 1.f, anAlpha});
 			}
 		}
 	}

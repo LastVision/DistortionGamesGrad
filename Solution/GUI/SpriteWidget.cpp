@@ -30,9 +30,9 @@ namespace GUI
 		SAFE_DELETE(myBackground);
 	}
 
-	void SpriteWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void SpriteWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
-		myBackground->Render(myPosition + aParentPosition);
+		myBackground->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
 	}
 
 	void SpriteWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)

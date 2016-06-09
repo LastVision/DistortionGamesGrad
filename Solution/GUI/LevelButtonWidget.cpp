@@ -29,15 +29,15 @@ namespace GUI
 		myStars.DeleteAll();
 	}
 
-	void LevelButtonWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void LevelButtonWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
-		__super::Render(aParentPosition);
+		__super::Render(aParentPosition, anAlpha);
 		for (int i = 0; i < myStars.Size(); ++i)
 		{
 			CU::Vector2<float> position = myPosition + myStarPosition;
 			position.x += myStarOffset.x * i;
 
-			myStars[i]->Render(position + aParentPosition);
+			myStars[i]->Render(position + aParentPosition, anAlpha);
 		}
 	}
 
