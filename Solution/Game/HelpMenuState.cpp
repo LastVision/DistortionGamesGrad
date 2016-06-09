@@ -49,7 +49,7 @@ const eStateStatus HelpMenuState::Update(const float& aDeltaTime)
 {
 	CU::InputWrapper* input = CU::InputWrapper::GetInstance();
 
-	if (input->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK))
+	if (input->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK) || myController->ButtonOnDown(eXboxButton::B))
 	{
 		myStateStatus = eStateStatus::ePopSubState;
 	}
