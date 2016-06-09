@@ -21,6 +21,7 @@ HatsSelectionState::HatsSelectionState()
 		, myRightArrow(nullptr)
 		, myArrowBox(nullptr)
 		, myUVScrollingTime(0.f)
+		, myHaveNoHats(true)
 {
 }
 
@@ -42,6 +43,7 @@ HatsSelectionState::~HatsSelectionState()
 	SAFE_DELETE(myLeftArrow);
 	SAFE_DELETE(myRightArrow);
 	SAFE_DELETE(myArrowBox);
+	SAFE_DELETE(myNoHatsUnlockedSprite);
 }
 
 void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -75,6 +77,11 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
 	{
 		myHats.Add(HatStruct(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), i));
+
+		if (HatManager::GetInstance()->IsHatUnlocked(i) == true)
+		{
+			myHaveNoHats = false;
+		}
 	}
 
 	myLockSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_lock.dds", size, size * 0.5f);
@@ -83,7 +90,11 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
 	myArrowBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_arrow_box.dds", size * 0.5f, size * 0.25f);
 
+	myNoHatsUnlockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_no_hats_unlocked.dds"
+		, { 512.f, 256.f }, { 256.f, 128.f });
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
 }
 
 void HatsSelectionState::EndState()
@@ -224,6 +235,11 @@ void HatsSelectionState::Render()
 		{
 			myLockSprite->Render(playerTwoRenderPos);
 		}
+	}
+
+	if (myHaveNoHats == true)
+	{
+		myNoHatsUnlockedSprite->Render(windowSize);
 	}
 
 }
