@@ -29,6 +29,7 @@ namespace GUI
 		, myUseController(false)
 		, myControllerButtonIndexX(0)
 		, myControllerButtonIndexY(0)
+		, myIsPaused(false)
 	{
 		myWindowSize = { 1920.f, 1080.f }; // XML coordinates respond to this resolution, will be resized
 
@@ -60,7 +61,7 @@ namespace GUI
 		myMousePosition = myCursor->GetMousePosition();
 		myWidgets->Update(aDelta);
 
-		if (myCursor->IsUsingController() == false)
+		if (myIsPaused == false && myCursor->IsUsingController() == false)
 		{
 			CheckMouseMoved();
 			CheckMouseExited();
@@ -344,6 +345,18 @@ namespace GUI
 		myControllerButtonIndexY = 0;
 
 
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
+	}
+
+	void GUIManager::Pause()
+	{
+		myIsPaused = true;
+		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+	}
+
+	void GUIManager::UnPause()
+	{
+		myIsPaused = false;
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
 	}
 
