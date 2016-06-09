@@ -96,9 +96,6 @@
 			this.myQualityList.Name = "myQualityList";
 			this.myQualityList.Size = new System.Drawing.Size(121, 21);
 			this.myQualityList.TabIndex = 4;
-			this.myQualityList.SelectedIndexChanged += new System.EventHandler(this.myQualityList_SelectedIndexChanged);
-			this.myQualityList.MouseLeave += new System.EventHandler(this.myQualityList_MouseLeave);
-			this.myQualityList.MouseHover += new System.EventHandler(this.myQualityList_MouseHover);
 			// 
 			// label2
 			// 
