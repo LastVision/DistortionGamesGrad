@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <AudioInterface.h>
 #include <Bar3D.h>
 #include "DashAimMovement.h"
 #include "Entity.h"
@@ -13,6 +14,7 @@
 #include <Scene.h>
 #include <TextureContainer.h>
 #include <PostMaster.h>
+#include "SoundComponent.h"
 
 DashAimMovement::DashAimMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation
 	, MovementComponent& aMovementComponent, Prism::Scene* aScene)
@@ -85,12 +87,16 @@ void DashAimMovement::Activate(const CU::Vector2<float>&)
 	myTimer = myData.myDashAimTime;
 	myArrow->SetShouldRender(true);
 	myIsActive = true;
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_DashAim"
+		, myMovementComponent.GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
 }
 
 void DashAimMovement::DeActivate()
 {
 	myArrow->SetShouldRender(false);
 	myIsActive = false;
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_DashAim"
+		, myMovementComponent.GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
 }
 
 void DashAimMovement::SetVelocity(const CU::Vector2<float>&)

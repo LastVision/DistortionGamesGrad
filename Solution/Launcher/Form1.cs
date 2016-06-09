@@ -23,7 +23,7 @@ namespace Launcher
 
 		private Process myGame = new Process();
 
-		private bool myUseCheat = false;
+		private bool myUseCheat = true;
 
 		enum eResolutions
 		{
@@ -32,12 +32,6 @@ namespace Launcher
 			R1600x900,
 			R1920x1080,
 			RAuto
-		}
-
-		enum eQuailty
-		{
-			Low,
-			High
 		}
 
 		enum eMSAA
@@ -81,7 +75,6 @@ namespace Launcher
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-
 			myResolutionList.Items.Add("1280 x 720");
 			myResolutionList.Items.Add("1280 x 1024");
 			myResolutionList.Items.Add("1600 x 900");
@@ -92,26 +85,18 @@ namespace Launcher
 			myQualityList.Items.Add("Low");
 			myQualityList.Items.Add("Medium");
 			myQualityList.Items.Add("High");
+			myQualityList.Items.Add("Ultra");
 			myQualityList.SelectedIndex = 1;
 
-			//aaDropdown.Items.Add("MSAA x1");
-			//aaDropdown.Items.Add("MSAA x2");
-			//aaDropdown.Items.Add("MSAA x4");
-			//aaDropdown.SelectedIndex = 2;
-
-			//windowedCheckbox.Checked = true;
 
 			if (File.Exists(myConfigPath))
 			{
 				using (BinaryReader reader = new BinaryReader(File.Open(myConfigPath, FileMode.Open)))
 				{
 					ReadResolutionFromFile(reader);
-					ReadMSAAFromFile(reader);
-					ReadWindowedFromFile(reader);
+					ReadQualityFromFile(reader);
 				}
 			}
-
-			
 		}
 
 		public bool IsProcessOpen(string name)
@@ -126,16 +111,19 @@ namespace Launcher
 			return false;
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void SaveSettingsToFile()
 		{
 			using (BinaryWriter writer = new BinaryWriter(File.Open(myConfigPath, FileMode.Create)))
 			{
 				WriteResolutionToFile(writer);
-				WriteMSAAToFile(writer);
-				WriterWindowedToFile(writer);
 				WriteQualityToFile(writer);
 				WriteCheatToFile(writer);
 			}
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			SaveSettingsToFile();
 
 			ProcessStartInfo processInfo = new ProcessStartInfo();
 			processInfo.WorkingDirectory = "bin\\";
@@ -223,86 +211,18 @@ namespace Launcher
 			aWriter.Write(height);
 		}
 
-		void WriteMSAAToFile(BinaryWriter aWriter)
-		{
-			Int32 MSAACount = 2;
-			//switch (aaDropdown.SelectedIndex)
-			//{
-			//    case (int)eMSAA.x1:
-			//        MSAACount = 1;
-			//        break;
-			//    case (int)eMSAA.x2:
-			//        MSAACount = 2;
-			//        break;
-			//    case (int)eMSAA.x4:
-			//        MSAACount = 4;
-			//        break;
-			//}
-
-			aWriter.Write(MSAACount);
-		}
-
-		void WriterWindowedToFile(BinaryWriter aWriter)
-		{
-			//bool windowed = false;
-
-			//if (windowed == true)
-			//{
-			//    aWriter.Write((Int32)1);
-			//}
-			//else
-			//{
-			aWriter.Write((Int32)0);
-			//}
-		}
-
 		void ReadResolutionFromFile(BinaryReader aReader)
 		{
+			Int32 width = aReader.ReadInt32();
+			Int32 height = aReader.ReadInt32();
+			
 			myResolutionList.SelectedIndex = 4;
 		}
 
-		void ReadMSAAFromFile(BinaryReader aReader)
+		void ReadQualityFromFile(BinaryReader aReader)
 		{
-			//int msaa = aReader.ReadInt32();
-
-			//if (msaa == 1)
-			//{
-			//    aaDropdown.SelectedIndex = 0;
-			//}
-			//else if (msaa == 2)
-			//{
-			//    aaDropdown.SelectedIndex = 1;
-			//}
-			//else if (msaa == 4)
-			//{
-			//    aaDropdown.SelectedIndex = 2;
-			//}
-		}
-
-		void ReadWindowedFromFile(BinaryReader aReader)
-		{
-			//int windowed = aReader.ReadInt32();
-
-			//if (windowed == 1)
-			//{
-			//    windowedCheckbox.Checked = true;
-			//}
-			//else
-			//{
-			//    windowedCheckbox.Checked = false;
-			//}
-		}
-
-		private void windowedCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			//if (windowedCheckbox.Checked == true)
-			//{
-			//    resolutionDropdown.Enabled = true;
-			//}
-			//else
-			//{
-			//    resolutionDropdown.Enabled = false;
-			//}
+			Int32 quality = aReader.ReadInt32();
+			myQualityList.SelectedIndex = quality;
 		}
 	}
 }

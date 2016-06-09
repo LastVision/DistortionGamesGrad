@@ -1,6 +1,7 @@
 #pragma once
 #include "GameState.h"
 #include <Subscriber.h>
+#include <Tweener.h>
 
 class ScoreWidget;
 
@@ -62,6 +63,24 @@ private:
 	int myAnimationsToRun;
 
 	int mySpinCost;
+
+	float myGUIAlpha;
+	float myScoreAlpha;
+
+	Prism::SpriteProxy* myFadeBackground;
+	Prism::SpriteProxy* myNewScoreSprite;
+
+	bool myShowNewScore;
+	float myShowNewScoreTimer;
+	float myNewScoreScale;
+
+	Tweener<float> myNewScoreAngleTweener;
+	float myAngleToRotate;
+	float myAngleToRotateTimer;
+	float myTotalRotation;
+	bool myIsRotating;
+
+	CU::Vector2<float> myWindowSize;
 
 };
 
