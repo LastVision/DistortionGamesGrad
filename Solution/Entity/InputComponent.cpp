@@ -99,11 +99,6 @@ void InputComponent::Update(float aDeltaTime)
 				{
 				}
 
-				if (myController->ButtonOnDown(eXboxButton::X))
-				{
-					myEntity.SendNote(ShouldDieNote());
-				}
-
 				if (myController->ButtonOnDown(eXboxButton::RTRIGGER))
 				{
 					myMovement->RightTriggerDown();
