@@ -80,6 +80,9 @@
     <ClCompile Include="HelpMenuState.cpp">
       <Filter>StateStack</Filter>
     </ClCompile>
+    <ClCompile Include="AreYouSureState.cpp">
+      <Filter>StateStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -163,6 +166,9 @@
       <Filter>StateStack</Filter>
     </ClInclude>
     <ClInclude Include="HelpMenuState.h">
+      <Filter>StateStack</Filter>
+    </ClInclude>
+    <ClInclude Include="AreYouSureState.h">
       <Filter>StateStack</Filter>
     </ClInclude>
   </ItemGroup>
