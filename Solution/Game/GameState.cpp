@@ -6,7 +6,7 @@
 
 void GameState::HandleControllerInMenu(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor)
 {
-	if (aController->IsConnected())
+	if (aController->IsConnected() && aManager->IsPaused() == false)
 	{
 		if (aController->ButtonOnDown(eXboxButton::A))
 		{

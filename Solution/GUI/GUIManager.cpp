@@ -61,8 +61,11 @@ namespace GUI
 		myMousePosition = myCursor->GetMousePosition();
 		myWidgets->Update(aDelta);
 
-		if (myIsPaused == false && myCursor->IsUsingController() == false)
+		if (myIsPaused == false)
 		{
+			if (myCursor->IsUsingController() == false)
+			{
+
 			CheckMouseMoved();
 			CheckMouseExited();
 			CheckMouseDown();
@@ -70,6 +73,12 @@ namespace GUI
 			CheckMouseReleased();
 
 			CheckMouseEntered();
+			}
+		}
+		else if (myActiveWidget != nullptr)
+		{
+			myActiveWidget->OnMouseExit();
+			myActiveWidget = nullptr;
 		}
 	}
 

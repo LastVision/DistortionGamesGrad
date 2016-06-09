@@ -381,10 +381,13 @@ void HatUnlockState::Spin()
 	myTotalTime = 2.09f;
 	myHatWonScaling = 1.f;
 	SAFE_DELETE(myHatWon);
+
+	myGUIManager->Pause();
 }
 
 void HatUnlockState::WinHat(int aHatID)
 {
+	myGUIManager->UnPause();
 	myIsSpinning = false;
 	HatManager::GetInstance()->UnlockHat(aHatID);
 	if (myAnimator != nullptr)
