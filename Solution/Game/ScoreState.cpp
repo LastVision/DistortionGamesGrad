@@ -199,6 +199,7 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		{
 			myScoreAlpha -= aDeltaTime * 2.f;
 			myGUIAlpha -= aDeltaTime * 2.f;
+			myHatsArrowAlpha -= aDeltaTime * 2.f;
 			GUI::WidgetContainer* container = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
 			static_cast<GUI::HighscoreWidget*>(container->At(4))->ReduceAlpha(aDeltaTime*2.f);
 		}
@@ -341,31 +342,34 @@ void ScoreState::Render()
 	{
 		myGUIManager->Render(myGUIAlpha);
 
-		CU::Vector2<float> goldPos = myWindowSize;
-		if (myNumberOfActiveScores == 1)
+		if (myShouldPopState == false)
 		{
-			goldPos.x *= 0.25f;
-		}
-		else
-		{
-			goldPos.x *= 0.1f;
-		}
-		goldPos.y *= 0.2f;
+			CU::Vector2<float> goldPos = myWindowSize;
+			if (myNumberOfActiveScores == 1)
+			{
+				goldPos.x *= 0.25f;
+			}
+			else
+			{
+				goldPos.x *= 0.1f;
+			}
+			goldPos.y *= 0.2f;
 
-		if (myAnimator != nullptr)
-		{
-			myAnimator->Render(goldPos);
-		}
+			if (myAnimator != nullptr)
+			{
+				myAnimator->Render(goldPos);
+			}
 
-		goldPos.x += myAnimationFrameSize.x * 0.15f;
-		goldPos.y += myAnimationFrameSize.y * 0.3f;
+			goldPos.x += myAnimationFrameSize.x * 0.15f;
+			goldPos.y += myAnimationFrameSize.y * 0.3f;
 
-		Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+			Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
-		if (myEarnedStars > 0)
-		{
-			Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
-			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+			if (myEarnedStars > 0)
+			{
+				Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
+				, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+			}
 		}
 
 		if (myRenderHatArrow == true)
