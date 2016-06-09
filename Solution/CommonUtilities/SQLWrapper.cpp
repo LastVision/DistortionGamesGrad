@@ -100,6 +100,16 @@ namespace CU
 		}
 	}
 
+	void SQLWrapper::WriteHatStat(const int aHatID)
+	{
+		if (aHatID == -1) return;
+		if (GetIsOnline() == true)
+		{
+			std::string query = "UPDATE HatStat SET UsageCount=UsageCount+1 WHERE HatID=" + std::to_string(aHatID);
+			ExecuteQuery(query.c_str());
+		}
+	}
+
 	CU::GrowingArray<Highscore> SQLWrapper::RetriveOnlineHighcore(const int aLevelID, const float aScore)
 	{
 		CU::GrowingArray<Highscore> toReturn(11);

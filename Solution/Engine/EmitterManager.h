@@ -33,7 +33,7 @@ public:
 	~EmitterManager();
 	void Initiate(Prism::Camera* aCamera);
 	void UpdateEmitters(float aDeltaTime);
-	void RenderEmitters(Prism::Texture* aTexture);
+	void RenderEmitters(Prism::Texture* aTexture, Prism::Texture* aSceneTexture);
 	void ReceiveMessage(const EmitterMessage& aMessage) override;
 private:
 	void ReadListOfLists(const std::string& aPath);

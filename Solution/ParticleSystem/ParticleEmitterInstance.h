@@ -9,6 +9,7 @@ class Entity;
 
 namespace Prism
 {
+	class Texture;
 	class Camera;
 	struct VertexBufferWrapper;
 
@@ -19,7 +20,7 @@ namespace Prism
 		~ParticleEmitterInstance();
 		void Initiate(ParticleEmitterData* aData, bool anAllowManyParticles);
 		void ReleaseData();
-		void Render();
+		void Render(Prism::Texture* aSceneTexture);
 		void Update(float aDeltaTime);
 		void Activate(bool aShouldRender = true);
 		bool IsActive();
@@ -34,7 +35,6 @@ namespace Prism
 
 		void SetRadius(float aRadius);
 		void SetSize(const CU::Vector3f& aSize);
-
 		void SetDirection(const CU::Vector3<float>& aDirection);
 		void ToggleDebugLines();
 
@@ -66,6 +66,9 @@ namespace Prism
 		CU::Matrix44f myOrientation;
 		CU::Matrix44f myOtherOrientation;
 
+		ID3DX11EffectShaderResourceVariable* myOffsetTexture = nullptr;
+		ID3DX11EffectShaderResourceVariable* mySceneTexture = nullptr;
+
 
 		CU::GrowingArray<GraphicalParticle> myParticleToGraphicsCard;
 
@@ -79,6 +82,7 @@ namespace Prism
 		
 		Texture* myTexture;
 		Texture* myEmissiveTexture;
+		Texture* myOffset;
 
 		ParticleEmitterData* myParticleEmitterData;
 		VertexBufferWrapper* myVertexWrapper;
