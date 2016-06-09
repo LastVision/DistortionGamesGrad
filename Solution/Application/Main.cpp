@@ -399,8 +399,6 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	{
 		file.read((char*)&width, sizeof(int));
 		file.read((char*)&height, sizeof(int));
-		file.read((char*)&msaa, sizeof(int));
-		file.read((char*)&windowed, sizeof(int));
 		file.read((char*)&graphicsSetting, sizeof(int));
 		file.read((char*)&enableCheat, sizeof(int));
 	}
