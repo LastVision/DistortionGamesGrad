@@ -11,6 +11,7 @@
 #include "PlayerGraphicsComponent.h"
 #include "ShouldDieNote.h"
 #include "SoundComponent.h"
+#include "ScoreComponent.h"
 
 DashFlyMovement::DashFlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -92,6 +93,7 @@ void DashFlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vect
 		eEntityType type = entity.GetType();
 
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
+		if (type == eEntityType::PLAYER && entity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) return;
 
 		myHasContact = true;
 
