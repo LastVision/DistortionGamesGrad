@@ -94,7 +94,16 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
-	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
+
+	if (GC::NightmareMode == true)
+	{
+		myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background_nightmare.dds");
+	}
+	else
+	{
+		myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
+	}
+
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());

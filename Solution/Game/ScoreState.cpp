@@ -184,7 +184,7 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
 	if (myShowNewScore == false)
 	{
-		myTimer -= aDeltaTime;
+	myTimer -= aDeltaTime;
 	}
 	else
 	{
@@ -328,32 +328,32 @@ void ScoreState::Render()
 
 	if (myShowNewScore == false)
 	{
-		if (myNumberOfActiveScores == 1)
+	if (myNumberOfActiveScores == 1)
+	{
+		for (int i = 0; i < myScores.Size(); ++i)
 		{
-			for (int i = 0; i < myScores.Size(); ++i)
+			if (myScores[i]->myActive == true)
 			{
-				if (myScores[i]->myActive == true)
-				{
-					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
-					break;
-				}
-			}
-		}
-		else
-		{
-			for (int i = 0; i < myScoreWidgets.Size(); ++i)
-			{
-				if (i == 0)
-				{
-					myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f), myScoreAlpha);
-				}
-				else
-				{
-					myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f), myScoreAlpha);
-				}
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+				break;
 			}
 		}
 	}
+	else
+	{
+		for (int i = 0; i < myScoreWidgets.Size(); ++i)
+		{
+			if (i == 0)
+			{
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+			}
+			else
+			{
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
+			}
+		}
+	}
+}
 }
 
 void ScoreState::ResumeState()
