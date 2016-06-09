@@ -134,7 +134,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		, { 128.f, 128.f }, { 64.f, 64.f });
 
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
-		, { 512.f, 256.f }, { 256.f, 128.f });
+		, { 400.f, 200.f }, { 200.f, 100.f });
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
@@ -287,20 +287,20 @@ void HatUnlockState::Render()
 			}
 
 			myHatWon->Render(windowSize, { myHatWonScaling, myHatWonScaling });
-			
 		}
-	}
 
-	if (GC::Gold < mySpinCost)
-	{
-		if (myAnimateNotEnoughCash == true)
+		if (GC::Gold < mySpinCost)
 		{
-			myNotEnoughCashScale = CU::Math::Lerp(1.f, 1.3f
-				, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
-		}
+			if (myAnimateNotEnoughCash == true)
+			{
+				myNotEnoughCashScale = CU::Math::Lerp(1.f, 1.3f
+					, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
+			}
 
-		goldPos.y -= myGoldBagSprite->GetSize().y * 1.1f;
-		myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });	
+			goldPos.y -= myGoldBagSprite->GetSize().y * 1.5f;
+			goldPos.x += myGoldBagSprite->GetSize().x * 1.2f;
+			myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });
+		}
 	}
 }
 
@@ -335,7 +335,7 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 					myNotEnoughCashTimer = myTimeToNotEnoughCash;
 				}
 			}
-			else 
+			else
 			{
 				myHasWonAllHats = true;
 
@@ -398,7 +398,7 @@ void HatUnlockState::WinHat(int aHatID)
 	for (int i = myHats.Size() - 1; i >= 0; --i)
 	{
 		if (aHatID == myHats[i].myID)
-		{		
+		{
 			myHatWon = myHats[i].mySprite;
 			myHats.RemoveCyclicAtIndex(i);
 			break;
