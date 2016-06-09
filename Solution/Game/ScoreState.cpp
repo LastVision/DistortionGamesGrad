@@ -40,6 +40,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, mySpinCost(0)
 	, myHatsArrowAlphaIsIncreasing(false)
 	, myRenderHatArrow(false)
+	, myGUIAlpha(0.f)
+	, myScoreAlpha(0.f)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -116,12 +118,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/WinBoltAnimation.xml");
 
-	int nextLevel = myCurrentLevel + 1;
-
-	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
-	{
-		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
-	}
+	//int nextLevel = myCurrentLevel + 1;
+	//
+	//if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
+	//{
+	//	static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
+	//}
 
 	if (GC::Gold >= mySpinCost && HatManager::GetInstance()->IsAllHatsUnlocked() == false)
 	{
@@ -174,6 +176,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 
 	if (myTimer < 0)
 	{
+		myGUIAlpha += aDeltaTime;
+		if (myGUIAlpha > 1.f)
+		{
+			myGUIAlpha = 1.f;
+		}
 		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 		if (myAnimator->IsPlayingAnimation() == false)
@@ -229,6 +236,14 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 			}
 		}
 	}
+	else
+	{
+		myScoreAlpha += aDeltaTime;
+		if (myScoreAlpha > 1.f)
+		{
+			myScoreAlpha = 1.f;
+		}
+	}
 
 	return myStateStatus;
 }
@@ -243,7 +258,7 @@ void ScoreState::Render()
 
 	if (myTimer < 0)
 	{
-		myGUIManager->Render();
+		myGUIManager->Render(myGUIAlpha);
 
 		CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
 		if (myNumberOfActiveScores == 1)
@@ -284,7 +299,7 @@ void ScoreState::Render()
 		{
 			if (myScores[i]->myActive == true)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
 				break;
 			}
 		}
@@ -295,11 +310,11 @@ void ScoreState::Render()
 		{
 			if (i == 0)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f), myScoreAlpha);
 			}
 			else
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f), myScoreAlpha);
 			}
 		}
 	}

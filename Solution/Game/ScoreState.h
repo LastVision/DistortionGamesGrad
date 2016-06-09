@@ -63,5 +63,8 @@ private:
 
 	int mySpinCost;
 
+	float myGUIAlpha;
+	float myScoreAlpha;
+
 };
 
