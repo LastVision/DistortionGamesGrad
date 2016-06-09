@@ -424,25 +424,41 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	else
 		aSetup.myWindowed = false;
 
-
-	//Low settings
+	//Low
 	if (graphicsSetting == 0)
 	{
 		GC::EnableCheapAmbient = true;
 		GC::EnableVSync = false;
 		GC::UseLowModels = true;
+		GC::EnableDynamicShadows = false;
+		GC::OptionsUseShadows = true;
 	}
+	//Medium
 	else if (graphicsSetting == 1)
 	{
 		GC::EnableCheapAmbient = false;
 		GC::EnableVSync = false;
 		GC::UseLowModels = true;
+		GC::EnableDynamicShadows = false;
+		GC::OptionsUseShadows = true;
 	}
+	//High
+	else if (graphicsSetting == 2)
+	{
+		GC::EnableCheapAmbient = false;
+		GC::EnableVSync = true;
+		GC::UseLowModels = false;
+		GC::EnableDynamicShadows = false;
+		GC::OptionsUseShadows = true;
+	}
+	//Ultra
 	else
 	{
 		GC::EnableCheapAmbient = false;
 		GC::EnableVSync = true;
 		GC::UseLowModels = false;
+		GC::EnableDynamicShadows = true;
+		GC::OptionsUseShadows = true;
 	}
 
 	if (enableCheat == 0)

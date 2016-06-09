@@ -53,12 +53,15 @@ namespace Prism
 
 		myInstancingHelper->Render(true);
 
-		/*for (int i = 0; i < myDynamicInstances.Size(); ++i)
+		if (GC::EnableDynamicShadows == true)
 		{
-			myDynamicInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
-		}
+			for (int i = 0; i < myDynamicInstances.Size(); ++i)
+			{
+				myDynamicInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
+			}
 
-		myInstancingHelper->Render(true);*/
+			myInstancingHelper->Render(true);
+		}
 	}
 
 	void Scene::RenderStatic()
