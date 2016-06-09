@@ -71,6 +71,7 @@ namespace Launcher
 
 			//pictureBox1.Image = Image.FromFile(myLogo);
 			pictureBox1.ImageLocation = Directory.GetCurrentDirectory() + "\\" + myLogo;
+			
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -88,6 +89,9 @@ namespace Launcher
 			myQualityList.Items.Add("Ultra");
 			myQualityList.SelectedIndex = 1;
 
+			myQualityList.DrawMode = DrawMode.OwnerDrawFixed;
+			myQualityList.DrawItem += myQualityList_DrawItem;
+			myQualityList.DropDownClosed += myQualityList_DropDownClosed;
 
 			if (File.Exists(myConfigPath))
 			{
@@ -97,6 +101,40 @@ namespace Launcher
 					ReadQualityFromFile(reader);
 				}
 			}
+		}
+
+		void myQualityList_DropDownClosed(object sender, EventArgs e)
+		{
+			toolTip1.Hide(myQualityList);
+		}
+
+		void myQualityList_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			if (e.Index < 0) { return; } // added this line thanks to Andrew's comment
+			string text = "0";
+			switch(e.Index)
+			{
+				case 0:
+					text = "High Performance";
+					break;
+				case 1:
+					text = "High Quality Lighting";
+					break;
+				case 2:
+					text = "High Quality Lighting\nHigh Detail Models";
+					break;
+				case 3:
+					text = "High Quality Lighting\nHigh Detail Models\nDynamic Shadows";
+
+					break;
+			}
+
+			e.DrawBackground();
+			using (SolidBrush br = new SolidBrush(e.ForeColor))
+			{ e.Graphics.DrawString(myQualityList.GetItemText(myQualityList.Items[e.Index]), e.Font, br, e.Bounds); }
+			if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+			{ toolTip1.Show(text, myQualityList, e.Bounds.Right, e.Bounds.Bottom); }
+			e.DrawFocusRectangle();
 		}
 
 		public bool IsProcessOpen(string name)
@@ -223,6 +261,23 @@ namespace Launcher
 		{
 			Int32 quality = aReader.ReadInt32();
 			myQualityList.SelectedIndex = quality;
+		}
+
+		private void myQualityList_MouseHover(object sender, EventArgs e)
+		{
+			
+		}
+
+		private void myQualityList_MouseLeave(object sender, EventArgs e)
+		{
+			toolTip1.Hide(this);
+		}
+
+		private void myQualityList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Point point = myQualityList.Location;
+			point.X += myQualityList.Width;
+			toolTip1.Show(myQualityList.SelectedIndex.ToString(), this, point);
 		}
 	}
 }
