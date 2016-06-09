@@ -56,7 +56,6 @@ private:
 
 	Prism::SpriteProxy* myLeftArrow;
 	Prism::SpriteProxy* myRightArrow;
-	Prism::SpriteProxy* myArrowBox;
 
 	float myUVScrollingTime;
 

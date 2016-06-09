@@ -384,6 +384,22 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::RETURN_TO_MENU);
 		}
+		else if (clickEvent == "player1_left")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::PLAYER_1_LEFT);
+		}
+		else if (clickEvent == "player1_right")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::PLAYER_1_RIGHT);
+		}
+		else if (clickEvent == "player2_left")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::PLAYER_2_LEFT);
+		}
+		else if (clickEvent == "player2_right")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::PLAYER_2_RIGHT);
+		}
 		else if (clickEvent == "enable_offline")
 		{
 			aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "onclick"), "id", myId);

@@ -6,6 +6,7 @@
 #include "Cursor.h"
 #include <Engine.h>
 #include "GUIManager.h"
+#include <OnClickMessage.h>
 #include "HighscoreWidget.h"
 #include "../InputWrapper/InputWrapper.h"
 #include "LevelButtonWidget.h"
@@ -450,7 +451,13 @@ namespace GUI
 				{
 					ButtonWidget* widget = new ButtonWidget(&aReader, widgetElement);
 					container->AddWidget(widget);
-
+					if (widget->GetEvent()->myEvent == eOnClickEvent::PLAYER_1_LEFT
+						|| widget->GetEvent()->myEvent == eOnClickEvent::PLAYER_1_RIGHT
+						|| widget->GetEvent()->myEvent == eOnClickEvent::PLAYER_2_LEFT
+						|| widget->GetEvent()->myEvent == eOnClickEvent::PLAYER_2_RIGHT)
+					{
+						continue;
+					}
 					if (myButtons.Size() == 0 || widget->GetPosition().y > myButtons.GetLast().GetLast()->GetPosition().y)
 					{
 						myButtons.Add(CU::GrowingArray<Widget*>(8));
