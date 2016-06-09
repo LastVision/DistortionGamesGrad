@@ -41,6 +41,9 @@ private:
 	CU::GrowingArray<ScoreWidget*> myScoreWidgets;
 
 	Prism::SpriteProxy* myHatsArrowSprite;
+	Prism::SpriteProxy* myBlackSprite;
+	float myPopStateTimer;
+	bool myShouldPopState;
 	CU::Vector2<float> myHatsArrowPosition;
 	float myHatsArrowAlpha;
 	bool myHatsArrowAlphaIsIncreasing;

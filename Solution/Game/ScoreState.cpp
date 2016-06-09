@@ -7,6 +7,7 @@
 #include <GameConstants.h>
 #include <HatManager.h>
 #include "HatState.h"
+#include <HighscoreWidget.h>
 #include "InputWrapper.h"
 #include "LevelFactory.h"
 #include <ModelLoader.h>
@@ -51,6 +52,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myAngleToRotateTimer(0.f)
 	, myTotalRotation(0.f)
 	, myIsRotating(true)
+	, myPopStateTimer(0.f)
+	, myShouldPopState(false)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -108,6 +111,9 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 	myNewScoreSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_new_score.dds"
 		, { 512.f, 512.f }, { 256.f, 256.f });
+
+	myBlackSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_black.dds"
+		, myWindowSize, myWindowSize * 0.5f);
 
 	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 }
@@ -183,6 +189,24 @@ void ScoreState::EndState()
 
 const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
+	if (myShouldPopState == true)
+	{
+		if (myPopStateTimer >= 1.f)
+		{
+			return myStateStatus;
+		}
+		if (myPopStateTimer < 0.5f)
+		{
+			myScoreAlpha -= aDeltaTime * 2.f;
+			myGUIAlpha -= aDeltaTime * 2.f;
+			GUI::WidgetContainer* container = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+			static_cast<GUI::HighscoreWidget*>(container->At(4))->ReduceAlpha(aDeltaTime*2.f);
+		}
+
+		myPopStateTimer += aDeltaTime;
+		return eStateStatus::eKeepState;
+	}
+
 	if (myShowNewScore == false)
 	{
 		myTimer -= aDeltaTime;
@@ -280,7 +304,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		}
 	}
 
-	return myStateStatus;
+	if (myShouldPopState == false)
+	{
+		return myStateStatus;
+	}
+	return eStateStatus::eKeepState;
 }
 
 void ScoreState::Render()
@@ -374,6 +402,15 @@ void ScoreState::Render()
 			}
 		}
 	}
+
+	if (myShouldPopState == true)
+	{
+		if (myPopStateTimer > 0.5f)
+		{
+			float alpha = myPopStateTimer / (1.f / 3.f);
+			myFadeBackground->Render(myWindowSize * 0.5f, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
+		}
+	}
 }
 
 void ScoreState::ResumeState()
@@ -413,6 +450,7 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::RESTART_LEVEL:
 	case eOnClickEvent::NEXT_LEVEL:
 		myStateStatus = eStateStatus::ePopMainState;
+		myShouldPopState = true;
 		break;
 	}
 }
