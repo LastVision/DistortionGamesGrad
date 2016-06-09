@@ -132,6 +132,7 @@ private:
 	float myShortestTimeSincePlayerDeath;
 	float myTimeBeforeRenderingPressToStart;
 	float myTimeBeforeRemovingPressToStartForPlayer;
+	bool myFirstFrame;
 };
 
 inline Prism::Scene* Level::GetScene() const

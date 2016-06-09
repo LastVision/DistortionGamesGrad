@@ -81,6 +81,7 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myShortestTimeSincePlayerDeath(0.f)
 	, myTimeBeforeRenderingPressToStart(4.f)
 	, myTimeBeforeRemovingPressToStartForPlayer(8.f)
+	, myFirstFrame(true)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -176,8 +177,6 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	}
 	myController->SetIsInMenu(false);
 
-	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
-
 	myScene->SortInstances();
 
 
@@ -193,10 +192,13 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	{
 		player->GetComponent<PlayerGraphicsComponent>()->CreateJoints();
 	}
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
 {
+	myFirstFrame = false;
 	if (myIsFreeCam == false)
 	{
 		myShadowLight->SetPosition(mySmartCamera->GetOrientation().GetPos4() + CU::Vector4<float>(25.f, -50.f, 1.f, 1.f));

@@ -3,6 +3,7 @@
 #include <Matrix.h>
 #include <GrowingArray.h>
 #include <Subscriber.h>
+#include <Tweener.h>
 
 class Level;
 class LevelFactory;
@@ -65,7 +66,11 @@ private:
 	Prism::TextProxy* myText;
 	Prism::SpriteProxy* myLoadingScreen;
 	Prism::SpriteProxy* myRotatingThing;
+	Prism::SpriteProxy* myBlackSprite;
 	float myRotationSpeed;
+	float myRotatingScale;
+	float myScaleTimer;
+	Tweener<float> myTweener;
 
 	bool myHasStartedMusicBetweenLevels;
 	int myLastLevel;
@@ -79,6 +84,7 @@ private:
 		START_GAME,
 	};
 	eState myState;
+	float myFirstFrameTimer;
 
 	bool myIsBetweenLevels;
 };

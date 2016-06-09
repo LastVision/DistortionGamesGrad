@@ -104,6 +104,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 	myNewScoreSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_new_score.dds"
 		, { 512.f, 512.f }, { 256.f, 256.f });
+
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 }
 
 ScoreState::~ScoreState()
@@ -171,7 +173,6 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 void ScoreState::EndState()
 {
-
 	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(true));
 	myCursor->SetShouldRender(false);
 }
@@ -225,8 +226,6 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 			}
 		}
 
-		myGUIManager->Update(aDeltaTime);
-
 		if (myEarnedStars > 0)
 		{
 			myGoldCostMovement += 25.f * aDeltaTime;
@@ -258,7 +257,10 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 					myHatsArrowAlphaIsIncreasing = true;
 				}
 			}
+
 		}
+
+		myGUIManager->Update(aDeltaTime);
 	}
 	else if (myShowNewScore == false)
 	{
@@ -324,32 +326,32 @@ void ScoreState::Render()
 
 	if (myShowNewScore == false)
 	{
-	if (myNumberOfActiveScores == 1)
-	{
-		for (int i = 0; i < myScores.Size(); ++i)
+		if (myNumberOfActiveScores == 1)
 		{
-			if (myScores[i]->myActive == true)
+			for (int i = 0; i < myScores.Size(); ++i)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
-				break;
+				if (myScores[i]->myActive == true)
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < myScoreWidgets.Size(); ++i)
+			{
+				if (i == 0)
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
+				}
+				else
+				{
+					myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
+				}
 			}
 		}
 	}
-	else
-	{
-		for (int i = 0; i < myScoreWidgets.Size(); ++i)
-		{
-			if (i == 0)
-			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
-			}
-			else
-			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
-			}
-		}
-	}
-}
 }
 
 void ScoreState::ResumeState()

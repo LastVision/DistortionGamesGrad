@@ -36,7 +36,10 @@ InGameState::InGameState(int aLevelID)
 	, myLoadingScreen(nullptr)
 	, myIsBetweenLevels(false)
 	, myRotationSpeed(3.14f)
+	, myRotatingScale(0.f)
+	, myScaleTimer(0.f)
 	, myState(eState::FIRST_FRAME)
+	, myFirstFrameTimer(0.f)
 {
 	myIsActiveState = false;
 
@@ -51,6 +54,7 @@ InGameState::InGameState(int aLevelID)
 
 	myLoadingScreen = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen.dds", size, size * 0.5f);
 	myRotatingThing = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_rotating_thing.dds", { 256.f, 256.f }, { 128.f, 128.f });
+	myBlackSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_black.dds", size, size * 0.5f);
 }
 
 InGameState::~InGameState()
@@ -62,6 +66,7 @@ InGameState::~InGameState()
 	SAFE_DELETE(myLevelFactory);
 	SAFE_DELETE(myText);
 	SAFE_DELETE(myLoadingScreen);
+	SAFE_DELETE(myRotatingThing);
 }
 
 void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -100,9 +105,9 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	}
 
 	myState = eState::FIRST_FRAME;
-	while (Prism::ModelLoader::GetInstance()->IsLoading() == true)
-	{
-	}
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
+
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void InGameState::EndState()
@@ -124,7 +129,11 @@ const eStateStatus InGameState::Update(const float& aDelta)
 	switch (myState)
 	{
 	case eState::FIRST_FRAME:
-		myState = eState::START_LOADING;
+		myFirstFrameTimer += aDelta;
+		if (myFirstFrameTimer >= 1.f / 2.5f)
+		{
+			myState = eState::START_LOADING;
+		}
 		break;
 	case eState::START_LOADING:
 		if (myStateStatus != eStateStatus::eKeepState)
@@ -150,14 +159,29 @@ const eStateStatus InGameState::Update(const float& aDelta)
 			}
 		}
 	case eState::LOADING:
+		if (myScaleTimer <=1.f)
+		{
+			myScaleTimer += aDelta ;
+			myRotatingScale = myTweener.DoTween(myScaleTimer, 0.f, 1.f, 1.f, eTweenType::SINUS_HALF);
+		}
+
 		myRotatingThing->Rotate(myRotationSpeed * aDelta);
 		if (Prism::ModelLoader::GetInstance()->IsLoading() == false)
 		{
+			myScaleTimer = 0.f;
 			myState = eState::LOADING_FINISHED;
 		}
 		break;
 	case eState::LOADING_FINISHED:		
-		myState = eState::START_GAME;
+		myScaleTimer += aDelta;
+		myRotatingScale = myTweener.DoTween(myScaleTimer, 1.f, -1.f, 1.f, eTweenType::SINUS_HALF);
+		myRotatingThing->Rotate(myRotationSpeed * aDelta);
+
+		if (myScaleTimer > 1.f)
+		{
+			myState = eState::START_GAME;
+		}
+
 		break;
 	case eState::START_GAME:
 		myStateStack->PushMainGameState(myLevel);
@@ -172,7 +196,11 @@ void InGameState::Render()
 	if (myIsBetweenLevels == false)
 	{
 		myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
-		myRotatingThing->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+		myRotatingThing->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.75f, { myRotatingScale, myRotatingScale });
+	}
+	else if (myState != eState::FIRST_FRAME)
+	{
+		myBlackSprite->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
 	}
 }
 
@@ -183,6 +211,7 @@ void InGameState::ResumeState()
 	myController->SetIsInMenu(false);
 	myIsBetweenLevels = true;
 	myState = eState::FIRST_FRAME;
+	myFirstFrameTimer = 0.f;
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
