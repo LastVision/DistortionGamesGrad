@@ -29,15 +29,14 @@
 InGameState::InGameState(int aLevelID)
 	: myGUIManager(nullptr)
 	, myLevelToLoad(aLevelID)
-	, myState(eInGameState::LEVEL)
 	, myLevelFactory(nullptr)
-	, myFailedLevelHash(false)
 	, myHasStartedMusicBetweenLevels(false)
 	, myLastLevel(aLevelID)
 	, myNextLevel(-1)
-	, myIsFirstFrame(true)
 	, myLoadingScreen(nullptr)
 	, myIsBetweenLevels(false)
+	, myRotationSpeed(3.14f)
+	, myState(eState::FIRST_FRAME)
 {
 	myIsActiveState = false;
 
@@ -51,6 +50,7 @@ InGameState::InGameState(int aLevelID)
 	CU::Vector2<float> size = Prism::Engine::GetInstance()->GetWindowSize();
 
 	myLoadingScreen = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen.dds", size, size * 0.5f);
+	myRotatingThing = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_rotating_thing.dds", { 256.f, 256.f }, { 128.f, 128.f });
 }
 
 InGameState::~InGameState()
@@ -75,8 +75,6 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 	EntityFactory::GetInstance()->LoadEntities("GeneratedData/LI_entity.xml");
 	myLevelFactory = new LevelFactory("GeneratedData/LI_level.xml", "GeneratedData/LI_level_nightmare.xml", *myCamera, myLevelToLoad);
-	//myLevel = myLevelFactory->LoadLevel(1);
-
 
 	myIsActiveState = true;
 
@@ -88,8 +86,6 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 	myNextLevel = 1;
 	myController->SetIsInMenu(false);
-
-	//PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 
 
 	if (GC::NightmareMode == true)
@@ -103,6 +99,7 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_MainMenu", 0);
 	}
 
+	myState = eState::FIRST_FRAME;
 	while (Prism::ModelLoader::GetInstance()->IsLoading() == true)
 	{
 	}
@@ -110,7 +107,6 @@ void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 
 void InGameState::EndState()
 {
-
 	if (GC::NightmareMode == true)
 	{
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_NightmareInGame", 0);
@@ -121,23 +117,25 @@ void InGameState::EndState()
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_InGameMusic", 0);
 		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_MainMenu", 0);
 	}
-
 }
 
-const eStateStatus InGameState::Update(const float&)
+const eStateStatus InGameState::Update(const float& aDelta)
 {
-	if (myIsFirstFrame == false)
+	switch (myState)
 	{
+	case eState::FIRST_FRAME:
+		myState = eState::START_LOADING;
+		break;
+	case eState::START_LOADING:
 		if (myStateStatus != eStateStatus::eKeepState)
 		{
 			return myStateStatus;
 		}
 
 		SET_RUNTIME(false);
-		Level* level = nullptr;
-		if (myLevelFactory->LoadLevel(level) == true)
+		if (myLevelFactory->LoadLevel(myLevel) == true)
 		{
-			myStateStack->PushMainGameState(level);
+			myState = eState::LOADING;
 		}
 		else
 		{
@@ -151,10 +149,19 @@ const eStateStatus InGameState::Update(const float&)
 				myStateStatus = eStateStatus::ePopMainState;
 			}
 		}
-	}
-	else
-	{
-		myIsFirstFrame = false;
+	case eState::LOADING:
+		myRotatingThing->Rotate(myRotationSpeed * aDelta);
+		if (Prism::ModelLoader::GetInstance()->IsLoading() == false)
+		{
+			myState = eState::LOADING_FINISHED;
+		}
+		break;
+	case eState::LOADING_FINISHED:		
+		myState = eState::START_GAME;
+		break;
+	case eState::START_GAME:
+		myStateStack->PushMainGameState(myLevel);
+		break;
 	}
 
 	return myStateStatus;
@@ -165,6 +172,7 @@ void InGameState::Render()
 	if (myIsBetweenLevels == false)
 	{
 		myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+		myRotatingThing->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
 	}
 }
 
@@ -174,6 +182,7 @@ void InGameState::ResumeState()
 	myLevelToLoad = -1;
 	myController->SetIsInMenu(false);
 	myIsBetweenLevels = true;
+	myState = eState::FIRST_FRAME;
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }

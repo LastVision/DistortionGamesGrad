@@ -54,24 +54,31 @@ public:
 private:
 	GUI::GUIManager* myGUIManager;
 	LevelFactory* myLevelFactory;
+	Level* myLevel;
 
 	Prism::Camera* myCamera;
 	CU::Matrix44f myCameraOrientation;
 
 	int myLevelToLoad;
-
-	eInGameState myState;
-
-	bool myFailedLevelHash;
-	bool myLevelIsFinished;
 	int myNextLevel;
 
 	Prism::TextProxy* myText;
 	Prism::SpriteProxy* myLoadingScreen;
+	Prism::SpriteProxy* myRotatingThing;
+	float myRotationSpeed;
 
 	bool myHasStartedMusicBetweenLevels;
 	int myLastLevel;
 
-	bool myIsFirstFrame;
+	enum class eState
+	{
+		FIRST_FRAME,
+		START_LOADING,
+		LOADING,
+		LOADING_FINISHED,
+		START_GAME,
+	};
+	eState myState;
+
 	bool myIsBetweenLevels;
 };
