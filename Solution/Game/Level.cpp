@@ -171,6 +171,10 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 	myScene->SortInstances();
 
+	if (GC::OptionsUseShadows == true)
+	{
+		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
+	}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -363,11 +367,6 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	if (GC::OptionsUseShadows == true)
-	{
-		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
-	}
-
 	myDeferredRenderer->Render(myScene, myBackground, myShadowLight, myEmitterManager);
 	myScene->DebugPrint();
 

@@ -53,12 +53,12 @@ namespace Prism
 
 		myInstancingHelper->Render(true);
 
-		for (int i = 0; i < myDynamicInstances.Size(); ++i)
+		/*for (int i = 0; i < myDynamicInstances.Size(); ++i)
 		{
 			myDynamicInstances[i]->RenderInstanced(*myCamera, *myInstancingHelper, true);
 		}
 
-		myInstancingHelper->Render(true);
+		myInstancingHelper->Render(true);*/
 	}
 
 	void Scene::RenderStatic()
