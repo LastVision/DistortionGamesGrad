@@ -59,5 +59,8 @@ private:
 	Prism::SpriteProxy* myArrowBox;
 
 	float myUVScrollingTime;
+
+	Prism::SpriteProxy* myNoHatsUnlockedSprite;
+	bool myHaveNoHats;
 };
 
