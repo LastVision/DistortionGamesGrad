@@ -22,9 +22,9 @@ namespace GUI
 	{
 	}
 
-	void TextWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void TextWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
-		Prism::Engine::GetInstance()->PrintText(myText, aParentPosition + myPosition, Prism::eTextType::RELEASE_TEXT);
+		Prism::Engine::GetInstance()->PrintText(myText, aParentPosition + myPosition, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 	}
 
 	void TextWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)

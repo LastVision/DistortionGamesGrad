@@ -43,7 +43,7 @@ namespace GUI
 		}
 	}
 
-	void WidgetContainer::Render(const CU::Vector2<float>& aParentPosition)
+	void WidgetContainer::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
 		if (myIsScrolling == true)
 		{
@@ -53,16 +53,17 @@ namespace GUI
 		{
 			if (myBackground != nullptr)
 			{
-				myBackground->Render(myPosition + myScrollStaticOffset + myScrollOffset);
+				myBackground->Render(myPosition + myScrollStaticOffset + myScrollOffset, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, anAlpha});
 			}
 			if (myVignette != nullptr)
 			{
-				myVignette->Render(myPosition);
+				myVignette->Render(myPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
 			}
 
 			for (int i = 0; i < myWidgets.Size(); i++)
 			{
-				myWidgets[i]->Render(myPosition + aParentPosition);
+				myWidgets[i]->Render(myPosition + aParentPosition, anAlpha);
 			}
 		}
 	}

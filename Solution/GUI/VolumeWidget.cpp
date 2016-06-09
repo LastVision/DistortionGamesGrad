@@ -92,9 +92,11 @@ namespace GUI
 		PostMaster::GetInstance()->UnSubscribe(this, 0);
 	}
 
-	void VolumeWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void VolumeWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
-		Prism::Engine::GetInstance()->PrintText(myText, { aParentPosition.x + myPosition.x + myTextPosition.x, aParentPosition.y + myPosition.y + myTextPosition.y }, Prism::eTextType::RELEASE_TEXT, myTextScale);
+		Prism::Engine::GetInstance()->PrintText(myText
+			, { aParentPosition.x + myPosition.x + myTextPosition.x, aParentPosition.y + myPosition.y + myTextPosition.y }
+		, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, anAlpha });
 		/*myDecreaseButton->Render(myPosition + aParentPosition);
 		myIncreaseButton->Render(myPosition + aParentPosition);*/
 	}

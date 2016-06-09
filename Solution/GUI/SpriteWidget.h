@@ -22,7 +22,7 @@ namespace GUI
 		SpriteWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement);
 		~SpriteWidget();
 
-		void Render(const CU::Vector2<float>& aParentPosition) override;
+		void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 

@@ -11,7 +11,7 @@ namespace GUI
 		virtual void Destroy();
 
 		virtual void Update(float aDelta);
-		virtual void Render(const CU::Vector2<float>& aParentPosition);
+		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha);
 
 		virtual void OnLeftMouseDown(const CU::Vector2<float>& aPosition);
 		virtual void OnLeftMousePressed(const CU::Vector2<float>& aPosition);

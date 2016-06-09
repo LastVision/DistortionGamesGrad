@@ -15,7 +15,7 @@ namespace GUI
 			, const CU::Vector2<float>& aTextOffset = { 0.f, 0.f });
 		virtual ~LevelButtonWidget();
 
-		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
+		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 		void Update(float aDeltaTime) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 

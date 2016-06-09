@@ -36,7 +36,7 @@ namespace GUI
 
 		void AddWidget(Widget* aWidget);
 		void Update(float aDelta);
-		void Render();
+		void Render(float anAlpha = 1.f);
 
 		void OnResize(int aWidth, int aHeight);
 

@@ -72,9 +72,9 @@ namespace GUI
 		}
 	}
 
-	void GUIManager::Render()
+	void GUIManager::Render(float anAlpha)
 	{
-		myWidgets->Render({ 0.f, 0.f });
+		myWidgets->Render({ 0.f, 0.f }, anAlpha);
 	}
 
 	void GUIManager::OnResize(int aWidth, int aHeight)
