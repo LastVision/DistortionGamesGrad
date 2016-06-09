@@ -27,7 +27,7 @@ public:
 	~ScoreWidget();
 
 	void Update(float aDeltaTime) override;
-	void Render(const CU::Vector2<float>& aParentPosition) override;
+	void Render(const CU::Vector2<float>& aParentPosition, float anAlpha = 1.f) override;
 
 	void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 

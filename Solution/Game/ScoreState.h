@@ -63,5 +63,17 @@ private:
 
 	int mySpinCost;
 
+	float myGUIAlpha;
+	float myScoreAlpha;
+
+	Prism::SpriteProxy* myFadeBackground;
+	Prism::SpriteProxy* myNewScoreSprite;
+
+	bool myShowNewScore;
+	float myShowNewScoreTimer;
+	float myNewScoreScale;
+
+	CU::Vector2<float> myWindowSize;
+
 };
 

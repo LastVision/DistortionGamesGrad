@@ -132,15 +132,18 @@ namespace GUI
 		myImageCurrent = nullptr;
 	}
 
-	void ButtonWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void ButtonWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
 		if (myIsVisible == true)
 		{
+			myColor.w = anAlpha;
+
 			myImageCurrent->Render(myPosition + aParentPosition, { 1.f, 1.f }, myColor);
 
 			if (myIsTextButton == true)
 			{
-				Prism::Engine::GetInstance()->PrintText(myButtonText, aParentPosition + myPosition + myTextOffset, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myButtonText, aParentPosition + myPosition + myTextOffset, Prism::eTextType::RELEASE_TEXT
+					, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 			}
 
 			if (myImageCurrent == myImageHover && myHoverText != "")
@@ -148,7 +151,7 @@ namespace GUI
 				CU::Vector2<float> hoverPosition = { myPosition.x + mySize.x / 2.f, myPosition.y };
 				hoverPosition += aParentPosition;
 
-				Prism::Engine::GetInstance()->PrintText(myHoverText, hoverPosition, Prism::eTextType::RELEASE_TEXT);
+				Prism::Engine::GetInstance()->PrintText(myHoverText, hoverPosition, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 			}
 		}
 	}

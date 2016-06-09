@@ -13,6 +13,8 @@ namespace GUI
 		, myHighscores(64)
 		, myCurrentLevel(aLevelID)
 		, myTextScale(1.f)
+		, myOwnAlpha(0.f)
+		, myParentAlpha(0.f)
 	{
 		std::string spritePathBackground = "";
 
@@ -57,18 +59,32 @@ namespace GUI
 		SAFE_DELETE(myBackgroundSprite);
 	}
 
-	void HighscoreWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void HighscoreWidget::Update(float aDelta)
 	{
+		if (myParentAlpha >= 1.f)
+		{
+			myOwnAlpha += aDelta;
+			if (myOwnAlpha > 1.f)
+			{
+				myOwnAlpha = 1.f;
+			}
+		}
+	}
+
+	void HighscoreWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
+	{
+		myParentAlpha = anAlpha;
+
 		if ((myIsCoop == false && GC::CurrentActivePlayers == 1) || (myIsCoop == true && GC::CurrentActivePlayers == 2))
 		{
 			Prism::Engine* engine = Prism::Engine::GetInstance();
-			myBackgroundSprite->Render(myPosition + aParentPosition);
-			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
-			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
-			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
-			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
-			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
-			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale);
+			myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
 		}
 	}
 
@@ -77,7 +93,7 @@ namespace GUI
 		Widget::OnResize(aNewSize, anOldSize);
 		myBackgroundSprite->SetSize(mySize, mySize / 2.f);
 		CU::Vector2<float> ratio = aNewSize / anOldSize;
-		myTextScale = ratio.y;
+		myTextScale = 1.f;
 		myTextPosition *= ratio;
 		myTextRankPosition *= ratio;
 		myTextNamePosition *= ratio;

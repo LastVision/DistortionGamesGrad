@@ -40,6 +40,13 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, mySpinCost(0)
 	, myHatsArrowAlphaIsIncreasing(false)
 	, myRenderHatArrow(false)
+	, myGUIAlpha(0.f)
+	, myScoreAlpha(0.f)
+	, myFadeBackground(nullptr)
+	, myNewScoreSprite(nullptr)
+	, myShowNewScore(false)
+	, myShowNewScoreTimer(2.f)
+	, myNewScoreScale(1.5f)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -89,6 +96,14 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 	myHatsArrowSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_hats_arrow.dds"
 		, { 256.f, 64.f }, { 128.f, 64.f });
+
+	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
+
+	myFadeBackground = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_background.dds"
+		, myWindowSize, myWindowSize * 0.5f);
+
+	myNewScoreSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_new_score.dds"
+		, { 512.f, 512.f }, { 256.f, 256.f });
 }
 
 ScoreState::~ScoreState()
@@ -96,6 +111,8 @@ ScoreState::~ScoreState()
 	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(myGUIManager);
 	SAFE_DELETE(myHatsArrowSprite);
+	SAFE_DELETE(myFadeBackground);
+	SAFE_DELETE(myNewScoreSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -116,12 +133,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/WinBoltAnimation.xml");
 
-	int nextLevel = myCurrentLevel + 1;
-
-	if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
-	{
-		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
-	}
+	//int nextLevel = myCurrentLevel + 1;
+	//
+	//if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
+	//{
+	//	static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
+	//}
 
 	if (GC::Gold >= mySpinCost && HatManager::GetInstance()->IsAllHatsUnlocked() == false)
 	{
@@ -146,7 +163,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	{
 	}
 
-	myAnimationFrameSize = { 256.f, 256.f};
+	myAnimationFrameSize = { 256.f, 256.f };
 
 	if (myEarnedStars == 0)
 	{
@@ -165,7 +182,20 @@ void ScoreState::EndState()
 
 const eStateStatus ScoreState::Update(const float& aDeltaTime)
 {
+	if (myShowNewScore == false)
+	{
 	myTimer -= aDeltaTime;
+	}
+	else
+	{
+		myShowNewScoreTimer -= aDeltaTime;
+		myNewScoreScale -= aDeltaTime;
+		myNewScoreScale = fmax(myNewScoreScale, 1.f);
+		if (myShowNewScoreTimer <= 0.f)
+		{
+			myShowNewScore = false;
+		}
+	}
 
 	for each (ScoreWidget* widget in myScoreWidgets)
 	{
@@ -174,6 +204,11 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 
 	if (myTimer < 0)
 	{
+		myGUIAlpha += aDeltaTime;
+		if (myGUIAlpha > 1.f)
+		{
+			myGUIAlpha = 1.f;
+		}
 		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 		if (myAnimator->IsPlayingAnimation() == false)
@@ -229,6 +264,14 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 			}
 		}
 	}
+	else if (myShowNewScore == false)
+	{
+		myScoreAlpha += aDeltaTime;
+		if (myScoreAlpha > 1.f)
+		{
+			myScoreAlpha = 1.f;
+		}
+	}
 
 	return myStateStatus;
 }
@@ -241,11 +284,16 @@ void ScoreState::Render()
 		DEBUG_PRINT(score->myTime);
 	}
 
-	if (myTimer < 0)
+	if (myShowNewScore == true)
 	{
-		myGUIManager->Render();
+		myFadeBackground->Render(myWindowSize * 0.5f);
+		myNewScoreSprite->Render(myWindowSize * 0.5f, { myNewScoreScale, myNewScoreScale });
+	}
+	else if (myTimer < 0)
+	{
+		myGUIManager->Render(myGUIAlpha);
 
-		CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
+		CU::Vector2<float> goldPos = myWindowSize;
 		if (myNumberOfActiveScores == 1)
 		{
 			goldPos.x *= 0.25f;
@@ -278,13 +326,15 @@ void ScoreState::Render()
 		}
 	}
 
+	if (myShowNewScore == false)
+	{
 	if (myNumberOfActiveScores == 1)
 	{
 		for (int i = 0; i < myScores.Size(); ++i)
 		{
 			if (myScores[i]->myActive == true)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
 				break;
 			}
 		}
@@ -295,14 +345,15 @@ void ScoreState::Render()
 		{
 			if (i == 0)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
 			}
 			else
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f));
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
 			}
 		}
 	}
+}
 }
 
 void ScoreState::ResumeState()
@@ -327,6 +378,7 @@ void ScoreState::PauseState()
 
 void ScoreState::OnResize(int, int)
 {
+	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
 }
 
 void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
@@ -363,9 +415,11 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	int levelIDScore = 0;
 	int diffStars = 0;
 	int newStars = 0;
+	bool hasPreviousScore = false;
 
 	if (file.is_open() == true)
 	{
+		hasPreviousScore = true;
 		file >> levelIDScore >> currentScore.myTime >> currentStars;
 	}
 	file.close();
@@ -414,6 +468,10 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	if (diffStars > 0)
 	{
 		GC::Gold += diffStars;
+		if (hasPreviousScore == true)
+		{
+			myShowNewScore = true;
+		}
 	}
 
 	myEarnedStars = diffStars > 0 ? diffStars : 0;

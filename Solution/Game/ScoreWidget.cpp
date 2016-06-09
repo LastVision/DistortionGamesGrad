@@ -72,18 +72,18 @@ void ScoreWidget::Update(float aDeltaTime)
 	}
 }
 
-void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
+void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 {
 	if (myIsVisible == true && myScore->myActive == true)
 	{
-		myBackground->Render(myPosition + aParentPosition);
-		myBar->Render(myPosition + aParentPosition);
+		myBackground->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
+		myBar->Render(myPosition + aParentPosition, anAlpha);
 		
 		CU::Vector2<float> starOffset(138.f, -150.f);
 
 		for (int i = 0; i < myStars.Size(); ++i)
 		{
-			myStars[i]->Render(myPosition + aParentPosition + CU::Vector2<float>(i * starOffset.x, starOffset.y) - CU::Vector2<float>(starOffset.x, 0.f));
+			myStars[i]->Render(myPosition + aParentPosition + CU::Vector2<float>(i * starOffset.x, starOffset.y) - CU::Vector2<float>(starOffset.x, 0.f), anAlpha);
 		}
 
 		std::stringstream ss;
@@ -119,11 +119,13 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition)
 			ss << "s";
 		}
 
-		Prism::Engine::GetInstance()->PrintText(ss.str(), aParentPosition + myPosition + CU::Vector2<float>(-100.f, 120.f), Prism::eTextType::RELEASE_TEXT);
+		Prism::Engine::GetInstance()->PrintText(ss.str(), aParentPosition + myPosition + CU::Vector2<float>(-100.f, 120.f)
+			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 
-		Prism::Engine::GetInstance()->PrintText(CU::Concatenate("%i sec          %i sec          %i sec"
+		Prism::Engine::GetInstance()->PrintText(CU::Concatenate("%i sec          %i sec        %i sec"
 			, int(myScoreInfo.myLongTime), int(myScoreInfo.myMediumTime), int(myScoreInfo.myShortTime))
-			, aParentPosition + myPosition + CU::Vector2<float>(-243.f, -50.f), Prism::eTextType::RELEASE_TEXT);
+			, aParentPosition + myPosition + CU::Vector2<float>(-243.f, -50.f), Prism::eTextType::RELEASE_TEXT
+			, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 	}
 }
 

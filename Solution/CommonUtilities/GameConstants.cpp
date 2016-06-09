@@ -10,6 +10,7 @@ int GC::SHNodeSize = 4;
 bool GC::EnableCheapAmbient = false;
 bool GC::EnableVSync = true;
 bool GC::UseLowModels = true;
+bool GC::EnableDynamicShadows = false;
 
 int GC::Difficulty = 10;
 

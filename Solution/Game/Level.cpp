@@ -94,7 +94,16 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	myEmitterManager = new Prism::EmitterManager();
 	myEmitterManager->Initiate(&myCamera);
 	Prism::ModelLoader::GetInstance()->Pause();
-	myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
+
+	if (GC::NightmareMode == true)
+	{
+		myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background_nightmare.dds");
+	}
+	else
+	{
+		myBackground = Prism::TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/T_background.dds");
+	}
+
 	myDeferredRenderer = new Prism::DeferredRenderer();
 	myFullscreenRenderer = new Prism::Renderer();
 	myShadowLight = new Prism::SpotLightShadow(aCamera.GetOrientation());
@@ -171,6 +180,8 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 	myScene->SortInstances();
 
+
+	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -363,7 +374,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 void Level::Render()
 {
-	if (GC::OptionsUseShadows == true)
+	if (GC::OptionsUseShadows == true && GC::EnableDynamicShadows == true)
 	{
 		myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
 	}
