@@ -74,8 +74,14 @@ namespace Prism
 
 		InitFullscreenQuad();
 
-		myCubemap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/CubeMap/T_cubemap_level01.dds");
-
+		if (GC::NightmareMode == true)
+		{
+			myCubemap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/CubeMap/T_cubemap_level01_nightmare.dds");
+		}
+		else
+		{
+			myCubemap = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/CubeMap/T_cubemap_level01.dds");
+		}
 		myFinishedTexture = new Texture();
 		myFinishedTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
@@ -359,7 +365,14 @@ namespace Prism
 
 		if (GC::EnableCheapAmbient == true)
 		{
-			Render(myAmbientPass->myEffect, "Render_Cheap");
+			if (GC::NightmareMode == true)
+			{
+				Render(myAmbientPass->myEffect, "Render_Cheap_Nightmare");
+			}
+			else
+			{
+				Render(myAmbientPass->myEffect, "Render_Cheap");
+			}
 		}
 		else
 		{
