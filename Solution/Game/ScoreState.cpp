@@ -125,6 +125,7 @@ ScoreState::~ScoreState()
 	SAFE_DELETE(myHatsArrowSprite);
 	SAFE_DELETE(myFadeBackground);
 	SAFE_DELETE(myNewScoreSprite);
+	SAFE_DELETE(myBlackSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
