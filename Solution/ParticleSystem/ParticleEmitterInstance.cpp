@@ -11,7 +11,7 @@
 #include <Engine.h>
 #include "../Entity/Entity.h"
 #include "../Entity/InputComponent.h"
-//#include "../Entity/SawbladeComponent.h"
+#include <Texture.h>
 
 namespace Prism
 {
@@ -48,11 +48,9 @@ namespace Prism
 
 		DL_PRINT(("Loading :" + myEmitterPath).c_str());
 		DL_ASSERT_EXP(anAllowManyParticles == true || particleCount <= 201, "Can't have more than 201 particles in an emitter!");
-		TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Particle/T_particle_emissive.dds");
+
 		myGraphicalParticles.Init(particleCount);
 		myLogicalParticles.Init(particleCount);
-
-
 
 		for (int i = 0; i < particleCount; ++i)
 		{
@@ -75,11 +73,24 @@ namespace Prism
 		myParticleEmitterData = nullptr;
 	}
 
-	void ParticleEmitterInstance::Render()
+	void ParticleEmitterInstance::Render(Prism::Texture* aSceneTexture)
 	{
 		int toGraphicsCard = UpdateVertexBuffer();
 		myParticleEmitterData->myEffect->SetTexture(myTexture);
 		myParticleEmitterData->myEffect->SetEmissiveTexture(myEmissiveTexture);
+
+		if (myParticleEmitterData->myHasHeatHaze == true)
+		{
+			if (myOffsetTexture != nullptr)
+			{
+				myOffsetTexture->SetResource(myOffset ? myOffset->GetShaderView() : nullptr);
+			}
+
+			if (mySceneTexture != nullptr)
+			{
+				mySceneTexture->SetResource(aSceneTexture ? aSceneTexture->GetShaderView() : nullptr);
+			}
+		}
 
 		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
 		context->IASetVertexBuffers(
@@ -89,9 +100,17 @@ namespace Prism
 			, &myVertexWrapper->myStride
 			, &myVertexWrapper->myByteOffset);
 
+
+		ID3DX11EffectTechnique* tech = myParticleEmitterData->myEffect->GetTechnique();
+		if (myParticleEmitterData->myHasHeatHaze == true)
+		{
+			tech = myParticleEmitterData->myEffect->GetTechnique("Render_HeatHaze");
+		}
+		tech->GetDesc(myParticleEmitterData->myTechniqueDesc);
+
 		for (UINT i = 0; i < myParticleEmitterData->myTechniqueDesc->Passes; ++i)
 		{
-			myParticleEmitterData->myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, context);
+			tech->GetPassByIndex(i)->Apply(0, context);
 			context->Draw(toGraphicsCard, 0);
 		}
 		myParticleEmitterData->myEffect->SetTexture(NULL);
@@ -145,13 +164,21 @@ namespace Prism
 
 	void ParticleEmitterInstance::Reset()
 	{
+		mySceneTexture = myParticleEmitterData->myEffect->GetEffect()->GetVariableByName("SceneTexture")->AsShaderResource();
+		DL_ASSERT_EXP(mySceneTexture->IsValid() == TRUE, "Failed to get the SceneTexture Variable in Particles!");
+
+		myOffsetTexture = myParticleEmitterData->myEffect->GetEffect()->GetVariableByName("OffsetTexture")->AsShaderResource();
+		DL_ASSERT_EXP(myOffsetTexture->IsValid() == TRUE, "Failed to get the OffsetTexture Variable in Particles!");
+
+
+
 
 		for (int i = 0; i < myGraphicalParticles.GetCapacity(); ++i)
 		{
 			myGraphicalParticles[i] = GraphicalParticle();
 			myLogicalParticles[i] = LogicalParticle();
 		}
-
+		myOffset = TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/Particle/T_Offset.dds");
 		myLiveParticleCount = 0;
 
 		myDiffColor = (myParticleEmitterData->myData.myEndColor - myParticleEmitterData->myData.myStartColor)
@@ -249,7 +276,7 @@ namespace Prism
 				}/*
 				else if (myEntity->GetComponent<SawBladeComponent>() != nullptr)
 				{
-					myOrientation.SetPos(myEntity->GetComponent<SawBladeComponent>()->GetParticlePos());
+				myOrientation.SetPos(myEntity->GetComponent<SawBladeComponent>()->GetParticlePos());
 				}*/
 			}
 

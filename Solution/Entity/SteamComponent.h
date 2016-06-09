@@ -28,7 +28,6 @@ public:
 private:
 
 	Entity* mySteam;
-
 	float myDelayBeforeSteam;
 	float mySteamInterval;
 	float mySteamTime;
@@ -40,7 +39,7 @@ private:
 	float myTimeBeforeVentOpens;
 
 	bool myIsConstant;
-
+	
 	bool myIsSmoking;
 	bool myIsOpen;
 };
