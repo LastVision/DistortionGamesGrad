@@ -16,6 +16,7 @@
 #include "ShouldDieNote.h"
 #include "StomperComponent.h"
 #include <EmitterMessage.h>
+#include "ScoreComponent.h"
 #include "SoundComponent.h"
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
@@ -127,6 +128,7 @@ void FlyMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3<
 
 		const eEntityType& type = aComponent->GetEntity().GetType();
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
+		if (type == eEntityType::PLAYER && entity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) return;
 		if (type == eEntityType::STOMPER && entity.IsStomperMoving() == true)
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());

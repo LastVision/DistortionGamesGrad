@@ -69,6 +69,7 @@ namespace Prism
 
 		int	myParticlesPerEmitt = 0;
 
+		bool myHasHeatHaze = false;
 		bool myUseEmitterLifeTime = false;
 		bool myUseAlphaDelta = false;
 		bool myIsActiveAtStart = false;

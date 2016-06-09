@@ -96,7 +96,7 @@ namespace Prism
 		myParticleTexture = new Texture();
 		myParticleTexture->Init(windowSize.x, windowSize.y
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
+			, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 
 		myDecal = new DecalPass();
@@ -431,9 +431,13 @@ namespace Prism
 
 	void DeferredRenderer::RenderParticles(EmitterManager* aParticleEmitterManager)
 	{
+
+		Engine::GetInstance()->GetContex()->CopyResource(myParticleTexture->GetTexture(),GetFinishedTexture()->GetTexture());
+
 		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer, myActualParticleDepth->GetDepthStencilView());
-		aParticleEmitterManager->RenderEmitters(myParticleDepth);
+			aParticleEmitterManager->RenderEmitters(myParticleDepth, myParticleTexture);
+		
 		/*
 		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(rt, myClearColor);

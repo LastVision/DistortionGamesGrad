@@ -12,6 +12,7 @@
 #include "WalkMovement.h"
 #include <EmitterMessage.h>
 #include <PostMaster.h>
+#include "ScoreComponent.h"
 
 WalkMovement::WalkMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -153,6 +154,7 @@ void WalkMovement::HandleRaycast(PhysicsComponent* aComponent, const CU::Vector3
 		const eEntityType& type = aComponent->GetEntity().GetType();
 
 		if (type == eEntityType::SAW_BLADE || type == eEntityType::SPIKE || type == eEntityType::SCRAP || type == eEntityType::GOAL_POINT) return;
+		if (type == eEntityType::PLAYER && entity.GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == true) return;
 		if (type == eEntityType::BOUNCER || (type == eEntityType::STOMPER && entity.IsStomperMoving() == true))
 		{
 			float dot = CU::Dot(aHitNormal, aComponent->GetEntity().GetOrientation().GetUp());

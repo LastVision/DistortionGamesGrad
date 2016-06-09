@@ -83,7 +83,7 @@ namespace Prism
 		}
 	}
 
-	void EmitterManager::RenderEmitters(Prism::Texture* aTexture)
+	void EmitterManager::RenderEmitters(Prism::Texture* aTexture, Prism::Texture* aSceneTexture)
 	{
 		Prism::ParticleDataContainer::GetInstance()->SetGPUData(*myCamera, aTexture);
 		for (int i = 0; i < myEmitterList.Size(); ++i)
@@ -112,7 +112,7 @@ namespace Prism
 					else
 					{
 						CU::Vector3<float> pos = instance->GetPosition() - myCamera->GetOrientation().GetPos();
-						instance->Render();
+						instance->Render(aSceneTexture);
 					}
 				}
 

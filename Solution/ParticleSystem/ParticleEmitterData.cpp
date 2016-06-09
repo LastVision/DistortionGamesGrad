@@ -122,6 +122,7 @@ namespace Prism
 		aReader->ForceReadAttribute(element, "circleEmitter", myIsCircle);
 		aReader->ForceReadAttribute(element, "hollowEmitter", myIsHollow);
 		aReader->ForceReadAttribute(element, "affectedByGravity", myIsAffectedByGravity);
+		aReader->ReadAttribute(element, "heatHaze", myHasHeatHaze);
 
 		element = aReader->ForceFindFirstChild(anElement, "EmitterSize");
 		aReader->ForceReadAttribute(element, "x", "y", "z", myEmitterSize);
@@ -156,7 +157,14 @@ namespace Prism
 	{
 		HRESULT hr;
 		D3DX11_PASS_DESC passDesc;
-		hr = myEffect->GetTechnique("Render")->GetPassByIndex(0)->GetDesc(&passDesc);
+		if (myHasHeatHaze == false)
+		{
+			hr = myEffect->GetTechnique("Render")->GetPassByIndex(0)->GetDesc(&passDesc);
+		}
+		else
+		{
+			hr = myEffect->GetTechnique("Render_HeatHaze")->GetPassByIndex(0)->GetDesc(&passDesc);
+		}
 		DL_ASSERT_EXP(!FAILED(hr), "[ParticleEmitterData](CreateInputLayout) : Failed to get Pass Description!");
 
 		const D3D11_INPUT_ELEMENT_DESC VertexParticleLayout[] =
