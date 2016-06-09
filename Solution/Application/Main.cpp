@@ -422,7 +422,6 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	else
 		aSetup.myWindowed = false;
 
-	graphicsSetting = 0;
 	//Low
 	if (graphicsSetting == 0)
 	{
