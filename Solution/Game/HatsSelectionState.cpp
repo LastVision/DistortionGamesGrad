@@ -104,7 +104,7 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopSubState;
 	}
 	myUVScrollingTime += aDeltaTime;
-	//HandleControllerInMenu(myController, myGUIManager);
+	HandleControllerInSelection(myController, myGUIManager, myCursor);
 	myController->Update(aDeltaTime);
 	mySecondController->Update(aDeltaTime);
 	myGUIManager->Update(aDeltaTime);
@@ -225,5 +225,53 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::HAT_QUIT:
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
+	}
+}
+
+void HatsSelectionState::HandleControllerInSelection(CU::ControllerInput* aController, GUI::GUIManager* aManager, GUI::Cursor* aCursor)
+{
+	if (aController->IsConnected())
+	{
+		if (aController->ButtonOnDown(eXboxButton::A))
+		{
+			aManager->PressSelectedButton();
+		}
+
+		float controllerX = aController->LeftThumbstickX();
+		float controllerY = aController->LeftThumbstickY();
+
+		if (controllerY >= 0.5f)
+		{
+			if (myControllerPressedUp == false)
+			{
+				myControllerPressedUp = true;
+				aManager->SelectButtonUp();
+			}
+		}
+		else
+		{
+			myControllerPressedUp = false;
+		}
+
+		if (controllerY <= -0.5f)
+		{
+			if (myControllerPressedDown == false)
+			{
+				myControllerPressedDown = true;
+				aManager->SelectButtonDown();
+			}
+		}
+		else
+		{
+			myControllerPressedDown = false;
+		}
+
+		
+
+		if (myControllerPressedDown == true || myControllerPressedUp == true)
+		{
+			aCursor->SetIsUsingController(true);
+			aManager->Unhover();
+		}
 	}
 }

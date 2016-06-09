@@ -51,11 +51,12 @@ namespace GUI
 		}
 	}
 
-	void BarWidget::Render(const CU::Vector2<float>& aParentPosition)
+	void BarWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
-		myBackgroundSprite->Render(myPosition + aParentPosition);
+		myColor.w = anAlpha;
+		myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
 		myValueSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, myColor);
-		myForegroundSprite->Render(myPosition + aParentPosition);
+		myForegroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
 	}
 
 	void BarWidget::OnResize(const CU::Vector2<float>& aNewWindowSize, const CU::Vector2<float>& anOldWindowSize)

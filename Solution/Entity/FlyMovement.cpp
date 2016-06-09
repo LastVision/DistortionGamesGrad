@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include <AudioInterface.h>
 #include "ContactNote.h"
 #include "FlyMovement.h"
 #include "MovementComponent.h"
@@ -14,6 +16,7 @@
 #include "ShouldDieNote.h"
 #include "StomperComponent.h"
 #include <EmitterMessage.h>
+#include "SoundComponent.h"
 
 FlyMovement::FlyMovement(const MovementComponentData& aData, CU::Matrix44f& anOrientation, MovementComponent& aMovementComponent)
 	: Movement(aData, anOrientation, aMovementComponent)
@@ -229,7 +232,23 @@ void FlyMovement::HandleRaycastHead(PhysicsComponent* aComponent, const CU::Vect
 		if (aComponent->GetEntity().GetType() != eEntityType::SCRAP
 			&& aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 		{
-			myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
+			if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+			{
+				myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::HEAD));
+				Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LooseHead"
+					, myMovementComponent.GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
+
+
+				if (aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)
+				{
+					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Sawed"
+						, aComponent->GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
+
+					CU::Vector3f dir = aComponent->GetEntity().GetOrientation().GetPos() - myMovementComponent.GetEntity().GetOrientation().GetPos();
+					CU::Normalize(dir);
+					PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", myMovementComponent.GetEntity().GetOrientation().GetPos(), true, -dir, true));
+				}
+			}
 		}
 	}
 }
@@ -244,7 +263,22 @@ void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vect
 		{
 			if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
 			{
-				myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+				if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
+				{
+					myMovementComponent.GetEntity().SendNote(LoseBodyPartNote(eScrapPart::LEGS));
+					Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_LooseLegs"
+						, myMovementComponent.GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
+
+					if (aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)
+					{
+						Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Sawed"
+							, aComponent->GetEntity().GetComponent<SoundComponent>()->GetAudioSFXID());
+
+						CU::Vector3f dir = aComponent->GetEntity().GetOrientation().GetPos() - myMovementComponent.GetEntity().GetOrientation().GetPos();
+						CU::Normalize(dir);
+						PostMaster::GetInstance()->SendMessage(EmitterMessage("Saw_Blade", myMovementComponent.GetEntity().GetOrientation().GetPos(), true, -dir, true));
+					}
+				}
 			}
 		}
 	}

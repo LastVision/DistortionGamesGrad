@@ -65,18 +65,18 @@ void StarWidget::UpdateScoreStars(float aDeltaTime)
 
 }
 
-void StarWidget::Render(const CU::Vector2<float>& aParentPosition)
+void StarWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 {
 	if (myIsVisible == true)
 	{
-		myBackground->Render(myPosition + aParentPosition);
+		myBackground->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, anAlpha });
 		myParentPosition = aParentPosition;
 		if (myActive == true)
 		{
 			float alpha = fmaxf(0, myTime);
 			Tweener<float> tweener;
 			float scale = tweener.DoTween(alpha, 0, 1.f, 1.f, eTweenType::SINUS_HALF);
-			myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(scale, scale));
+			myStar->Render(myPosition + aParentPosition, CU::Vector2<float>(scale, scale), { 1.f, 1.f, 1.f, anAlpha });
 		}
 	}
 }

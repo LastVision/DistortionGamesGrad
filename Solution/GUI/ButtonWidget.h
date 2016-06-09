@@ -27,7 +27,7 @@ namespace GUI
 			const std::string& aButtonText = "default", const std::string& = "", const CU::Vector2<float>& aTextOffset = { 0.f, 0.f });
 		virtual ~ButtonWidget();
 
-		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
+		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
@@ -50,7 +50,7 @@ namespace GUI
 
 		void SetActive(const bool aActiveFlag);
 
-		void SwitchGradient() override;
+		void SwitchGradient(bool aShouldGradient) override;
 
 	protected:
 		void Click();

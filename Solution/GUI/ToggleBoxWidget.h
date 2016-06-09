@@ -11,7 +11,7 @@ namespace GUI
 		ToggleBoxWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement);
 		~ToggleBoxWidget();
 
-		virtual void Render(const CU::Vector2<float>& aParentPosition) override;
+		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;

@@ -22,7 +22,7 @@ namespace GUI
 	{
 	}
 
-	void Widget::Render(const CU::Vector2<float>&)
+	void Widget::Render(const CU::Vector2<float>&, float)
 	{
 	}
 
