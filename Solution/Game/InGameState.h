@@ -3,6 +3,7 @@
 #include <Matrix.h>
 #include <GrowingArray.h>
 #include <Subscriber.h>
+#include <Tweener.h>
 
 class Level;
 class LevelFactory;
@@ -54,24 +55,36 @@ public:
 private:
 	GUI::GUIManager* myGUIManager;
 	LevelFactory* myLevelFactory;
+	Level* myLevel;
 
 	Prism::Camera* myCamera;
 	CU::Matrix44f myCameraOrientation;
 
 	int myLevelToLoad;
-
-	eInGameState myState;
-
-	bool myFailedLevelHash;
-	bool myLevelIsFinished;
 	int myNextLevel;
 
 	Prism::TextProxy* myText;
 	Prism::SpriteProxy* myLoadingScreen;
+	Prism::SpriteProxy* myRotatingThing;
+	Prism::SpriteProxy* myBlackSprite;
+	float myRotationSpeed;
+	float myRotatingScale;
+	float myScaleTimer;
+	Tweener<float> myTweener;
 
 	bool myHasStartedMusicBetweenLevels;
 	int myLastLevel;
 
-	bool myIsFirstFrame;
+	enum class eState
+	{
+		FIRST_FRAME,
+		START_LOADING,
+		LOADING,
+		LOADING_FINISHED,
+		START_GAME,
+	};
+	eState myState;
+	float myFirstFrameTimer;
+
 	bool myIsBetweenLevels;
 };

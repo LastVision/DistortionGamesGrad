@@ -13,9 +13,7 @@ namespace Prism
 		ModelProxy* model = ModelLoader::GetInstance()->LoadModel("Data/Resource/Model/Light_mesh/SM_cone_textureprojection.fbx"
 			, "Data/Resource/Shader/S_effect_deferred_light_mesh_spot_textureprojection.fx");
 		myLightMesh = new Instance(*model, myOrientation);
-		while (ModelLoader::GetInstance()->IsLoading() == true)
-		{
-		}
+
 		if (aIsForSpot == false)
 		{
 			//myLightMesh->GetModel().GetEffect()->SetTexture(TextureContainer::GetInstance()->GetTexture("Data/Resource/Texture/textureProjectionTest2.dds"));

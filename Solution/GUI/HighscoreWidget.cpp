@@ -102,6 +102,11 @@ namespace GUI
 		myLocalScorePosition *= ratio;
 	}
 
+	void HighscoreWidget::ReduceAlpha(float aReduceAmount)
+	{
+		myOwnAlpha -= aReduceAmount;
+	}
+
 	void HighscoreWidget::ConstructHighscoreText()
 	{
 		float textHeight = 36.f;

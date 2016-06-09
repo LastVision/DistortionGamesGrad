@@ -76,19 +76,15 @@ namespace CU
 
 	void SQLWrapper::WriteHighscore(const std::string& aUsername, float aTime, int aLevelID)
 	{
-		std::fstream file(CU::GetMyDocumentFolderPath() + "/Data/HS_Level" + std::to_string(aLevelID) + ".bin",
-			std::ios::binary | std::ios::in | std::ios::app);
-		char name[256];
-		mysql_real_escape_string(myConnection, name, aUsername.c_str(), aUsername.length());
-		std::string username(name);
 		if (GetIsOnline() == true)
 		{
+			char name[256];
+			mysql_real_escape_string(myConnection, name, aUsername.c_str(), aUsername.length());
+			std::string username(name);
 			std::string query = "INSERT INTO Highscore(Name, Score, LevelID) VALUES('" + username + "', " + std::to_string(aTime) + ", " + std::to_string(aLevelID) + ")";
 			ExecuteQuery(query.c_str());
 			CheckAndClearRankHigherThanMax(aLevelID);
 		}
-		file << "\n" << username << "\n" << aTime << "\n" << aLevelID;
-		file.close();
 	}
 
 	void SQLWrapper::WriteDeaths(const int aLevelID, const int aNumberOfDeaths)
