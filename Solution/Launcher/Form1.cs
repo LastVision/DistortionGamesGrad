@@ -23,7 +23,7 @@ namespace Launcher
 
 		private Process myGame = new Process();
 
-		private bool myUseCheat = true;
+		private bool myUseCheat = false;
 
 		enum eResolutions
 		{
