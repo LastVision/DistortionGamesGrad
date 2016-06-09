@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.button1 = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
@@ -37,6 +38,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.myResolutionList = new System.Windows.Forms.ComboBox();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.panel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel3.SuspendLayout();
@@ -94,6 +96,9 @@
 			this.myQualityList.Name = "myQualityList";
 			this.myQualityList.Size = new System.Drawing.Size(121, 21);
 			this.myQualityList.TabIndex = 4;
+			this.myQualityList.SelectedIndexChanged += new System.EventHandler(this.myQualityList_SelectedIndexChanged);
+			this.myQualityList.MouseLeave += new System.EventHandler(this.myQualityList_MouseLeave);
+			this.myQualityList.MouseHover += new System.EventHandler(this.myQualityList_MouseHover);
 			// 
 			// label2
 			// 
@@ -152,6 +157,7 @@
         private System.Windows.Forms.ComboBox myResolutionList;
         private System.Windows.Forms.ComboBox myQualityList;
         private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

@@ -324,6 +324,18 @@ namespace GUI
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS);
 		}
+		else if (clickEvent == "reset")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_RESET);
+		}
+		else if (clickEvent == "reset_are_you_sure_yes")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_RESET_ARE_YOU_SURE_YES);
+		}
+		else if (clickEvent == "reset_are_you_sure_no")
+		{
+			myClickEvent = new OnClickMessage(eOnClickEvent::OPTIONS_RESET_ARE_YOU_SURE_NO);
+		}
 		else if (clickEvent == "hat")
 		{
 			myClickEvent = new OnClickMessage(eOnClickEvent::HAT);

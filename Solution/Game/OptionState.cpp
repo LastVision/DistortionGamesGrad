@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AreYouSureState.h"
 #include <AudioInterface.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
@@ -96,6 +97,10 @@ void OptionState::ReceiveMessage(const OnClickMessage& aMessage)
 	{
 	case eOnClickEvent::GAME_QUIT:
 		myStateStatus = eStateStatus::ePopMainState;
+		break;
+	case eOnClickEvent::OPTIONS_RESET:
+		SET_RUNTIME(false);
+		myStateStack->PushSubGameState(new AreYouSureState());
 		break;
 	}
 }

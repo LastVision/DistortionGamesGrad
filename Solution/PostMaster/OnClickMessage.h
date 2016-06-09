@@ -31,6 +31,9 @@ enum class eOnClickEvent
 	PLAYER_1_RIGHT,
 	PLAYER_2_LEFT,
 	PLAYER_2_RIGHT,
+	OPTIONS_RESET,
+	OPTIONS_RESET_ARE_YOU_SURE_YES,
+	OPTIONS_RESET_ARE_YOU_SURE_NO,
 };
 
 struct OnClickMessage : public Message
