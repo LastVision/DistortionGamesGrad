@@ -182,6 +182,17 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 
 
 	myFullscreenRenderer->ProcessShadow(myShadowLight, myScene);
+
+	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
+	for (ScrapManager* manager : myScrapManagers)
+	{
+		manager->CreateHeads();
+	}
+
+	for (Entity* player : myPlayers)
+	{
+		player->GetComponent<PlayerGraphicsComponent>()->CreateJoints();
+	}
 }
 
 const eStateStatus Level::Update(const float& aDeltaTime)
@@ -199,6 +210,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 #ifndef THREAD_PHYSICS
 	Prism::PhysicsInterface::GetInstance()->FrameUpdate();
 #endif
+
 	if (myIsFreeCam == true)
 	{
 		UpdateInput(aDeltaTime);

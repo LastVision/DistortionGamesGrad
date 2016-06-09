@@ -144,10 +144,6 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		GC::HasWonGame = true;
 	}
 
-	while (Prism::ModelLoader::GetInstance()->IsLoading())
-	{
-	}
-
 	myAnimationFrameSize = { 256.f, 256.f};
 
 	if (myEarnedStars == 0)
