@@ -310,11 +310,11 @@ void ScoreState::Render()
 		{
 			if (i == 0)
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(-130.f, -80.f), myScoreAlpha);
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f), -80.f), myScoreAlpha);
 			}
 			else
 			{
-				myScoreWidgets[i]->Render(CU::Vector2<float>(i * 580.f, -80.f), myScoreAlpha);
+				myScoreWidgets[i]->Render(CU::Vector2<float>((myScoreWidgets[i]->GetSize().x / 2.f) * 3.f - 18.f, -80.f), myScoreAlpha);
 			}
 		}
 	}
