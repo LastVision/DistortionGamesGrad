@@ -261,7 +261,7 @@ void FlyMovement::HandleRaycastLegs(PhysicsComponent* aComponent, const CU::Vect
 		if ((CU::Length2(myVelocity) > myPlayerData->myLoseLegsSpeed * myPlayerData->myLoseLegsSpeed
 			|| (aComponent->GetEntity().GetType() == eEntityType::SPIKE || aComponent->GetEntity().GetType() == eEntityType::SAW_BLADE)))
 		{
-			if (aComponent->GetEntity().GetType() != eEntityType::SCRAP)
+			if (aComponent->GetEntity().GetType() != eEntityType::SCRAP && aComponent->GetEntity().GetType() != eEntityType::BOUNCER)
 			{
 				if (myMovementComponent.GetEntity().GetComponent<PlayerGraphicsComponent>()->GetLegsActive() == true)
 				{
