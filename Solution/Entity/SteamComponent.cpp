@@ -90,6 +90,8 @@ void SteamComponent::Update(float aDeltaTime)
 			{
 				myIsOpen = true;
 				myEntity.SendNote(SteamVentNote(true));
+				PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam_Heat", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp(), mySteamTime));
+
 			}
 			else if (myIsSmoking == false && myCurrentSteamInterval <= myTimeBeforeSmoke)
 			{
@@ -121,7 +123,7 @@ void SteamComponent::InitSteam(Prism::Scene* aScene, const CU::Vector3<float>& a
 	if (mySteamInterval == 0.f && mySteamTime == 0.f)
 	{
 		myIsConstant = true;
-		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp()));
+		PostMaster::GetInstance()->SendMessage(EmitterMessage("Steam_Constant", myEntity.GetOrientation().GetPos(), myEntity.GetOrientation().GetUp()));
 		SoundComponent* soundComp = myEntity.GetComponent<SoundComponent>();
 		myEntity.SendNote(SteamVentNote(true));
 		if (soundComp != nullptr)
