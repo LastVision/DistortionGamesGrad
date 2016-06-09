@@ -35,7 +35,7 @@ HatsSelectionState::~HatsSelectionState()
 
 	for (int i = 0; i < myHats.Size(); ++i)
 	{
-		SAFE_DELETE(myHats[i]);
+		SAFE_DELETE(myHats[i].mySprite);
 	}
 	SAFE_DELETE(mySecondController);
 	SAFE_DELETE(myLockSprite);
@@ -74,7 +74,7 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	std::string hatPath("Data/Resource/Texture/Hats/T_hat");
 	for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
 	{
-		myHats.Add(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f));
+		myHats.Add(HatStruct(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), i));
 	}
 
 	myLockSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_lock.dds", size, size * 0.5f);
@@ -131,11 +131,16 @@ void HatsSelectionState::HandleHatSelection(CU::ControllerInput* aController, in
 		if (aControllerPressedRight == false)
 		{
 			aControllerPressedRight = true;
-			++aCurrentPlayerHat;
-			if (aCurrentPlayerHat >= HatManager::GetInstance()->GetAmountOfHats())
+			do
 			{
-				aCurrentPlayerHat = -1;
-			}
+				++aCurrentPlayerHat;
+				if (aCurrentPlayerHat >= HatManager::GetInstance()->GetAmountOfHats())
+				{
+					aCurrentPlayerHat = -1;
+					break;
+				}
+			} while (HatManager::GetInstance()->IsHatUnlocked(myHats[aCurrentPlayerHat].myHatID) == false);
+			
 			if (HatManager::GetInstance()->IsHatUnlocked(aCurrentPlayerHat) == true)
 			{
 				HatManager::GetInstance()->SetHatOnPlayer(aPlayerID, aCurrentPlayerHat);
@@ -152,7 +157,19 @@ void HatsSelectionState::HandleHatSelection(CU::ControllerInput* aController, in
 		if (aControllerPressedLeft == false)
 		{
 			aControllerPressedLeft = true;
-			--aCurrentPlayerHat;
+			do
+			{
+				--aCurrentPlayerHat;
+				if (aCurrentPlayerHat == -1)
+				{
+					break;
+				}
+				if (aCurrentPlayerHat < -1)
+				{
+					aCurrentPlayerHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
+				}
+			} while (HatManager::GetInstance()->IsHatUnlocked(myHats[aCurrentPlayerHat].myHatID) == false);
+
 			if (aCurrentPlayerHat < -1)
 			{
 				aCurrentPlayerHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
@@ -188,7 +205,7 @@ void HatsSelectionState::Render()
 
 	if (myPlayerOneCurrentHat != -1)
 	{
-		myHats[myPlayerOneCurrentHat]->Render(playerOneRenderPos);
+		myHats[myPlayerOneCurrentHat].mySprite->Render(playerOneRenderPos);
 		if (myPlayerOneCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerOneCurrentHat) == false)
 		{
 			myLockSprite->Render(playerOneRenderPos);
@@ -202,7 +219,7 @@ void HatsSelectionState::Render()
 	myArrowBox->Render(playerTwoRenderPos + rightOffset);
 	if (myPlayerTwoCurrentHat != -1)
 	{
-		myHats[myPlayerTwoCurrentHat]->Render(playerTwoRenderPos);
+		myHats[myPlayerTwoCurrentHat].mySprite->Render(playerTwoRenderPos);
 		if (myPlayerTwoCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerTwoCurrentHat) == false)
 		{
 			myLockSprite->Render(playerTwoRenderPos);

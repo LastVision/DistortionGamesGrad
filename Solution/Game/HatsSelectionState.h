@@ -42,7 +42,15 @@ private:
 	bool mySecondControllerPressedLeft;
 	bool mySecondControllerPressedRight;
 
-	CU::GrowingArray<Prism::SpriteProxy*> myHats;
+	struct HatStruct
+	{
+		HatStruct::HatStruct() {};
+		HatStruct::HatStruct(Prism::SpriteProxy* aSprite, int aID) : mySprite(aSprite), myHatID(aID){};
+		Prism::SpriteProxy* mySprite;
+		int myHatID;
+	};
+
+	CU::GrowingArray<HatStruct> myHats;
 
 	CU::ControllerInput* mySecondController;
 
