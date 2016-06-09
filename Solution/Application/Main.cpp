@@ -422,6 +422,7 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	else
 		aSetup.myWindowed = false;
 
+	graphicsSetting = 0;
 	//Low
 	if (graphicsSetting == 0)
 	{
@@ -444,7 +445,7 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	else if (graphicsSetting == 2)
 	{
 		GC::EnableCheapAmbient = false;
-		GC::EnableVSync = true;
+		GC::EnableVSync = false;
 		GC::UseLowModels = false;
 		GC::EnableDynamicShadows = false;
 		GC::OptionsUseShadows = true;
@@ -453,7 +454,7 @@ bool ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
 	else
 	{
 		GC::EnableCheapAmbient = false;
-		GC::EnableVSync = true;
+		GC::EnableVSync = false;
 		GC::UseLowModels = false;
 		GC::EnableDynamicShadows = true;
 		GC::OptionsUseShadows = true;
