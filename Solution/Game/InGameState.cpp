@@ -67,6 +67,7 @@ InGameState::~InGameState()
 	SAFE_DELETE(myText);
 	SAFE_DELETE(myLoadingScreen);
 	SAFE_DELETE(myRotatingThing);
+	SAFE_DELETE(myBlackSprite);
 }
 
 void InGameState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
