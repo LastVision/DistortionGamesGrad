@@ -59,6 +59,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myShowHowToUnlockHats(false)
 	, myHowToUnlockHatsTimer(4.f)
 	, myHowToUnlockHatsAlpha(0.f)
+	, myGoldAmountToRender(0)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -188,6 +189,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myAnimator->SetShouldStopAtLastFrame(true);
 		myAnimator->SetTimesToRunAnimation(myEarnedStars);
 		myAnimator->StartAnimation();
+		myAnimator->SetAnimationDoneCallback(std::bind(&ScoreState::AnimationCallback, this));
 	}
 
 	if (GC::HasShownHowToUseHats == false && HatManager::GetInstance()->IsAllHatsLocked() == true)
@@ -389,12 +391,12 @@ void ScoreState::Render()
 			goldPos.y += myAnimationFrameSize.y * 0.3f;
 
 			myGoldBox->Render(goldPos);
-			Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+			Prism::Engine::GetInstance()->PrintText(myGoldAmountToRender, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 			if (myEarnedStars > 0)
 			{
 				Prism::Engine::GetInstance()->PrintText(myEarnedStarsText, { goldPos.x, goldPos.y + myGoldCostMovement }
-				, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
+				, Prism::eTextType::RELEASE_TEXT, 1.f, { myGoldCostFade, 1.f, myGoldCostFade, myGoldCostFade });
 			}
 		}
 
@@ -485,6 +487,14 @@ void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
 	}
 }
 
+void ScoreState::AnimationCallback()
+{
+	myEarnedStarsText = "+1";
+	myGoldCostFade = 1.f;
+	myGoldCostMovement = 0.f;
+	myGoldAmountToRender++;
+}
+
 void ScoreState::SaveScoreToFile(const int aLevelID)
 {
 	std::string levelsPath = "Data/Score/Score";
@@ -559,6 +569,8 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	}
 	file.close();
 
+	myGoldAmountToRender = GC::Gold;
+
 	diffStars = newStars - currentStars;
 	if (diffStars > 0)
 	{
@@ -566,7 +578,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 	}
 
 	myEarnedStars = diffStars > 0 ? diffStars : 0;
-	myEarnedStarsText = "+" + std::to_string(myEarnedStars);
+	myEarnedStarsText = "";
 
 	myAnimationsToRun = myEarnedStars;
 }

@@ -12,6 +12,8 @@ namespace Prism
 		, emptySprite(nullptr)
 		, myIsPaused(false)
 		, myTimesToRunAnimation(1)
+		, myAnimationDoneCallback(nullptr)
+		, myCallCallbackLastTime(true)
 	{
 		myAnimations.Init(1);
 
@@ -79,9 +81,18 @@ namespace Prism
 						{
 							myCurrentFrame = myCurrentAnimation->GetNumberOfFrames() - 1;
 						}
+						if (myCallCallbackLastTime == true && myAnimationDoneCallback != nullptr)
+						{
+							myAnimationDoneCallback();
+							myCallCallbackLastTime = false;
+						}
 					}
 					else
 					{
+						if (myAnimationDoneCallback != nullptr)
+						{
+							myAnimationDoneCallback();
+						}
 						myTimesToRunAnimation--;
 					}
 				}
@@ -108,6 +119,7 @@ namespace Prism
 		DL_ASSERT_EXP(anID <= myAnimations.Size() - 1, "[SpriteAnimator] Trying to start animation at nonexisting index");
 		myCurrentFrame = 0;
 		myCurrentAnimation = myAnimations[anID];
+		myCallCallbackLastTime = true;
 	}
 
 	void SpriteAnimator::StopAnimation()

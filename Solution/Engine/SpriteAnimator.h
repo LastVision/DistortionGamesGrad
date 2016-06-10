@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "SpriteAnimation.h"
+#include <functional>
 
 namespace Prism
 {
@@ -36,6 +37,8 @@ namespace Prism
 
 		void SetShouldStopAtLastFrame(bool aShouldStop);
 
+		void SetAnimationDoneCallback(std::function<void()> anAnimationDoneCallback);
+
 	private:
 		float myTimeSinceLastFrame;
 		int myCurrentFrame;
@@ -45,8 +48,11 @@ namespace Prism
 
 		bool myIsPaused;
 		bool myShouldStopAtLastFrame;
+		bool myCallCallbackLastTime;
 		
 		int myTimesToRunAnimation;
+
+		std::function<void()> myAnimationDoneCallback;
 	};
 
 	inline void SpriteAnimator::SetTimesToRunAnimation(int aNumber)
@@ -57,5 +63,10 @@ namespace Prism
 	inline void SpriteAnimator::SetShouldStopAtLastFrame(bool aShouldStop)
 	{
 		myShouldStopAtLastFrame = aShouldStop;
+	}
+
+	inline void SpriteAnimator::SetAnimationDoneCallback(std::function<void()> anAnimationDoneCallback)
+	{
+		myAnimationDoneCallback = anAnimationDoneCallback;
 	}
 }

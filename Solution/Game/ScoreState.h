@@ -28,9 +28,12 @@ public:
 	void PauseState() override;
 	void OnResize(int aWidth, int aHeight) override;
 	void ReceiveMessage(const OnClickMessage& aMessage) override;
+	void AnimationCallback();
 
 private:
 	void operator=(const ScoreState&) = delete;
+
+
 	GUI::GUIManager* myGUIManager;
 
 	void SaveScoreToFile(const int aLevelID);
@@ -89,6 +92,8 @@ private:
 	bool myIsRotating;
 
 	CU::Vector2<float> myWindowSize;
+
+	int myGoldAmountToRender;
 
 };
 
