@@ -45,11 +45,11 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 
 	if (myIsNightmare == false)
 	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, 1);
 	}
 	else
 	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, -1);
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, 1);
 		myGUIManager->CheckUnlockedNightmareLevels();
 	}
 
@@ -147,11 +147,11 @@ void LevelSelectState::ResumeState()
 
 	if (myIsNightmare == false)
 	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, -1);
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_level_select.xml", nullptr, 1);
 	}
 	else
 	{
-		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, -1);
+		myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_nightmare_level_select.xml", nullptr, 1);
 		myGUIManager->CheckUnlockedNightmareLevels();
 	}
 	SET_RUNTIME(runtime);

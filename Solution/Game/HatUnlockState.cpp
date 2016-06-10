@@ -39,6 +39,9 @@ HatUnlockState::HatUnlockState()
 	, myNotEnoughCashTimer(0.f)
 	, myTimeToNotEnoughCash(2.f)
 	, mySoundAmount(256.f)
+	, myGoldCostBox(nullptr)
+	, myRenderNotEnoughCash(false)
+	, myGoldAmountBox(nullptr)
 {
 	ReadXML();
 }
@@ -61,6 +64,8 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myAnimator);
 	SAFE_DELETE(mySpinHandleAnimator);
 	SAFE_DELETE(myNotEnoughCashSprite);
+	SAFE_DELETE(myGoldCostBox);
+	SAFE_DELETE(myGoldAmountBox);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -131,11 +136,15 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		}
 	}
 
+	myGoldCostBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_cost_box.dds", { 300.f, 150.f }, { 150.f, 75.f });
+
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
-		, { 128.f, 128.f }, { 64.f, 64.f });
+		, { 150.f, 150.f }, { 75.f, 75.f });
 
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
 		, { 400.f, 200.f }, { 200.f, 100.f });
+
+	myGoldAmountBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 300.f, 150.f }, { 150.f, 75.f });
 
 	if (myHasWonAllHats == true)
 	{
@@ -254,7 +263,6 @@ void HatUnlockState::Render()
 		myHats[myMiddleIndex].mySprite->Render(myRenderPosition);
 	}
 
-
 	if (myHasWonAllHats == true)
 	{
 		if (myAnimator != nullptr)
@@ -273,9 +281,15 @@ void HatUnlockState::Render()
 		mySpinHandleAnimator->Render(windowSize + CU::Vector2<float>(385.f, 0.f));
 	}
 
-	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize() * 0.8f;
+	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
+	goldPos.x *= 0.85f;
+	goldPos.y *= 0.7f;
 
 	myGoldBagSprite->Render(goldPos);
+
+	goldPos.y -= myGoldBagSprite->GetSize().y * 0.5f + myGoldAmountBox->GetSize().y * 0.5f;
+
+	myGoldAmountBox->Render(goldPos);
 	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myShowGoldCost == true)
@@ -283,6 +297,11 @@ void HatUnlockState::Render()
 		Prism::Engine::GetInstance()->PrintText(-mySpinCost, { goldPos.x, goldPos.y + myGoldCostMovement }
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 	}
+
+	goldPos.y -= myGoldAmountBox->GetSize().y * 0.5f + myGoldCostBox->GetSize().y * 0.5f;
+
+	myGoldCostBox->Render(goldPos);
+	Prism::Engine::GetInstance()->PrintText(mySpinCost, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myIsSpinning == false)
 	{
@@ -296,7 +315,7 @@ void HatUnlockState::Render()
 			myHatWon->Render(windowSize, { myHatWonScaling, myHatWonScaling });
 		}
 
-		if (GC::Gold < mySpinCost)
+		if (myRenderNotEnoughCash)
 		{
 			if (myAnimateNotEnoughCash == true)
 			{
@@ -304,8 +323,7 @@ void HatUnlockState::Render()
 					, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
 			}
 
-			goldPos.y -= myGoldBagSprite->GetSize().y * 1.5f;
-			goldPos.x += myGoldBagSprite->GetSize().x * 1.2f;
+			goldPos.y -= myGoldCostBox->GetSize().y * 0.5f + myNotEnoughCashSprite->GetSize().y * 0.5f;
 			myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });
 		}
 	}
@@ -315,6 +333,7 @@ void HatUnlockState::ResumeState()
 {
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
+	myRenderNotEnoughCash = false;
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -339,6 +358,7 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 				else if (myAnimateNotEnoughCash == false)
 				{
 					myAnimateNotEnoughCash = true;
+					myRenderNotEnoughCash = true;
 					myNotEnoughCashTimer = myTimeToNotEnoughCash;
 				}
 			}

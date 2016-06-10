@@ -60,7 +60,7 @@ namespace GUI
 
 				ButtonWidget* button = new LevelButtonWidget(buttonSize, { (x * buttonSize.x + buttonOffset.x * x) + myPosition.x,
 					(-y * buttonSize.y + buttonOffset.y * -y) + myPosition.y }, starPosition, starOffset, spritePathNormal, spritePathHover, spritePathPressed,
-					std::to_string(index + 1), "", GetAmountOfStarsFromFile(index + 1), textOffset);
+					std::to_string(index + 1), "", GetAmountOfStarsFromFile(index + 1), textOffset, index + 1);
 				if (buttonEventType == "start_level")
 				{
 					button->SetEvent(new OnClickMessage(eOnClickEvent::START_LEVEL, index));
