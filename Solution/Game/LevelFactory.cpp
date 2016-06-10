@@ -19,6 +19,8 @@
 #include <XMLReader.h>
 #include <PointLight.h>
 #include <SpotLight.h>
+#include <EmitterMessage.h>
+#include <PostMaster.h>
 
 LevelFactory::LevelFactory(const std::string& aLevelListPath
 	, const std::string& aNightLevelListPath, Prism::Camera& aCamera, int aLevel)
@@ -546,6 +548,8 @@ void LevelFactory::LoadStartAndGoal(Level* aLevel, XMLReader& aReader, tinyxml2:
 	Entity* entity = EntityFactory::CreateEntity(eEntityType::GOAL_POINT,
 		aLevel->GetScene(), position, rotation, scale);
 	entity->GetComponent<TriggerComponent>()->SetLevelChangeID(levelID);
+	
+	PostMaster::GetInstance()->SendMessage(EmitterMessage("Goal", position));
 
 	aLevel->Add(entity);
 
