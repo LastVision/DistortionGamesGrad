@@ -62,7 +62,7 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	CU::Vector2<float> size = { 256.f, 128.f };
 
 	myNightmareIsLockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_banner_nightmare_is_locked.dds"
-		, size, size * 0.5f);
+		, size * 2.f, size);
 
 #ifdef RELEASE_BUILD
 	if (myIsNightmare == false && GC::HasWonGame == false)

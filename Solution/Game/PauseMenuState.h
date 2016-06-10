@@ -19,5 +19,6 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+	float myAlpha;
 };
 
