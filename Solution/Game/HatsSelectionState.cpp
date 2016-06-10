@@ -11,6 +11,7 @@
 #include <PostMaster.h>
 #include <SpriteProxy.h>
 #include <SQLWrapper.h>
+#include <WidgetContainer.h>
 
 HatsSelectionState::HatsSelectionState()
 	: myGUIManager(nullptr)
@@ -204,10 +205,16 @@ void HatsSelectionState::Render()
 	CU::Vector2<float> rightOffset(128.f, -32.f);
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
 
-	CU::Vector2<float> playerOneRenderPos(windowSize.x - 256.f, windowSize.y);
+	GUI::WidgetContainer* container = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+	CU::Vector2<float> playerOneRenderPos(windowSize.x - 256.f, container->At(0)->GetPosition().y);
 	myPlayerOnePortrait->Render(playerOneRenderPos);
-	myLeftArrow->Render(playerOneRenderPos + leftOffset);
-	myRightArrow->Render(playerOneRenderPos + rightOffset);
+
+
+	//myLeftArrow->Render(playerOneRenderPos + leftOffset);
+	//myRightArrow->Render(playerOneRenderPos + rightOffset);
+
+	myLeftArrow->Render(container->At(0)->GetPosition());
+	myRightArrow->Render(container->At(1)->GetPosition());
 
 	if (myPlayerOneCurrentHat != -1)
 	{
@@ -217,10 +224,14 @@ void HatsSelectionState::Render()
 			myLockSprite->Render(playerOneRenderPos);
 		}
 	}
-	CU::Vector2<float> playerTwoRenderPos(windowSize.x + 256.f, windowSize.y);
+	CU::Vector2<float> playerTwoRenderPos(windowSize.x + 256.f, container->At(2)->GetPosition().y);
 	myPlayerTwoPortrait->Render(playerTwoRenderPos);
-	myLeftArrow->Render(playerTwoRenderPos + leftOffset);
-	myRightArrow->Render(playerTwoRenderPos + rightOffset);
+	//myLeftArrow->Render(playerTwoRenderPos + leftOffset);
+	//myRightArrow->Render(playerTwoRenderPos + rightOffset);
+
+	myLeftArrow->Render(container->At(2)->GetPosition());
+	myRightArrow->Render(container->At(3)->GetPosition());
+
 	if (myPlayerTwoCurrentHat != -1)
 	{
 		myHats[myPlayerTwoCurrentHat].mySprite->Render(playerTwoRenderPos);
