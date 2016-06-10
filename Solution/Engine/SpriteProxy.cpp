@@ -66,6 +66,14 @@ namespace Prism
 		}
 	}
 
+	void SpriteProxy::ResetRotation()
+	{
+		if (mySprite != nullptr)
+		{
+			mySprite->ResetRotation();
+		}
+	}
+
 	void SpriteProxy::CopyFromD3DTexture(ID3D11Texture2D* aTexture)
 	{
 		if (mySprite != nullptr)

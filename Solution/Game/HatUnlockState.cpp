@@ -111,19 +111,27 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 			myHats.Add(HatUnlock(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), i));
 		}
 
-		CU::Vector2<float> startPos;
-
-		startPos.y = Prism::Engine::GetInstance()->GetWindowSize().y + size.x * 0.5f + rand() % 1024;
-		startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
-
-		myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
-		myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
+	
 	}
 	if (myHats.Size() <= 0)
 	{
 		myHasWonAllHats = true;
 		myShouldRainHats = true;
 		myAnimator->RestartAnimation();
+	}
+
+	if (myHasWonAllHats == true)
+	{
+		for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
+		{
+			CU::Vector2<float> startPos;
+
+			startPos.y = Prism::Engine::GetInstance()->GetWindowSize().y + size.x * 0.5f + rand() % 1024;
+			startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
+
+			myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
+			myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
+		}
 	}
 
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
@@ -178,6 +186,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 
 void HatUnlockState::EndState()
 {
+	for (int i = 0; i < myHatRain.Size(); ++i)
+	{
+		myHatRain[i].mySprite->ResetRotation();
+	}
 }
 
 void HatUnlockState::OnResize(int aWidth, int aHeight)

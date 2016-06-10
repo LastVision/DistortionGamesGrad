@@ -168,6 +168,13 @@ void Prism::Sprite::Rotate(float aRadians)
 	myOrientation = CU::Matrix44<float>::CreateRotateAroundZ(aRadians) * myOrientation;
 }
 
+void Prism::Sprite::ResetRotation()
+{
+	CU::Vector3<float> oldPos(myOrientation.GetPos());
+	myOrientation = CU::Matrix44<float>();
+	myOrientation.SetPos(oldPos);
+}
+
 void Prism::Sprite::ResizeTexture(ID3D11Texture2D* aSrcTexture)
 {
 	myTexture->Release();
