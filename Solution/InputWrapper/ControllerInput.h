@@ -43,6 +43,7 @@ namespace CU
 		~ControllerInput();
 		XINPUT_STATE GetState();
 		bool IsConnected();
+		bool GetIsConnected();
 
 		
 		void Update(float aDeltaTime);

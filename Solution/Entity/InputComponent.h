@@ -36,7 +36,7 @@ public:
 	void ReceiveMessage(const PlayerActiveMessage& aMessage) override;
 	bool GetIsActive();
 	void ResetIsInLevel();
-
+	bool GetControllerIsConnected();
 	void SetPlayersWinCount(int aWinCount);
 
 	void SetStandingOnStomper(Entity* aStomper);

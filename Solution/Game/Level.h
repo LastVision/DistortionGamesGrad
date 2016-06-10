@@ -33,7 +33,7 @@ struct DeathInfo
 	float myTimeSincePlayerDeath = 0.f;
 	bool myHasBeenActive = false;
 	bool myShouldRender = false;
-	Prism::SpriteProxy* myJoinGameSprite = nullptr;
+	Prism::SpriteProxy* myJoinGameSprite[2];
 };
 
 class Level : public Subscriber, public GameState
@@ -128,6 +128,13 @@ private:
 	Prism::SpriteProxy* myPressToStartSprite;
 	float myPressToStartAlpha;
 	bool myPressToStartIsFading;
+
+	float myPlayerOneAlpha;
+	float myPlayerTwoAlpha;
+	bool myPressToStartIsRendering;
+	bool myPlayerOneRender;
+	bool myPlayerTwoRender;
+
 
 	float myShortestTimeSincePlayerDeath;
 	float myTimeBeforeRenderingPressToStart;

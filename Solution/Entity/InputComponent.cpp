@@ -216,6 +216,11 @@ void InputComponent::ResetIsInLevel()
 	myIsInLevel = false;
 }
 
+bool InputComponent::GetControllerIsConnected()
+{
+	return myController->GetIsConnected();
+}
+
 const CU::Matrix44f& InputComponent::GetParticleOrientation()
 {
 	return myParticleOrientation;
