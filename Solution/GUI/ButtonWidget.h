@@ -31,8 +31,8 @@ namespace GUI
 
 		void OnLeftMousePressed(const CU::Vector2<float>& aPosition) override;
 		void OnLeftMouseUp() override;
-		void OnMouseEnter(bool aShouldSound = true) override;
-		void OnMouseExit() override;
+		virtual void OnMouseEnter(bool aShouldSound = true) override;
+		virtual void OnMouseExit() override;
 		void Update(float aDeltaTime) override;
 
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
@@ -90,6 +90,8 @@ namespace GUI
 		bool myIsGradient;
 		bool myGradientIsIncreasing;
 		float myGradient;
+
+		CU::Vector2<float> myHotSpot;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const

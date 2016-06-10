@@ -94,6 +94,14 @@ namespace Prism
 		if (mySea->GetModel().IsLoaded() == true)
 		{
 			mySea->GetModel().GetEffect()->SetDepthTexture(aDepthTexture);
+			if (GC::NightmareMode == true)
+			{
+				mySea->GetModel().GetEffect()->SetColor({ 0.62f, 0.f, 0.f, 1.f });
+			}
+			else
+			{
+				mySea->GetModel().GetEffect()->SetColor({ 0.23f, 0.48f, 0.72f, 1.f });
+			}
 		}
 		mySea->RenderInstanced(*myCamera, *myInstancingHelper);
 		myInstancingHelper->Render(false);

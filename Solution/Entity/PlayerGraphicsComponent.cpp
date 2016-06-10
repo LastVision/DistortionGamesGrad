@@ -145,6 +145,8 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 			myCurrentAnimation->SetActive(true);
 		}
 	}
+
+#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_Q))
 	{
 		myCurrentAnimation->SetActive(false);
@@ -161,6 +163,7 @@ void PlayerGraphicsComponent::Update(float aDeltaTime)
 	{
 		myHead.SetActive(false);
 	}
+#endif
 
 	myCurrentAnimation->myAnimation->Update(aDeltaTime);
 	myLeftLeg.UpdateOrientation(myEntityOrientation, myCurrentAnimation->myLeftLeg);

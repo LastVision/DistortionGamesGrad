@@ -376,6 +376,14 @@ namespace Prism
 		}
 		else
 		{
+			if (GC::NightmareMode == true)
+			{
+				myAmbientPass->myEffect->SetColor({ 0.62f, 0.f, 0.f, 1.f });
+			}
+			else
+			{
+				myAmbientPass->myEffect->SetColor({ 0.23f, 0.48f, 0.72f, 1.f });
+			}
 			Render(myAmbientPass->myEffect);
 		}
 

@@ -72,8 +72,6 @@ namespace GUI
 
 		void Unhover();
 
-		void DeleteButtonAtIndex(int aX, int aY);
-
 		void Pause();
 		void UnPause();
 

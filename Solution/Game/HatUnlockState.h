@@ -63,6 +63,8 @@ private:
 	Prism::SpriteProxy* mySpinBox;
 	Prism::SpriteProxy* myAllHatsWonText;
 	Prism::SpriteProxy* myGoldBagSprite;
+	Prism::SpriteProxy* myGoldAmountBox;
+	Prism::SpriteProxy* myGoldCostBox;
 
 	int myLeftIndex;
 	int myMiddleIndex;
@@ -86,5 +88,6 @@ private:
 	float myNotEnoughCashTimer;
 	float myTimeToNotEnoughCash;
 	bool myAnimateNotEnoughCash;
+	bool myRenderNotEnoughCash;
 };
 

@@ -51,7 +51,7 @@ namespace CU
 
 	MYSQL_RES* SQLWrapper::ExecuteQuery(const char* aQuery)
 	{
-		if (myIsOnline == true)
+		if (GetIsOnline() == true)
 		{
 			if (mysql_query(myConnection, aQuery))
 			{
