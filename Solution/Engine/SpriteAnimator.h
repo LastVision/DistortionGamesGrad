@@ -32,6 +32,10 @@ namespace Prism
 
 		const CU::Vector2<float>& GetFrameSize() const;
 
+		void SetTimesToRunAnimation(int aNumber);
+
+		void SetShouldStopAtLastFrame(bool aShouldStop);
+
 	private:
 		float myTimeSinceLastFrame;
 		int myCurrentFrame;
@@ -41,5 +45,17 @@ namespace Prism
 
 		bool myIsPaused;
 		bool myShouldStopAtLastFrame;
+		
+		int myTimesToRunAnimation;
 	};
+
+	inline void SpriteAnimator::SetTimesToRunAnimation(int aNumber)
+	{
+		myTimesToRunAnimation = aNumber;
+	}
+
+	inline void SpriteAnimator::SetShouldStopAtLastFrame(bool aShouldStop)
+	{
+		myShouldStopAtLastFrame = aShouldStop;
+	}
 }
