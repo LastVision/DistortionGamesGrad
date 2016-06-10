@@ -86,6 +86,7 @@ void AreYouSureState::ReceiveMessage(const OnClickMessage& aMessage)
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	case eOnClickEvent::OPTIONS_RESET_ARE_YOU_SURE_YES:
+		GC::Gold = 0;
 		std::string file = CU::GetMyDocumentFolderPath() + "/Data/save.bin";
 		if (CU::FileExists(file) == true)
 		{
