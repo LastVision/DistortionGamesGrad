@@ -7,6 +7,7 @@
 #include "HatsSelectionState.h"
 #include "HelpMenuState.h"
 #include <InputWrapper.h>
+#include <ModelLoader.h>
 #include <OnClickMessage.h>
 #include "OptionState.h"
 #include "PauseMenuState.h"
@@ -15,6 +16,7 @@
 #include <SoundMessage.h>
 
 PauseMenuState::PauseMenuState()
+	: myAlpha(0.f)
 {
 }
 
@@ -42,8 +44,7 @@ void PauseMenuState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myIsLetThrough = true;
 	myController->SetIsInMenu(true);
 
-	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
-
+	while (Prism::ModelLoader::GetInstance()->IsLoading());
 
 	PostMaster::GetInstance()->SendMessage<SoundMessage>(SoundMessage(false));
 }
@@ -66,6 +67,9 @@ const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 		return eStateStatus::ePopSubState;
 	}
 
+	myAlpha += aDeltaTime * 2.f;
+	myAlpha = min(myAlpha, 1.f);
+
 	HandleControllerInMenu(myController, myGUIManager, myCursor);
 
 	myGUIManager->Update(aDeltaTime);
@@ -75,7 +79,7 @@ const eStateStatus PauseMenuState::Update(const float& aDeltaTime)
 
 void PauseMenuState::Render()
 {
-	myGUIManager->Render();
+	myGUIManager->Render(myAlpha);
 }
 
 void PauseMenuState::ResumeState()
@@ -85,7 +89,7 @@ void PauseMenuState::ResumeState()
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
-
+	myAlpha = 1.f;
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
