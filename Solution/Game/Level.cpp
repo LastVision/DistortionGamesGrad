@@ -233,13 +233,14 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		myScrapManagers[i]->Update(aDeltaTime);
 	}
 
+#ifndef RELEASE_BUILD
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_F9))
 	{
 		myCamera.SetOrientation(myOrientation);
 		myIsFreeCam = !myIsFreeCam;
 	}
 
-#ifndef RELEASE_BUILD
+
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_V) == true)
 	{
 		myShouldFinishLevel = true;
