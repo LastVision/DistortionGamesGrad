@@ -133,9 +133,9 @@ bool Game::Init(HWND& aHwnd)
 	//myStateStack.PushMainGameState(new LevelSelectState(myController));
 	//myStateStack.PushMainGameState(new MainMenuState());
 #ifdef _DEBUG
-	myStateStack.PushMainGameState(new LevelSelectState(false));
-#else
 	myStateStack.PushMainGameState(new MainMenuState());
+#else
+	myStateStack.PushMainGameState(new LevelSelectState(false));
 #endif
 
 	//PostMaster::GetInstance()->SendMessage(GameStateMessage(eGameState::LOAD_GAME, 1));

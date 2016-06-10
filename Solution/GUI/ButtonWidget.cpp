@@ -111,6 +111,7 @@ namespace GUI
 
 		myOriginalSize = myImageCurrent->GetSize();
 		myOriginalHotSpot = myImageCurrent->GetHotspot();
+		myHotSpot = myImageCurrent->GetHotspot();
 
 		if (aButtonText == "default")
 		{
@@ -266,14 +267,16 @@ namespace GUI
 		myImageNormal->SetSize(mySize, mySize / 2.f);
 		myImagePressed->SetSize(mySize, mySize / 2.f);
 		myImageHover->SetSize(mySize, mySize / 2.f);
+
+		myHotSpot = myImageNormal->GetHotspot();
 	}
 
 	bool ButtonWidget::IsInside(const CU::Vector2<float>& aPosition) const
 	{
-		return aPosition.x >= myPosition.x - myImageCurrent->GetHotspot().x &&
-			aPosition.x <= myPosition.x + mySize.x - myImageCurrent->GetHotspot().x &&
-			aPosition.y >= myPosition.y - myImageCurrent->GetHotspot().y &&
-			aPosition.y <= myPosition.y + mySize.y - myImageCurrent->GetHotspot().y;
+		return aPosition.x >= myPosition.x - myHotSpot.x &&
+			aPosition.x <= myPosition.x + mySize.x - myHotSpot.x &&
+			aPosition.y >= myPosition.y - myHotSpot.y &&
+			aPosition.y <= myPosition.y + mySize.y - myHotSpot.y;
 	}
 
 	void ButtonWidget::SetPosition(const CU::Vector2<float>& aPosition, bool aIsHotspot)

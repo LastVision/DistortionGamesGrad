@@ -90,6 +90,8 @@ namespace GUI
 		bool myIsGradient;
 		bool myGradientIsIncreasing;
 		float myGradient;
+
+		CU::Vector2<float> myHotSpot;
 	};
 
 	inline const OnClickMessage* ButtonWidget::GetEvent() const
