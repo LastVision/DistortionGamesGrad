@@ -343,22 +343,6 @@ namespace GUI
 		}
 	}
 
-	void GUIManager::DeleteButtonAtIndex(int aX, int aY)
-	{
-		//SelectButtonDown();
-		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
-		if (aX < myButtons.Size() && aY < myButtons[aX].Size())
-		{
-			myButtons[aX].RemoveCyclicAtIndex(aY);
-			myButtons.RemoveCyclicAtIndex(aX);
-		}
-		myControllerButtonIndexX = 0;
-		myControllerButtonIndexY = 0;
-
-
-		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseEnter();
-	}
-
 	void GUIManager::Pause()
 	{
 		myIsPaused = true;
