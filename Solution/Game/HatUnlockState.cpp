@@ -204,7 +204,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		}
 		myCurrentHatToWin = myLeftIndex;
 
-		if (mySpinTimer < -3.f)
+		if (mySpinTimer < -1.5f)
 		{
 			WinHat(myHats[myCurrentHatToWin].myID);
 		}
