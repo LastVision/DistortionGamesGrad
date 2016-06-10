@@ -83,5 +83,8 @@
     <ClInclude Include="SoundMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="HighscoreSetLevelMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
