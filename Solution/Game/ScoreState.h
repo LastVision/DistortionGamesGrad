@@ -65,6 +65,10 @@ private:
 	CU::Vector2<float> myAnimationFrameSize;
 	int myAnimationsToRun;
 	Prism::SpriteProxy* myGoldBox;
+	Prism::SpriteProxy* myHowToUnlockHatsSprite;
+	bool myShowHowToUnlockHats;
+	float myHowToUnlockHatsTimer;
+	float myHowToUnlockHatsAlpha;
 
 	int mySpinCost;
 

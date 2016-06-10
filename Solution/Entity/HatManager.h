@@ -23,6 +23,7 @@ public:
 	int GetAmountOfHats() const;
 
 	bool IsAllHatsUnlocked() const;
+	bool IsAllHatsLocked() const;
 
 private:
 	HatManager();

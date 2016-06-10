@@ -54,4 +54,6 @@ public:
 	static int DebugRenderTexture;
 
 	static float ShadowBufferSize;
+
+	static bool HasShownHowToUseHats;
 };
