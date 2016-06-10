@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <AudioInterface.h>
+#include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <FadeMessage.h>
@@ -135,6 +136,12 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
 		, { 400.f, 200.f }, { 200.f, 100.f });
+
+	if (myHasWonAllHats == true)
+	{
+		GUI::WidgetContainer* cont = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+		static_cast<GUI::ButtonWidget*>(cont->At(0))->SetActive(false);
+	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
@@ -339,9 +346,8 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			{
 				myHasWonAllHats = true;
 
-
-				static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->DeleteButtonAtIndex(0);
-				myGUIManager->DeleteButtonAtIndex(0, 0);
+				GUI::WidgetContainer* cont = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+				static_cast<GUI::ButtonWidget*>(cont->At(0))->SetActive(false);
 				SAFE_DELETE(myHatWon);
 			}
 		}

@@ -276,6 +276,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 
 		SET_RUNTIME(false);
 		myStateStack->PushSubGameState(new PauseMenuState());
+		return myStateStatus;
 	}
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
@@ -718,6 +719,8 @@ void Level::EndState()
 	{
 		player->SendNote(VibrationNote(0, 0, 0));
 	}
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
 }
 
 void Level::ResumeState()
