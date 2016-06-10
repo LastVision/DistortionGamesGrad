@@ -194,14 +194,16 @@ const eStateStatus InGameState::Update(const float& aDelta)
 
 void InGameState::Render()
 {
+	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize();
+
 	if (myIsBetweenLevels == false)
 	{
-		myLoadingScreen->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
-		myRotatingThing->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.75f, { myRotatingScale, myRotatingScale });
+		myLoadingScreen->Render(windowSize * 0.5f);
+		myRotatingThing->Render({ windowSize.x * 0.1f, windowSize.y * 0.75f }, { myRotatingScale, myRotatingScale });
 	}
 	else if (myState != eState::FIRST_FRAME)
 	{
-		myBlackSprite->Render(Prism::Engine::GetInstance()->GetWindowSize() * 0.5f);
+		myBlackSprite->Render(windowSize * 0.5f);
 	}
 }
 
