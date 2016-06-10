@@ -41,6 +41,11 @@ namespace CU
 		//	return false;
 	}
 
+	bool ControllerInput::GetIsConnected()
+	{
+		return myIsConnected;
+	}
+
 	void ControllerInput::Update(float aDeltaTime)
 	{
 		//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.

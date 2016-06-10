@@ -38,7 +38,7 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
-
+	myIsLetThrough = true;
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 

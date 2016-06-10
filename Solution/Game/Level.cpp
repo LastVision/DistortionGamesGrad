@@ -82,6 +82,9 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, myTimeBeforeRenderingPressToStart(4.f)
 	, myTimeBeforeRemovingPressToStartForPlayer(8.f)
 	, myFirstFrame(true)
+	, myPressToStartIsRendering(false)
+	, myPlayerOneRender(false)
+	, myPlayerTwoRender(false)
 {
 	Prism::PhysicsInterface::Create(std::bind(&Level::CollisionCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 		, std::bind(&Level::ContactCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3
@@ -136,7 +139,9 @@ Level::~Level()
 	}
 	for (int i = 0; i < myPlayerDeathInfos.Size(); ++i)
 	{
-		SAFE_DELETE(myPlayerDeathInfos[i].myJoinGameSprite);
+		SAFE_DELETE(myPlayerDeathInfos[i].myJoinGameSprite[0]);
+		SAFE_DELETE(myPlayerDeathInfos[i].myJoinGameSprite[1]);
+
 	}
 	SAFE_DELETE(myShadowLight);
 	SAFE_DELETE(mySmartCamera);
@@ -282,7 +287,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 	int playersAlive = 0;
 	for each(Entity* player in myPlayers)
 	{
-		if (player->GetComponent<InputComponent>()->GetIsActive() == true 
+		if (player->GetComponent<InputComponent>()->GetIsActive() == true
 			&& player->GetComponent<ScoreComponent>()->GetScore()->myReachedGoal == false)
 		{
 			++playersAlive;
@@ -334,6 +339,7 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 				{
 					info.myShouldRender = true;
 				}
+
 				playerIsActive = true;
 				myShortestTimeSincePlayerDeath = fmin(info.myTimeSincePlayerDeath, shortestTime);
 			}
@@ -385,6 +391,47 @@ const eStateStatus Level::Update(const float& aDeltaTime)
 		}
 	}
 
+	if (myPlayerOneRender == true)
+	{
+		myPlayerOneAlpha -= aDeltaTime;
+		if (myPlayerOneAlpha <= 0.f)
+		{
+			myPlayerOneAlpha = 0.f;
+			myPlayerOneRender = false;
+		}
+	}
+	else
+	{
+		myPlayerOneAlpha += aDeltaTime;
+		if (myPlayerOneAlpha >= 1.f)
+		{
+			myPlayerOneAlpha = 1.f;
+			myPlayerOneRender = true;
+		}
+	}
+
+	if (myPlayerTwoRender == true)
+	{
+		myPlayerTwoAlpha -= aDeltaTime;
+		if (myPlayerTwoAlpha <= 0.f)
+		{
+			myPlayerTwoAlpha = 0.f;
+			myPlayerTwoRender = false;
+		}
+	}
+	else
+	{
+		myPlayerTwoAlpha += aDeltaTime;
+		if (myPlayerTwoAlpha >= 1.f)
+		{
+			myPlayerTwoAlpha = 1.f;
+			myPlayerTwoRender = true;
+		}
+	}
+
+
+
+
 	return myStateStatus;
 }
 
@@ -424,31 +471,53 @@ void Level::Render()
 		myCountdownSprites[myCurrentCountdownSprite]->Render(countPos);
 	}
 
-#ifndef _DEBUG
 	if (myPlayerWinCount == 0)
 	{
 		if (PollingStation::GetInstance()->GetPlayersAlive() == 0)
 		{
 			if (myShortestTimeSincePlayerDeath >= myTimeBeforeRenderingPressToStart)
 			{
+				if (myPressToStartIsRendering == false)
+				{
+					myPressToStartAlpha = 0.f;
+					myPressToStartIsRendering = true;
+				}
 				myPressToStartSprite->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
-					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				, { 1.f, 1.f, 1.f, myPressToStartAlpha });
 			}
 		}
 		else
 		{
 			for (int i = 0; i < myPlayerDeathInfos.Size(); i++)
 			{
+				
 				DeathInfo& info = myPlayerDeathInfos[i];
 				if (info.myShouldRender == true && info.myHasBeenActive == true)
 				{
-					info.myJoinGameSprite->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
-						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+					if (myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID() == 1 && myPlayers[i]->GetComponent<InputComponent>()->GetControllerIsConnected() == true)
+					{
+						info.myJoinGameSprite[1]->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
+						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPlayerOneAlpha });
+					}
+					else if (myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID() == 1)
+					{
+						info.myJoinGameSprite[0]->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
+						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPlayerOneAlpha });
+					}
+					else if (myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID() == 2 && myPlayers[i]->GetComponent<InputComponent>()->GetControllerIsConnected() == true)
+					{
+						info.myJoinGameSprite[1]->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
+						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPlayerTwoAlpha });
+					}
+					else if (myPlayers[i]->GetComponent<InputComponent>()->GetPlayerID() == 2)
+					{
+						info.myJoinGameSprite[0]->Render({ myWindowSize.x * 0.5f - 200.f + i * 400.f, myWindowSize.y * 0.2f }
+						, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myPlayerTwoAlpha });
+					}
 				}
 			}
 		}
 	}
-#endif
 }
 
 void Level::CollisionCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond, bool aHasEntered)
@@ -598,7 +667,7 @@ void Level::ContactCallback(PhysicsComponent* aFirst, PhysicsComponent* aSecond,
 		case eEntityType::GOAL_POINT:
 			if (aHasEntered == true)
 			{
-				
+
 				//myPlayerWinCount++;
 				//first->GetComponent<ScoreComponent>()->ReachedGoal();
 
@@ -703,10 +772,15 @@ void Level::CreatePlayers()
 		myPlayerDeathInfos.Add(DeathInfo());
 	}
 
-	myPlayerDeathInfos[0].myJoinGameSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one.dds"
+	myPlayerDeathInfos[0].myJoinGameSprite[0] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one.dds"
 		, { 256.f, 256.f }, { 128.f, 128.f });
-	myPlayerDeathInfos[1].myJoinGameSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two.dds"
+	myPlayerDeathInfos[0].myJoinGameSprite[1] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one_control.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
+
+	myPlayerDeathInfos[1].myJoinGameSprite[0] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two.dds"
 		, { 256.f, 256.f }, { 128.f, 128.f });
+	myPlayerDeathInfos[1].myJoinGameSprite[1] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two_control.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
 
 	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
 
@@ -831,6 +905,17 @@ void Level::KillPlayer(Entity* aPlayer, const CU::Vector2<float>& aGibsVelocity)
 		PostMaster::GetInstance()->SendMessage<ScrapMessage>(ScrapMessage(eScrapPart::LEGS
 			, aPlayer->GetOrientation().GetPos(), aGibsVelocity, playerID));
 	}
+	if (playerID == 1)
+	{
+		myPlayerOneRender = false;
+		myPlayerOneAlpha = 0.f;
+	}
+	if (playerID == 2)
+	{
+		myPlayerTwoRender = false;
+		myPlayerTwoAlpha = 0.f;
+	}
+
 	aPlayer->SendNote(ShouldDieNote());
 }
 
