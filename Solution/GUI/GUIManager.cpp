@@ -347,9 +347,11 @@ namespace GUI
 	{
 		//SelectButtonDown();
 		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
-		myButtons[aX].DeleteCyclicAtIndex(aY);
-		myButtons.RemoveCyclicAtIndex(aX);
-
+		if (aX < myButtons.Size() && aY < myButtons[aX].Size())
+		{
+			myButtons[aX].RemoveCyclicAtIndex(aY);
+			myButtons.RemoveCyclicAtIndex(aX);
+		}
 		myControllerButtonIndexX = 0;
 		myControllerButtonIndexY = 0;
 

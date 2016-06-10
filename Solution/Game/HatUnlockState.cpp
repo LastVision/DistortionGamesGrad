@@ -101,6 +101,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	{
 		myHasWonAllHats = true;
 		myAnimator->RestartAnimation();
+
+		myGUIManager->DeleteButtonAtIndex(0, 0);
+		static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->DeleteButtonAtIndex(0);
+		SAFE_DELETE(myHatWon);
 	}
 
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
@@ -340,8 +344,8 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 				myHasWonAllHats = true;
 
 
-				static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->DeleteButtonAtIndex(0);
 				myGUIManager->DeleteButtonAtIndex(0, 0);
+				static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->DeleteButtonAtIndex(0);
 				SAFE_DELETE(myHatWon);
 			}
 		}
