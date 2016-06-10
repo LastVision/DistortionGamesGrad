@@ -84,7 +84,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 				{
 					bestScore = *score;
 				}
-				sql.WriteDeaths(aLevelID, score->myDeathCount);
+				sql.WriteDeaths(myCurrentLevel, score->myDeathCount);
 			}
 		}
 		if (bestScore.myReachedGoal == true)
