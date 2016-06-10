@@ -89,7 +89,7 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
 
 	myNoHatsUnlockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_no_hats_unlocked.dds"
-		, { 512.f, 256.f }, { 256.f, 128.f });
+		, CU::Vector2<float>(512.f, 256.f) * 1.25f, CU::Vector2<float>(256.f, 128.f) * 1.25f);
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 
@@ -243,7 +243,7 @@ void HatsSelectionState::Render()
 
 	if (myHaveNoHats == true)
 	{
-		myNoHatsUnlockedSprite->Render(windowSize);
+		myNoHatsUnlockedSprite->Render(windowSize + CU::Vector2<float>(0.f, 100.f));
 	}
 
 }

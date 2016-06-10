@@ -24,6 +24,7 @@ namespace Prism
 		void ResizeTexture(ID3D11Texture2D* aSrcTexture);
 
 		void Rotate(float aRadians);
+		void ResetRotation();
 
 		void CopyFromD3DTexture(ID3D11Texture2D* aTexture);
 

@@ -60,3 +60,5 @@ bool GC::FirstTimeScoreSubmit = false;
 int GC::DebugRenderTexture = 0;
 
 float GC::ShadowBufferSize = 2048.f;
+
+bool GC::HasShownHowToUseHats = false;

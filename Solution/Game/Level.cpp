@@ -766,7 +766,14 @@ void Level::CreatePlayers()
 		myScores.Add(player->GetComponent<ScoreComponent>()->GetScore());
 
 		Prism::PointLight* light = new Prism::PointLight(false);
-		light->SetColor({ 1.f, 1.f, 1.f, 5.f });
+		if (player->GetComponent<InputComponent>()->GetPlayerID() == 1)
+		{
+			light->SetColor({ 1.f, 0.5f, 0.f, 2.5f });
+		}
+		else
+		{
+			light->SetColor({ 0.f, 1.f, 1.f, 2.5f });
+		}
 		light->SetRange(4.f);
 		myPlayerPointLights.Add(light);
 		myScene->AddLight(light);

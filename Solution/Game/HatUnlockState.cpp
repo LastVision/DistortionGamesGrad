@@ -42,6 +42,8 @@ HatUnlockState::HatUnlockState()
 	, myGoldCostBox(nullptr)
 	, myRenderNotEnoughCash(false)
 	, myGoldAmountBox(nullptr)
+	, myHatRain(16)
+	, myShouldRainHats(false)
 {
 	ReadXML();
 }
@@ -57,6 +59,11 @@ HatUnlockState::~HatUnlockState()
 		SAFE_DELETE(myHats[i].mySprite);
 	}
 
+	for (int i = 0; i < myHatRain.Size(); ++i)
+	{
+		SAFE_DELETE(myHatRain[i].mySprite);
+	}
+
 	SAFE_DELETE(myHatWon);
 	SAFE_DELETE(mySpinBox);
 	SAFE_DELETE(myAllHatsWonText);
@@ -66,6 +73,7 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myNotEnoughCashSprite);
 	SAFE_DELETE(myGoldCostBox);
 	SAFE_DELETE(myGoldAmountBox);
+	SAFE_DELETE(myGoToSelectionToWearAHatSprite);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -102,16 +110,37 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		{
 			myHats.Add(HatUnlock(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), i));
 		}
+
+	
 	}
 	if (myHats.Size() <= 0)
 	{
 		myHasWonAllHats = true;
+		myShouldRainHats = true;
 		myAnimator->RestartAnimation();
+	}
+
+	if (myHasWonAllHats == true)
+	{
+		for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
+		{
+			CU::Vector2<float> startPos;
+
+			startPos.y = Prism::Engine::GetInstance()->GetWindowSize().y + size.x * 0.5f + rand() % 1024;
+			startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
+
+			myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
+			myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
+		}
 	}
 
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
 	myAllHatsWonText = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_all_hats_won.dds"
 		, { size.x * 2.f, size.y }, { size.x, size.y * 0.5f });
+
+	myGoToSelectionToWearAHatSprite = Prism::ModelLoader::GetInstance()->
+		LoadSprite("Data/Resource/Texture/Menu/Hat/T_first_hat_unlocked_wear_it_now.dds"
+		, { 1024.f, 1024.f }, { 512.f, 512.f });
 
 	if (myHats.Size() == 1)
 	{
@@ -157,6 +186,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 
 void HatUnlockState::EndState()
 {
+	for (int i = 0; i < myHatRain.Size(); ++i)
+	{
+		myHatRain[i].mySprite->ResetRotation();
+	}
 }
 
 void HatUnlockState::OnResize(int aWidth, int aHeight)
@@ -216,6 +249,11 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 			myTotalTime += aDeltaTime;
 			myHatWonScaling = cos(myTotalTime) + 1.5f;
 		}
+	}
+
+	if (myShouldRainHats == true)
+	{
+		UpdateRain(aDeltaTime);
 	}
 
 	if (myShowGoldCost == true)
@@ -330,6 +368,16 @@ void HatUnlockState::Render()
 			myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });
 		}
 	}
+
+	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == 10)
+	{
+		myGoToSelectionToWearAHatSprite->Render(windowSize);
+	}
+
+	if (myShouldRainHats == true)
+	{
+		RenderRain();
+	}
 }
 
 void HatUnlockState::ResumeState()
@@ -368,6 +416,8 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			else
 			{
 				myHasWonAllHats = true;
+
+				myShouldRainHats = true;
 
 				GUI::WidgetContainer* cont = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
 				static_cast<GUI::ButtonWidget*>(cont->At(0))->SetActive(false);
@@ -451,5 +501,29 @@ void HatUnlockState::WrapIndex()
 	if (myMiddleIndex < 0)
 	{
 		myMiddleIndex = myHats.Size() - 1;
+	}
+}
+
+void HatUnlockState::UpdateRain(float aDeltaTime)
+{
+	for (int i = 0; i < myHatRain.Size(); ++i)
+	{
+		myHatRain[i].myPosition.y -= 1000.f *  aDeltaTime;
+		myHatRain[i].mySprite->Rotate(myHatRain[i].myRandomRotationSpeed * aDeltaTime);
+		if (myHatRain[i].myPosition.y <= (0.f - myHatRain[i].mySprite->GetSize().x * 0.5f))
+		{
+			myHatRain[i].myPosition.y = Prism::Engine::GetInstance()->GetWindowSize().y + myHatRain[i].mySprite->GetSize().x * 0.5f;
+			myHatRain[i].myPosition.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
+
+			myHatRain[i].mySprite->Rotate((rand() % 628) * 0.01f);
+		}
+	}
+}
+
+void HatUnlockState::RenderRain()
+{
+	for (int i = 0; i < myHatRain.Size(); ++i)
+	{
+		myHatRain[i].mySprite->Render(myHatRain[i].myPosition);
 	}
 }
