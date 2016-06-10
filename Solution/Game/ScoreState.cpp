@@ -58,7 +58,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myHowToUnlockHatsSprite(nullptr)
 	, myShowHowToUnlockHats(false)
 	, myHowToUnlockHatsTimer(4.f)
-	, myHowToUnlockHatsAlpha(0.f)
+	, myHowToUnlockHatsAlpha(1.f)
 {
 	if (GC::NightmareMode == true)
 	{
