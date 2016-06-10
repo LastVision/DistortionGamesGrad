@@ -64,6 +64,7 @@ private:
 	Prism::SpriteAnimator* myAnimator;
 	CU::Vector2<float> myAnimationFrameSize;
 	int myAnimationsToRun;
+	Prism::SpriteProxy* myGoldBox;
 
 	int mySpinCost;
 
