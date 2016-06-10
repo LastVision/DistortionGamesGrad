@@ -65,7 +65,7 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 		, size * 2.f, size);
 
 #ifdef RELEASE_BUILD
-	if (myIsNightmare == false && GC::HasWonGame == false)
+	if (GC::EnableCheat == false && myIsNightmare == false && GC::HasWonGame == false)
 	{
 		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
 		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
@@ -157,7 +157,7 @@ void LevelSelectState::ResumeState()
 	SET_RUNTIME(runtime);
 
 #ifdef RELEASE_BUILD
-	if (myIsNightmare == false && GC::HasWonGame == false)
+	if (GC::EnableCheat == false && myIsNightmare == false && GC::HasWonGame == false)
 	{
 		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
 		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);

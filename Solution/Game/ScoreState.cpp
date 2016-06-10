@@ -146,13 +146,6 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 
 	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/WinBoltAnimation.xml");
 
-	//int nextLevel = myCurrentLevel + 1;
-	//
-	//if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
-	//{
-	//	static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
-	//}
-
 	if (GC::Gold >= mySpinCost && HatManager::GetInstance()->IsAllHatsUnlocked() == false)
 	{
 		myRenderHatArrow = true;
@@ -177,6 +170,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	if (myEarnedStars == 0)
 	{
 		myAnimator->PauseAnimationAtLastFrame();
+	}
+	else
+	{
+		myAnimator->SetShouldStopAtLastFrame(true);
+		myAnimator->SetTimesToRunAnimation(myEarnedStars);
+		myAnimator->StartAnimation();
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -243,23 +242,23 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		}
 		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
-		if (myAnimator->IsPlayingAnimation() == false)
-		{
-			if (myAnimationsToRun > 0)
-			{
-				--myAnimationsToRun;
-				if (myAnimationsToRun <= 0)
-				{
-					myAnimator->PauseAnimation();
-					myAnimator->UnPauseAnimation();
-					myAnimator->RestartAnimation();
-				}
-				else
-				{
-					myAnimator->RestartAnimation();
-				}
-			}
-		}
+		//if (myAnimator->IsPlayingAnimation() == false)
+		//{
+		//	if (myAnimationsToRun > 0)
+		//	{
+		//		--myAnimationsToRun;
+		//		if (myAnimationsToRun <= 0)
+		//		{
+		//			myAnimator->PauseAnimation();
+		//			myAnimator->UnPauseAnimation();
+		//			myAnimator->RestartAnimation();
+		//		}
+		//		else
+		//		{
+		//			myAnimator->RestartAnimation();
+		//		}
+		//	}
+		//}
 
 		if (myEarnedStars > 0)
 		{

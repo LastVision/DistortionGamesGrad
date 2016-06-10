@@ -298,6 +298,10 @@ namespace GUI
 #else
 			myLevelButtons[i]->SetActive(true);
 #endif
+			if (GC::EnableCheat == true)
+			{
+				myLevelButtons[i]->SetActive(true);
+			}
 			CU::Vector2<float> textOffset;
 			textOffset.x = i + 1 > 9 ? -20.f : -10.f;
 			textOffset.y = 20.f;
