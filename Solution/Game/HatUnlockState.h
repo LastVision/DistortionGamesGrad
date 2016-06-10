@@ -83,6 +83,7 @@ private:
 
 	Prism::SpriteAnimator* mySpinHandleAnimator;
 
+	Prism::SpriteProxy* myGoToSelectionToWearAHatSprite;
 	Prism::SpriteProxy* myNotEnoughCashSprite;
 	float myNotEnoughCashScale;
 	float myNotEnoughCashTimer;

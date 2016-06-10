@@ -66,6 +66,7 @@ HatUnlockState::~HatUnlockState()
 	SAFE_DELETE(myNotEnoughCashSprite);
 	SAFE_DELETE(myGoldCostBox);
 	SAFE_DELETE(myGoldAmountBox);
+	SAFE_DELETE(myGoToSelectionToWearAHatSprite);
 }
 
 void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor)
@@ -112,6 +113,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
 	myAllHatsWonText = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_all_hats_won.dds"
 		, { size.x * 2.f, size.y }, { size.x, size.y * 0.5f });
+
+	myGoToSelectionToWearAHatSprite = Prism::ModelLoader::GetInstance()->
+		LoadSprite("Data/Resource/Texture/Menu/Hat/T_first_hat_unlocked_wear_it_now.dds"
+		, { 1024.f, 1024.f }, { 512.f, 512.f });
 
 	if (myHats.Size() == 1)
 	{
@@ -329,6 +334,11 @@ void HatUnlockState::Render()
 			goldPos.y -= myGoldCostBox->GetSize().y * 0.5f + myNotEnoughCashSprite->GetSize().y * 0.5f;
 			myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });
 		}
+	}
+
+	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == 10)
+	{
+		myGoToSelectionToWearAHatSprite->Render(windowSize);
 	}
 }
 
