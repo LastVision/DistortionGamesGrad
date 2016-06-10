@@ -155,6 +155,18 @@ bool HatManager::IsAllHatsUnlocked() const
 	return true;
 }
 
+bool HatManager::IsAllHatsLocked() const
+{
+	for (int i = 0; i < myHatsStatus.Size(); i++)
+	{
+		if (myHatsStatus[i] == 1)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void HatManager::Save()
 {
 	std::string hatPath = "Data/UnlockedHats.bin";

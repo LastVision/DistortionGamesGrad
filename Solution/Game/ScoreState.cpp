@@ -55,6 +55,10 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myPopStateTimer(0.f)
 	, myShouldPopState(false)
 	, myGoldBox(nullptr)
+	, myHowToUnlockHatsSprite(nullptr)
+	, myShowHowToUnlockHats(false)
+	, myHowToUnlockHatsTimer(4.f)
+	, myHowToUnlockHatsAlpha(0.f)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -118,6 +122,9 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 
 	myGoldBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 75.f }, { 75.f, 37.5f });
 
+	myHowToUnlockHatsSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_how_to_unlock_hats.dds"
+		, { 512.f, 512.f }, { 256.f, 256.f });
+
 	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 }
 
@@ -130,6 +137,7 @@ ScoreState::~ScoreState()
 	SAFE_DELETE(myNewScoreSprite);
 	SAFE_DELETE(myBlackSprite);
 	SAFE_DELETE(myGoldBox);
+	SAFE_DELETE(myHowToUnlockHatsSprite);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -169,7 +177,7 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		GC::HasWonGame = true;
 	}
 
-	myAnimationFrameSize = { 256.f, 256.f};
+	myAnimationFrameSize = { 256.f, 256.f };
 
 	if (myEarnedStars == 0)
 	{
@@ -180,6 +188,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myAnimator->SetShouldStopAtLastFrame(true);
 		myAnimator->SetTimesToRunAnimation(myEarnedStars);
 		myAnimator->StartAnimation();
+	}
+
+	if (GC::HasShownHowToUseHats == false && HatManager::GetInstance()->IsAllHatsLocked() == true)
+	{
+		myShowHowToUnlockHats = true;
+		GC::HasShownHowToUseHats = true;
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -212,23 +226,36 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		return eStateStatus::eKeepState;
 	}
 
-	if (myShowNewScore == false)
+	if (myShowHowToUnlockHats == true)
 	{
-		myTimer -= aDeltaTime;
+		myHowToUnlockHatsTimer -= aDeltaTime;
+
+		if (myHowToUnlockHatsTimer <= 0.f)
+		{
+			myHowToUnlockHatsTimer = 0.f;
+			myShowHowToUnlockHats = false;
+		}
 	}
 	else
 	{
-		myAngleToRotateTimer += aDeltaTime;
-		float oldAngle = myAngleToRotate;
-		myAngleToRotate = myNewScoreAngleTweener.DoTween(myAngleToRotateTimer, 0, 3.14f * 10.f, 1.f, eTweenType::EXPONENTIAL);
-		myAngleToRotate = myAngleToRotate - oldAngle;
-
-		myShowNewScoreTimer -= aDeltaTime;
-		myNewScoreScale += aDeltaTime;
-		myNewScoreScale = fmin(myNewScoreScale, 1.f);
-		if (myShowNewScoreTimer <= 0.f)
+		if (myShowNewScore == false)
 		{
-			myShowNewScore = false;
+			myTimer -= aDeltaTime;
+		}
+		else
+		{
+			myAngleToRotateTimer += aDeltaTime;
+			float oldAngle = myAngleToRotate;
+			myAngleToRotate = myNewScoreAngleTweener.DoTween(myAngleToRotateTimer, 0, 3.14f * 10.f, 1.f, eTweenType::EXPONENTIAL);
+			myAngleToRotate = myAngleToRotate - oldAngle;
+
+			myShowNewScoreTimer -= aDeltaTime;
+			myNewScoreScale += aDeltaTime;
+			myNewScoreScale = fmin(myNewScoreScale, 1.f);
+			if (myShowNewScoreTimer <= 0.f)
+			{
+				myShowNewScore = false;
+			}
 		}
 	}
 
@@ -305,7 +332,11 @@ void ScoreState::Render()
 		DEBUG_PRINT(score->myTime);
 	}
 
-	if (myShowNewScore == true)
+	if (myShowHowToUnlockHats == true)
+	{
+		myHowToUnlockHatsSprite->Render(myWindowSize * 0.5f, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myHowToUnlockHatsAlpha });
+	}
+	else if (myShowNewScore == true)
 	{
 		float alpha = myIsRotating == true ? 1.f : myShowNewScoreTimer;
 		myFadeBackground->Render(myWindowSize * 0.5f, { 1.f, 1.f }, { 1.f, 1.f, 1.f, alpha });
@@ -364,7 +395,7 @@ void ScoreState::Render()
 		}
 	}
 
-	if (myShowNewScore == false)
+	if (myShowNewScore == false && myShowHowToUnlockHats == false)
 	{
 		if (myNumberOfActiveScores == 1)
 		{
@@ -482,7 +513,7 @@ void ScoreState::SaveScoreToFile(const int aLevelID)
 			if (score->myReachedGoal == true && highestScore.myTime >= score->myTime)
 			{
 				highestScore.myTime = score->myTime;
-				highestScore.myDeathCount = score->myDeathCount;		
+				highestScore.myDeathCount = score->myDeathCount;
 			}
 		}
 
