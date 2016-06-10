@@ -262,22 +262,5 @@ namespace Launcher
 			Int32 quality = aReader.ReadInt32();
 			myQualityList.SelectedIndex = quality;
 		}
-
-		private void myQualityList_MouseHover(object sender, EventArgs e)
-		{
-			
-		}
-
-		private void myQualityList_MouseLeave(object sender, EventArgs e)
-		{
-			toolTip1.Hide(this);
-		}
-
-		private void myQualityList_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			Point point = myQualityList.Location;
-			point.X += myQualityList.Width;
-			toolTip1.Show(myQualityList.SelectedIndex.ToString(), this, point);
-		}
 	}
 }
