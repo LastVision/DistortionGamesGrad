@@ -90,5 +90,24 @@ private:
 	float myTimeToNotEnoughCash;
 	bool myAnimateNotEnoughCash;
 	bool myRenderNotEnoughCash;
+
+	void UpdateRain(float aDeltaTime);
+	void RenderRain();
+
+	struct HatRain
+	{
+		HatRain::HatRain() : mySprite(nullptr) {}
+		HatRain::HatRain(Prism::SpriteProxy* aSprite, const CU::Vector2<float>& aStartPos) 
+			: mySprite(aSprite)
+			, myPosition(aStartPos) 
+			, myRandomRotationSpeed((rand() % 20) - 10)
+			{}
+		Prism::SpriteProxy* mySprite;
+		CU::Vector2<float> myPosition;
+		float myRandomRotationSpeed;
+	};
+
+	CU::GrowingArray<HatRain> myHatRain;
+	bool myShouldRainHats;
 };
 
