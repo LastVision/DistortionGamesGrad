@@ -299,6 +299,11 @@ BodyAnimation* PlayerGraphicsComponent::GetCurrentAnimation()
 	return myCurrentAnimation;
 }
 
+const Head& PlayerGraphicsComponent::GetHead()
+{
+	return myHead;
+}
+
 void PlayerGraphicsComponent::CreateJoints()
 {
 	std::string idle(myData.myIdleAnimation);

@@ -4,7 +4,7 @@
 #include <GameEnum.h>
 #include <Matrix.h>
 #include "PlayerBody.h"
-#include <Subscriber.h>
+#include "../PostMaster/Subscriber.h"
 
 struct PlayerGraphicsComponentData;
 
@@ -37,7 +37,7 @@ public:
 	bool GetLegsActive() const;
 	bool GetHeadActive() const;
 	BodyAnimation* GetCurrentAnimation();
-
+	const Head& GetHead();
 	void CreateJoints();
 private:
 	const PlayerGraphicsComponentData& myData;

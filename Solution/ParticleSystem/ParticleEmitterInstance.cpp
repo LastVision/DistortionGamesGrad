@@ -9,9 +9,11 @@
 #include <Effect.h>
 #include <TextureContainer.h>
 #include <Engine.h>
-#include "../Entity/Entity.h"
-#include "../Entity/InputComponent.h"
 #include <Texture.h>
+#include <Entity.h>
+#include <InputComponent.h>
+#include <PlayerGraphicsComponent.h>
+#include <Hat.h>
 
 namespace Prism
 {
@@ -158,6 +160,11 @@ namespace Prism
 			myStates[AFFECTED_BY_GRAVITY] = TRUE;
 		}
 
+		if (myParticleEmitterData->myIsHat == true)
+		{
+			myStates[IS_HAT] = TRUE;
+		}
+
 		myTexture = myParticleEmitterData->myTexture;
 		myEmissiveTexture = myParticleEmitterData->myEmissiveTexture;
 	}
@@ -268,22 +275,41 @@ namespace Prism
 
 			if (myEntity != nullptr)
 			{
-				if (myEntity->GetComponent<InputComponent>() != nullptr)
+				if (myEntity->GetComponent<InputComponent>() != nullptr && myStates[IS_HAT] == FALSE)
 				{
 					myOrientation.SetPos(myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetPos());
 					myDirection = -myEntity->GetComponent<InputComponent>()->GetParticleOrientation().GetUp();
 					myOverrideDirection = true;
-				}/*
-				else if (myEntity->GetComponent<SawBladeComponent>() != nullptr)
+				}
+				if (myEntity->GetComponent<PlayerGraphicsComponent>() != nullptr && myStates[IS_HAT] == TRUE)
 				{
-				myOrientation.SetPos(myEntity->GetComponent<SawBladeComponent>()->GetParticlePos());
-				}*/
+					if (myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat != nullptr)
+					{
+						myOrientation = myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat->myOrientation;
+						myDirection = -myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat->myOrientation.GetRight() +
+							myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat->myOrientation.GetUp();
+						CU::Normalize(myDirection);
+						myOverrideDirection = true;
+					}
+				}
 			}
 
 			if (myEmissionTime <= 0.f && (myEmitterLife > 0.f || myStates[EMITTERLIFE] == FALSE))
 			{
-				EmitParticle(myOrientation);
-				myEmissionTime = myParticleEmitterData->myEmissionRate;
+				if (myStates[IS_HAT] == FALSE)
+				{
+					EmitParticle(myOrientation);
+					myEmissionTime = myParticleEmitterData->myEmissionRate;
+				}
+			}
+			
+			if (myStates[IS_HAT] == true && myEmissionTime < 0.f)
+			{
+				if (myEntity->GetIsAlive() == true && myEntity->GetComponent<PlayerGraphicsComponent>()->GetHeadActive() == true)
+				{
+					EmitParticle(myOrientation);
+					myEmissionTime = myParticleEmitterData->myEmissionRate;
+				}
 			}
 
 			UpdateParticle(aDeltaTime);
@@ -345,11 +371,12 @@ namespace Prism
 				gfxParticle.myAlpha += particleData.myAlphaDelta * aDeltaTime;
 				gfxParticle.myAlpha = gfxParticle.myLifeTime / particleData.myParticleLifeTime;
 			}
-
-			gfxParticle.myColor.x += myDiffColor.x  * aDeltaTime;
-			gfxParticle.myColor.y += myDiffColor.y  * aDeltaTime;
-			gfxParticle.myColor.z += myDiffColor.z  * aDeltaTime;
-
+			if (myStates[IS_HAT] == FALSE)
+			{
+				gfxParticle.myColor.x += myDiffColor.x  * aDeltaTime;
+				gfxParticle.myColor.y += myDiffColor.y  * aDeltaTime;
+				gfxParticle.myColor.z += myDiffColor.z  * aDeltaTime;
+			}
 			gfxParticle.myRotation += gfxParticle.myRotation * (logicParticle.myRotationDelta * aDeltaTime);
 
 
@@ -381,6 +408,23 @@ namespace Prism
 			LogicalParticle &logicParticle = myLogicalParticles[myParticleIndex];
 
 			gfxParticle.myColor = myParticleEmitterData->myData.myStartColor;
+			if (myStates[IS_HAT] == TRUE)
+			{
+				int r = CU::Math::RandomRange(1, 4);
+				if (r == 1)
+				{
+					gfxParticle.myColor = CU::Vector3f(255.f, 0.f, 0.f);
+
+				}
+				else if (r == 2)
+				{
+					gfxParticle.myColor = CU::Vector3f(0, 255.f, 0.f);
+				}
+				if (r == 3)
+				{
+					gfxParticle.myColor = CU::Vector3f(0.f, 0.f, 255.f);
+				}
+			}
 
 			if (myStates[AFFECTED_BY_GRAVITY] == true)
 			{

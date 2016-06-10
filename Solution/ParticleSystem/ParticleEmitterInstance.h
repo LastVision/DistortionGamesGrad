@@ -111,6 +111,7 @@ namespace Prism
 			EMITTERLIFE,
 			USE_ALPHA_DELTA,
 			AFFECTED_BY_GRAVITY,
+			IS_HAT,
 			_COUNT
 		};
 

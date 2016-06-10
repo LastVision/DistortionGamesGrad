@@ -72,7 +72,7 @@ public:
 
 	bool IsScrapSpawnedThisFrame() const;
 	void SetScrapSpawnedThisFrame(bool aIsSpawnedThisFrame);
-
+	bool GetIsAlive();
 private:
 	void operator=(Entity&) = delete;
 

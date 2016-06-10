@@ -490,7 +490,7 @@ void Level::Render()
 		{
 			for (int i = 0; i < myPlayerDeathInfos.Size(); i++)
 			{
-				
+
 				DeathInfo& info = myPlayerDeathInfos[i];
 				if (info.myShouldRender == true && info.myHasBeenActive == true)
 				{
@@ -749,15 +749,17 @@ void Level::CreatePlayers()
 	player->AddToScene();
 	myPlayers.Add(player);
 	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
-	//mySmartCamera->AddOrientation(&dummyMatrix);
+
+	PostMaster::GetInstance()->SendMessage(EmitterMessage("Hat", player));
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
 	player->GetComponent<InputComponent>()->SetPlayerID(2);
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
-
 	player->AddToScene();
 	myPlayers.Add(player);
+
+	PostMaster::GetInstance()->SendMessage(EmitterMessage("Hat", player));
 
 	for each(Entity* player in myPlayers)
 	{

@@ -324,3 +324,12 @@ void Entity::Kill(bool aRemoveFromPhysics)
 		GetComponent<PhysicsComponent>()->RemoveFromScene();
 	}
 }
+
+bool Entity::GetIsAlive()
+{
+	if (GetComponent<PlayerComponent>() != nullptr)
+	{
+		return GetComponent<PlayerComponent>()->GetIsAlive();
+	}
+	return false;
+}

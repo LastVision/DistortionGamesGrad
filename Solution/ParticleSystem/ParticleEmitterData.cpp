@@ -123,6 +123,7 @@ namespace Prism
 		aReader->ForceReadAttribute(element, "hollowEmitter", myIsHollow);
 		aReader->ForceReadAttribute(element, "affectedByGravity", myIsAffectedByGravity);
 		aReader->ReadAttribute(element, "heatHaze", myHasHeatHaze);
+		aReader->ReadAttribute(element, "isHat", myIsHat);
 
 		element = aReader->ForceFindFirstChild(anElement, "EmitterSize");
 		aReader->ForceReadAttribute(element, "x", "y", "z", myEmitterSize);

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "../Entity/Entity.h"
 #include "EmitterManager.h"
 #include "../PostMaster/EmitterMessage.h"
 #include "ModelLoader.h"
@@ -11,7 +12,6 @@
 #include "CommonHelper.h"
 #include "Camera.h"
 #include <InputWrapper.h>
-#include "../Entity/Entity.h"
 #define FINISHED 0
 #define UNFINISHED 1
 
