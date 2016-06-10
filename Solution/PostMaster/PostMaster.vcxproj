@@ -162,6 +162,7 @@
     <ClInclude Include="FadeMessage.h" />
     <ClInclude Include="FinishLevelMessage.h" />
     <ClInclude Include="GameStateMessage.h" />
+    <ClInclude Include="HighscoreSetLevelMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
     <ClInclude Include="NightmareIsLockedMessage.h" />

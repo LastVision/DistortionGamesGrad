@@ -167,6 +167,7 @@ bool Game::Update()
 	float frameTime = deltaTime * 1000;
 	DEBUG_PRINT(frameTime);
 
+#ifndef RELEASE_BUILD
 	if (myFrameTimes.Size() < 10)
 	{
 		myFrameTimes.Add(frameTime);
@@ -181,6 +182,7 @@ bool Game::Update()
 	{
 		myFrameTimes.RemoveAll();
 	}
+#endif
 
 	if (deltaTime > 1.0f / 10.0f)
 	{

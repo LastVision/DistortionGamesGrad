@@ -1,6 +1,7 @@
 #pragma once
-#include <SQLWrapper.h>
 #include "Widget.h"
+#include <Subscriber.h>
+#include <SQLWrapper.h>
 
 namespace Prism
 {
@@ -9,7 +10,7 @@ namespace Prism
 
 namespace GUI
 {
-	class HighscoreWidget : public Widget
+	class HighscoreWidget : public Widget, public Subscriber
 	{
 	public:
 		HighscoreWidget(XMLReader* aReader, tinyxml2::XMLElement* anXMLElement, const int aLevelID);
@@ -19,9 +20,11 @@ namespace GUI
 		virtual void Render(const CU::Vector2<float>& aParentPosition, float anAlpha) override;
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 		void ReduceAlpha(float aReduceAmount);
+		void ReceiveMessage(const HighscoreSetLevelMessage& aMessage) override;
 
 	private:
 		void ConstructHighscoreText();
+		void SetLevel(const int aLevel);
 
 		std::string myLocalBestScoreText;
 		std::string myLocalBestScore;

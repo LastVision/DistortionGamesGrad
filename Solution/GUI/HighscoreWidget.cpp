@@ -2,9 +2,11 @@
 
 #include <Engine.h>
 #include <GameConstants.h>
+#include <HighscoreSetLevelMessage.h>
 #include "HighscoreWidget.h"
 #include <SQLWrapper.h>
 #include <Text.h>
+#include <PostMaster.h>
 
 namespace GUI
 {
@@ -26,36 +28,14 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "backgroundsprite"), "path", spritePathBackground);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "coopwidget"), "flag", myIsCoop);
 
-		if (GC::OptionsEnableOffline == false)
-		{
-			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
-		}
-		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
-
-		std::stringstream ss;
-		if (localscore < 1.f)
-		{
-			ss.precision(2);
-		}
-		else if (localscore < 10.f)
-		{
-			ss.precision(3);
-		}
-		else
-		{
-			ss.precision(4);
-		}
-		ss << localscore;
-
-		myLocalBestScore = ss.str();
-
 		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize);
-		ConstructHighscoreText();
+		SetLevel(myCurrentLevel);
+		PostMaster::GetInstance()->Subscribe(this, eMessageType::HIGHSCORE_SET_LEVEL);
 	}
 
 	HighscoreWidget::~HighscoreWidget()
 	{
+		PostMaster::GetInstance()->UnSubscribe(this, 0);
 		SAFE_DELETE(myBackgroundSprite);
 	}
 
@@ -75,8 +55,6 @@ namespace GUI
 	{
 		myParentAlpha = anAlpha;
 
-		if ((myIsCoop == false && GC::CurrentActivePlayers == 1) || (myIsCoop == true && GC::CurrentActivePlayers == 2))
-		{
 			Prism::Engine* engine = Prism::Engine::GetInstance();
 			myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myOwnAlpha });
 			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
@@ -85,7 +63,6 @@ namespace GUI
 			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
 			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
 			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		}
 	}
 
 	void HighscoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
@@ -107,9 +84,15 @@ namespace GUI
 		myOwnAlpha -= aReduceAmount;
 	}
 
+	void HighscoreWidget::ReceiveMessage(const HighscoreSetLevelMessage& aMessage)
+	{
+		SetLevel(aMessage.myLevelID);
+	}
+
 	void HighscoreWidget::ConstructHighscoreText()
 	{
 		float textHeight = 36.f;
+		myTextPosition = CU::Vector2<float>();
 		CU::Vector2<float> textPosition;
 		textPosition = myPosition + myTextPosition;
 		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
@@ -130,7 +113,14 @@ namespace GUI
 		textPosition.x += 150;
 		textPosition.y -= textHeight * 0.5f;
 		myTextPosition = textPosition;
-		myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
+		if (myCurrentLevel > 1000)
+		{
+			myLevelText = "Nightmare Level " + std::to_string(myCurrentLevel - 1000);
+		}
+		else
+		{
+			myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
+		}
 
 		myHighscoreTextRank = "Rank\n";
 		textPosition = (myPosition + myTextRankPosition);
@@ -178,5 +168,40 @@ namespace GUI
 			myHighscoreTextRank += "No Internet connection active.";
 		}
 		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - textHeight * 1.f;
+	}
+
+	void HighscoreWidget::SetLevel(const int aLevel)
+	{
+		myCurrentLevel = aLevel;
+		if (GC::OptionsEnableOffline == false)
+		{
+			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+		}
+		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
+		std::stringstream ss;
+		if (localscore != 0.f)
+		{
+			if (localscore < 1.f)
+			{
+				ss.precision(2);
+			}
+			else if (localscore < 10.f)
+			{
+				ss.precision(3);
+			}
+			else
+			{
+				ss.precision(4);
+			}
+			ss << localscore;
+		}
+		else 
+		{
+			ss << "--";
+		}
+
+		myLocalBestScore = ss.str();
+		ConstructHighscoreText();
 	}
 }
