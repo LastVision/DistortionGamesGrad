@@ -11,6 +11,7 @@ namespace Prism
 		, myCurrentAnimation(nullptr)
 		, emptySprite(nullptr)
 		, myIsPaused(false)
+		, myTimesToRunAnimation(1)
 	{
 		myAnimations.Init(1);
 
@@ -32,7 +33,7 @@ namespace Prism
 		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "spritesheet"), "sizey", spriteSize.y);
 		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "fps"), "value", fps);
 		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "islooping"), "value", isLooping);
-		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "numberofframes"), "value", numberOfFrames);	
+		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "numberofframes"), "value", numberOfFrames);
 		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "framesize"), "x", frameSize.x);
 		reader.ForceReadAttribute(reader.ForceFindFirstChild(rootElement, "framesize"), "y", frameSize.y);
 		reader.ReadAttribute(reader.FindFirstChild(rootElement, "framesize"), "hotspotx", spriteHotspot.x);
@@ -64,18 +65,25 @@ namespace Prism
 
 			if (myCurrentFrame >= myCurrentAnimation->GetNumberOfFrames())
 			{
-				if (myShouldStopAtLastFrame == false)
-				{
-					myCurrentFrame = 0;
+				myCurrentFrame = 0;
 
-					if (myCurrentAnimation->IsLooping() == false)
-					{
-						myCurrentAnimation = nullptr;
-					}
-				}
-				else
+				if (myCurrentAnimation->IsLooping() == false)
 				{
-					myCurrentFrame = myCurrentAnimation->GetNumberOfFrames() - 1;
+					if (myTimesToRunAnimation <= 1)
+					{
+						if (myShouldStopAtLastFrame == false)
+						{
+							myCurrentAnimation = nullptr;
+						}
+						else
+						{
+							myCurrentFrame = myCurrentAnimation->GetNumberOfFrames() - 1;
+						}
+					}
+					else
+					{
+						myTimesToRunAnimation--;
+					}
 				}
 			}
 		}

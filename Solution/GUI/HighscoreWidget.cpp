@@ -7,6 +7,7 @@
 #include <SQLWrapper.h>
 #include <Text.h>
 #include <PostMaster.h>
+#include <ScoreIsLoadingMessage.h>
 
 namespace GUI
 {
@@ -17,6 +18,9 @@ namespace GUI
 		, myTextScale(1.f)
 		, myOwnAlpha(0.f)
 		, myParentAlpha(0.f)
+		, myIsLoadingScore(false)
+		, myLoadingAlpha(0.f)
+		, myLevelLoadingTextTimer(0.f)
 	{
 		std::string spritePathBackground = "";
 
@@ -29,14 +33,19 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "coopwidget"), "flag", myIsCoop);
 
 		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize);
+
+
+		myScoreLoading = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_rotating_thing.dds", { 256.f, 256.f }, { 128.f, 128.f });
+
 		SetLevel(myCurrentLevel);
-		PostMaster::GetInstance()->Subscribe(this, eMessageType::HIGHSCORE_SET_LEVEL);
+		PostMaster::GetInstance()->Subscribe(this, eMessageType::HIGHSCORE_SET_LEVEL | eMessageType::SCORE_IS_LOADING);
 	}
 
 	HighscoreWidget::~HighscoreWidget()
 	{
 		PostMaster::GetInstance()->UnSubscribe(this, 0);
 		SAFE_DELETE(myBackgroundSprite);
+		SAFE_DELETE(myScoreLoading);
 	}
 
 	void HighscoreWidget::Update(float aDelta)
@@ -49,20 +58,57 @@ namespace GUI
 				myOwnAlpha = 1.f;
 			}
 		}
+
+		if (myIsLoadingScore == true)
+		{
+			myLoadingAlpha += aDelta;
+			myLevelLoadingTextTimer += aDelta;
+			if (myLevelLoadingTextTimer >= 0.2f)
+			{
+				if (myLevelText.size() < 20)
+				{
+					myLevelText += ".";
+				}
+				else
+				{
+					if (myCurrentLevel < 1000)
+					{
+						myLevelText = "Highscore loading";
+					}
+					else
+					{
+						myLevelText = "Nightmare loading";
+					}
+				}
+				myLevelLoadingTextTimer = 0.f;
+			}
+		}
+		else
+		{
+			myLoadingAlpha -= aDelta * 2.f;
+		}
+
+		myScoreLoading->Rotate(aDelta * 2.5f);
+
+
 	}
 
 	void HighscoreWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlpha)
 	{
 		myParentAlpha = anAlpha;
 
-			Prism::Engine* engine = Prism::Engine::GetInstance();
-			myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		Prism::Engine* engine = Prism::Engine::GetInstance();
+		myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+
+
+		myScoreLoading->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myLoadingAlpha });
+		
 	}
 
 	void HighscoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
@@ -87,6 +133,38 @@ namespace GUI
 	void HighscoreWidget::ReceiveMessage(const HighscoreSetLevelMessage& aMessage)
 	{
 		SetLevel(aMessage.myLevelID);
+	}
+
+	void HighscoreWidget::ReceiveMessage(const ScoreIsLoadingMessage& aMessage)
+	{
+		if (aMessage.myIsLoading == true)
+		{
+			myIsLoadingScore = true;
+			myLoadingAlpha = 0.f;
+			myHighscoreTextName = "";
+			myHighscoreTextRank = "";
+			myHighscoreTextScore = "";
+			if (myCurrentLevel < 1000)
+			{
+				myLevelText = "Highscore loading";
+			}
+			else
+			{
+				myLevelText = "Nightmare loading";
+			}
+		}
+		else
+		{
+			if (myLoadingAlpha <= 2.f)
+			{
+				SetLevel(myCurrentLevel);
+			}
+			else
+			{
+				myLoadingAlpha = 1.f;
+			}
+			myIsLoadingScore = false;
+		}
 	}
 
 	void HighscoreWidget::ConstructHighscoreText()
@@ -196,7 +274,7 @@ namespace GUI
 			}
 			ss << localscore;
 		}
-		else 
+		else
 		{
 			ss << "--";
 		}

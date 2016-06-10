@@ -169,9 +169,12 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE) == true || myController->ButtonOnDown(eXboxButton::BACK)
 		|| myController->ButtonOnDown(eXboxButton::B))
 	{
-		myIsActiveState = false;
-		myCursor->SetShouldRender(false);
-		return eStateStatus::ePopSubState;
+		if (myIsSpinning == false)
+		{
+			myIsActiveState = false;
+			myCursor->SetShouldRender(false);
+			return eStateStatus::ePopSubState;
+		}
 	}
 
 	HandleControllerInMenu(myController, myGUIManager, myCursor);
@@ -201,7 +204,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 		}
 		myCurrentHatToWin = myLeftIndex;
 
-		if (mySpinTimer < -3.f)
+		if (mySpinTimer < -1.5f)
 		{
 			WinHat(myHats[myCurrentHatToWin].myID);
 		}

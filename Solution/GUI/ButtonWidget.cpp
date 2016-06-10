@@ -187,6 +187,9 @@ namespace GUI
 
 	void ButtonWidget::OnMouseExit()
 	{
+		myImageHover->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+		myImagePressed->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
+		myImageNormal->SetSize(myOriginalSize * myScale, myOriginalHotSpot * myScale);
 		myImageCurrent = myImageNormal;
 		if (myCanBeClicked == true)
 		{

@@ -54,6 +54,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myIsRotating(true)
 	, myPopStateTimer(0.f)
 	, myShouldPopState(false)
+	, myGoldBox(nullptr)
 {
 	if (GC::NightmareMode == true)
 	{
@@ -84,7 +85,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 				{
 					bestScore = *score;
 				}
-				sql.WriteDeaths(aLevelID, score->myDeathCount);
+				sql.WriteDeaths(myCurrentLevel, score->myDeathCount);
 			}
 		}
 		if (bestScore.myReachedGoal == true)
@@ -115,6 +116,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	myBlackSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_black.dds"
 		, myWindowSize, myWindowSize * 0.5f);
 
+	myGoldBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 75.f }, { 75.f, 37.5f });
+
 	while (Prism::ModelLoader::GetInstance()->IsLoading() == true);
 }
 
@@ -126,6 +129,7 @@ ScoreState::~ScoreState()
 	SAFE_DELETE(myFadeBackground);
 	SAFE_DELETE(myNewScoreSprite);
 	SAFE_DELETE(myBlackSprite);
+	SAFE_DELETE(myGoldBox);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
 	myScoreWidgets.DeleteAll();
 }
@@ -145,13 +149,6 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	myGUIManager->SetSelectedButton(0, 6);
 
 	myAnimator = new Prism::SpriteAnimator("Data/Resource/SpriteAnimation/WinBoltAnimation.xml");
-
-	//int nextLevel = myCurrentLevel + 1;
-	//
-	//if (nextLevel < (GC::NightmareMode ? GC::TotalNightmareLevels : GC::TotalLevels))
-	//{
-	//	static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(3)->SetButtonText(std::to_string(nextLevel), { -5.f, -30.f });
-	//}
 
 	if (GC::Gold >= mySpinCost && HatManager::GetInstance()->IsAllHatsUnlocked() == false)
 	{
@@ -177,6 +174,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 	if (myEarnedStars == 0)
 	{
 		myAnimator->PauseAnimationAtLastFrame();
+	}
+	else
+	{
+		myAnimator->SetShouldStopAtLastFrame(true);
+		myAnimator->SetTimesToRunAnimation(myEarnedStars);
+		myAnimator->StartAnimation();
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -243,24 +246,6 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		}
 		HandleControllerInMenu(myController, myGUIManager, myCursor);
 
-		if (myAnimator->IsPlayingAnimation() == false)
-		{
-			if (myAnimationsToRun > 0)
-			{
-				--myAnimationsToRun;
-				if (myAnimationsToRun <= 0)
-				{
-					myAnimator->PauseAnimation();
-					myAnimator->UnPauseAnimation();
-					myAnimator->RestartAnimation();
-				}
-				else
-				{
-					myAnimator->RestartAnimation();
-				}
-			}
-		}
-
 		if (myEarnedStars > 0)
 		{
 			myGoldCostMovement += 25.f * aDeltaTime;
@@ -292,7 +277,6 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 					myHatsArrowAlphaIsIncreasing = true;
 				}
 			}
-
 		}
 
 		myGUIManager->Update(aDeltaTime);
@@ -364,6 +348,7 @@ void ScoreState::Render()
 			goldPos.x += myAnimationFrameSize.x * 0.15f;
 			goldPos.y += myAnimationFrameSize.y * 0.3f;
 
+			myGoldBox->Render(goldPos);
 			Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 			if (myEarnedStars > 0)

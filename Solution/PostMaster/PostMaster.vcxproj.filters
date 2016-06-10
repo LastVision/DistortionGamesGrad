@@ -86,5 +86,8 @@
     <ClInclude Include="HighscoreSetLevelMessage.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="ScoreIsLoadingMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "LevelButtonWidget.h"
 #include "StarWidget.h"
 #include <PostMaster.h>
+#include <ScoreIsLoadingMessage.h>
 
 namespace GUI
 {
@@ -70,6 +71,7 @@ namespace GUI
 			if (mySetHighscoreLevelTimer >= 0.75f)
 			{
 				mySetHighscoreLevelTimer = -1.f;
+				PostMaster::GetInstance()->SendMessage(ScoreIsLoadingMessage(false));
 				PostMaster::GetInstance()->SendMessage(HighscoreSetLevelMessage(myLevelIndex));
 			}
 		}
@@ -79,12 +81,16 @@ namespace GUI
 	{
 		ButtonWidget::OnMouseEnter(aShouldSound);
 		mySetHighscoreLevelTimer = 0.f;
+
+		PostMaster::GetInstance()->SendMessage(ScoreIsLoadingMessage(true));
 	}
 
 	void LevelButtonWidget::OnMouseExit()
 	{
 		ButtonWidget::OnMouseExit();
 		mySetHighscoreLevelTimer = -1.f;
+		PostMaster::GetInstance()->SendMessage(ScoreIsLoadingMessage(false));
+
 	}
 
 	void LevelButtonWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
