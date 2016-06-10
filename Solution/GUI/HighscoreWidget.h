@@ -21,6 +21,7 @@ namespace GUI
 		void OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize) override;
 		void ReduceAlpha(float aReduceAmount);
 		void ReceiveMessage(const HighscoreSetLevelMessage& aMessage) override;
+		void ReceiveMessage(const ScoreIsLoadingMessage& aMessage) override;
 
 	private:
 		void ConstructHighscoreText();
@@ -55,5 +56,10 @@ namespace GUI
 
 		float myParentAlpha;
 		float myOwnAlpha;
+
+		Prism::SpriteProxy* myScoreLoading;
+		bool myIsLoadingScore;
+		float myLoadingAlpha;
+		float myLevelLoadingTextTimer;
 	};
 }

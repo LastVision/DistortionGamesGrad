@@ -23,4 +23,5 @@ void Subscriber::ReceiveMessage(const ReachedGoalMessage&) {}
 void Subscriber::ReceiveMessage(const UnhoverControllerMessage&) {}
 void Subscriber::ReceiveMessage(const NightmareIsLockedMessage&) {}
 void Subscriber::ReceiveMessage(const ReturnToMainMenuMessage&) {}
+void Subscriber::ReceiveMessage(const ScoreIsLoadingMessage &) {}
 void Subscriber::ReceiveMessage(const SoundMessage&){}
