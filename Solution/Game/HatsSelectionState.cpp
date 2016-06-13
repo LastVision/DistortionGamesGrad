@@ -128,10 +128,8 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 		myCursor->SetShouldRender(false);
 		if (GC::HasCheatFiles == false)
 		{
-			CU::SQLWrapper sql;
-			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
 		}
 		return eStateStatus::ePopSubState;
 	}
@@ -300,6 +298,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				myPlayerOneCurrentHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerOneCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(1, myPlayerOneCurrentHat);
 		break;
 	}
 	case eOnClickEvent::PLAYER_1_RIGHT:
@@ -313,6 +312,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				break;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerOneCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(1, myPlayerOneCurrentHat);
 		break;
 	}		
 	case eOnClickEvent::PLAYER_2_LEFT:
@@ -329,6 +329,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				myPlayerTwoCurrentHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerTwoCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(2, myPlayerTwoCurrentHat);
 		break;
 	}
 	case eOnClickEvent::PLAYER_2_RIGHT:
@@ -342,15 +343,14 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				break;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerTwoCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(2, myPlayerTwoCurrentHat);
 		break;
 	}
 	case eOnClickEvent::HAT_QUIT:
 		if (GC::HasCheatFiles == false)
 		{
-			CU::SQLWrapper sql;
-			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
 		}
 
 		myStateStatus = eStateStatus::ePopSubState;

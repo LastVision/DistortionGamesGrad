@@ -21,8 +21,9 @@ namespace CU
 	class SQLWrapper
 	{
 	public:
-		SQLWrapper();
-		~SQLWrapper();
+		static void Create();
+		static void Destroy();
+		static SQLWrapper* GetInstance();
 
 		bool Connect(const char* aServerAddress, const char* aUserName, const char* aPassword,
 			const char* aDatabaseName, unsigned long aClientFlag = 0, const int aPort = 0, const char* aUnixSocket = NULL);
@@ -38,6 +39,9 @@ namespace CU
 
 		bool GetIsOnline();
 	private:
+		SQLWrapper();
+		~SQLWrapper();
+		static SQLWrapper* myInstance;
 		void WriteError(MYSQL* aMySQL);
 		void CheckAndClearRankHigherThanMax(const int aLevelID);
 

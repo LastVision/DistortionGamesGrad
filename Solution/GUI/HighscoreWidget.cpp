@@ -192,7 +192,7 @@ namespace GUI
 		{
 			myHighscoreTextRank += "You have changed files,\nyou can't submit or\nview online scores.";
 		}
-		else if (mySQLWrapper.GetIsOnline() == true)
+		else if (CU::SQLWrapper::GetInstance()->GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
 			{
@@ -358,10 +358,9 @@ namespace GUI
 		myCurrentLevel = aLevel;
 		if (GC::OptionsEnableOffline == false && GC::HasCheatFiles == false)
 		{
-			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+			myHighscores = CU::SQLWrapper::GetInstance()->RetriveOnlineHighcore(myCurrentLevel);
 		}
-		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
+		float localscore = CU::SQLWrapper::GetInstance()->RetriveLocalHighscore(myCurrentLevel);
 		std::stringstream ss;
 		if (localscore != 0.f)
 		{
