@@ -61,6 +61,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 	ShowCursor(false);
 	DL_Debug::Debug::Create();
 
+	srand(static_cast<unsigned int>(GetTickCount()));
+
 	if (aNumberCommands > 2)
 	{
 		int commandCount = 0;
