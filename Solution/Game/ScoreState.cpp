@@ -166,6 +166,12 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myHatsArrowPosition = hatButton->GetPosition();
 		myHatsArrowPosition.y -= hatButton->GetSize().y * 0.5f;
 		hatButton->SwitchGradient(true);
+
+		if (GC::HasShownHowToUseHats == false && HatManager::GetInstance()->IsAllHatsLocked() == true)
+		{
+			myShowHowToUnlockHats = true;
+			GC::HasShownHowToUseHats = true;
+		}
 	}
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
@@ -190,12 +196,6 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myAnimator->SetTimesToRunAnimation(myEarnedStars);
 		myAnimator->StartAnimation();
 		myAnimator->SetAnimationDoneCallback(std::bind(&ScoreState::AnimationCallback, this));
-	}
-
-	if (GC::HasShownHowToUseHats == false && HatManager::GetInstance()->IsAllHatsLocked() == true)
-	{
-		myShowHowToUnlockHats = true;
-		GC::HasShownHowToUseHats = true;
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
