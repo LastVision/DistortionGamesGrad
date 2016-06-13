@@ -128,7 +128,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
 
 		myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
-		myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
+		if (myHasWonAllHats == true)
+		{
+			myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
+		}
 	}
 
 
@@ -434,6 +437,13 @@ void HatUnlockState::ReceiveMessage(const OnClickMessage& aMessage)
 			else
 			{
 				myHasWonAllHats = true;
+
+				for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
+				{
+					{
+						myHatRain[i].mySprite->Rotate((rand() % 628) * 0.01f);
+					}
+				}
 
 				myShouldRainHats = true;
 
