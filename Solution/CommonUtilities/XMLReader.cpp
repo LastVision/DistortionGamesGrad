@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "XMLReader.h"
 #include "CommonHelper.h"
+#include "HashManager.h"
 
 XMLReader::XMLReader()
 {
@@ -38,6 +39,7 @@ void XMLReader::OpenDocument(const std::string& aFilePath)
 	{
 		myHasOpenedDoc = true;
 		myFilePath = aFilePath;
+		CU::HashManager::CheckFileHash(myFilePath);
 	}
 	else
 	{

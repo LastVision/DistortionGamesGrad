@@ -123,6 +123,9 @@
     <ClInclude Include="SQLWrapper.h">
       <Filter>SQL</Filter>
     </ClInclude>
+    <ClInclude Include="HashManager.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">
@@ -193,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="SQLWrapper.cpp">
       <Filter>SQL</Filter>
+    </ClCompile>
+    <ClCompile Include="HashManager.cpp">
+      <Filter>Hash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

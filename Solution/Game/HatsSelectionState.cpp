@@ -111,10 +111,13 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		CU::SQLWrapper sql;
-		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		if (GC::HasCheatFiles == false)
+		{
+			CU::SQLWrapper sql;
+			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		}
 		return eStateStatus::ePopSubState;
 	}
 	myUVScrollingTime += aDeltaTime;
@@ -323,10 +326,14 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	}
 	case eOnClickEvent::HAT_QUIT:
-		CU::SQLWrapper sql;
-		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		if (GC::HasCheatFiles == false)
+		{
+			CU::SQLWrapper sql;
+			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		}
+
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	}

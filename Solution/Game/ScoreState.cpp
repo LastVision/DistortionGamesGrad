@@ -77,7 +77,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
 	CU::SQLWrapper sql;
-	if (GC::OptionsEnableOffline == false)
+	if (GC::OptionsEnableOffline == false && GC::HasCheatFiles == false)
 	{
 		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 		Score bestScore;
