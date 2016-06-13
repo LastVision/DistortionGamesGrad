@@ -462,6 +462,8 @@ void HatUnlockState::Spin()
 	SAFE_DELETE(myHatWon);
 
 	myGUIManager->Pause();
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Dash", 0);
 }
 
 void HatUnlockState::WinHat(int aHatID)
