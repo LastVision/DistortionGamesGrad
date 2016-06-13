@@ -59,10 +59,12 @@ namespace CU
 	{
 		myDatabaseName = aDatabaseName;
 		int timeout = 3;
+		bool reconnect = true;
 		mysql_options(myConnection, MYSQL_OPT_READ_TIMEOUT, &timeout);
 		mysql_options(myConnection, MYSQL_OPT_WRITE_TIMEOUT, &timeout);
 		mysql_options(myConnection, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
 		mysql_options(myConnection, MYSQL_OPT_COMPRESS, nullptr);
+		mysql_options(myConnection, MYSQL_OPT_RECONNECT, &reconnect);
 		if (mysql_real_connect(myConnection, aServerAddress, aUserName, aPassword, aDatabaseName, aPort, aUnixSocket, aClientFlag) == nullptr)
 		{
 			WriteError(myConnection);
