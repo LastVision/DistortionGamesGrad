@@ -173,7 +173,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		, { 150.f, 150.f }, { 75.f, 75.f });
 
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
-		, { 400.f, 200.f }, { 200.f, 100.f });
+		, { 300.f, 150.f }, { 150.f, 75.f });
 
 	myGoldAmountBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 50.f }, { 75.f, 25.f });
 
@@ -294,6 +294,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 void HatUnlockState::Render()
 {
 	myGUIManager->Render();
+
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
 
 	myRenderPosition = windowSize;
@@ -325,7 +326,7 @@ void HatUnlockState::Render()
 	}
 
 	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
-	goldPos.x *= 0.85f;
+	goldPos.x *= 0.9f;
 	goldPos.y *= 0.7f;
 
 	myGoldBagSprite->Render(goldPos);

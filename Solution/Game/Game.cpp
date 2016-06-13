@@ -166,6 +166,7 @@ bool Game::Update()
 	DEBUG_PRINT(fps);
 	float frameTime = deltaTime * 1000;
 	DEBUG_PRINT(frameTime);
+	DEBUG_PRINT(GC::Gold);
 
 #ifndef RELEASE_BUILD
 	if (myFrameTimes.Size() < 10)

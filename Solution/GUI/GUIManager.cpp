@@ -333,9 +333,12 @@ namespace GUI
 
 	void GUIManager::ReceiveMessage(const UnhoverControllerMessage&)
 	{
-		myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
-		myControllerButtonIndexX = 0;
-		myControllerButtonIndexY = 0;
+		if (myButtons.Size() > 0 && myButtons[myControllerButtonIndexX].Size() > 0)
+		{
+			myButtons[myControllerButtonIndexX][myControllerButtonIndexY]->OnMouseExit();
+			myControllerButtonIndexX = 0;
+			myControllerButtonIndexY = 0;
+		}
 	}
 
 	void GUIManager::Unhover()
