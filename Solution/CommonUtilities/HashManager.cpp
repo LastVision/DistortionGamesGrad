@@ -55,7 +55,7 @@ namespace CU
 			fileStream.read(texture, sizeof(char) * fileLenght); //currentTexture.myFileName
 			texture[fileLenght] = '\0';
 			file = texture;
-
+			delete[] texture;
 
 			fileStream.read((char*)&hash, sizeof(unsigned int)); //currentTexture.myFileName lenght
 
