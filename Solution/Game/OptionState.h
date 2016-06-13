@@ -15,7 +15,7 @@ namespace Prism
 class OptionState : public GameState, public Subscriber
 {
 public:
-	OptionState();
+	OptionState(bool aIsMainMenu);
 	~OptionState();
 
 	void InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aController, GUI::Cursor* aCursor) override;
@@ -31,5 +31,7 @@ public:
 
 private:
 	GUI::GUIManager* myGUIManager;
+
+	bool myIsMainMenu;
 };
 
