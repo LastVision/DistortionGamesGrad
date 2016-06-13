@@ -5,6 +5,7 @@
 #include <string>
 #include "SQLWrapper.h"
 
+CU::SQLWrapper* CU::SQLWrapper::myInstance = nullptr;
 namespace CU
 {
 	SQLWrapper::SQLWrapper()
@@ -33,12 +34,35 @@ namespace CU
 		}
 	}
 
+	void SQLWrapper::Create()
+	{
+		if (myInstance == nullptr)
+		{
+			myInstance = new SQLWrapper();
+		}
+	}
+	void SQLWrapper::Destroy()
+	{
+		if (myInstance != nullptr)
+		{
+			SAFE_DELETE(myInstance);
+		}
+	}
+	SQLWrapper* SQLWrapper::GetInstance()
+	{
+		return myInstance;
+	}
+
+
 	bool SQLWrapper::Connect(const char* aServerAddress, const char* aUserName, const char* aPassword,
 		const char* aDatabaseName, unsigned long aClientFlag, const int aPort, const char* aUnixSocket)
 	{
 		myDatabaseName = aDatabaseName;
 		int timeout = 3;
 		mysql_options(myConnection, MYSQL_OPT_READ_TIMEOUT, &timeout);
+		mysql_options(myConnection, MYSQL_OPT_WRITE_TIMEOUT, &timeout);
+		mysql_options(myConnection, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
+		mysql_options(myConnection, MYSQL_OPT_COMPRESS, nullptr);
 		if (mysql_real_connect(myConnection, aServerAddress, aUserName, aPassword, aDatabaseName, aPort, aUnixSocket, aClientFlag) == nullptr)
 		{
 			WriteError(myConnection);
@@ -231,7 +255,11 @@ namespace CU
 
 	void SQLWrapper::WriteError(MYSQL* aMySQL)
 	{
-		DL_DEBUG("[Warning]: %s", mysql_error(aMySQL));
+		std::string error = mysql_error(aMySQL);
+		if (error != "")
+		{
+			DL_DEBUG("[Warning]: %s", error.c_str());
+		}
 	}
 
 	void SQLWrapper::CheckAndClearRankHigherThanMax(const int aLevelID)

@@ -47,7 +47,6 @@ namespace GUI
 
 		bool myIsCoop;
 
-		CU::SQLWrapper mySQLWrapper;
 		CU::GrowingArray<Highscore> myHighscores;
 
 		Prism::SpriteProxy* myBackgroundSprite;

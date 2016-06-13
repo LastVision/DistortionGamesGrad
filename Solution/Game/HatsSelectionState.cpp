@@ -128,10 +128,8 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 		myCursor->SetShouldRender(false);
 		if (GC::HasCheatFiles == false)
 		{
-			CU::SQLWrapper sql;
-			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
 		}
 		return eStateStatus::ePopSubState;
 	}
@@ -351,10 +349,8 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 	case eOnClickEvent::HAT_QUIT:
 		if (GC::HasCheatFiles == false)
 		{
-			CU::SQLWrapper sql;
-			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			CU::SQLWrapper::GetInstance()->WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
 		}
 
 		myStateStatus = eStateStatus::ePopSubState;
