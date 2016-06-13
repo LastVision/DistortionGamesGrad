@@ -870,6 +870,8 @@ void Level::PauseState()
 	for each(Entity* player in myPlayers)
 	{
 		player->SendNote(VibrationNote(0, 0, 0));
+		Prism::Audio::AudioInterface::GetInstance()->PostEvent("Stop_DashAim"
+			, player->GetComponent<SoundComponent>()->GetAudioSFXID());
 	}
 }
 
