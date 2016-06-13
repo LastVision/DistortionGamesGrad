@@ -173,7 +173,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		, { 150.f, 150.f }, { 75.f, 75.f });
 
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
-		, { 400.f, 200.f }, { 200.f, 100.f });
+		, { 300.f, 150.f }, { 150.f, 75.f });
 
 	myGoldAmountBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 50.f }, { 75.f, 25.f });
 
