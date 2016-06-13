@@ -14,6 +14,7 @@ public:
 
 	void LoadHats();
 	void UnlockHat(int aID);
+	void Reset();
 
 	void SetHatOnPlayer(int aPlayerID, int aHatID);
 	int GetHatIDOnPlayer(int aPlayerID) const;
@@ -24,6 +25,7 @@ public:
 
 	bool IsAllHatsUnlocked() const;
 	bool IsAllHatsLocked() const;
+
 
 private:
 	HatManager();

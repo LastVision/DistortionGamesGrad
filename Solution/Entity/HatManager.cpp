@@ -115,6 +115,64 @@ void HatManager::UnlockHat(int aID)
 	file.close();
 }
 
+void HatManager::Reset()
+{
+	std::string hatPath = "Data/UnlockedHats.bin";
+
+	if (CU::FileExists(CU::GetMyDocumentFolderPath() + hatPath) == false)
+	{
+		myPlayersCurrentHat.Add(-1);
+		myPlayersCurrentHat.Add(-1);
+		for (auto it = myHats.begin(); it != myHats.end(); ++it)
+		{
+			myHatsStatus.Add(0);
+		}
+		std::ofstream file;
+		file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::out);
+		//skapa up filen korrekt
+
+		for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
+		{
+			file << myPlayersCurrentHat[i];
+			file << std::endl;
+		}
+
+		for (int i = 0; i < myHatsStatus.Size(); ++i)
+		{
+			file << myHatsStatus[i];
+			file << std::endl;
+		}
+		file.close();
+	}
+	else
+	{
+		myPlayersCurrentHat[0] = -1;
+		myPlayersCurrentHat[1] = -1;
+
+		for (int i = 0; i < myHats.size(); ++i)
+		{
+			myHatsStatus[i] = 0;
+		}
+
+		std::ofstream file;
+		file.open(CU::GetMyDocumentFolderPath() + hatPath, std::ios::binary | std::ios::out);
+		//skapa up filen korrekt
+
+		for (int i = 0; i < myPlayersCurrentHat.Size(); ++i)
+		{
+			file << myPlayersCurrentHat[i];
+			file << std::endl;
+		}
+
+		for (int i = 0; i < myHatsStatus.Size(); ++i)
+		{
+			file << myHatsStatus[i];
+			file << std::endl;
+		}
+		file.close();
+	}
+}
+
 void HatManager::SetHatOnPlayer(int aPlayerID, int aHatID)
 {
 	myPlayersCurrentHat[aPlayerID - 1] = aHatID;

@@ -165,7 +165,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		}
 	}
 
-	myGoldCostBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_cost_box.dds", { 300.f, 150.f }, { 150.f, 75.f });
+	myGoldCostBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_cost_box.dds", { 200.f, 100.f }, { 100.f, 50.f });
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
 		, { 150.f, 150.f }, { 75.f, 75.f });
@@ -173,7 +173,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 	myNotEnoughCashSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_not_enough_cash.dds"
 		, { 400.f, 200.f }, { 200.f, 100.f });
 
-	myGoldAmountBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 300.f, 150.f }, { 150.f, 75.f });
+	myGoldAmountBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 50.f }, { 75.f, 25.f });
 
 	if (myHasWonAllHats == true)
 	{
@@ -331,18 +331,33 @@ void HatUnlockState::Render()
 	goldPos.y -= myGoldBagSprite->GetSize().y * 0.5f + myGoldAmountBox->GetSize().y * 0.5f;
 
 	myGoldAmountBox->Render(goldPos);
-	Prism::Engine::GetInstance()->PrintText(GC::Gold, goldPos, Prism::eTextType::RELEASE_TEXT);
+	CU::Vector2<float> pos = goldPos;
+
+	pos.x -= 5.f;
+	pos.y -= 5.f;
+
+	if (GC::Gold > 9)
+	{
+		pos.x -= 5.f;
+	}
+
+	Prism::Engine::GetInstance()->PrintText(GC::Gold, pos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myShowGoldCost == true)
 	{
-		Prism::Engine::GetInstance()->PrintText(-mySpinCost, { goldPos.x, goldPos.y + myGoldCostMovement }
+		Prism::Engine::GetInstance()->PrintText(-mySpinCost, { pos.x, pos.y + myGoldCostMovement }
 		, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, myGoldCostFade, myGoldCostFade, myGoldCostFade });
 	}
 
-	goldPos.y -= myGoldAmountBox->GetSize().y * 0.5f + myGoldCostBox->GetSize().y * 0.5f;
+	goldPos.y -= myGoldAmountBox->GetSize().y * 1.f + myGoldCostBox->GetSize().y * 0.5f;
 
 	myGoldCostBox->Render(goldPos);
-	Prism::Engine::GetInstance()->PrintText(mySpinCost, goldPos, Prism::eTextType::RELEASE_TEXT);
+
+	pos = goldPos;
+	pos.x -= 5.f;
+	pos.y -= 5.f;
+
+	Prism::Engine::GetInstance()->PrintText(mySpinCost, pos, Prism::eTextType::RELEASE_TEXT);
 
 	if (myIsSpinning == false)
 	{
@@ -364,12 +379,12 @@ void HatUnlockState::Render()
 					, (myTimeToNotEnoughCash - myNotEnoughCashTimer) / myTimeToNotEnoughCash);
 			}
 
-			goldPos.y -= myGoldCostBox->GetSize().y * 0.5f + myNotEnoughCashSprite->GetSize().y * 0.5f;
+			goldPos.y -= myGoldCostBox->GetSize().y * 0.75f + myNotEnoughCashSprite->GetSize().y * 0.5f;
 			myNotEnoughCashSprite->Render(goldPos, { myNotEnoughCashScale, myNotEnoughCashScale });
 		}
 	}
 
-	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == 10)
+	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == HatManager::GetInstance()->GetAmountOfHats() - 1)
 	{
 		myGoToSelectionToWearAHatSprite->Render(windowSize);
 	}
@@ -462,6 +477,8 @@ void HatUnlockState::Spin()
 	SAFE_DELETE(myHatWon);
 
 	myGUIManager->Pause();
+
+	Prism::Audio::AudioInterface::GetInstance()->PostEvent("Play_Dash", 0);
 }
 
 void HatUnlockState::WinHat(int aHatID)
