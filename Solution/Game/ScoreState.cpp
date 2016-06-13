@@ -121,7 +121,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	myBlackSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_black.dds"
 		, myWindowSize, myWindowSize * 0.5f);
 
-	myGoldBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 150.f, 75.f }, { 75.f, 37.5f });
+	myGoldBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/winBolt_numberBox.dds", { 100.f, 50.f }, { 50.f, 25.f });
 
 	myHowToUnlockHatsSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/ScoreScreen/T_how_to_unlock_hats.dds"
 		, { 512.f, 512.f }, { 256.f, 256.f });
@@ -387,10 +387,19 @@ void ScoreState::Render()
 				myAnimator->Render(goldPos);
 			}
 
-			goldPos.x += myAnimationFrameSize.x * 0.15f;
-			goldPos.y += myAnimationFrameSize.y * 0.3f;
+			goldPos.x += myAnimationFrameSize.x * 0.18f;
+			goldPos.y += myAnimationFrameSize.y * 0.4f;
 
 			myGoldBox->Render(goldPos);
+
+			goldPos.x -= 5.f;
+			goldPos.y -= 5.f;
+
+			if (myGoldAmountToRender > 9)
+			{
+				goldPos.x -= 5.f;
+			}
+
 			Prism::Engine::GetInstance()->PrintText(myGoldAmountToRender, goldPos, Prism::eTextType::RELEASE_TEXT);
 
 			if (myEarnedStars > 0)
