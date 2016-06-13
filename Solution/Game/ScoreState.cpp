@@ -603,22 +603,31 @@ void ScoreState::SaveUnlockedLevels(const int aLevelID)
 
 	std::fstream file;
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath, std::ios::binary | std::ios::in);
-	Score currentScore;
 	CU::GrowingArray<bool> unlockedLevels(64);
-	int levelID = 0;
-	bool isUnlocked = false;
-	bool isEndOfFile = false;
-	while (isEndOfFile == false)
+	if (file.is_open() == true)
 	{
-		if (file.eof())
+		int levelID = 0;
+		bool isUnlocked = false;
+		bool isEndOfFile = false;
+		while (isEndOfFile == false)
 		{
-			isEndOfFile = true;
-			break;
+			if (file.eof())
+			{
+				isEndOfFile = true;
+				break;
+			}
+			file >> levelID >> isUnlocked;
+			unlockedLevels.Add(isUnlocked);
 		}
-		file >> levelID >> isUnlocked;
-		unlockedLevels.Add(isUnlocked);
+		file.close();
 	}
-	file.close();
+	else 
+	{
+		for (int i = 0; i < aLevelID; ++i)
+		{
+			unlockedLevels.Add(true);
+		}
+	}
 
 	file.open(CU::GetMyDocumentFolderPath() + levelsPath, std::ios::binary | std::ios::out);
 	if (file.is_open() == true)

@@ -14,6 +14,7 @@
 #include <InputComponent.h>
 #include <PlayerGraphicsComponent.h>
 #include <Hat.h>
+#include <HatManager.h>
 
 namespace Prism
 {
@@ -283,7 +284,8 @@ namespace Prism
 				}
 				if (myEntity->GetComponent<PlayerGraphicsComponent>() != nullptr && myStates[IS_HAT] == TRUE)
 				{
-					if (myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat != nullptr)
+					if (myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat != nullptr 
+						&& HatManager::GetInstance()->GetHatIDOnPlayer(myEntity->GetComponent<InputComponent>()->GetPlayerID()) == 12)
 					{
 						myOrientation = myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat->myOrientation;
 						myDirection = -myEntity->GetComponent<PlayerGraphicsComponent>()->GetHead().myHat->myOrientation.GetRight() +
