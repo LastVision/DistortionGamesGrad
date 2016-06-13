@@ -58,7 +58,7 @@ namespace CU
 		const char* aDatabaseName, unsigned long aClientFlag, const int aPort, const char* aUnixSocket)
 	{
 		myDatabaseName = aDatabaseName;
-		int timeout = 3;
+		int timeout = 1;
 		bool reconnect = true;
 		mysql_options(myConnection, MYSQL_OPT_READ_TIMEOUT, &timeout);
 		mysql_options(myConnection, MYSQL_OPT_WRITE_TIMEOUT, &timeout);
