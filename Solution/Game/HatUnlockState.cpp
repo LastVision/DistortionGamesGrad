@@ -111,7 +111,7 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 			myHats.Add(HatUnlock(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), i));
 		}
 
-	
+
 	}
 	if (myHats.Size() <= 0)
 	{
@@ -120,19 +120,17 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		myAnimator->RestartAnimation();
 	}
 
-	if (myHasWonAllHats == true)
+	for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
 	{
-		for (int i = 0; i < HatManager::GetInstance()->GetAmountOfHats(); ++i)
-		{
-			CU::Vector2<float> startPos;
+		CU::Vector2<float> startPos;
 
-			startPos.y = Prism::Engine::GetInstance()->GetWindowSize().y + size.x * 0.5f + rand() % 1024;
-			startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
+		startPos.y = Prism::Engine::GetInstance()->GetWindowSize().y + size.x * 0.5f + rand() % 1024;
+		startPos.x = rand() % Prism::Engine::GetInstance()->GetWindowSizeInt().x;
 
-			myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
-			myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
-		}
+		myHatRain.Add(HatRain(Prism::ModelLoader::GetInstance()->LoadSprite(hatPath + std::to_string(i) + ".dds", size, size * 0.5f), startPos));
+		myHatRain.GetLast().mySprite->Rotate((rand() % 628) * 0.01f);
 	}
+
 
 	mySpinBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_box.dds", { 1024.f, 512.f }, { 512.f, 256.f });
 	myAllHatsWonText = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_all_hats_won.dds"
@@ -165,8 +163,10 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		}
 	}
 
-	myTweenerAmount = fmaxf(8192.f, 4096.f * (static_cast<float>(rand() % myHats.Size())));
-
+	if (myHasWonAllHats == false)
+	{
+		myTweenerAmount = fmaxf(8192.f, 4096.f * (static_cast<float>(rand() % myHats.Size())));
+	}
 	myGoldCostBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_cost_box.dds", { 200.f, 100.f }, { 100.f, 50.f });
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
