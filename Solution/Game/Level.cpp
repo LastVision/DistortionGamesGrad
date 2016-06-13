@@ -52,7 +52,7 @@
 #include <PointLight.h>
 #include <ReachedGoalMessage.h>
 #include <VibrationNote.h>
-
+#include <HatManager.h>
 #include <Texture.h>
 
 Level::Level(Prism::Camera& aCamera, const int aLevelID)
@@ -206,6 +206,10 @@ void Level::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInput* aC
 	for (Entity* player : myPlayers)
 	{
 		player->GetComponent<PlayerGraphicsComponent>()->CreateJoints();
+		if (HatManager::GetInstance()->GetHatIDOnPlayer(player->GetComponent<InputComponent>()->GetPlayerID()) == 12)
+		{
+			PostMaster::GetInstance()->SendMessage(EmitterMessage("Hat", player));
+		}
 	}
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
@@ -492,7 +496,7 @@ void Level::Render()
 					myPressToStartAlpha = 0.f;
 					myPressToStartIsRendering = true;
 				}
-				if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == false 
+				if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == false
 					&& myPlayers[1]->GetComponent<InputComponent>()->GetControllerIsConnected() == false)
 				{
 					myPressToStartSprite[0]->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
@@ -782,7 +786,6 @@ void Level::CreatePlayers()
 	myPlayers.Add(player);
 	mySmartCamera->AddPlayer(&player->GetOrientation(), &player->GetComponent<MovementComponent>()->GetAverageVelocity());
 
-	PostMaster::GetInstance()->SendMessage(EmitterMessage("Hat", player));
 
 	player = EntityFactory::CreateEntity(eEntityType::PLAYER, "player", myScene, mySpawnPosition, CU::Vector3f(), CU::Vector3f(1, 1, 1), 2);
 	player->GetComponent<InputComponent>()->AddController(eControllerID::Controller2);
@@ -790,8 +793,6 @@ void Level::CreatePlayers()
 	player->GetComponent<InputComponent>()->ResetIsInLevel();
 	player->AddToScene();
 	myPlayers.Add(player);
-
-	PostMaster::GetInstance()->SendMessage(EmitterMessage("Hat", player));
 
 	for each(Entity* player in myPlayers)
 	{
