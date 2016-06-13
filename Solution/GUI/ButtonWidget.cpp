@@ -272,6 +272,9 @@ namespace GUI
 		myImageHover->SetSize(mySize, mySize / 2.f);
 
 		myHotSpot = myImageNormal->GetHotspot();
+
+		myOriginalSize = myImageCurrent->GetSize();
+		myOriginalHotSpot = myImageCurrent->GetHotspot();
 	}
 
 	bool ButtonWidget::IsInside(const CU::Vector2<float>& aPosition) const
