@@ -206,7 +206,7 @@ namespace GUI
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition -= myTextRankPosition.x;
 		textPosition.x += 90;
-		textPosition.y -= textHeight * 1.f;
+		textPosition.y -= textHeight * 1.5f;
 		myTextRankPosition = textPosition;
 
 		myHighscoreTextName = "Name\n";
@@ -216,8 +216,12 @@ namespace GUI
 		myHighscoreTextScore = "Score\n";
 		textPosition.x += 160;
 		myTextScorePosition = textPosition;
-		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 11.f;
-		if (mySQLWrapper.GetIsOnline() == true)
+		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 10.5f;
+		if (GC::HasCheatFiles == true)
+		{
+			myHighscoreTextRank += "You have changed files,\nyou cant submit or\nview online scores.";
+		}
+		else if (mySQLWrapper.GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
 			{
