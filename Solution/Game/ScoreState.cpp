@@ -46,7 +46,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myFadeBackground(nullptr)
 	, myNewScoreSprite(nullptr)
 	, myShowNewScore(false)
-	, myShowNewScoreTimer(2.f)
+	, myShowNewScoreTimer(3.f)
 	, myNewScoreScale(0.f)
 	, myAngleToRotate(0.f)
 	, myAngleToRotateTimer(0.f)
@@ -57,7 +57,7 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	, myGoldBox(nullptr)
 	, myHowToUnlockHatsSprite(nullptr)
 	, myShowHowToUnlockHats(false)
-	, myHowToUnlockHatsTimer(4.f)
+	, myHowToUnlockHatsTimer(3.f)
 	, myHowToUnlockHatsAlpha(0.f)
 	, myGoldAmountToRender(0)
 {
