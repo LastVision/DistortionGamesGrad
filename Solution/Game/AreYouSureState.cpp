@@ -6,6 +6,7 @@
 #include <Cursor.h>
 #include <FadeMessage.h>
 #include <GUIManager.h>
+#include <HatManager.h>
 #include <InputWrapper.h>
 #include <OnClickMessage.h>
 #include <PostMaster.h>
@@ -95,7 +96,8 @@ void AreYouSureState::ReceiveMessage(const OnClickMessage& aMessage)
 		file = CU::GetMyDocumentFolderPath() + "/Data/UnlockedHats.bin";
 		if (CU::FileExists(file) == true)
 		{
-			DeleteFile(file.c_str());
+			//DeleteFile(file.c_str());
+			HatManager::GetInstance()->Reset();
 		}
 		file = CU::GetMyDocumentFolderPath() + "/Data/UnlockedLevels.bin";
 		if (CU::FileExists(file) == true)
