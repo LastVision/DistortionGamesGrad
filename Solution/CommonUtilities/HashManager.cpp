@@ -42,6 +42,12 @@ namespace CU
 		std::fstream fileStream;
 		fileStream.open("GeneratedData/Resource/Model/environment_blocks/rock_blocks/rocks_5x4_a.dgfx", std::ios::in | std::ios::binary);
 
+		DL_ASSERT_EXP(fileStream.good() == true, "Failed to open Hash-File, did you forget to run the tool?");
+		if (fileStream.good() == false)
+		{
+			return;
+		}
+
 		int hashCount = 0;
 		fileStream.read((char*)&hashCount, sizeof(int));
 		for (int i = 0; i < hashCount; ++i)

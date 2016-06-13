@@ -165,6 +165,8 @@ void HatUnlockState::InitState(StateStackProxy* aStateStackProxy, CU::Controller
 		}
 	}
 
+	myTweenerAmount = fmaxf(8192.f, 4096.f * (static_cast<float>(rand() % myHats.Size())));
+
 	myGoldCostBox = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_spin_cost_box.dds", { 200.f, 100.f }, { 100.f, 50.f });
 
 	myGoldBagSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_gold_bag.dds"
@@ -218,7 +220,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 
 		mySpinTimer -= aDeltaTime;
 		float oldAmount(myMoveAmount);
-		myMoveAmount = myTweener.DoTween(mySpinTimer, 12288.f, -12288.f, myMaxSpinTime, eTweenType::EXPONENTIAL);
+		myMoveAmount = myTweener.DoTween(mySpinTimer, myTweenerAmount, -myTweenerAmount, myMaxSpinTime, eTweenType::EXPONENTIAL);
 
 		int newIndex = int(int(myMoveAmount) / 256) % myHats.Size();
 
