@@ -300,6 +300,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				myPlayerOneCurrentHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerOneCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(1, myPlayerOneCurrentHat);
 		break;
 	}
 	case eOnClickEvent::PLAYER_1_RIGHT:
@@ -313,6 +314,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				break;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerOneCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(1, myPlayerOneCurrentHat);
 		break;
 	}		
 	case eOnClickEvent::PLAYER_2_LEFT:
@@ -329,6 +331,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				myPlayerTwoCurrentHat = HatManager::GetInstance()->GetAmountOfHats() - 1;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerTwoCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(2, myPlayerTwoCurrentHat);
 		break;
 	}
 	case eOnClickEvent::PLAYER_2_RIGHT:
@@ -342,6 +345,7 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 				break;
 			}
 		} while (HatManager::GetInstance()->IsHatUnlocked(myHats[myPlayerTwoCurrentHat].myHatID) == false);
+		HatManager::GetInstance()->SetHatOnPlayer(2, myPlayerTwoCurrentHat);
 		break;
 	}
 	case eOnClickEvent::HAT_QUIT:
