@@ -33,6 +33,7 @@
 #include <XMLReader.h>
 #include "InGameState.h"
 #include <OnClickMessage.h>
+#include <SQLWrapper.h>
 
 //Hej
 Game::Game()
@@ -52,7 +53,8 @@ Game::Game()
 	Prism::Audio::AudioInterface::GetInstance()->LoadBank("Data/Resource/Sound/GraduationSoundBank.bnk");
 	Prism::AnimationSystem::GetInstance();
 	Prism::Engine::GetInstance()->SetShowDebugText(myShowSystemInfo);
-
+	CU::SQLWrapper::Create();
+	CU::SQLWrapper::GetInstance()->Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 	myCursor = new GUI::Cursor(Prism::Engine::GetInstance()->GetWindowSizeInt());
 
 	SetCursorPos(Prism::Engine::GetInstance()->GetWindowSizeInt().x / 2, Prism::Engine::GetInstance()->GetWindowSizeInt().y / 2);
@@ -90,7 +92,7 @@ Game::Game()
 
 Game::~Game()
 {
-
+	CU::SQLWrapper::Destroy();
 	HatManager::Destroy();
 	SAFE_DELETE(myTimerManager);
 	PostMaster::GetInstance()->UnSubscribe(this, 0);
