@@ -17,6 +17,7 @@ FirstTimeFinishLevelState::FirstTimeFinishLevelState(const CU::GrowingArray<cons
 	, myScoreInfo(aScoreInfo)
 	, myLevelID(aLevelID)
 	, myRenderFlag(true)
+	, myDelayTimer(0.f)
 {
 }
 
@@ -52,6 +53,8 @@ void FirstTimeFinishLevelState::InitState(StateStackProxy* aStateStackProxy, CU:
 		file.close();
 	}
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+
+	myDelayTimer = 1.f;
 }
 
 void FirstTimeFinishLevelState::EndState() 
@@ -62,7 +65,11 @@ void FirstTimeFinishLevelState::EndState()
 
 const eStateStatus FirstTimeFinishLevelState::Update(const float& aDeltaTime) 
 {
-	HandleControllerInMenu(myController, myGUIManager, myCursor);
+	myDelayTimer -= aDeltaTime;
+	if (myDelayTimer <= 0.f)
+	{
+		HandleControllerInMenu(myController, myGUIManager, myCursor);
+	}
 
 	myGUIManager->Update(aDeltaTime);
 

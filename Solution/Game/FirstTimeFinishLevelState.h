@@ -35,5 +35,7 @@ private:
 	const ScoreInfo& myScoreInfo;
 	const int myLevelID;
 	bool myRenderFlag;
+
+	float myDelayTimer;
 };
 
