@@ -198,6 +198,10 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myAnimator->SetAnimationDoneCallback(std::bind(&ScoreState::AnimationCallback, this));
 	}
 
+	myWindowSize = { 1920.f, 1080.f };
+
+	OnResize(Prism::Engine::GetInstance()->GetWindowSizeInt().x, Prism::Engine::GetInstance()->GetWindowSizeInt().y);
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
@@ -475,9 +479,15 @@ void ScoreState::PauseState()
 	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
-void ScoreState::OnResize(int, int)
+void ScoreState::OnResize(int aWidth, int aHeigth)
 {
+	for (int i = 0; i < myScoreWidgets.Size(); ++i)
+	{
+		myScoreWidgets[i]->OnResize(Prism::Engine::GetInstance()->GetWindowSize(), myWindowSize);
+	}
+
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
+	myGUIManager->OnResize(aWidth, aHeigth);
 }
 
 void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)
