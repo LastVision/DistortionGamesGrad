@@ -39,7 +39,6 @@ HatsSelectionState::~HatsSelectionState()
 		SAFE_DELETE(myHats[i].mySprite);
 	}
 	SAFE_DELETE(mySecondController);
-	SAFE_DELETE(myLockSprite);
 	SAFE_DELETE(myLeftArrow);
 	SAFE_DELETE(myRightArrow);
 	SAFE_DELETE(myNoHatsUnlockedSprite);
@@ -58,7 +57,6 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myGUIManager = new GUI::GUIManager(myCursor, "Data/Resource/GUI/GUI_hat_selection.xml", nullptr, -1);
 
 	CU::Vector2<int> windowSize = Prism::Engine::GetInstance()->GetWindowSizeInt();
-	OnResize(windowSize.x, windowSize.y);
 
 	InitControllerInMenu(myController, myGUIManager, myCursor);
 	myController->SetIsInMenu(true);
@@ -83,16 +81,16 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 		}
 	}
 
-	myLockSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_lock.dds", size, size * 0.5f);
-
 	myLeftArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_left_arrow.dds", size * 0.5f, size * 0.25f);
 	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
 
 	myNoHatsUnlockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_no_hats_unlocked.dds"
 		, CU::Vector2<float>(512.f, 256.f) * 1.25f, CU::Vector2<float>(256.f, 128.f) * 1.25f);
 
-	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
+	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
+	OnResize(windowSize.x, windowSize.y);
 
+	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
 void HatsSelectionState::EndState()
@@ -102,6 +100,23 @@ void HatsSelectionState::EndState()
 void HatsSelectionState::OnResize(int aWidth, int aHeight)
 {
 	myGUIManager->OnResize(aWidth, aHeight);
+
+	CU::Vector2<float> newSize = Prism::Engine::GetInstance()->GetWindowSize();
+
+	CU::Vector2<float> ratioSize = myLeftArrow->GetSize() / myWindowSize;
+	myLeftArrow->SetSize(ratioSize * newSize, ratioSize * newSize * 0.5f);
+	myRightArrow->SetSize(ratioSize * newSize, ratioSize * newSize * 0.5f);
+
+	ratioSize = myPlayerOnePortrait->GetSize() / myWindowSize;
+	myPlayerOnePortrait->SetSize(ratioSize * newSize, ratioSize * newSize * 0.5f);
+	myPlayerTwoPortrait->SetSize(ratioSize * newSize, ratioSize * newSize * 0.5f);
+
+	for (int i = 0; i < myHats.Size(); i++)
+	{
+		myHats[i].mySprite->SetSize(ratioSize * newSize, ratioSize * newSize * 0.5f);
+	}
+
+	myWindowSize = newSize;
 }
 
 const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
@@ -111,10 +126,13 @@ const eStateStatus HatsSelectionState::Update(const float& aDeltaTime)
 	{
 		myIsActiveState = false;
 		myCursor->SetShouldRender(false);
-		CU::SQLWrapper sql;
-		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		if (GC::HasCheatFiles == false)
+		{
+			CU::SQLWrapper sql;
+			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		}
 		return eStateStatus::ePopSubState;
 	}
 	myUVScrollingTime += aDeltaTime;
@@ -201,44 +219,48 @@ void HatsSelectionState::Render()
 	myLeftArrow->SetUVOutsideZeroToOne({ uvOffset.x, 0.f }, { uvOffset.x + 1.f, 1.f });
 	myRightArrow->SetUVOutsideZeroToOne({ -uvOffset.x, 0.f }, { -uvOffset.x + 1.f, 1.f });
 	myGUIManager->Render();
-	CU::Vector2<float> leftOffset(-128.f, -32.f);
-	CU::Vector2<float> rightOffset(128.f, -32.f);
-	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
 
 	GUI::WidgetContainer* container = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
-	CU::Vector2<float> playerOneRenderPos(windowSize.x - 256.f, container->At(0)->GetPosition().y);
+	CU::Vector2<float> container0Pos = container->At(0)->GetPosition();
+	CU::Vector2<float> container1Pos = container->At(1)->GetPosition();
+	CU::Vector2<float> container2Pos = container->At(2)->GetPosition();
+	CU::Vector2<float> container3Pos = container->At(3)->GetPosition();
+
+	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
+
+	CU::Vector2<float> playerOneRenderPos((container0Pos.x + container1Pos.x) * 0.5f, container->At(0)->GetPosition().y);
 	myPlayerOnePortrait->Render(playerOneRenderPos);
 
 
 	//myLeftArrow->Render(playerOneRenderPos + leftOffset);
 	//myRightArrow->Render(playerOneRenderPos + rightOffset);
 
-	myLeftArrow->Render(container->At(0)->GetPosition());
-	myRightArrow->Render(container->At(1)->GetPosition());
+	myLeftArrow->Render(container0Pos);
+	myRightArrow->Render(container1Pos);
 
 	if (myPlayerOneCurrentHat != -1)
 	{
 		myHats[myPlayerOneCurrentHat].mySprite->Render(playerOneRenderPos);
-		if (myPlayerOneCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerOneCurrentHat) == false)
-		{
-			myLockSprite->Render(playerOneRenderPos);
-		}
+		//if (myPlayerOneCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerOneCurrentHat) == false)
+		//{
+		//	myLockSprite->Render(playerOneRenderPos);
+		//}
 	}
-	CU::Vector2<float> playerTwoRenderPos(windowSize.x + 256.f, container->At(2)->GetPosition().y);
+	CU::Vector2<float> playerTwoRenderPos((container2Pos.x + container3Pos.x) * 0.5f, container->At(2)->GetPosition().y);
 	myPlayerTwoPortrait->Render(playerTwoRenderPos);
 	//myLeftArrow->Render(playerTwoRenderPos + leftOffset);
 	//myRightArrow->Render(playerTwoRenderPos + rightOffset);
 
-	myLeftArrow->Render(container->At(2)->GetPosition());
-	myRightArrow->Render(container->At(3)->GetPosition());
+	myLeftArrow->Render(container2Pos);
+	myRightArrow->Render(container3Pos);
 
 	if (myPlayerTwoCurrentHat != -1)
 	{
 		myHats[myPlayerTwoCurrentHat].mySprite->Render(playerTwoRenderPos);
-		if (myPlayerTwoCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerTwoCurrentHat) == false)
-		{
-			myLockSprite->Render(playerTwoRenderPos);
-		}
+		//if (myPlayerTwoCurrentHat != -1 && HatManager::GetInstance()->IsHatUnlocked(myPlayerTwoCurrentHat) == false)
+		//{
+		//	myLockSprite->Render(playerTwoRenderPos);
+		//}
 	}
 
 	if (myHaveNoHats == true)
@@ -323,10 +345,14 @@ void HatsSelectionState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	}
 	case eOnClickEvent::HAT_QUIT:
-		CU::SQLWrapper sql;
-		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
-		sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		if (GC::HasCheatFiles == false)
+		{
+			CU::SQLWrapper sql;
+			sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(1));
+			sql.WriteHatStat(HatManager::GetInstance()->GetHatIDOnPlayer(2));
+		}
+
 		myStateStatus = eStateStatus::ePopSubState;
 		break;
 	}

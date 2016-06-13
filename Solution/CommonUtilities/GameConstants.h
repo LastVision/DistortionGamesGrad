@@ -36,6 +36,7 @@ public:
 	static bool OptionsEnableOffline;
 
 	static bool EnableCheat;
+	static bool HasCheatFiles;
 
 	static int TotalLevels;
 	static int TotalNightmareLevels;

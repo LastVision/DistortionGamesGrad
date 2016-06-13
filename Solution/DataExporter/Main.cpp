@@ -45,6 +45,7 @@
 #include "IReader.h"
 #include <TimerManager.h>
 #include <MemoryMacros.h>
+#include "HashReader.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 
@@ -64,6 +65,7 @@ int main(int argC,      // Number of strings in array argv
 	bool readEntities = false;
 	bool readLevel = false;
 	bool removeOldFiles = false;
+	bool hashFiles = false;
 
 	for (int i = 0; i < argC; ++i)
 	{
@@ -92,6 +94,10 @@ int main(int argC,      // Number of strings in array argv
 		else if (command == "-removeoldfiles")
 		{
 			removeOldFiles = true;
+		}
+		else if (command == "-hashfiles")
+		{
+			hashFiles = true;
 		}
 	}
 
@@ -182,7 +188,19 @@ int main(int argC,      // Number of strings in array argv
 		std::cout << "\n---| Entities Reading Done |---\n" << std::endl;
 		system("CLS");
 	}
-	
+
+	if (hashFiles == true)
+	{
+		system("CLS");
+		std::cout << "\n---| Hasing Files |---\n" << std::endl;
+
+		reader = new HashReader();
+		find_directory("Data/", *reader);
+		delete reader;
+
+		std::cout << "\n---| Hasing Files Done |---\n" << std::endl;
+		system("CLS");
+	}
 
 	//CU::TimerManager::Destroy();
 	Prism::MemoryTracker::Destroy();

@@ -487,7 +487,7 @@ namespace Prism
 			texture[textureLenght] = '\0';
 
 			aSurface.SetTexture(resourceName, texture, false);
-			delete texture;
+			delete[] texture;
 		}
 	}
 

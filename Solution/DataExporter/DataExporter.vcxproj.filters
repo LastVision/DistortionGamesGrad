@@ -23,6 +23,9 @@
     <ClCompile Include="LevelReader.cpp">
       <Filter>Reader</Filter>
     </ClCompile>
+    <ClCompile Include="HashReader.cpp">
+      <Filter>Reader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dirent.h" />
@@ -45,6 +48,9 @@
       <Filter>Reader</Filter>
     </ClInclude>
     <ClInclude Include="LevelReader.h">
+      <Filter>Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="HashReader.h">
       <Filter>Reader</Filter>
     </ClInclude>
   </ItemGroup>

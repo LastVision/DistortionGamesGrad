@@ -41,6 +41,7 @@ bool GC::OptionsEnableOffline = false;
 
 
 bool GC::EnableCheat = false;
+bool GC::HasCheatFiles = false;
 
 int GC::TotalLevels = 0;
 

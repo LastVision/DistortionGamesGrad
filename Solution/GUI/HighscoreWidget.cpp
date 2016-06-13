@@ -206,7 +206,7 @@ namespace GUI
 		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
 		textPosition -= myTextRankPosition.x;
 		textPosition.x += 90;
-		textPosition.y -= textHeight * 1.f;
+		textPosition.y -= textHeight * 1.5f;
 		myTextRankPosition = textPosition;
 
 		myHighscoreTextName = "Name\n";
@@ -216,8 +216,12 @@ namespace GUI
 		myHighscoreTextScore = "Score\n";
 		textPosition.x += 160;
 		myTextScorePosition = textPosition;
-		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 11.f;
-		if (mySQLWrapper.GetIsOnline() == true)
+		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 10.5f;
+		if (GC::HasCheatFiles == true)
+		{
+			myHighscoreTextRank += "You have changed files,\nyou cant submit or\nview online scores.";
+		}
+		else if (mySQLWrapper.GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
 			{
@@ -251,7 +255,7 @@ namespace GUI
 	void HighscoreWidget::SetLevel(const int aLevel)
 	{
 		myCurrentLevel = aLevel;
-		if (GC::OptionsEnableOffline == false)
+		if (GC::OptionsEnableOffline == false && GC::HasCheatFiles == false)
 		{
 			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);

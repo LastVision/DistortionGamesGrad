@@ -232,6 +232,7 @@
     <ClInclude Include="GameStructs.h" />
     <ClInclude Include="Greater.h" />
     <ClInclude Include="GrowingArray.h" />
+    <ClInclude Include="HashManager.h" />
     <ClInclude Include="Heap.h" />
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="Lesser.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="FuzzySet.cpp" />
     <ClCompile Include="GameConstants.cpp" />
+    <ClCompile Include="HashManager.cpp" />
     <ClCompile Include="MurmurHash3.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Quaternion.cpp" />
