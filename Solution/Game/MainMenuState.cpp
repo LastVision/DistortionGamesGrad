@@ -139,7 +139,7 @@ void MainMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	case eOnClickEvent::OPTIONS:
 		SET_RUNTIME(false);
-		myStateStack->PushMainGameState(new OptionState());
+		myStateStack->PushMainGameState(new OptionState(true));
 		break;
 	case eOnClickEvent::HAT:
 		SET_RUNTIME(false);

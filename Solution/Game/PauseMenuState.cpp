@@ -119,7 +119,7 @@ void PauseMenuState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	case eOnClickEvent::OPTIONS:
 		SET_RUNTIME(false);
-		myStateStack->PushMainGameState(new OptionState());
+		myStateStack->PushMainGameState(new OptionState(false));
 		break;
 	case eOnClickEvent::RETURN_TO_MENU:
 		PostMaster::GetInstance()->SendMessage(ReturnToMainMenuMessage());

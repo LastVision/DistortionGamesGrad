@@ -2,6 +2,7 @@
 
 #include "AreYouSureState.h"
 #include <AudioInterface.h>
+#include <ButtonWidget.h>
 #include <ControllerInput.h>
 #include <Cursor.h>
 #include <FadeMessage.h>
@@ -11,11 +12,12 @@
 #include "OptionState.h"
 #include <PostMaster.h>
 #include <Text.h>
+#include <WidgetContainer.h>
 
-OptionState::OptionState()
+OptionState::OptionState(bool aIsMainMenu)
+	: myIsMainMenu(aIsMainMenu)
 {
 }
-
 
 OptionState::~OptionState()
 {
@@ -39,6 +41,13 @@ void OptionState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInp
 	PostMaster::GetInstance()->Subscribe(this, eMessageType::ON_CLICK);
 	myController->SetIsInMenu(true);
 	myIsLetThrough = true;
+
+	if (myIsMainMenu == false)
+	{
+		GUI::WidgetContainer* cont = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0));
+		static_cast<GUI::ButtonWidget*>(cont->At(cont->GetSize() - 2))->SetActive(false);
+	}
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 

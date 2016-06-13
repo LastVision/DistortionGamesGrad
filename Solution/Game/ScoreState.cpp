@@ -252,6 +252,10 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 		if (myShowNewScore == false)
 		{
 			myTimer -= aDeltaTime;
+			for each (ScoreWidget* widget in myScoreWidgets)
+			{
+				widget->Update(aDeltaTime);
+			}
 		}
 		else
 		{
@@ -268,11 +272,6 @@ const eStateStatus ScoreState::Update(const float& aDeltaTime)
 				myShowNewScore = false;
 			}
 		}
-	}
-
-	for each (ScoreWidget* widget in myScoreWidgets)
-	{
-		widget->Update(aDeltaTime);
 	}
 
 	if (myTimer < 0)
