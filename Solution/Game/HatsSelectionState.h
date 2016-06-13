@@ -33,7 +33,6 @@ public:
 private:
 	GUI::GUIManager* myGUIManager;
 
-	Prism::SpriteProxy* myLockSprite;
 	Prism::SpriteProxy* myPlayerOnePortrait;
 	Prism::SpriteProxy* myPlayerTwoPortrait;
 	int myPlayerOneCurrentHat;
@@ -61,5 +60,7 @@ private:
 
 	Prism::SpriteProxy* myNoHatsUnlockedSprite;
 	bool myHaveNoHats;
+
+	CU::Vector2<float> myWindowSize;
 };
 
