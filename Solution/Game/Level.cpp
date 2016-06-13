@@ -74,7 +74,6 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 	, mySpotLights(16)
 	, myShouldRenderCountDown(true)
 	, myShouldFinishLevel(false)
-	, myPressToStartSprite(nullptr)
 	, myPlayerDeathInfos(8)
 	, myPressToStartAlpha(1.f)
 	, myPressToStartIsFading(true)
@@ -122,8 +121,14 @@ Level::Level(Prism::Camera& aCamera, const int aLevelID)
 
 	PollingStation::Create();
 
-	myPressToStartSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start.dds"
-		, { 512.f, 512.f }, { 256.f, 256.f });
+	myPressToStartSprite[0] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_space_or_numpad_0_to_join.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
+	myPressToStartSprite[1] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_a_to_join.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
+	myPressToStartSprite[2] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_a_to_join_or_spacebar.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
+	myPressToStartSprite[3] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_a_to_join_or_numpad0.dds"
+		, { 512.f, 64.f }, { 256.f, 32.f });
 }
 
 Level::~Level()
@@ -149,7 +154,12 @@ Level::~Level()
 	SAFE_DELETE(myDeferredRenderer);
 	SAFE_DELETE(myFullscreenRenderer);
 	SAFE_DELETE(myScoreInfo);
-	SAFE_DELETE(myPressToStartSprite);
+
+	SAFE_DELETE(myPressToStartSprite[0]);
+	SAFE_DELETE(myPressToStartSprite[1]);
+	SAFE_DELETE(myPressToStartSprite[2]);
+	SAFE_DELETE(myPressToStartSprite[3]);
+
 	myEntities.DeleteAll();
 	myPlayers.DeleteAll();
 	myPointLights.DeleteAll();
@@ -482,8 +492,30 @@ void Level::Render()
 					myPressToStartAlpha = 0.f;
 					myPressToStartIsRendering = true;
 				}
-				myPressToStartSprite->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
-				, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == false 
+					&& myPlayers[1]->GetComponent<InputComponent>()->GetControllerIsConnected() == false)
+				{
+					myPressToStartSprite[0]->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				}
+				else if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == true
+					&& myPlayers[1]->GetComponent<InputComponent>()->GetControllerIsConnected() == true)
+				{
+					myPressToStartSprite[1]->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				}
+				else if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == false
+					&& myPlayers[1]->GetComponent<InputComponent>()->GetControllerIsConnected() == true)
+				{
+					myPressToStartSprite[2]->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				}
+				else if (myPlayers[0]->GetComponent<InputComponent>()->GetControllerIsConnected() == true
+					&& myPlayers[1]->GetComponent<InputComponent>()->GetControllerIsConnected() == false)
+				{
+					myPressToStartSprite[3]->Render({ myWindowSize.x * 0.5f, myWindowSize.y * 0.3f }, { 1.f, 1.f }
+					, { 1.f, 1.f, 1.f, myPressToStartAlpha });
+				}
 			}
 		}
 		else
