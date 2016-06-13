@@ -66,7 +66,7 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 	myPlayerOneCurrentHat = HatManager::GetInstance()->GetHatIDOnPlayer(1);
 	myPlayerTwoCurrentHat = HatManager::GetInstance()->GetHatIDOnPlayer(2);
 
-	CU::Vector2<float> size(128.f, 128.f);
+	CU::Vector2<float> size(256.f, 256.f);
 	myPlayerOnePortrait = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_portrait_player1.dds", size, size * 0.5f);
 	myPlayerTwoPortrait = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Hats/T_portrait_player2.dds", size, size * 0.5f);
 
@@ -81,8 +81,8 @@ void HatsSelectionState::InitState(StateStackProxy* aStateStackProxy, CU::Contro
 		}
 	}
 
-	myLeftArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_left_arrow.dds", size * 0.5f, size * 0.25f);
-	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.5f, size * 0.25f);
+	myLeftArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_left_arrow.dds", size * 0.25f, size * 0.125f);
+	myRightArrow = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_right_arrow.dds", size * 0.25f, size * 0.125f);
 
 	myNoHatsUnlockedSprite = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/Hat/T_no_hats_unlocked.dds"
 		, CU::Vector2<float>(512.f, 256.f) * 1.25f, CU::Vector2<float>(256.f, 128.f) * 1.25f);
