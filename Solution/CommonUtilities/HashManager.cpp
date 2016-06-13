@@ -9,7 +9,7 @@ namespace CU
 	std::unordered_map<std::string, unsigned int> HashManager::myHashes;
 	void HashManager::CheckFileHash(const std::string& aFilePath)
 	{
-		if (GC::HasCheatFiles == true)
+	/*	if (GC::HasCheatFiles == true)
 		{
 			return;
 		}
@@ -34,7 +34,7 @@ namespace CU
 		if (myHashes[aFilePath] != newHash)
 		{
 			GC::HasCheatFiles = true;
-		}
+		}*/
 	}
 
 	void HashManager::CreateHashes()
