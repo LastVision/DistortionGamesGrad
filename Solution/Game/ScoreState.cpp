@@ -465,6 +465,8 @@ void ScoreState::ResumeState()
 		hatButton->SwitchGradient(false);
 	}
 
+	myGoldAmountToRender = GC::Gold;
+
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
 
