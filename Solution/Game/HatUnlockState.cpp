@@ -384,7 +384,7 @@ void HatUnlockState::Render()
 		}
 	}
 
-	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == 10)
+	if (myIsSpinning == false && myHatWon != nullptr && myHats.Size() == HatManager::GetInstance()->GetAmountOfHats() - 1)
 	{
 		myGoToSelectionToWearAHatSprite->Render(windowSize);
 	}
