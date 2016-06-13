@@ -32,8 +32,9 @@ namespace GUI
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "backgroundsprite"), "path", spritePathBackground);
 		aReader->ForceReadAttribute(aReader->ForceFindFirstChild(anXMLElement, "coopwidget"), "flag", myIsCoop);
 
-		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize);
-
+		myBackgroundSprite = Prism::ModelLoader::GetInstance()->LoadSprite(spritePathBackground, mySize, mySize * 0.5f);
+		
+		myPosition.y -= (1080.f - Prism::Engine::GetInstance()->GetWindowSize().y) * 0.1f;
 
 		myScoreLoading = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/Menu/T_loading_screen_rotating_thing.dds", { 256.f, 256.f }, { 128.f, 128.f });
 
@@ -114,15 +115,20 @@ namespace GUI
 	void HighscoreWidget::OnResize(const CU::Vector2<float>& aNewSize, const CU::Vector2<float>& anOldSize)
 	{
 		Widget::OnResize(aNewSize, anOldSize);
-		myBackgroundSprite->SetSize(mySize, mySize / 2.f);
-		CU::Vector2<float> ratio = aNewSize / anOldSize;
-		myTextScale = 1.f;
-		myTextPosition *= ratio;
-		myTextRankPosition *= ratio;
-		myTextNamePosition *= ratio;
-		myTextScorePosition *= ratio;
-		myLocalBestScoreTextPosition *= ratio;
-		myLocalScorePosition *= ratio;
+		myBackgroundSprite->SetSize(mySize, mySize * 0.5f);
+		//CU::Vector2<float> ratio = aNewSize / anOldSize;
+		//myTextScale = 1.f;
+		//myTextPosition = (myTextPosition / anOldSize) * aNewSize;
+		//myTextRankPosition = (myTextRankPosition / anOldSize) * aNewSize;
+		//myTextNamePosition = (myTextNamePosition / anOldSize) * aNewSize;
+		//myTextScorePosition = (myTextScorePosition / anOldSize) * aNewSize;
+		//myLocalBestScoreTextPosition = (myLocalBestScoreTextPosition / anOldSize) * aNewSize;
+		//myLocalScorePosition = (myLocalScorePosition / anOldSize) * aNewSize;
+
+
+		ConstructHighscoreText();
+		//CU::Vector2<float> ratioPostion = myPosition / anOldWindowSize;
+		//myPosition = (myPosition / anOldWindowSize) * aNewWindowSize;
 	}
 
 	void HighscoreWidget::ReduceAlpha(float aReduceAmount)
@@ -169,28 +175,7 @@ namespace GUI
 
 	void HighscoreWidget::ConstructHighscoreText()
 	{
-		float textHeight = 36.f;
-		myTextPosition = CU::Vector2<float>();
-		CU::Vector2<float> textPosition;
-		textPosition = myPosition + myTextPosition;
-		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
-		//textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
-		textPosition.x += myTextPosition.x / 2.f;
-		textPosition.x += 150;
-		myLocalBestScoreTextPosition = textPosition;
 		myLocalBestScoreText = "Local Best Score";
-
-		textPosition.x += 80;
-		myLocalScorePosition = textPosition;
-
-		myTextRankPosition = myTextPosition;
-		textPosition = (myPosition + myTextPosition);
-		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
-		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
-		textPosition.x += myTextPosition.x / 2.f;
-		textPosition.x += 150;
-		textPosition.y -= textHeight * 0.5f;
-		myTextPosition = textPosition;
 		if (myCurrentLevel > 1000)
 		{
 			myLevelText = "Nightmare Level " + std::to_string(myCurrentLevel - 1000);
@@ -199,29 +184,15 @@ namespace GUI
 		{
 			myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
 		}
-
 		myHighscoreTextRank = "Rank\n";
-		textPosition = (myPosition + myTextRankPosition);
-		textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
-		textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
-		textPosition -= myTextRankPosition.x;
-		textPosition.x += 90;
-		textPosition.y -= textHeight * 1.5f;
-		myTextRankPosition = textPosition;
-
 		myHighscoreTextName = "Name\n";
-		textPosition.x += 120;
-		myTextNamePosition = textPosition;
-
 		myHighscoreTextScore = "Score\n";
-		textPosition.x += 160;
-		myTextScorePosition = textPosition;
-		myLocalBestScoreTextPosition.y = textPosition.y - textHeight * 10.5f;
+	
 		if (GC::HasCheatFiles == true)
 		{
-			myHighscoreTextRank += "You have changed files,\nyou cant submit or\nview online scores.";
+			myHighscoreTextRank += "You have changed files,\nyou can't submit or\nview online scores.";
 		}
-		else if (mySQLWrapper.GetIsOnline() == true)
+		else if (CU::SQLWrapper::GetInstance()->GetIsOnline() == true)
 		{
 			for each(const Highscore& score in myHighscores)
 			{
@@ -249,7 +220,137 @@ namespace GUI
 		{
 			myHighscoreTextRank += "No Internet connection active.";
 		}
-		myLocalScorePosition.y = myLocalBestScoreTextPosition.y - textHeight * 1.f;
+
+		float offsetY = 0.f;
+
+		CU::Vector2<float> windowSize(Prism::Engine::GetInstance()->GetWindowSize());
+
+		float offset = (1000.f - windowSize.y) * 0.2f;
+
+		myTextPosition = myPosition;
+		myTextPosition.x -= mySize.x * 0.2f;
+		myTextPosition.y += mySize.y * 0.5f;
+		myTextPosition.y += offset;
+
+		myTextRankPosition = myPosition;
+		myTextRankPosition.x -= mySize.x * 0.45f;
+		myTextRankPosition.y += mySize.y * 0.45f;
+		myTextRankPosition.y += offset;
+
+		myTextNamePosition = myPosition;
+		myTextNamePosition.x -= mySize.x * 0.1f;
+		myTextNamePosition.y += mySize.y * 0.45f;
+		myTextNamePosition.y += offset;
+
+		myTextScorePosition = myPosition;
+		myTextScorePosition.x += mySize.x * 0.3f;
+		myTextScorePosition.y += mySize.y * 0.45f;
+		myTextScorePosition.y += offset;
+
+		myLocalBestScoreTextPosition = myPosition;
+		myLocalBestScoreTextPosition.x -= mySize.x * 0.2f;
+		myLocalBestScoreTextPosition.y -= mySize.y * 0.35f;
+
+		myLocalScorePosition = myPosition;
+		myLocalScorePosition.x -= mySize.x * 0.05f;
+		myLocalScorePosition.y -= mySize.y * 0.45f;
+
+
+		//CU::Vector2<float> windowSize(Prism::Engine::GetInstance()->GetWindowSize());
+		//
+		////float textHeight = 36.f;
+		//
+		//float textHeight = windowSize.y * 0.0333f;
+		//myTextPosition = CU::Vector2<float>();
+		//CU::Vector2<float> textPosition;
+		//textPosition = myPosition + myTextPosition;
+		//textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		////textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		//textPosition.x += myTextPosition.x / 2.f;
+		////textPosition.x += 150;
+		//textPosition.x += windowSize.x * 0.078125f;
+		//myLocalBestScoreTextPosition = textPosition;
+		//myLocalBestScoreText = "Local Best Score";
+		//
+		////textPosition.x += 80;
+		//textPosition.x += windowSize.x * 0.0041666f;
+		//myLocalScorePosition = textPosition;
+		//
+		//myTextRankPosition = myTextPosition;
+		//textPosition = (myPosition + myTextPosition);
+		//textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		//textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		//textPosition.x += myTextPosition.x / 2.f;
+		//textPosition.x += windowSize.x * 0.078125f;
+		////textPosition.x += 150;
+		////textPosition.y -= textHeight * 0.5f;
+		//textPosition.y -= textHeight * ((0.5f / 1080.f) * windowSize.y);
+		//myTextPosition = textPosition;
+		//if (myCurrentLevel > 1000)
+		//{
+		//	myLevelText = "Nightmare Level " + std::to_string(myCurrentLevel - 1000);
+		//}
+		//else
+		//{
+		//	myLevelText = "Highscore Level " + std::to_string(myCurrentLevel);
+		//}
+		//
+		//myHighscoreTextRank = "Rank\n";
+		//textPosition = (myPosition + myTextRankPosition);
+		//textPosition.x -= myBackgroundSprite->GetSize().x / 2.f;
+		//textPosition.y += myBackgroundSprite->GetSize().y / 2.f;
+		//textPosition -= myTextRankPosition.x;
+		////textPosition.x += 90;
+		//textPosition.x += windowSize.x * 0.046875f;
+		//
+		////textPosition.y -= textHeight * 1.5f;
+		//textPosition.y -= textHeight * (windowSize.y * 0.00138888f);
+		//myTextRankPosition = textPosition;
+		//
+		//myHighscoreTextName = "Name\n";
+		////textPosition.x += 120;
+		//textPosition.x += windowSize.x * 0.0625f;
+		//myTextNamePosition = textPosition;
+		//
+		//myHighscoreTextScore = "Score\n";
+		////textPosition.x += 160;
+		//textPosition.x += windowSize.x * 0.08333f;
+		//myTextScorePosition = textPosition;
+		//myLocalBestScoreTextPosition.y = textPosition.y - textHeight * (windowSize.y * 0.0097222f);
+		//myLocalBestScoreTextPosition.y = myPosition.y - myBackgroundSprite->GetSize().y * 0.5f;
+		//if (GC::HasCheatFiles == true)
+		//{
+		//	myHighscoreTextRank += "You have changed files,\nyou can't submit or\nview online scores.";
+		//}
+		//else if (mySQLWrapper.GetIsOnline() == true)
+		//{
+		//	for each(const Highscore& score in myHighscores)
+		//	{
+		//		myHighscoreTextRank += std::to_string(score.myRank) + "\n";
+		//		myHighscoreTextName += score.myName + "\n";
+		//		std::stringstream ss;
+		//		if (score.myScore < 1.f)
+		//		{
+		//			ss.precision(2);
+		//		}
+		//		else if (score.myScore < 10.f)
+		//		{
+		//			ss.precision(3);
+		//		}
+		//		else
+		//		{
+		//			ss.precision(4);
+		//		}
+		//
+		//		ss << score.myScore << "\n";
+		//		myHighscoreTextScore += ss.str();
+		//	}
+		//}
+		//else
+		//{
+		//	myHighscoreTextRank += "No Internet connection active.";
+		//}
+		//myLocalScorePosition.y = myLocalBestScoreTextPosition.y - textHeight * 1.f;
 	}
 
 	void HighscoreWidget::SetLevel(const int aLevel)
@@ -257,10 +358,9 @@ namespace GUI
 		myCurrentLevel = aLevel;
 		if (GC::OptionsEnableOffline == false && GC::HasCheatFiles == false)
 		{
-			mySQLWrapper.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
-			myHighscores = mySQLWrapper.RetriveOnlineHighcore(myCurrentLevel);
+			myHighscores = CU::SQLWrapper::GetInstance()->RetriveOnlineHighcore(myCurrentLevel);
 		}
-		float localscore = mySQLWrapper.RetriveLocalHighscore(myCurrentLevel);
+		float localscore = CU::SQLWrapper::GetInstance()->RetriveLocalHighscore(myCurrentLevel);
 		std::stringstream ss;
 		if (localscore != 0.f)
 		{

@@ -122,9 +122,9 @@ void ScoreWidget::Render(const CU::Vector2<float>& aParentPosition, float anAlph
 		Prism::Engine::GetInstance()->PrintText(ss.str(), aParentPosition + myPosition + CU::Vector2<float>(-100.f, 120.f)
 			, Prism::eTextType::RELEASE_TEXT, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 
-		Prism::Engine::GetInstance()->PrintText(CU::Concatenate("%i sec          %i sec        %i sec"
+		Prism::Engine::GetInstance()->PrintText(CU::Concatenate("%i sec       %i sec      %i sec"
 			, int(myScoreInfo.myLongTime), int(myScoreInfo.myMediumTime), int(myScoreInfo.myShortTime))
-			, aParentPosition + myPosition + CU::Vector2<float>(-243.f, -50.f), Prism::eTextType::RELEASE_TEXT
+			, aParentPosition + myPosition + CU::Vector2<float>(-200.f, -50.f), Prism::eTextType::RELEASE_TEXT
 			, 1.f, { 1.f, 1.f, 1.f, anAlpha });
 	}
 }

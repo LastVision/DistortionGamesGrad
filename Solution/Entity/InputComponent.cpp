@@ -78,12 +78,17 @@ void InputComponent::Update(float aDeltaTime)
 		myIsActive = true;
 		myMovement->Impulse();
 	}
-
-	myParticlePoint = &myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation()->myJetPack;
-	myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
-	CU::Vector3f pos = myParticleOrientation.GetPos();
-	myParticleOrientation = CU::Matrix44f::CreateRotateAroundZ(CU::Math::DegreeToRad(-25));
-	myParticleOrientation.SetPos(pos);
+	
+	BodyAnimation* animation = myEntity.GetComponent<PlayerGraphicsComponent>()->GetCurrentAnimation();
+	if (animation != nullptr)
+	{
+		myParticlePoint = &animation->myJetPack;
+		myParticleOrientation = CU::InverseSimple(*myParticlePoint->myBind) * (*myParticlePoint->myJoint) * myOrientation;
+		CU::Vector3f pos = myParticleOrientation.GetPos();
+		myParticleOrientation = CU::Matrix44f::CreateRotateAroundZ(CU::Math::DegreeToRad(-25));
+		myParticleOrientation.SetPos(pos);
+	}
+	
 	if (myController->IsConnected() == true)
 	{
 		if (myHasCompletedLevel == false)

@@ -76,10 +76,8 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 	GC::CurrentActivePlayers = myNumberOfActiveScores;
 	SaveScoreToFile(aLevelID);
 	SaveUnlockedLevels(aLevelID);
-	CU::SQLWrapper sql;
 	if (GC::OptionsEnableOffline == false && GC::HasCheatFiles == false)
 	{
-		sql.Connect("server.danielcarlsson.net", "Test@d148087", "DGames2016", "danielcarlsson_net_db_1", CLIENT_COMPRESS | CLIENT_FOUND_ROWS | CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS);
 		Score bestScore;
 		bestScore.myActive = false;
 		for each(const Score* score in myScores)
@@ -90,12 +88,12 @@ ScoreState::ScoreState(const CU::GrowingArray<const Score*>& someScores, const S
 				{
 					bestScore = *score;
 				}
-				sql.WriteDeaths(myCurrentLevel, score->myDeathCount);
+				CU::SQLWrapper::GetInstance()->WriteDeaths(myCurrentLevel, score->myDeathCount);
 			}
 		}
 		if (bestScore.myReachedGoal == true)
 		{
-			sql.WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
+			CU::SQLWrapper::GetInstance()->WriteHighscore(CU::GetUsername(), bestScore.myTime, myCurrentLevel);
 		}
 	}
 
@@ -197,6 +195,10 @@ void ScoreState::InitState(StateStackProxy* aStateStackProxy, CU::ControllerInpu
 		myAnimator->StartAnimation();
 		myAnimator->SetAnimationDoneCallback(std::bind(&ScoreState::AnimationCallback, this));
 	}
+
+	myWindowSize = { 1920.f, 1080.f };
+
+	OnResize(Prism::Engine::GetInstance()->GetWindowSizeInt().x, Prism::Engine::GetInstance()->GetWindowSizeInt().y);
 
 	PostMaster::GetInstance()->SendMessage(FadeMessage(1.f / 3.f));
 }
@@ -475,9 +477,15 @@ void ScoreState::PauseState()
 	PostMaster::GetInstance()->UnSubscribe(this, eMessageType::ON_CLICK);
 }
 
-void ScoreState::OnResize(int, int)
+void ScoreState::OnResize(int aWidth, int aHeigth)
 {
+	for (int i = 0; i < myScoreWidgets.Size(); ++i)
+	{
+		myScoreWidgets[i]->OnResize(Prism::Engine::GetInstance()->GetWindowSize(), myWindowSize);
+	}
+
 	myWindowSize = Prism::Engine::GetInstance()->GetWindowSize();
+	myGUIManager->OnResize(aWidth, aHeigth);
 }
 
 void ScoreState::ReceiveMessage(const OnClickMessage& aMessage)

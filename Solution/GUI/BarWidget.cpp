@@ -76,5 +76,6 @@ namespace GUI
 		//CU::Vector2<float> ratio = myBackgroundSprite->GetSize() / anOldWindowSize.x;
 		myBackgroundSprite->SetSize({ mySize.x * newSize, mySize.y }, mySize / 2.f);
 		myValueSprite->SetSize({ mySize.x * newSize, mySize.y }, mySize / 2.f);
+		myForegroundSprite->SetSize({ mySize.x, mySize.y }, mySize / 2.f);
 	}
 }
