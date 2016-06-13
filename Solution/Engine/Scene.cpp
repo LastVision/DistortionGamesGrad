@@ -100,7 +100,7 @@ namespace Prism
 			}
 			else
 			{
-				mySea->GetModel().GetEffect()->SetColor({ 0.23f, 0.48f, 0.72f, 1.f });
+				mySea->GetModel().GetEffect()->SetColor({ 0.f, 0.48f, 0.72f, 1.f });
 			}
 		}
 		mySea->RenderInstanced(*myCamera, *myInstancingHelper);
