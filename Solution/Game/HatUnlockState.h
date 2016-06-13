@@ -109,5 +109,7 @@ private:
 
 	CU::GrowingArray<HatRain> myHatRain;
 	bool myShouldRainHats;
+
+	float myTweenerAmount;
 };
 
