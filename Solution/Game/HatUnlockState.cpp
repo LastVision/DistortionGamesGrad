@@ -294,6 +294,7 @@ const eStateStatus HatUnlockState::Update(const float& aDeltaTime)
 void HatUnlockState::Render()
 {
 	myGUIManager->Render();
+
 	CU::Vector2<float> windowSize = Prism::Engine::GetInstance()->GetWindowSize() * 0.5f;
 
 	myRenderPosition = windowSize;
@@ -325,7 +326,7 @@ void HatUnlockState::Render()
 	}
 
 	CU::Vector2<float> goldPos = Prism::Engine::GetInstance()->GetWindowSize();
-	goldPos.x *= 0.85f;
+	goldPos.x *= 0.9f;
 	goldPos.y *= 0.7f;
 
 	myGoldBagSprite->Render(goldPos);
