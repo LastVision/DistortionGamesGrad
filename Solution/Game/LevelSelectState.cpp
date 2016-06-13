@@ -68,7 +68,7 @@ void LevelSelectState::InitState(StateStackProxy* aStateStackProxy, CU::Controll
 	if (GC::EnableCheat == false && myIsNightmare == false && GC::HasWonGame == false)
 	{
 		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
-		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
+		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 1))->SetActive(false);
 	}
 #endif
 
@@ -133,7 +133,7 @@ void LevelSelectState::Render()
 		float alpha = myShowNightmareIsLockedTimer < timeToFade ? myShowNightmareIsLockedTimer / timeToFade : 1.f;
 		float scale = myShowNightmareIsLockedTimer > timeToScale ? fmax(myNightmareIsLockedScale, timeToScale / myShowNightmareIsLockedTimer) : 1.f;
 		CU::Vector2<float> position = Prism::Engine::GetInstance()->GetWindowSize();
-		position.x *= 0.5f;
+		position.x *= 0.7f;
 		position.y *= 0.15f;
 		myNightmareIsLockedSprite->Render(position, { scale, scale }, { 1.f, 1.f, 1.f, alpha });
 	}
@@ -160,7 +160,7 @@ void LevelSelectState::ResumeState()
 	if (GC::EnableCheat == false && myIsNightmare == false && GC::HasWonGame == false)
 	{
 		int size = static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->GetSize();
-		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 2))->SetActive(false);
+		static_cast<GUI::ButtonWidget*>(static_cast<GUI::WidgetContainer*>(myGUIManager->GetWidgetContainer()->At(0))->At(size - 1))->SetActive(false);
 	}
 #endif
 
