@@ -88,6 +88,12 @@ void AreYouSureState::ReceiveMessage(const OnClickMessage& aMessage)
 		break;
 	case eOnClickEvent::OPTIONS_RESET_ARE_YOU_SURE_YES:
 		GC::Gold = 0;
+		GC::NightmareMode = false;
+		GC::HasBeenInVictoryScreen = false;
+		GC::HasBeenInVictoryScreenNightmare = false;
+		GC::HasShownHowToUseHats = false;
+		GC::HasWonGame = false;
+
 		std::string file = CU::GetMyDocumentFolderPath() + "/Data/save.bin";
 		if (CU::FileExists(file) == true)
 		{
