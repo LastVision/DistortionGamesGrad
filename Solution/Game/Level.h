@@ -125,7 +125,7 @@ private:
 	bool myShouldRenderCountDown;
 	bool myShouldFinishLevel;
 
-	Prism::SpriteProxy* myPressToStartSprite;
+	Prism::SpriteProxy* myPressToStartSprite[4];
 	float myPressToStartAlpha;
 	bool myPressToStartIsFading;
 
