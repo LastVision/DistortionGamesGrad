@@ -68,7 +68,7 @@ namespace GUI
 		if (mySetHighscoreLevelTimer >= 0)
 		{
 			mySetHighscoreLevelTimer += aDeltaTime;
-			if (mySetHighscoreLevelTimer >= 0.75f)
+			if (mySetHighscoreLevelTimer >= 1.5f)
 			{
 				mySetHighscoreLevelTimer = -1.f;
 				PostMaster::GetInstance()->SendMessage(ScoreIsLoadingMessage(false));

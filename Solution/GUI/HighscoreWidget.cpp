@@ -66,19 +66,19 @@ namespace GUI
 			myLevelLoadingTextTimer += aDelta;
 			if (myLevelLoadingTextTimer >= 0.2f)
 			{
-				if (myLevelText.size() < 20)
+				if (myLoadingText.size() < 20)
 				{
-					myLevelText += ".";
+					myLoadingText += ".";
 				}
 				else
 				{
 					if (myCurrentLevel < 1000)
 					{
-						myLevelText = "Highscore loading";
+						myLoadingText = "Highscore loading";
 					}
 					else
 					{
-						myLevelText = "Nightmare loading";
+						myLoadingText = "Nightmare loading";
 					}
 				}
 				myLevelLoadingTextTimer = 0.f;
@@ -100,13 +100,20 @@ namespace GUI
 
 		Prism::Engine* engine = Prism::Engine::GetInstance();
 		myBackgroundSprite->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-		engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
-
+		
+		if (myIsLoadingScore == true)
+		{
+			engine->PrintText(myLoadingText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		}
+		else
+		{
+			engine->PrintText(myLocalBestScoreText, myLocalBestScoreTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myLocalBestScore, myLocalScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myLevelText, myTextPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextRank, myTextRankPosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextName, myTextNamePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+			engine->PrintText(myHighscoreTextScore, myTextScorePosition, Prism::eTextType::RELEASE_TEXT, myTextScale, { 1.f, 1.f, 1.f, myOwnAlpha });
+		}
 
 		myScoreLoading->Render(myPosition + aParentPosition, { 1.f, 1.f }, { 1.f, 1.f, 1.f, myLoadingAlpha });
 		
@@ -147,25 +154,18 @@ namespace GUI
 		{
 			myIsLoadingScore = true;
 			myLoadingAlpha = 0.f;
-			myHighscoreTextName = "";
-			myHighscoreTextRank = "";
-			myHighscoreTextScore = "";
 			if (myCurrentLevel < 1000)
 			{
-				myLevelText = "Highscore loading";
+				myLoadingText = "Highscore loading";
 			}
 			else
 			{
-				myLevelText = "Nightmare loading";
+				myLoadingText = "Nightmare loading";
 			}
 		}
 		else
 		{
-			if (myLoadingAlpha <= 2.f)
-			{
-				SetLevel(myCurrentLevel);
-			}
-			else
+			if (myLoadingAlpha > 2.f)
 			{
 				myLoadingAlpha = 1.f;
 			}

@@ -31,6 +31,7 @@ namespace GUI
 		std::string myLocalBestScore;
 
 		std::string myLevelText;
+		std::string myLoadingText;
 		std::string myHighscoreTextRank;
 		std::string myHighscoreTextName;
 		std::string myHighscoreTextScore;
