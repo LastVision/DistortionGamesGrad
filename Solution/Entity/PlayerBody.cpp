@@ -50,7 +50,9 @@ Head::~Head()
 
 void Head::CreateJoints(const std::string& aAnimationPath)
 {
+	while (Prism::ModelLoader::GetInstance()->IsLoading());
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "hat_jnt-1", myHatJoint);
+	while (Prism::ModelLoader::GetInstance()->IsLoading());
 }
 
 void Head::UpdateOrientation(const CU::Matrix44<float>& aEntityOrientation, AnimationJoint& aJoint, float aDeltaTime)
@@ -104,11 +106,13 @@ void BodyAnimation::CreateAnimation(const std::string& aAnimationPath, const std
 
 void BodyAnimation::CreateJoints(const std::string& aAnimationPath)
 {
+	while (Prism::ModelLoader::GetInstance()->IsLoading());
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "root_jnt-1", myBody);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "head_jnt0", myHead);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "l_leg_jnt0", myLeftLeg);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "r_leg_jnt0", myRightLeg);
 	Prism::ModelLoader::GetInstance()->GetHierarchyToBone(aAnimationPath, "jetpack_jnt0", myJetPack);
+	while (Prism::ModelLoader::GetInstance()->IsLoading());
 }
 
 void BodyAnimation::SetActive(bool aValue)

@@ -338,9 +338,11 @@ void ScrapManager::CreateHeads()
 		HeadPart toAdd;
 		toAdd.myEntity = EntityFactory::CreateEntity(eEntityType::SCRAP, headName, myScene, { 1000.f, 10000.f + (i * 100.f), 10000.f });
 
+
+		while (Prism::ModelLoader::GetInstance()->IsLoading());
+		Prism::ModelLoader::GetInstance()->GetHierarchyToBone(fbxName, "hat_jnt-1", toAdd.myJoint);
 		while (Prism::ModelLoader::GetInstance()->IsLoading());
 
-		Prism::ModelLoader::GetInstance()->GetHierarchyToBone(fbxName, "hat_jnt-1", toAdd.myJoint);
 
 		if (hatID != -1)
 		{
