@@ -815,12 +815,12 @@ void Level::CreatePlayers()
 	}
 
 	myPlayerDeathInfos[0].myJoinGameSprite[0] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one.dds"
-		, { 256.f, 256.f }, { 128.f, 128.f });
+		, { 512.f, 64.f }, { 256.f, 32.f });
 	myPlayerDeathInfos[0].myJoinGameSprite[1] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_one_control.dds"
 		, { 512.f, 64.f }, { 256.f, 32.f });
 
 	myPlayerDeathInfos[1].myJoinGameSprite[0] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two.dds"
-		, { 256.f, 256.f }, { 128.f, 128.f });
+		, { 512.f, 64.f }, { 256.f, 32.f });
 	myPlayerDeathInfos[1].myJoinGameSprite[1] = Prism::ModelLoader::GetInstance()->LoadSprite("Data/Resource/Texture/UI/T_press_to_start_player_two_control.dds"
 		, { 512.f, 64.f }, { 256.f, 32.f });
 
