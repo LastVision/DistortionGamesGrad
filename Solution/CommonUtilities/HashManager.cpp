@@ -41,7 +41,7 @@ namespace CU
 	{
 		DL_PRINT("CreateHashes()");
 		std::fstream fileStream;
-		fileStream.open("GeneratedData/Resource/Model/environment_blocks/rock_blocks/rocks_5x4_a.dgfx", std::ios::in | std::ios::binary);
+		fileStream.open("GeneratedData/Resource/Model/environment_blocks/saw_blades/blade_4x4_A.dgfx", std::ios::in | std::ios::binary);
 
 		DL_ASSERT_EXP(fileStream.good() == true, "Failed to open Hash-File, did you forget to run the tool?");
 		if (fileStream.good() == false)
