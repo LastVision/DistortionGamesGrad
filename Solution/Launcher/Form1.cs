@@ -236,7 +236,7 @@ namespace Launcher
 					height = scr.Bounds.Height;
 					float ratio = (float)width / (float)height;
 
-					if(ratio > (16.0f/9.5f))
+					if(ratio < (16.0f/9.5f))
 					{
 						if(width > 1700)
 						{
