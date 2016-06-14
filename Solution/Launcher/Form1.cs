@@ -27,10 +27,10 @@ namespace Launcher
 
 		enum eResolutions
 		{
-			R1280x720,
-			R1280x1024,
 			R1600x900,
+			R1600x1000,
 			R1920x1080,
+			R1920x1200,
 			RAuto
 		}
 
@@ -76,10 +76,10 @@ namespace Launcher
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			myResolutionList.Items.Add("1280 x 720");
-			myResolutionList.Items.Add("1280 x 1024");
 			myResolutionList.Items.Add("1600 x 900");
+			myResolutionList.Items.Add("1600 x 1000");
 			myResolutionList.Items.Add("1920 x 1080");
+			myResolutionList.Items.Add("1920 x 1200");
 			myResolutionList.Items.Add("Automatic");
 			myResolutionList.SelectedIndex = 4;
 
@@ -215,33 +215,53 @@ namespace Launcher
 			Screen scr = Screen.PrimaryScreen;
 			switch (myResolutionList.SelectedIndex)
 			{
-				case (int)eResolutions.R1280x720:
-					width = 1280;
-					height = 720;
-					break;
-				case (int)eResolutions.R1280x1024:
-					width = 1280;
-					height = 1024;
-					break;
 				case (int)eResolutions.R1600x900:
 					width = 1600;
 					height = 900;
+					break;
+				case (int)eResolutions.R1600x1000:
+					width = 1600;
+					height = 1000;
 					break;
 				case (int)eResolutions.R1920x1080:
 					width = 1920;
 					height = 1080;
 					break;
+				case (int)eResolutions.R1920x1200:
+					width = 1920;
+					height = 1200;
+					break;
 				default:
 					width = scr.Bounds.Width;
 					height = scr.Bounds.Height;
+					float ratio = (float)width / (float)height;
 
-					if(width > 1920)
+					if(ratio > (16.0f/9.5f))
 					{
-						float ratio = (float)width / (float)height;
-						width = 1920;
-						height = (int)((float)width / ratio);
+						if(width > 1700)
+						{
+							width = 1920;
+							height = 1200;
+						}
+						else
+						{
+							width = 1600;
+							height = 1000;
+						}
 					}
-
+					else 
+					{
+						if (width > 1700)
+						{
+							width = 1920;
+							height = 1080;
+						}
+						else
+						{
+							width = 1600;
+							height = 900;
+						}
+					}
 					break;
 			}
 
