@@ -12,7 +12,7 @@ HashReader::HashReader()
 HashReader::~HashReader()
 {
 	std::fstream fileStream;
-	fileStream.open("GeneratedData/Resource/Model/environment_blocks/rock_blocks/rocks_5x4_a.dgfx", std::ios::out | std::ios::binary);
+	fileStream.open("GeneratedData/Resource/Model/environment_blocks/saw_blades/blade_4x4_A.dgfx", std::ios::out | std::ios::binary);
 
 	int hashCount = myHashes.size() + 1;
 	fileStream.write((char*)&hashCount, sizeof(int));
@@ -36,7 +36,7 @@ HashReader::~HashReader()
 
 	fileStream.close();
 
-	fileStream.open("GeneratedData/Resource/Model/environment_blocks/rock_blocks/rocks_5x4_a.xml", std::ios::out);
+	fileStream.open("GeneratedData/Resource/Model/environment_blocks/saw_blades/blade_4x4_A.xml", std::ios::out);
 	fileStream << "<root>\n\t<radius value=\"5.35752\"/>\n</root>";
 	fileStream.close();
 }
